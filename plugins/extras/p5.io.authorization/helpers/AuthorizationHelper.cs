@@ -23,6 +23,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Globalization;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -174,96 +175,61 @@ namespace p5.io.authorization.helpers
         /*
          * Helper used both for files and folders to check access rights.
          */
-        private static bool CheckReadAccessRights (ApplicationContext context, string path)
+        private static bool CheckAccessRights (ApplicationContext context, string path, string operation, bool defaultValue)
         {
-            // Checking explicitly overridden deny rights.
-            var access = new Node ();
-            context.RaiseEvent ("p5.auth.access.list", access);
-            foreach (var idxAccess in access.Children) {
+            // Creating our default access right.
+            var hasAccess = defaultValue;
 
-                // Checking currently iterated access right object.
-                if ((idxAccess.Name == "*" || idxAccess.Name == context.Ticket.Role) && idxAccess ["deny-folder"] != null) {
+            // Retrieving all access right objects.
+            var nodeResult = context.RaiseEvent ("p5.auth.access.list", new Node ());
 
-                    // This is an access right relevant for the current user's role, now checking if it's relevant for the current path.
-                    if (path.StartsWithEx (idxAccess ["deny-folder"].Get<string> (context))) {
+            // Checking if we have any access objects at all.
+            if (nodeResult.Count > 0) {
 
-                        // Checking if this is the generic deny, and there exists an explicit override for the current role.
-                        if (idxAccess.Name == "*") {
+                // Getting children as list, such that we can more easily modify it.
+                var access = nodeResult.Children.ToList ();
 
-                            // Above deny was generic, checking if explicit allow exists, in one form or another.
-                            foreach (var idxAccessInner in access.Children) {
+                // Removing all access right objects not relevant to current user, current path, and current operation type.
+                access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
+                access.RemoveAll (ix => ix ["p5.io.allow-" + operation] == null && ix ["p5.io.deny-" + operation] == null);
+                access.RemoveAll (ix => !path.StartsWithEx (ix [0].Get<string> (context)));
 
-                                // Checking if currently iterated access right object belongs to the current user's role.
-                                if ((idxAccessInner.Name == context.Ticket.Role)) {
+                // Checking if we still have some access right object(s).
+                if (access.Count > 0) {
 
-                                    // This is an overridden access right relevant for the user, now checking if it's relevant for the current path.
-                                    // Notice, a path will never start with "x".
-                                    // Hence, if this is not neither an [allow-folder], nor a [write-folder], it won't be a match.
-                                    if (path.StartsWithEx (idxAccessInner.GetChildValue ("allow-folder", context, "x")) ||
-                                        path.StartsWithEx (idxAccessInner.GetChildValue ("write-folder", context, "x"))) {
-
-                                        // Explicit override exists.
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
+                    // Sorting remaining access rights on their value.
+                    access.Sort (delegate (Node lhs, Node rhs) {
                         
-                        // User is denied read access to file/folder.
-                        return false;
+                        // First doing a path comparison.
+                        var retVal = string.Compare (lhs [0].Get<string> (context), rhs [0].Get<string> (context), true, CultureInfo.InvariantCulture);
+                        
+                        /*
+                         * If the paths were similar, we make sure all asterix (*) roles are sorted as before any special role rights.
+                         * We do this such that a specifically mentioned role can override the value for an asterix role declaration.
+                         */
+                        if (retVal == 0) {
+                            if (lhs.Name == "*" && rhs.Name != "*")
+                                retVal = -1;
+                            else if (lhs.Name != "*" && rhs.Name == "*")
+                                retVal = 1;
+                        }
+                        return retVal;
+                    });
+
+                    /*
+                     * Looping through any remaining access rights, to see if that modifies our return value.
+                     */
+                    foreach (var idxAccess in access) {
+                        if (idxAccess [0].Name == "p5.io.allow-read")
+                            hasAccess = true;
+                        else if (idxAccess [0].Name == "p5.io.deny-read")
+                            hasAccess = false;
                     }
                 }
             }
 
-            // Defaulting to true.
-            return true;
-        }
-        
-        /*
-         * Helper used both for files and folders to check access rights.
-         */
-        private static bool CheckWriteAccessRights (ApplicationContext context, string path)
-        {
-            // Checking explicitly overridden write rights.
-            var access = new Node ();
-            context.RaiseEvent ("p5.auth.access.list", access);
-            foreach (var idxAccess in access.Children) {
-
-                // Checking currently iterated access right object.
-                if ((idxAccess.Name == "*" || idxAccess.Name == context.Ticket.Role) && idxAccess ["write-folder"] != null) {
-
-                    // This is an access right relevant for the current user's role, now checking if it's relevant for the current path.
-                    if (path.StartsWithEx (idxAccess ["write-folder"].Get<string> (context))) {
-
-                        // Checking if this is the generic write, and there exists an explicit override for the current role.
-                        if (idxAccess.Name == "*") {
-
-                            // Above write was generic, checking if explicit deny exists.
-                            foreach (var idxAccessInner in access.Children) {
-
-                                // Checking if currently iterated access right object belongs to the current user's role.
-                                if ((idxAccessInner.Name == context.Ticket.Role)) {
-
-                                    // This is an overridden access right relevant for the user, now checking if it's relevant for the current path.
-                                    // Notice, a path will never start with "x".
-                                    // Hence, if this is not a [deny-folder], it won't be a match.
-                                    if (path.StartsWithEx (idxAccessInner.GetChildValue ("deny-folder", context, "x"))) {
-
-                                        // Explicit override deny exists.
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // User is allowed write access to file/folder.
-                        return true;
-                    }
-                }
-            }
-
-            // Defaulting to true.
-            return false;
+            // Returns access to caller.
+            return hasAccess;
         }
         
         /*
@@ -290,7 +256,7 @@ namespace p5.io.authorization.helpers
                 return false;
                 
             // Returning value of access rights check.
-            return CheckReadAccessRights (context, path);
+            return CheckAccessRights (context, path, "read", true);
         }
         
         /*
@@ -310,7 +276,7 @@ namespace p5.io.authorization.helpers
                 return false;
             
             // Returning value of access rights check.
-            return CheckReadAccessRights (context, path);
+            return CheckAccessRights (context, path, "read", true);
         }
         
         /*
@@ -328,7 +294,7 @@ namespace p5.io.authorization.helpers
                 return true;
             
             // Returning value of access rights check.
-            return CheckWriteAccessRights (context, path);
+            return CheckAccessRights (context, path, "write", false);
         }
 
         /*
@@ -345,7 +311,7 @@ namespace p5.io.authorization.helpers
                 return true;
             
             // Returning value of access rights check.
-            return CheckWriteAccessRights (context, path);
+            return CheckAccessRights (context, path, "write", false);
         }
 
         /*
