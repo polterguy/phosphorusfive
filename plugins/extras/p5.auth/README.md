@@ -204,3 +204,23 @@ the same rough API as this project does, to make sure you don't break existing c
 to replace the [p5.io.authorization](../p5.io.authorization/) project. This project is also a part of the authentication/authorisation logic of P5, and
 contains helper events for allowing users access to things such as reading files, etc. It also allows to create access objects, for roles that somehow 
 should have extended rights, to doing some sort of operation in P5, such as saving and modifying files in some specific folder, etc.
+
+### Explicitly granting or denying access to roles
+
+The role system is extendible, and allows you to create your own access objects, which will be serialized into the _"auth"_ file. These
+additional access objects will be physically stored in your auth file beneath an **[access]** node. The access object parts of Phosphorus Five
+has 4 helper active events to do this.
+
+* __[p5.auth.access.list]__ - Returns all access objects
+* __[p5.auth.access.add]__ - Adds a new access object
+* __[p5.auth.access.delete]__ - Deletes an existing access object
+* __[p5.auth.has-access-to-path]__ - Returns whether or not a user has access to some _"path"_ or not
+
+**Important** - Only root accounts can modify the access object(s). The **[p5.auth.has-access-to-path]** Active Event from above,
+is a helper event, that allows you to easily determine if a user has access to something that resembles a _"path"_ or not.
+It is consumed in [p5.io.authorization](../p5.io.authorization/) for instance, when determining if a user has access to files and folders -
+But can also be used to for instance verify that a user has access to some URL, or other parts of your system, that can be sequentially built,
+with the same _"tree/graph"_ semantics as URLs and file/folder paths.
+
+The access objects is in such a regards extendible, and allows you to create your own access objects, necessary to implement
+authorization for your own applications. To see an example of how to do this, check out for instance the p5.io.authorization project, and its code.
