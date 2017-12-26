@@ -220,9 +220,9 @@ namespace p5.io.authorization.helpers
                      * Looping through any remaining access rights, to see if that modifies our return value.
                      */
                     foreach (var idxAccess in access) {
-                        if (idxAccess [0].Name == "p5.io.allow-read")
+                        if (idxAccess [0].Name == "p5.io.allow-" + operation)
                             hasAccess = true;
-                        else if (idxAccess [0].Name == "p5.io.deny-read")
+                        else if (idxAccess [0].Name == "p5.io.deny-" + operation)
                             hasAccess = false;
                     }
                 }
