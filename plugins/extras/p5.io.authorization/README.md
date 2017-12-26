@@ -14,7 +14,7 @@ a file should be read from, and/or saved to.
 
 The above four Active Events are invoked by other parts of the system, and will throw
 an exception, if the currently logged in user does not have access to reading or
-writing to some specific folder or path. The default access is as follows.
+writing to some specific folder or file.
 
 ## Default file access in Phosphorus Five
 
@@ -26,7 +26,7 @@ This allows any user to publicly share a file, with read-only access, such that 
 by putting the file in his or hers _"~/documents/public/"_ folder. In addition, it allows a user to share a file, such that
 any user can both read and modify the file, by putting the file somewhere within the _"/common/"_ folder.
 
-Files in any of the _"/public/"_ folders (both common and private) are possible to access, with a direct link, for any random
+Files in any of the _"/documents/public/"_ folders (both _"/common"_ and _"/users/"_) are possible to access, with a direct link, for any random
 visitor, having a direct link to the file. This is not true for files in the _"/common/documents/private/"_ folder, even though
 the files becomes both readable, and possible to edit, by any logged in user in the system.
 
