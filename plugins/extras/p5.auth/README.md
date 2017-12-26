@@ -36,8 +36,8 @@ passwords for their accounts though.
 ## About usernames
 
 All users will get their own home folder. This implies creating a folder, with the same name as the username of the user. This restricts the characters
-you are legally allowed to use in usernames to the characters allowed when creating a folder on disc of all the supported operating systems that Phosphorus Five
-supports. For simplicity reasons, and to avoid problems with these folders, we have restricted usernames to only legally be allowed to contain the characters
+you are legally allowed to use in usernames to the characters legal to use when creating a folder on disc of all the different operating systems that Phosphorus Five
+supports running on. For simplicity reasons, and to avoid problems with these folders, we have restricted usernames to only legally be allowed to contain the characters
 a-z, -, _ and the numbers 0-9. This is to avoid situations where we have users which only differs by for instance one uppercase character towards another user,
 which would create two distinct different folders on Linux and Mac, while reference the same folder on Windows. To avoid such problems, we only allow lowercase
 latin characters a-z, the numbers 0-9, "_" and "-" characters as legal characters in usernames.
@@ -266,7 +266,10 @@ p5.auth.access.add
 
 Whatever the above implies, is up to you to decide for yourself though. The access object really only has one restriction, which is that
 the value parts of each access object you create, must have a unique name - Otherwise deleting a single specified access object, would
-be impossible. You can of course create these names any ways you see fit of course.
+be impossible. You can of course create these names any ways you see fit of course, including using randomly generated Guids as your IDs.
+And in fact, if you do not supply an explicit name, then a random GUID will be used, after having been converted into a string though.
+In fact, it is probably better to not supply an ID when creating a new access object, since this will ensure a randomly and unique GUID
+becomes its ID.
 
 
 ## Rolling your own authorization/authentication system
@@ -530,10 +533,11 @@ implementation. Among other things, it persists all of its access objects, users
 file on disc. If you have thousands of users, hundreds of roles, with dozens of access objects each,
 and each user having dozens of settings each - You might for all practical concerns risk to have the 
 system simply not scale, since it's based upon a single file, among other things. In addition, the 
-roles are simply strings, etc.
+roles are simple strings, etc.
 
 So even though it is highly secure, it probably doesn't scale into _"infinity"_. If you want to however,
 replacing it with your own access system, is probably quite easy. Have this in mind as you
-extens your system. I'd probably use it by default if I were you, for later to replace it if
+extend your system. I'd probably use it by default if I were you, for later to replace it if
 the needs arrives - Which you can probably easily see, if as you start adding users, settings, 
-access, and role objects to the system, and it stops scaling as your _"auth.hl"_ file grows.
+access, and role objects to the system - The system as a whole starts becoming more sluggish and
+less responsive, due to your memory simply having been consumed by your _"auth.hl"_ file.

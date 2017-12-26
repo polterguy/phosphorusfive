@@ -565,9 +565,13 @@ namespace p5.auth.helpers
 
                         // Sanity checking.
                         var val = idxAccess.GetExValue (context, "");
-                        if (string.IsNullOrEmpty (val))
-                            throw new LambdaException ("Each access right must have a value", idxAccess, context);
-                        if (access.Children.Any (ix => ix.Name == idxAccess.Name && ix.Get (context, "")  == val))
+                        if (string.IsNullOrEmpty (val)) {
+
+                            // Creating a new random GUID as the ID of our access object.
+                            val = Guid.NewGuid ().ToString ();
+                            idxAccess.Value = val;
+                        }
+                        if (access.Children.Any (ix => ix.Get (context, "")  == val))
                             throw new LambdaException ("Each access right must have a unique name/value combination, and there's already another access right with the same name/value combination in your access list", idxAccess, context);
                         access.Add (idxAccess.Clone ()); 
                     }

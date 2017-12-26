@@ -191,8 +191,19 @@ namespace p5.io.authorization.helpers
         private static bool UserHasReadAccessToFile (ApplicationContext context, string path)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
-            if (path.StartsWithEx ("/users/") && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
+            if (path.StartsWithEx ("/users/") && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
+
+                // Checking if user tries to read from a publicly available file from another user.
+                var entities = path.Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
+                if (entities.Length >= 4 && entities [2] == "documents" && entities [3] == "public") {
+
+                    // Publicly shared file from another user.
+                    return true;
+                }
+
+                // Private file.
                 return false;
+            }
 
             // Verify all database files are safe.
             var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
@@ -219,10 +230,19 @@ namespace p5.io.authorization.helpers
         private static bool UserHasReadAccessToFolder (ApplicationContext context, string path)
         {
             // Shielding other user's folders here.
-            if (path.StartsWithEx ("/users/") && 
-                path.Length > "/users/".Length && 
-                !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
+            if (path.StartsWithEx ("/users/") && path != "/users/" && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
+                
+                // Checking if user tries to read from a publicly available file from another user.
+                var entities = path.Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
+                if (entities.Length == 2 || (entities.Length == 3 && entities [2] == "documents") || (entities.Length >= 4 && entities [2] == "documents" && entities [3] == "public")) {
+
+                    // Publicly shared folder from another user.
+                    return true;
+                }
+
+                // Private file.
                 return false;
+            }
 
             // Verify all database folders are safe.
             var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");

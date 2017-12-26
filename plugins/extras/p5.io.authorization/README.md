@@ -17,7 +17,7 @@ an exception, if the currently logged in user does not have access to reading or
 writing to some specific folder or path. The default access is as follows.
 
 * Root account(s) have access to reading and writing to all files
-* Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users' files
+* Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users' files. The exception is reading files in other users' _"public"_ folder and su-folders
 * Non root accounts only have write access to their own files, in addition to all _"/common/"_ files
 
 ## Overriding file IO access
