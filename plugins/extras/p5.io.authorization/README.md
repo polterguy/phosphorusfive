@@ -86,6 +86,8 @@ some URL or something similar. The asterix (*) above, implies _"all roles"_, whi
 for the above example denies all roles access to _"/foo/"_, for then to afterwards
 explicitly allow access to the developer role, through its **[developer]** argument.
 
+The **[p5.auth.has-access-to-path]** event is implemented and documented in [p5.auth](/plugins/extras/p5.auth).
+
 ## Rolling your own authorization logic
 
 The file IO access rights of Phosphorus Five, is consciously kept naive and
