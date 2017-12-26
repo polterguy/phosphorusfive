@@ -26,19 +26,19 @@ This allows any user to publicly share a file, with read-only access, such that 
 by putting the file in his or hers _"~/documents/public/"_ folder. In addition, it allows a user to share a file, such that
 any user can both read and modify the file, by putting the file somewhere within the _"/common/"_ folder.
 
-Files in any of the _"/documents/public/"_ folders (both _"/common"_ and _"/users/"_) are possible to access, with a direct link, for any random
+Files in any of the _"/documents/public/"_ folders (both _"/common"_ and _"/users/"_) are possible to download, with a direct link, for any random
 visitor, having a direct link to the file. This is not true for files in the _"/common/documents/private/"_ folder, even though
 the files becomes both readable, and possible to edit, by any logged in user in the system.
 
-Notice, whether or not a file is accessible with a direct link, over HTTP, also depends upon the setup
+**Notice**, whether or not a file is accessible with a direct link, over HTTP, also depends upon the setup
 of your web server, and how it chooses to serve files and folders.
 
 ## Overriding file IO access
 
-One or multiple roles can explicitly be given write access, and/or denied read access,
-to some specific file or folder. This must be done through creating an access object
-by invoking **[p5.auth.access.add]** from p5.auth. If you'd like to prevent all roles, 
-except the _"developer"_ role, to read from any files beneath some _"/foo/"_ folder 
+Besides from the above, one or multiple roles can explicitly be given write access, 
+and/or denied read access, to some specific file or folder. This must be done by creating 
+an access object, by invoking **[p5.auth.access.add]** from p5.auth. If you'd like to prevent 
+all roles, except the _"developer"_ role, to read from any files beneath some _"/foo/"_ folder 
 for instance - You could accomplish something like that with the following code.
 
 ```
@@ -70,7 +70,14 @@ The important parts above, is the
 You can also deny for instance a role to read/write from a folder such as for instance _"/foo/"_,
 yet still give the same role access to read/write from for instance _"/foo/bar/"_ or _"/foo/bar.md"_.
 This would deny a user to read/write from a folder in general, while opening up sub parts
-of that folder for read/write access to the same role.
+of that folder for read/write access to the same role. Notice though, the user cannot
+list files in a folder he doesn't have access to though, so the above would require him
+to know the exact path to the file.
+
+Also notice, that even though you can override access rights to most folders on
+disc, you cannot override access rights to anything inside of _"/common/"_ or _"/users/"_.
+In addition, it is impossible to override access rights to both web.config, auth.hl,
+and the _"/db/"_ folder.
 
 Internally this project will use the **[p5.auth.has-access-to-path]** Active Event
 to determine these overridden access rights, which is a helper event that can be used
