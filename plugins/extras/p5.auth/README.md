@@ -2,8 +2,9 @@
 ===============
 
 This folder contains the Active Events related to users and roles management. It allows you to create new users and edit existing users,
-and associate roles with them. All users are stored in the _"auth.hl"_ file at the root of p5.webapp folder, but this can be overridden 
-in your app/web.config file. Passwords are stored as salted hashed values to increase security. To create a new user, you can use the following code.
+and associate roles with them - In addition to creating _"access objects"_, which determines access to some resource, according to a user's
+role. All users are stored in the _"auth.hl"_ file at the root of p5.webapp folder, but this can be overridden in your app/web.config file.
+Passwords are stored as salted hashed values to increase security. To create a new user, you can use the following code.
 
 ```
 p5.auth.users.create:john-doe
