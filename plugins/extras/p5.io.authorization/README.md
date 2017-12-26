@@ -29,7 +29,7 @@ visitor, having a direct link to the file. This is not true for files in the _"/
 the files becomes both readable, and possible to edit, by any logged in user in the system.
 
 Notice, whether or not a file is accessible with a direct link, over HTTP, also depends upon the setup
-of your web server.
+of your web server, and how it chooses to serve files and folders.
 
 ## Overriding file IO access
 
