@@ -45,6 +45,9 @@ the _"~/documents/public/"_ folder(s), while protected files, into the _"~/docum
 If you wish to create files that are accessible to all users of your system, you should put these files in your _"/p5.webapp/common/"_ folder, which is
 accessible to all users in your system.
 
+To understand the details of how different roles have access to, or is denied access to, specific files or folders, you might
+want to check out the documentation for [p5.io.authorization](/plugins/extras/p5.io.authorization).
+
 ## Editing users
 
 To edit a user, use the **[p5.auth.users.edit]** Active Event. To change the role and password of our _"john-doe"_ user from above, you could do something like
