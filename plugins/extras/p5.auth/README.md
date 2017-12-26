@@ -27,8 +27,9 @@ Passwords in Phosphorus Five is not validated in any ways in regards to strength
 for instance _"x"_ or _"123"_ as your user's password. These are obviously not very good passwords. However, to avoid creating false security, by adding
 constraints, that new research has shown us are actually **decreasing entropy** of passwords - I have chosen to avoid all forms of _"password strength requirements"_, 
 since this according to new research, actually has shown us that that it results in passwords with **lower entropy**, than if we allow users to create any 
-passwords they want to create. You are of course free to add any constraints you wish in forms and such, where you ask your users to provide new passwords
-for their accounts though.
+passwords they want to create. This allows a user to create a password such as for instance _"ILoveMyDogBecauseItRuns4MeAndU2"_ - Which actually has a 
+suprisingly large amount of entropy, compared to e.g. _"xY$€%4qW"_ You are of course free to add any constraints you wish in forms and such, where you 
+ask your users to provide new passwords for their accounts though.
 
 ## Users and your filesystem
 
