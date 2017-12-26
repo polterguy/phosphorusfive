@@ -122,7 +122,7 @@ namespace p5.io.authorization.helpers
             if (context.Ticket.Role != "root") {
 
                 // Making sure we do a lowers comparison.
-                if (!UserHasReadAccessToFolder (context, foldername.ToLowerInvariant ()))
+                if (!UserHasWriteAccessToFolder (context, foldername.ToLowerInvariant ()))
                     throw new LambdaException (
                         string.Format ("Folder '{0}' is off limits", foldername),
                         stack,
@@ -199,8 +199,8 @@ namespace p5.io.authorization.helpers
             if (path.StartsWithEx (dbPath))
                 return false;
             
-            // Verify *.config is safe.
-            if (Path.GetExtension (path) == ".config")
+            // Verify web.config is safe.
+            if (path == "/web.config")
                 return false;
             
             // Verifying "auth" file is safe.
