@@ -241,7 +241,9 @@ p5.auth.access.add
     your-namespace.do-some-action.allow:on-some-object
 ```
 
-Whatever the above implies, is up to you to decide for yourself though.
+Whatever the above implies, is up to you to decide for yourself though. The access object really only has one restriction, which is that
+the value parts of each access object you create, must have a unique name - Otherwise deleting a single specified access object, would
+be impossible. You can of course create these names any ways you see fit of course.
 
 
 ## Rolling your own authorization/authentication system
