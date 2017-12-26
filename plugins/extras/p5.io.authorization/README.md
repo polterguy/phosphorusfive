@@ -7,10 +7,10 @@ determine if a user has access to reading and modifying some folder or file on d
 of 4 private Active Events, which is invoked by most other parts of the system, whenever 
 a file should be read, and/or saved.
 
-* __[.p5.io.authorize.read-file]__
-* __[.p5.io.authorize.modify-file]__
-* __[.p5.io.authorize.read-folder]__
-* __[.p5.io.authorize.modify-folder]__
+* __[.p5.io.authorize.read-file]__ - Verifies read access to file
+* __[.p5.io.authorize.modify-file]__ - Verifies write access to file
+* __[.p5.io.authorize.read-folder]__ - Verifies read access to folder
+* __[.p5.io.authorize.modify-folder]__ - Verifies modify access to folder
 
 The above four Active Events are invoked by other parts of the system, and will throw
 an exception, if the currently logged in user does not have access to reading or
@@ -18,7 +18,7 @@ writing to some specific folder or path. The default access is as follows.
 
 * Root account(s) have access to reading and writing to all files
 * Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users files
-* Non root accounts only have write access to their own files, in addition to all common files
+* Non root accounts only have write access to their own files, in addition to all _"/common/"_ files
 
 ## Overriding file IO access
 
@@ -50,5 +50,24 @@ p5.auth.access.add
 Internally this project will use the **[p5.auth.has-access-to-path]** Active Event
 to determine these overridden access rights, which is a helper event that can be used
 also in your own code, to for instance determine if some user has access to for instance
-some URL or something similar.
+some URL or something similar. The asterix (*) above, implies _"all roles"_, which
+for the above example denies all roles access to _"/foo/"_, for then to afterwards
+explicitly allow access to the developer role, through its **[developer]** argument.
 
+## Rolling your own
+
+Notice, the file IO access rights of Phosphorus Five, is consciously kept naive and
+simple, to make it easily understood. This might not fit your needs, and you may
+want to have more features in your own projects. If that is so, then you can easily
+replace this project with your own, as long as you implement all the above 4 Active
+Events.
+
+Most parts of Phosphorus Five that tries to access the file system directly,
+will invoke the relevant Active Events above, to determine if the currently logged in user
+has read/write access to whatever file he is trying to read from or write to. This
+implies that as long as you are able to implement your own versions of the Active Events
+mentioned at the top of this document, and throw an exception if user is not
+authorized, it will automatically _"plugin"_ to all existing logic.
+
+You might also want to check out the [p5.auth](/plugins/extras/p5.auth) project,
+for more details about roles and access rights in Phosphorus Five in general.
