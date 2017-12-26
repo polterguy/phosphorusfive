@@ -17,8 +17,15 @@ an exception, if the currently logged in user does not have access to reading or
 writing to some specific folder or path. The default access is as follows.
 
 * Root account(s) have access to reading and writing to all files
-* Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users' files. The exception is reading files in other users' _"public"_ folder and su-folders
+* Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users' files. The exception is reading files in other users' _"public"_ folder and sub-folders
 * Non root accounts only have write access to their own files, in addition to all _"/common/"_ files
+
+This allows any user to publicly share a file, with read-only access, such that all other users can read it but not modify it,
+by putting the file in his or hers _"~/documents/public/"_ folder. In addition, it allows a user to share a file, such that
+any user can both read and modify the file, by putting the file somewhere within the _"/common/"_ folder.
+
+Files in any of the _"/public/"_ folders (both common and private) are possible to access, with a direct link, for any random
+visitor, having a direct link to the file. This is not true for files in the _"/common/documents/private/"_ folder.
 
 ## Overriding file IO access
 
