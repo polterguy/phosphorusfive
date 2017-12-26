@@ -208,60 +208,61 @@ namespace p5.auth.helpers
          */
         public static void CreateUser (ApplicationContext context, Node args)
         {
+            // Retrieving arguments.
             string username = args.GetExValue<string> (context);
             string password = args.GetExChildValue<string> ("password", context);
             string role = args.GetExChildValue<string> ("role", context);
 
-            // Making sure [password] never leaves method, in case of exceptions
+            // Making sure [password] never leaves method.
             args.FindOrInsert ("password").Value = "xxx";
 
-            // Basic syntax checking
+            // Basic sanity check.
             if (string.IsNullOrEmpty (username) || string.IsNullOrEmpty (password) || string.IsNullOrEmpty (role))
                 throw new LambdaException (
                     "User must have username as value, [password] and [role] at the very least",
                     args,
                     context);
 
-            // Verifying username is valid, since we'll need to create a folder for user
+            // Verifying username is valid, since we'll need to create a folder for user.
             VerifyUsernameValid (username);
 
             // Retrieving system salt before we enter write lock.
             var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
 
-            // Then salting password with user salt, before salting it with system salt
+            // Then salting user's password.
             var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
-            // Locking access to password file as we create new user object
+            // Locking access to password file as we create new user object.
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
 
-                    // Checking if user exist from before
+                    // Checking if user exist from before.
                     if (authFile ["users"] [username] != null)
                         throw new LambdaException (
                             "Sorry, that [username] is already taken by another user in the system",
                             args,
                             context);
 
-                    // Adding user
+                    // Adding user.
                     authFile ["users"].Add (username);
 
-                    // Creates a salt and password for user
+                    // Creates a salt and password for user.
                     authFile ["users"].LastChild.Add ("password", userPasswordFingerprint);
 
-                    // Adding user to specified role
+                    // Adding user to specified role.
                     authFile ["users"].LastChild.Add ("role", role);
 
-                    // Adding all other specified objects to user
+                    // Adding all other specified objects to user.
                     foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
 
-                        // Only adding nodes with some sort of actual value
+                        // Only adding nodes with some sort of actual value.
                         if (idxNode.Value != null || idxNode.Count > 0)
                             authFile ["users"].LastChild.Add (idxNode.Clone ());
                     }
                 });
 
-            // Creating newly created user's directory structure
+            // Creating newly created user's directory structure.
             CreateUserDirectory (context.RaiseEvent (".p5.core.application-folder").Get<string> (context), username);
         }
 
@@ -683,7 +684,7 @@ namespace p5.auth.helpers
         static void VerifyUsernameValid (string username)
         {
             foreach (var charIdx in username) {
-                if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf (charIdx) == -1)
+                if ("abcdefghijklmnopqrstuvwxyz1234567890_-".IndexOf (charIdx) == -1)
                     throw new SecurityException ("Sorry, you cannot use character '" + charIdx + "' in username");
             }
         }

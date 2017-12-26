@@ -33,6 +33,15 @@ This allows a user to create a password such as for instance _"ILoveMyDogBecause
 compared to for instance _"xY$€%4qW"_. You are of course free to add any constraints you wish in forms and such, where you ask your users to provide new 
 passwords for their accounts though.
 
+## About usernames
+
+All users will get their own home folder. This implies creating a folder, with the same name as the username of the user. This restricts the characters
+you are legally allowed to use in usernames to the characters allowed when creating a folder on disc of all the supported operating systems that Phosphorus Five
+supports. For simplicity reasons, and to avoid problems with these folders, we have restricted usernames to only legally be allowed to contain the characters
+a-z, -, _ and the numbers 0-9. This is to avoid situations where we have users which only differs by for instance one uppercase character towards another user,
+which would create two distinct different folders on Linux and Mac, while reference the same folder on Windows. To avoid such problems, we only allow lowercase
+latin characters a-z, the numbers 0-9, "_" and "-" characters as legal characters in usernames.
+
 ## Users and your filesystem
 
 When you create a new user, a new folder structure will automatically be created for your user, beneath the _"/core/p5.webapp/users/"_ folder. This is the user's
@@ -101,7 +110,7 @@ p5.auth.users.edit:john-doe
 
 If you evaluate the above Hyperlambda, then both **[some-data]** and **[some-complex-data]** will be associated with the _"john-doe"_ user as user settings. To
 retrieve the settings for the currently logged in user, you can use the **[p5.auth.my-settings.get]** Active Event. The user's settings are a convenient place to
-store small pieces of user related data, which are unique to each user in your system, such as name, email address, twitter handler, etc.
+store small pieces of user related data, which are unique to each user in your system, such as name, email address, physical address, etc.
 
 You can also change your currently logged in user's settings, with the following code.
 
@@ -236,7 +245,8 @@ But can also be used to for instance verify that a user has access to some URL, 
 with the same _"tree/graph"_ semantics as URLs and file/folder paths.
 
 The access objects is in such a regards extendible, and allows you to create your own access objects, necessary to implement
-authorization for your own applications. To see an example of how to do this, check out for instance the p5.io.authorization project, and its code.
+authorization for your own applications. To see an example of how to do this, check out for instance 
+the [p5.io.authorization](/plugins/extras/p5.io.authorization) project, and its code.
 To create an access object, you could do something such as the following.
 
 ```
@@ -357,7 +367,7 @@ delete settings for other applications besides the one(s) you're creating yourse
 first, then delete your app's settings from its return value, add the updated settings for your app, and pass in all settings
 from your get invocation to your set invocation, to make sure you don't accidentally delete another app's settings.
 
-**Warning** - The next piece of code, will delete your user's settings. To understand why, read the previous paragraph.
+**Warning** - The next piece of code, will delete your user's existing settings. To understand why, read the previous paragraph.
 
 ```
 p5.auth.my-settings.set
