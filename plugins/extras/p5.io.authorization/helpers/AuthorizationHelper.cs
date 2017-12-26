@@ -22,8 +22,6 @@
  */
 
 using System.IO;
-using System.Linq;
-using System.Globalization;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -177,59 +175,13 @@ namespace p5.io.authorization.helpers
          */
         private static bool CheckAccessRights (ApplicationContext context, string path, string operation, bool defaultValue)
         {
-            // Creating our default access right.
-            var hasAccess = defaultValue;
-
-            // Retrieving all access right objects.
-            var nodeResult = context.RaiseEvent ("p5.auth.access.list", new Node ());
-
-            // Checking if we have any access objects at all.
-            if (nodeResult.Count > 0) {
-
-                // Getting children as list, such that we can more easily modify it.
-                var access = nodeResult.Children.ToList ();
-
-                // Removing all access right objects not relevant to current user, current path, and current operation type.
-                access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
-                access.RemoveAll (ix => ix ["p5.io.allow-" + operation] == null && ix ["p5.io.deny-" + operation] == null);
-                access.RemoveAll (ix => !path.StartsWithEx (ix [0].Get<string> (context)));
-
-                // Checking if we still have some access right object(s).
-                if (access.Count > 0) {
-
-                    // Sorting remaining access rights on their value.
-                    access.Sort (delegate (Node lhs, Node rhs) {
-                        
-                        // First doing a path comparison.
-                        var retVal = string.Compare (lhs [0].Get<string> (context), rhs [0].Get<string> (context), true, CultureInfo.InvariantCulture);
-                        
-                        /*
-                         * If the paths were similar, we make sure all asterix (*) roles are sorted as before any special role rights.
-                         * We do this such that a specifically mentioned role can override the value for an asterix role declaration.
-                         */
-                        if (retVal == 0) {
-                            if (lhs.Name == "*" && rhs.Name != "*")
-                                retVal = -1;
-                            else if (lhs.Name != "*" && rhs.Name == "*")
-                                retVal = 1;
-                        }
-                        return retVal;
-                    });
-
-                    /*
-                     * Looping through any remaining access rights, to see if that modifies our return value.
-                     */
-                    foreach (var idxAccess in access) {
-                        if (idxAccess [0].Name == "p5.io.allow-" + operation)
-                            hasAccess = true;
-                        else if (idxAccess [0].Name == "p5.io.deny-" + operation)
-                            hasAccess = false;
-                    }
-                }
-            }
+            // Invoking event responsible for determining if user has access to path and returning results to caller.
+            var args = new Node ("", defaultValue);
+            args.Add ("path", path);
+            args.Add ("filter", "p5.io." + operation + "-file");
 
             // Returns access to caller.
-            return hasAccess;
+            return context.RaiseEvent ("p5.auth.has-access-to-path", args).Get<bool> (context);
         }
         
         /*
