@@ -1,12 +1,18 @@
 
 /*
- * Desktop widget file for server management.
+ * Desktop widget.
  */
 container
   element:a
   class:desktop-app shaded rounded air-inner
-  title:Bazar
+  title:The Bazar is your own personal 'App Store'
   widgets
     span
       class:desktop-app-name
-      innerValue:@"<span class=""icon-gift desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.7rem;"">Bazar</span>"
+      widgets
+        literal
+          element:span
+          class:icon-gift desktop-app-icon
+        span
+          class:desktop-app-text
+          innerValue:Bazar
