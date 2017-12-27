@@ -22,14 +22,10 @@
  */
 
 using System;
-using System.IO;
-using System.Diagnostics;
 using p5.exp;
 using p5.core;
-using p5.io.common;
-using p5.exp.exceptions;
 
-namespace p5.io.file
+namespace p5.lambda.keywords.extras
 {
     /// <summary>
     ///     Helper to retrieve platform type (Linux/Mac, etc)
@@ -42,9 +38,8 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "platform")]
-        [ActiveEvent (Name = "p5.io.file.platform")]
-        public static void p5_io_file_platform (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.system.platform")]
+        public static void p5_system_platform (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, false)) {
@@ -57,9 +52,8 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "normalize-string")]
-        [ActiveEvent (Name = "p5.io.file.normalize-string")]
-        public static void p5_io_file_normalize_string (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.system.platform.normalize-string")]
+        public static void p5_system_platform_normalize_string (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, false)) {

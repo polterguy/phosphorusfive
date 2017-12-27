@@ -22,14 +22,12 @@
  */
 
 using System;
-using System.IO;
 using System.Diagnostics;
 using p5.exp;
 using p5.core;
-using p5.io.common;
 using p5.exp.exceptions;
 
-namespace p5.io.file
+namespace p5.lambda.keywords.extras
 {
     /// <summary>
     ///     Executes one or more file(s).
@@ -41,15 +39,14 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "execute-file")]
-        [ActiveEvent (Name = "p5.io.file.execute")]
-        public static void p5_io_file_execute (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.system.shell.execute-file")]
+        public static void p5_system_shell_execute_file (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, true)) {
 
                 // Getting root folder.
-                var rootFolder = Common.GetRootFolder (context);
+                var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
                 // Checking if we should wait for process to exit, or simply create a "daemon".
                 var waitForExit = e.Args.GetExChildValue ("wait-for-exit", context, true);
@@ -58,7 +55,7 @@ namespace p5.io.file
                 foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Retrieving actual system path.
-                    var file = Common.GetSystemPath (context, idxFile);
+                    var file = GetSystemPath (context, idxFile);
 
                     // Retrieving current folder, defaulting to folder where file being executed is.
                     var workingFolder = rootFolder + e.Args.GetExChildValue (
@@ -124,8 +121,16 @@ namespace p5.io.file
             } else {
 
                 // "Daemon" mode.
-                return "";
+                return null;
             }
+        }
+
+        /*
+         * Returns the "system path" unrolled, replacing for instance "~" and "@SYS42" in the beginning of path.
+         */
+        private static string GetSystemPath (ApplicationContext context, string path)
+        {
+            return context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
         }
     }
 }

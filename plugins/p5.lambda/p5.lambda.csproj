@@ -53,6 +53,8 @@
     <Compile Include="keywords\core\Switch.cs" />
     <Compile Include="keywords\core\Break.cs" />
     <Compile Include="keywords\core\Continue.cs" />
+    <Compile Include="keywords\extras\Shell.cs" />
+    <Compile Include="keywords\extras\Platform.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
