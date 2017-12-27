@@ -58,12 +58,13 @@ for-each:x:/@list-folders/*
    */
   if
     p5.auth.has-access-to-path:bool:false
-      filter:p5.io.read-file
+      filter:p5.module
       path:x:/@_dp/#?name
     not
 
     /*
      * Removing module, since user doesn't have access to it.
+     * This prevents the logic further down from creating a desktop icon for modules the user doesn't have access to.
      */
     set:x:/@_dp/#
 

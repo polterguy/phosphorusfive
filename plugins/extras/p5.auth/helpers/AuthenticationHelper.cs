@@ -582,6 +582,10 @@ namespace p5.auth.helpers
                         if (idxAccess.Count == 0)
                             throw new LambdaException ("There's no actual content in your access object", idxAccess, context);
 
+                        // Verifying that caller doesn't try to add some access object which is identical to another object we have from before.
+                        if (access.Children.Any (ix => ix.Name == idxAccess.Name && ix [0].Name == idxAccess [0].Name && ix [0].Get<string> (context) == idxAccess [0].Get<string> (context)))
+                            throw new LambdaException ("That access object already exists from before", idxAccess, context);
+
                         // Adding currently iterated access object.
                         access.Add (idxAccess.Clone ()); 
                     }
@@ -630,6 +634,10 @@ namespace p5.auth.helpers
                         // Sanity checking access object.
                         if (idxAccess.Count == 0)
                             throw new LambdaException ("There's no actual content in your access object", idxAccess, context);
+                        
+                        // Verifying that caller doesn't try to add two duplicate access objects.
+                        if (access.Children.Any (ix => ix.Name == idxAccess.Name && ix [0].Name == idxAccess [0].Name && ix [0].Get<string> (context) == idxAccess [0].Get<string> (context)))
+                            throw new LambdaException ("Duplicate access objects found", idxAccess, context);
 
                         // Adding currently iterated access object.
                         access.Add (idxAccess.Clone ()); 

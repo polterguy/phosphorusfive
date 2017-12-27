@@ -139,7 +139,7 @@ create-event:p5.web.load-ui
        */
       if
         p5.auth.has-access-to-path:bool:false
-          filter:p5.io.read-file
+          filter:p5.module
           path:/modules/{0}/launch.hl
             :x:/@split/0?name
         not

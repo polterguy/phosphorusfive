@@ -277,7 +277,7 @@ namespace p5.io.authorization.helpers
         private static bool UserHasWriteAccessToFolder (ApplicationContext context, string path)
         {
             // Checking if this is user's file.
-            if (path.StartsWithEx ("/users/") && path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Role)))
+            if (path.StartsWithEx ("/users/") && path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
                 return true;
             
             // Checking if this is a common folder.
