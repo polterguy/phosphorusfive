@@ -558,7 +558,7 @@ namespace p5.auth.helpers
                     if (authFile ["access"] == null)
                         authFile.Add ("access");
 
-                    // Iterating all access objects passed in by caller.
+                    // Iterating all access objects passed in by caller, and adding them to root access node.
                     var access = authFile ["access"];
                     var newAccessRights = XUtil.Iterate<Node> (context, args).ToList ();
                     foreach (var idxAccess in newAccessRights) {
@@ -570,9 +570,56 @@ namespace p5.auth.helpers
                             // Creating a new random GUID as the ID of our access object.
                             val = Guid.NewGuid ().ToString ();
                             idxAccess.Value = val;
+
+                        } else {
+
+                            // Verifying access ID is unique.
+                            if (access.Children.Any (ix => ix.Get (context, "") == val))
+                                throw new LambdaException ("Each access right must have a unique name/value combination, and there's already another access right with the same name/value combination in your access list", idxAccess, context);
                         }
-                        if (access.Children.Any (ix => ix.Get (context, "")  == val))
-                            throw new LambdaException ("Each access right must have a unique name/value combination, and there's already another access right with the same name/value combination in your access list", idxAccess, context);
+                        access.Add (idxAccess.Clone ()); 
+                    }
+                });
+        }
+        
+        /*
+         * Returns all access objects for system.
+         */
+        public static void SetAccess (ApplicationContext context, Node args)
+        {
+            // Locking access to password file as we create new access object.
+            AuthFile.ModifyAuthFile (
+                context,
+                delegate (Node authFile) {
+
+                    // Verifying access rights exists.
+                    if (authFile ["access"] == null)
+                        authFile.Add ("access");
+
+                    // Retrieving access root node.
+                    var access = authFile ["access"];
+
+                    // Clearing all previous access objects.
+                    access.Clear ();
+
+                    // Iterating all access objects supplied by caller, adding them to our access node.
+                    var newAccessRights = XUtil.Iterate<Node> (context, args).ToList ();
+                    foreach (var idxAccess in newAccessRights) {
+
+                        // Sanity checking.
+                        var val = idxAccess.GetExValue (context, "");
+                        if (string.IsNullOrEmpty (val)) {
+
+                            // Creating a new random GUID as the ID of our access object.
+                            val = Guid.NewGuid ().ToString ();
+                            idxAccess.Value = val;
+
+                        } else {
+
+                            // Verifying access ID is unique.
+                            if (access.Children.Any (ix => ix.Get (context, "") == val))
+                                throw new LambdaException ("Each access right must have a unique name/value combination, and there's already another access right with the same name/value combination in your access list", idxAccess, context);
+                        }
                         access.Add (idxAccess.Clone ()); 
                     }
                 });

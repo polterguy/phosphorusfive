@@ -79,6 +79,21 @@ namespace p5.auth
         }
         
         /// <summary>
+        ///     Deletes specified access rights in system.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.auth.access.set-all")]
+        public static void p5_auth_access_set_all (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to execute a protected operation", e.Args, context);
+            using (new ArgsRemover (e.Args, true)) {
+                AuthenticationHelper.SetAccess (context, e.Args);
+            }
+        }
+        
+        /// <summary>
         ///     Verifies that user has access to some sort of path.
         /// </summary>
         /// <param name="context">Application Context</param>

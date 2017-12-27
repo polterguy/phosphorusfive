@@ -93,7 +93,7 @@ The **[p5.auth.has-access-to-path]** event is implemented and documented in [p5.
 The file IO access rights of Phosphorus Five, is consciously kept naive and
 simple, to make it easily understood. This might not fit your needs, and you may
 want to have more features in your own projects. If that is so, then you can easily
-replace this project with your own, as long as you implement all the above 4 Active
+replace this project with your own, as long as you implement all of the above 4 Active
 Events.
 
 Most parts of Phosphorus Five that tries to access the file system directly on behalf of some user,

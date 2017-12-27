@@ -271,6 +271,9 @@ And in fact, if you do not supply an explicit name, then a random GUID will be u
 In fact, it is probably better to not supply an ID when creating a new access object, since this will ensure a randomly and unique GUID
 becomes its ID.
 
+Notice, the access object system does not verify that the role or object you try to grant or deny access to actually exists. It
+is quite possible for you, to grant access to a none-existing role, to a none-existing folder.
+
 
 ## Rolling your own authorization/authentication system
 
@@ -478,6 +481,19 @@ you could use something such as the following.
 ```
 p5.auth.access.delete
   user:some-unique-id
+```
+
+### [p5.auth.access.set-all]
+
+Sets the entire access object list, deleting its old values. Can only be invoked by root. This will delete all existing access objects,
+and set the access object list to whatever you supply as arguments.
+
+```
+p5.auth.access.delete
+  user
+    some-action:some-resource
+  another-user
+    some-other-action:some-other-resource
 ```
 
 ### [p5.auth.has-access-to-path]
