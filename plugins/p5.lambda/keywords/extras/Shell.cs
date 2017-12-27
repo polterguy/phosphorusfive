@@ -55,7 +55,15 @@ namespace p5.lambda.keywords.extras
                 foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Retrieving actual system path.
-                    var file = GetSystemPath (context, idxFile);
+                    var file = context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context);
+
+                    // Making sure we have access rights to execute file, making sure we default access to false.
+                    var node = new Node ("", false);
+                    node.Add ("filter", "p5.system.platform.execute-file");
+                    node.Add ("path", file);
+                    var access = context.RaiseEvent ("p5.auth.has-access-to-path", node).Get<bool> (context);
+                    if (!access)
+                        throw new LambdaException (string.Format ("You don't have access to execute file '{0}'", file), e.Args, context);
 
                     // Retrieving current folder, defaulting to folder where file being executed is.
                     var workingFolder = rootFolder + e.Args.GetExChildValue (
@@ -123,14 +131,6 @@ namespace p5.lambda.keywords.extras
                 // "Daemon" mode.
                 return null;
             }
-        }
-
-        /*
-         * Returns the "system path" unrolled, replacing for instance "~" and "@SYS42" in the beginning of path.
-         */
-        private static string GetSystemPath (ApplicationContext context, string path)
-        {
-            return context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
         }
     }
 }
