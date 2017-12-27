@@ -1,0 +1,81 @@
+﻿
+/*
+ * Creates our plugin Active Event, that creates a login/logout button on all modules with a toolbar.
+ */
+create-event:desktop.plugins.post.create-logout-button
+
+  /*
+   * Trying to find the first widget on page with a CSS class containing the text "toolbar".
+   */
+  p5.web.widgets.find-first-like
+    class:toolbar
+  if:x:/@p5.web.widgets.find-first-like/*/*?value
+
+    /*
+     * Inserting our widget as the second last widget into our "toolbar", if possible.
+     */
+    p5.web.widgets.get-children:x:/@p5.web.widgets.find-first-like/*/0?value
+
+    /*
+     * Checking if our toolbar actually had any children at all.
+     */
+    if:x:/@p5.web.widgets.get-children/*/*
+
+      /*
+       * Toolbar has children, adding our button as the second last button within it.
+       */
+      eval-x:x:/+/*/*
+      add:x:/././*/create-literal-widget
+        src
+          before:x:/@p5.web.widgets.get-children/*/0/-?value
+
+    else
+
+      /*
+       * The toolbar had no children, simply appending button into it.
+       */
+      eval-x:x:/+/*/*
+      add:x:/././*/create-literal-widget
+        src
+          parent:x:/@p5.web.widgets.find-first-like/*/*?value
+
+    /*
+     * Creating our button widget.
+     */
+    create-literal-widget
+      element:button
+      style:"margin-bottom:0;"
+      oninit
+
+        /*
+         * Checking if user is already logged in, and creatng correct logic accordingly.
+         */
+        whoami
+        if:x:/@whoami/*/default?value
+
+          /*
+           * Creating login logic.
+           */
+          set-widget-property:x:/../*/_event?value
+            title:Login
+            innerValue:@"<span class=""icon-key""></span>"
+
+        else
+
+          /*
+           * Creating logout logic.
+           */
+          set-widget-property:x:/../*/_event?value
+            title:Login
+            innerValue:@"<span class=""icon-switch""></span>"
+
+      onclick
+
+        /*
+         * Either logging user in, or out, depending upon his current status.
+         */
+        whoami
+        if:x:/@whoami/*/default?value
+          p5.core.login
+        else
+          p5.core.logout

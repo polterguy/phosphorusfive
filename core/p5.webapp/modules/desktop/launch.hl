@@ -130,42 +130,12 @@ create-widget
               class:strip toolbar
               style:"display:inline-block;"
               widgets
-                literal
-                  element:button
-                  oninit
 
-                    /*
-                     * Dislpaying either "login" button or "logout" button, depending upon user's current status.
-                     */
-                    whoami
-                    if:x:/@whoami/*/default?value
+                /*
+                 * This is just a container for optional "plugin buttons", such as for instance the one
+                 * created for logging in and out of Phosphorus Five.
+                 */
 
-                      /*
-                       * User is not logged in.
-                       */
-                      set-widget-property:x:/../*/_event?value
-                        innerValue:@"<span class=""icon-key""></span>"
-                        title:Log in
-
-                    else
-
-                      /*
-                       * User is logged in.
-                       */
-                      set-widget-property:x:/../*/_event?value
-                        innerValue:@"<span class=""icon-switch""></span>"
-                        title:Log out
-
-                  onclick
-
-                    /*
-                     * Either logging user in, or out, depending upon his current status.
-                     */
-                    whoami
-                    if:x:/@whoami/*/default?value
-                      p5.core.login
-                    else
-                      p5.core.logout
     div:desktop-apps
       class:col-100 desktop-apps
       widgets

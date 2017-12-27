@@ -283,6 +283,7 @@
     <None Include="favicon.ico" />
     <None Include="modules\desktop\startup\desktop.uninstall-app.hl" />
     <None Include="modules\bazar\startup\empty-bazar-cache.hl" />
+    <None Include="modules\desktop\startup\desktop.plugins.post.create-logout-button.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
