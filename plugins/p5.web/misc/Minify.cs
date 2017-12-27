@@ -59,16 +59,19 @@ namespace p5.web.ui.misc
         public static void p5_web_css_minify (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
-            using (new ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args, true)) {
 
-                // Retrieves CSS, minifies it, and returning it to caller.
-                var css = e.Args.GetExValue (context, "");
-                var minifier = new Microsoft.Ajax.Utilities.Minifier ();
+                // Iterating through each CSS content supplied, and minifying it, returning the results to caller.
+                foreach (var idxCss in XUtil.Iterate<string> (context, e.Args)) {
 
-                // Turning off ALL comments.
-                var options = new Microsoft.Ajax.Utilities.CssSettings ();
-                options.CommentMode = Microsoft.Ajax.Utilities.CssComment.None;
-                e.Args.Value = minifier.MinifyStyleSheet (css, options);
+                    // Minifying CSS content.
+                    var minifier = new Microsoft.Ajax.Utilities.Minifier ();
+                    var options = new Microsoft.Ajax.Utilities.CssSettings ();
+                    options.CommentMode = Microsoft.Ajax.Utilities.CssComment.None;
+
+                    // Returning minified content to caller.
+                    e.Args.Add ("result", minifier.MinifyStyleSheet (idxCss, options));
+                }
             }
         }
     }

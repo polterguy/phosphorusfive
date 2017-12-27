@@ -10,14 +10,12 @@
 
 
 /*
- * Including main Micro CSS files, and making sure root "cnt" widget 
- * has the "container-fullscreen" CSS class, in addition to that it's empty.
- *
- * Notice, we also include the "Serious" skin at this point.
+ * Including main Micro CSS files, and the serious skin
  */
-p5.web.include-css-file:@MICRO/media/main.css
-p5.web.include-css-file:@MICRO/media/fonts.css
-p5.web.include-css-file:@MICRO/media/skins/serious.css
+micro.page.minify-and-bundle-css-file
+  @MICRO/media/main.css
+  @MICRO/media/fonts.css
+  @MICRO/media/skins/serious.css
 
 
 
@@ -26,7 +24,7 @@ p5.web.include-css-file:@MICRO/media/skins/serious.css
 /*
  * Including main desktop CSS file.
  */
-p5.web.include-css-file:@DESKTOP/media/main.css
+micro.page.minify-and-bundle-css-file:@DESKTOP/media/main.css
 
 
 
