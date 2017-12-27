@@ -120,6 +120,9 @@ namespace p5.auth
                 if (string.IsNullOrEmpty (path))
                     throw new LambdaException ("No [path] supplied", e.Args, context);
 
+                // Making sure we unroll path.
+                path = context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
+
                 // Retrieving all access objects.
                 var node = new Node ();
                 AuthenticationHelper.ListAccess (context, node);
@@ -136,7 +139,9 @@ namespace p5.auth
                     // Removing all access right objects not relevant to current user, current path, and current operation type.
                     access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
                     access.RemoveAll (ix => ix [filter + ".allow"] == null && ix [filter + ".deny"] == null);
-                    access.RemoveAll (ix => !path.StartsWithEx (ix [0].Get<string> (context)));
+
+                    // Notice, to support pats such as "~/xxx" and "@FOO/", we explicitly unroll paths in our access object(s), before doing a comparison for a match.
+                    access.RemoveAll (ix => !path.StartsWithEx (context.RaiseEvent (".p5.io.unroll-path", new Node ("", ix [0].Get<string> (context))).Get<string> (context)));
 
                     // Checking if we still have some access right object(s).
                     if (access.Count > 0) {
