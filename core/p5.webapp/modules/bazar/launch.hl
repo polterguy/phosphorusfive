@@ -43,26 +43,6 @@ micro.widgets.paypal-button.ensure-checkout-js
 
 
 /*
- * Verifying user is logged in with a root account, and if not, 
- * forcing user to login before proceeding.
- */
-whoami
-if:x:/@whoami/*/role?value
-  !=:root
-
-  /*
-   * User is not logged in with a root account, therefor we force him to do just that, and return early,
-   * to avoid evaluation of the rest of the file.
-   */
-  p5.core.login
-    message:You must login with a root account to access the Bazar
-  return
-
-
-
-
-
-/*
  * Checking if this is an upload operation of a zip file, user wants to install as app.
  */
 split:x:/../*/url?value

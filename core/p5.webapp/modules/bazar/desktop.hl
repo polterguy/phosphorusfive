@@ -6,27 +6,6 @@ container
   element:a
   class:desktop-app shaded rounded air-inner
   title:Bazar
-  oninit
-
-    /*
-     * Verifying user is logged in, and if not, deleting widget altogether, and returning early.
-     */
-    whoami
-    if:x:/@whoami/*/role?value
-      !=:root
-
-      /*
-       * User is not logged in, simply deleting entire icon.
-       */
-      delete-widget:x:/../*/_event?value
-      return
-
-    /*
-     * Getting link URL to point correctly.
-     */
-    set-widget-property:x:/../*/_event?value
-      href:/bazar
-
   widgets
     span
       class:desktop-app-name

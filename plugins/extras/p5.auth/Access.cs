@@ -101,36 +101,37 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.has-access-to-path")]
         public static void p5_auth_has_access_to_path (ApplicationContext context, ActiveEventArgs e)
         {
-            // Checking is user is root, at which he has access to everything.
-            if (context.Ticket.Role == "root") {
-                e.Args.Value = true;
-                return;
-            }
-
-            // Retrieving [filter] argument.
-            var filter = e.Args.GetExChildValue<string> ("filter", context);
-            if (string.IsNullOrEmpty (filter))
-                throw new LambdaException ("No [filter] supplied", e.Args, context);
-
-            // Retrieving [path] argument.
-            var path = e.Args.GetExChildValue<string> ("path", context);
-            if (string.IsNullOrEmpty (path))
-                throw new LambdaException ("No [path] supplied", e.Args, context);
-
-            // Retrieving all access objects.
-            AuthenticationHelper.ListAccess (context, e.Args);
-
             // House cleaning.
             using (new ArgsRemover (e.Args, false)) {
+
+                // Checking is user is root, at which he has access to everything.
+                if (context.Ticket.Role == "root") {
+                    e.Args.Value = true;
+                    return;
+                }
+    
+                // Retrieving [filter] argument.
+                var filter = e.Args.GetExChildValue<string> ("filter", context);
+                if (string.IsNullOrEmpty (filter))
+                    throw new LambdaException ("No [filter] supplied", e.Args, context);
+    
+                // Retrieving [path] argument.
+                var path = e.Args.GetExChildValue<string> ("path", context);
+                if (string.IsNullOrEmpty (path))
+                    throw new LambdaException ("No [path] supplied", e.Args, context);
+
+                // Retrieving all access objects.
+                var node = new Node ();
+                AuthenticationHelper.ListAccess (context, node);
                 
                 // Defaulting access to root node's existing value.
                 var hasAccess = e.Args.Get (context, false);
 
                 // Checking if we have any access objects at all.
-                if (e.Args.Count > 0) {
+                if (node.Count > 0) {
 
                     // Getting children as list, such that we can more easily modify it.
-                    var access = e.Args.Children.ToList ();
+                    var access = node.Children.ToList ();
 
                     // Removing all access right objects not relevant to current user, current path, and current operation type.
                     access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
