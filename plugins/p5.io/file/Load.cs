@@ -54,10 +54,17 @@ namespace p5.io.file
 
                         // Text files and binary files are loaded differently.
                         // Text file might for instance be converted automatically.
-                        if (IsTextFile (filename))
+                        if (IsTextFile (filename)) {
+
+                            // Text file of some sort.
                             LoadTextFile (context, e.Args, fullpath, filename);
-                        else
+
+                        } else {
+
+                            // Some sort of binary file (probably).
                             LoadBinaryFile (e.Args, fullpath, filename);
+                        }
+
                     } else {
 
                         // Oops, file didn't exist.
