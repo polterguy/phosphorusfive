@@ -13,6 +13,8 @@
 
 
 /*
+ * TODO: Refactor and remove this logic!
+ *
  * Notice, some modules, such as System42 etc, would want to create their own [p5.web.load-ui] event, at which
  * point the event would already have been created, overriding the default event implementation.
  *
@@ -67,7 +69,8 @@ create-event:p5.web.load-ui
       p5.auth._root-password-is-null
 
     /*
-     * No server salt, or no root password, hence the server needs to be initialized with a server salt, and a root password.
+     * No server salt, or no root password, hence the server needs to be initialized with a server salt, 
+     * and a root password, before we can proceed.
      */
     micro.evaluate.file:@DESKTOP/initialize/initialize-server.hl
 
@@ -98,18 +101,15 @@ create-event:p5.web.load-ui
     else
 
       /*
-       * A specific application was requested, evaluating it's "launch.hl" file.
+       * A specific application was requested, hence evaluating it's "launch.hl" file.
        *
        * Notice, to create some basic URL rewriting support, for all apps, we only use the first part of the URL
        * when determining which app to load. This allows any app to create sub URLs, with its own folders, etc, and
        * then do its own internal mapping, by using the URL itself, which is passed in as [url] into the app's
        * "launch.hl" file.
        *
-       * In addition to that it makes our URL resolver better, not relying upon some specific format, with "/" neither
-       * before nor after the name of the app.
-       *
-       * For instance, to load some sub folder in Sephia Five, the URL could be "/sephia-five/foo/bar", etc ...
-       * However, determining the URL, and doing the actual resolving, is up to the specific application itself, 
+       * For instance, to load some sub folder in Micro, the URL could be "/micro/foo/bar", etc ...
+       * However, determining the URL, and doing the actual resolving, is up to the specific module itself, 
        * and not done by this startup file.
        */
       split:x:/../*/url?value
@@ -130,6 +130,25 @@ create-event:p5.web.load-ui
          */
         p5.web.response.set-status-code:404
         p5.web.echo:Oops 404, the place where URLs go to die!
+        return
+
+      /*
+       * Checking if user has access to module.
+       *
+       * Defaulting access to "false".
+       */
+      if
+        p5.auth.has-access-to-path:bool:false
+          filter:p5.io.read-file
+          path:/modules/{0}/launch.hl
+            :x:/@split/0?name
+        not
+
+        /*
+         * User doesn't have access to this module.
+         */
+        p5.web.response.set-status-code:403
+        p5.web.echo:Oops 403, it doesn't seem that you're allowed to access this URL.
         return
 
       /*

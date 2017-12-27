@@ -51,12 +51,13 @@ list-folders:/modules/
 for-each:x:/@list-folders/*
 
   /*
-   * Checking if user has access to module.
+   * Checking if user has access to module, and if not, we remove the currently iterated folder,
+   * to avoid creating a desktop icon for it.
    *
-   * Defaulting access to "true".
+   * Defaulting access to "false".
    */
   if
-    p5.auth.has-access-to-path:bool:true
+    p5.auth.has-access-to-path:bool:false
       filter:p5.io.read-file
       path:x:/@_dp/#?name
     not
