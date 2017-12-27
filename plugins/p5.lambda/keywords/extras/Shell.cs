@@ -39,8 +39,8 @@ namespace p5.lambda.keywords.extras
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.system.shell.execute-file")]
-        public static void p5_system_shell_execute_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.system.platform.execute-file")]
+        public static void p5_system_platform_execute_file (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, true)) {
