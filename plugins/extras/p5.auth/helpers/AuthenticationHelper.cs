@@ -577,6 +577,12 @@ namespace p5.auth.helpers
                             if (access.Children.Any (ix => ix.Get (context, "") == val))
                                 throw new LambdaException ("Each access right must have a unique name/value combination, and there's already another access right with the same name/value combination in your access list", idxAccess, context);
                         }
+
+                        // Sanity checking access object.
+                        if (idxAccess.Count == 0)
+                            throw new LambdaException ("There's no actual content in your access object", idxAccess, context);
+
+                        // Adding currently iterated access object.
                         access.Add (idxAccess.Clone ()); 
                     }
                 });
@@ -620,6 +626,12 @@ namespace p5.auth.helpers
                             if (access.Children.Any (ix => ix.Get (context, "") == val))
                                 throw new LambdaException ("Each access right must have a unique name/value combination, and there's already another access right with the same name/value combination in your access list", idxAccess, context);
                         }
+                        
+                        // Sanity checking access object.
+                        if (idxAccess.Count == 0)
+                            throw new LambdaException ("There's no actual content in your access object", idxAccess, context);
+
+                        // Adding currently iterated access object.
                         access.Add (idxAccess.Clone ()); 
                     }
                 });
