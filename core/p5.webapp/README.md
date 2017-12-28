@@ -132,5 +132,3 @@ The page values however, are stored in the ViewState, which is stored on the ser
 disappears, if the user navigates to another page, or refreshes his browser.
 
 Most of the above mentioned Active Events are either defined in Global.asax.cs or PhosphorusPage.cs in the "code" folder.
-
-
