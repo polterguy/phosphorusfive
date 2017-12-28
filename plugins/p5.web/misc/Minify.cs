@@ -28,12 +28,12 @@ using p5.core;
 namespace p5.web.ui.misc
 {
     /// <summary>
-    ///     Minifies given JavaScript.
+    ///     Helper to minify JavaScript and CSS.
     /// </summary>
     public static class Minify
     {
         /// <summary>
-        ///     Returns one or more HTTP request header(s)
+        ///     Minifies JavaScript.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -41,17 +41,22 @@ namespace p5.web.ui.misc
         public static void p5_web_js_minify (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
-            using (new ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args, true)) {
 
-                // Retrieves JavaScript, minifies it, and returning it to caller.
-                var js = e.Args.GetExValue (context, "");
-                var minifier = new Microsoft.Ajax.Utilities.Minifier ();
-                e.Args.Value = minifier.MinifyJavaScript (js);
+                // Iterating through each CSS content supplied, and minifying it, returning the results to caller.
+                foreach (var idxCss in XUtil.Iterate<string> (context, e.Args)) {
+
+                    // Minifying CSS content.
+                    var minifier = new Microsoft.Ajax.Utilities.Minifier ();
+
+                    // Returning minified content to caller.
+                   e.Args.Add ("result", minifier.MinifyJavaScript (idxCss));
+                }
             }
         }
 
         /// <summary>
-        ///     Returns one or more HTTP request header(s)
+        ///     Minifies CSS.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
