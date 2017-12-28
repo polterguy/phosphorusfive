@@ -16,6 +16,7 @@ micro.page.minify-and-bundle-css-file
   @MICRO/media/main.css
   @MICRO/media/fonts.css
   @MICRO/media/skins/serious.css
+p5.web.include-css-file:x:/-?value
 
 
 
@@ -25,6 +26,7 @@ micro.page.minify-and-bundle-css-file
  * Including main desktop CSS file.
  */
 micro.page.minify-and-bundle-css-file:@DESKTOP/media/main.css
+p5.web.include-css-file:x:/-?value
 
 
 
