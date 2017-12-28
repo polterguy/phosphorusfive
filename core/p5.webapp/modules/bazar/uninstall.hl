@@ -1,4 +1,3 @@
-
 /*
  * Uninstall file.
  */
@@ -10,5 +9,6 @@
 /*
  * Deleting all relevant Active Events, and that's it.
  */
-vocabulary:bazar.
+delete-event:p5.io.unroll-path.@BAZAR
+vocabulary:~bazar.
 delete-event:x:/-/*?name
