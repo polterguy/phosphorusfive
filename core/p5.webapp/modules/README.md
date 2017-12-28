@@ -5,11 +5,12 @@ This folder contains all the installed applications and modules of Phosphorus Fi
 If you wish to pre-distribute specific modules, and/or apps, this is the folder where you'd like to put these apps. At which point, you could create
 your own _"distribution"_, with whatever apps you'd like to have installed. This is where apps installed through the Bazar are stored.
 
-There are three special files an app optionally could have.
+There are four special files an app optionally could have.
 
 * _"startup.hl"_ - A file which is expected to initialize your app, by creating its events, and/or doing other types of initialization logic.
 * _"launch.hl"_ - A file which would become your app's launcher, allowing the user to launch your app, kind of like the "exe" file or "icon" of your app.
 * _"desktop.hl"_ - A file which is responsible for creating your app's desktop icon.
+* _"uninstall.hl"_ - Evaluated during uninstallation of app, and is expected to perform tasks related to uninstallation, such as deleting app specific Active Events, etc.
 
 All of the above files are optional, but of course, if all of them are omitted, your app probably wouldn't do much. Sephia Five, which is the
 reference implementation of an "app", contains all three files, and can be used as an example of how to create such files, and/or create your
