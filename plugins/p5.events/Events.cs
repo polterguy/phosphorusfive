@@ -241,7 +241,7 @@ namespace p5.events
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (ix => ix.StartsWithEx ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
+                    if (filter.Any (ix => ix.StartsWithEx ("~") ? idx.StartsWithEx (ix.Substring (1)) : idx == ix)) {
                         args.Add (new Node (eventTypeName, idx));
                     }
                 }
