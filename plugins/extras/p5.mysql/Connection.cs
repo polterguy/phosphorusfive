@@ -150,6 +150,7 @@ namespace p5.mysql
                 // Retrieving connection string from configuration file, trimming away square brackets.
                 argsValue = argsValue.Substring (1, argsValue.Length - 2);
                 var configValue = ConfigurationManager.ConnectionStrings [argsValue];
+                var doReplace = args.GetExChildValue ("replace", context, true);
                 if (configValue == null) {
 
                     // Checking if "generic" connection string exists.
@@ -160,8 +161,10 @@ namespace p5.mysql
                         var prefix = ConfigurationManager.AppSettings ["p5.data.prefix"] ?? "";
 
                         // Generic string exists, appending prefix + database name to it, before we return it to caller.
+                        // Making sure we do not try to replace "system database names".
+                        var replace = doReplace && (argsValue != "sys" && argsValue != "mysql" && argsValue != "performance_schema" && argsValue != "information_schema") ? true : false;
                         var retVal = generic.ConnectionString.TrimEnd (';') + ";";
-                        retVal += "database=" + (argsValue == "sys" ? argsValue : prefix + argsValue) + ";";
+                        retVal += "database=" + (replace ? prefix + argsValue : argsValue) + ";";
                         return retVal;
 
                     }
