@@ -3,38 +3,7 @@
 /*
  * File responsible for creating our default [p5.web.load-ui] event, which basically is our default URL resolver,
  * and "micro web operating system", allowing the user to see his desktop, installed apps, and visit the Bazar.
- *
- * Notice, this event is only create if no previous module has already overridden it, by creating 
- * another [p5.web.load-ui] event.
  */
-
-
-
-
-
-/*
- * TODO: Refactor and remove this logic!
- *
- * Notice, some modules, such as System42 etc, would want to create their own [p5.web.load-ui] event, at which
- * point the event would already have been created, overriding the default event implementation.
- *
- * This allows you to create a module, which entirely bypasses the default "micro web operating system" desktop, 
- * URL resolver, and loader.
- *
- * Hence, we check to see if another module has previously overridden our [p5.web.load-ui] event, and if so, we simply
- * return early, avoiding creating the default event.
- *
- * I do not encourage you to do this, since among other things, it would render all your other apps potentially "dead".
- * However, feel free to apply whatever damage you wish to the system yourself!
- */
-vocabulary:p5.web.load-ui
-if:x:/-/*
-
-  /*
-   * Another "module" has already overridden our default [p5.web.load-ui] event, hence returning early, 
-   * to avoid evaluation of the rest of our file.
-   */
-  return
 
 
 
