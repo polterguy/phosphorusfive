@@ -24,15 +24,15 @@ name:GaiaSoul system modules
  * Micro
  */
 app:micro
-  name:Micro 5.5
+  name:Micro 5.6
   description:A microscopic CSS framework and component library for P5.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.8/micro.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.9/micro.zip.pgp"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@MICRO
-  version:decimal:5.5
+  version:decimal:5.6
     event:micro.version
   author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five and Hyperlambda. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps.
 
@@ -55,15 +55,15 @@ In addition, Micro also features a lot of additional components and helper Activ
  * Bazar
  */
 app:bazar
-  name:Bazar 5.5
+  name:Bazar 5.6
   description:A Phosphorus Five module allowing you to easily install new, and update existing apps and modules.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.8/bazar.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.9/bazar.zip.pgp"
   price:Free
   local-url:bazar
   image:"https://phosphorusfive.files.wordpress.com/2017/09/bazar-icon.jpg"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@BAZAR
-  version:decimal:5.5
+  version:decimal:5.6
     event:bazar.version
   author-readme:@"_'The Bazar'_ is the module in Phosphorus Five that allows you to securely install new apps, and upgrade existing apps, in your own Phosphorus Five installation. Think _'AppStore'_ for web apps. It has the following features.
 
@@ -82,15 +82,15 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
  * Desktop
  */
 app:desktop
-  name:Desktop 5.5
+  name:Desktop 5.6
   description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.8/desktop.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.9/desktop.zip.pgp"
   price:Free
   local-url:desktop
   image:"https://phosphorusfive.files.wordpress.com/2017/09/desktop-icon.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@DESKTOP
-  version:decimal:5.5
+  version:decimal:5.6
     event:desktop.version
   author-readme:@"The Desktop is the module in Phosphorus Five that is your main administrative interface, allowing you to easily start your apps, and normally the startup app for your P5 installation. Think of it as the equivalent of your Windows, Linux or Mac OSX desktop.
 
