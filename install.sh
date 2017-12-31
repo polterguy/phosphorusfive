@@ -33,7 +33,7 @@ sudo apt-get dist-upgrade
 # downloading the latest release.
 if [ -f /binaries.zip ]
 then
-    wget https://github.com/polterguy/phosphorusfive/releases/download/v5.7/binaries.zip
+    wget https://github.com/polterguy/phosphorusfive/releases/download/v5.8/binaries.zip
 fi
 
 # Installing MySQL server.
