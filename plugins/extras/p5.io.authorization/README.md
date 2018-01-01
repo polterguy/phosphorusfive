@@ -149,8 +149,6 @@ type _".js"_, _".css"_ or _".html"_ type. All other file types will not be allow
 
 ```
 guest
-  p5.io.write-file.deny:/foo/
-guest
   p5.io.write-file.allow:/foo/
     file-type:js|css|html
 ```
