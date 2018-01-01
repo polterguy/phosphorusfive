@@ -115,7 +115,8 @@ and it it is a _".js"_ type of file. This is useful if you wish to restrict all 
 since some of the core system Active Events, such as the minify JavaScript event, needs to create cache files, in the above folder,
 and this event will be evaluated within the context of the user that is trying to access your site. In a demo server which I have setup
 myself for instance, I have the following access objects, which basically denies _"everything"_ for _"guest"_ accounts, except
-the bare minimum the system is dependent upon, to actually function.
+the bare minimum the system is dependent upon, to actually function, as it creates cache files for the CodeMirror module,
+and the CSS minify/bundlify module.
 
 ```
 *
