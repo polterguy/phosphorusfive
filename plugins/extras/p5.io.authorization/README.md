@@ -143,6 +143,15 @@ guest
     file-type:js
 ```
 
+The above gives _"execution"_ rights for Hyper IDE, also for _"guest"_ accounts, such that any random visiting user
+can test Hyper IDE, without having to login. While at the same time, it denies these users to create any files
+beneath the _"/common/"_ folder, except _".js"_ and _".css"_ files, which is necessary to have my JavaScript and
+CSS minify logic work correctly, which is actually minifying and bundling JavaScript files and CSS files _"on demand"_.
+
+So the above, basically allows any random visitor to test Hyper IDE, without being able to create anything but CSS 
+and JavaScript files, and only beneath my _"cache"_ folders. Preventing arguably any harm that could in theory occur,
+by giving random visitors access to read my server's files and folders.
+
 **Notice**, if you'd like to either deny or allow read/write access to multiple different file types, you can separate each file type with
 a pipe (|) character. The code below for instance, allows the user to modify files in the _"/foo/"_ folder, but only files of
 type _".js"_, _".css"_ or _".html"_ type. All other file types will not be allowed to be modified by the _"guest"_ account.
@@ -152,15 +161,6 @@ guest
   p5.io.write-file.allow:/foo/
     file-type:js|css|html
 ```
-
-The above gives _"execution"_ rights for Hyper IDE, also for _"guest"_ accounts, such that any random visiting user
-can test Hyper IDE, without having to login. While at the same time, it denies these users to create any files
-beneath the _"/common/"_ folder, except _".js"_ and _".css"_ files, which is necessary to have my JavaScript and
-CSS minify logic work correctly, which is actually minifying and bundling JavaScript files and CSS files _"on demand"_.
-
-So the above, basically allows any random visitor to test Hyper IDE, without being able to create anything but CSS 
-and JavaScript files, and only beneath my _"cache"_ folders. Preventing arguably any harm that could in theory occur,
-by giving random visitors access to read my server's files and folders.
 
 ## Rolling your own authorization logic
 
