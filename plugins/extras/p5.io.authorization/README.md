@@ -117,18 +117,6 @@ and this event will be evaluated within the context of the user that is trying t
 myself for instance, I have the following access objects, which basically denies _"everything"_ for _"guest"_ accounts, except
 the bare minimum the system is dependent upon, to actually function.
 
-**Notice**, if you'd like to either deny or allow read/write access to multiple different file types, you can separate each file type with
-a pipe (|) character. The code below for instance, allows the user to modify files in the _"/foo/"_ folder, but only files of
-type _".js"_, _".css"_ or _".html"_ type. All other file types will not be allowed to be modified by the _"guest"_ account.
-
-```
-guest
-  p5.io.write-file.deny:/foo/
-guest
-  p5.io.write-file.allow:/foo/
-    file-type:js|css|html
-```
-
 ```
 *
   p5.module.allow:/modules/hyper-ide/
@@ -152,6 +140,18 @@ guest
 guest
   p5.io.write-file.allow:/common/documents/public/micro-javascript-cache/
     file-type:js
+```
+
+**Notice**, if you'd like to either deny or allow read/write access to multiple different file types, you can separate each file type with
+a pipe (|) character. The code below for instance, allows the user to modify files in the _"/foo/"_ folder, but only files of
+type _".js"_, _".css"_ or _".html"_ type. All other file types will not be allowed to be modified by the _"guest"_ account.
+
+```
+guest
+  p5.io.write-file.deny:/foo/
+guest
+  p5.io.write-file.allow:/foo/
+    file-type:js|css|html
 ```
 
 The above gives _"execution"_ rights for Hyper IDE, also for _"guest"_ accounts, such that any random visiting user
