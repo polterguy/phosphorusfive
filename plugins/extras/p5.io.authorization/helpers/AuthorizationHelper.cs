@@ -173,7 +173,12 @@ namespace p5.io.authorization.helpers
         /*
          * Helper used both for files and folders to check access rights.
          */
-        private static bool CheckAccessRights (ApplicationContext context, string path, string operation, bool defaultValue)
+        private static bool CheckAccessRights (
+            ApplicationContext context, 
+            string path, 
+            string operation, 
+            bool defaultValue, 
+            out bool explicitAccess)
         {
             // Invoking event responsible for determining if user has access to path and returning results to caller.
             var args = new Node ("", defaultValue);
@@ -181,7 +186,9 @@ namespace p5.io.authorization.helpers
             args.Add ("filter", "p5.io." + operation + "-file");
 
             // Returns access to caller.
-            return context.RaiseEvent ("p5.auth.has-access-to-path", args).Get<bool> (context);
+            var access = context.RaiseEvent ("p5.auth.has-access-to-path", args).Get<bool> (context);
+            explicitAccess = args.GetChildValue ("explicit", context, false);
+            return access;
         }
         
         /*
@@ -190,7 +197,20 @@ namespace p5.io.authorization.helpers
          */
         private static bool UserHasReadAccessToFile (ApplicationContext context, string path)
         {
-            // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+            
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
+            // Checking if this is an attempt at accessing a user's private/public files.
             if (path.StartsWithEx ("/users/") && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
 
                 // Checking if user tries to read from a publicly available file from another user.
@@ -210,7 +230,7 @@ namespace p5.io.authorization.helpers
             if (path.StartsWithEx (dbPath))
                 return false;
             
-            // Verify web.config is safe.
+            // Verify web.config and app.config is safe.
             if (path == "/web.config")
                 return false;
             if (path == "/app.config")
@@ -219,9 +239,9 @@ namespace p5.io.authorization.helpers
             // Verifying "auth" file is safe.
             if (path == GetAuthFile (context).ToLower ())
                 return false;
-                
-            // Returning value of access rights check.
-            return CheckAccessRights (context, path, "read", true);
+
+            // Defaulting access to true.
+            return true;
         }
         
         /*
@@ -229,6 +249,19 @@ namespace p5.io.authorization.helpers
          */
         private static bool UserHasReadAccessToFolder (ApplicationContext context, string path)
         {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+            
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
             // Shielding other user's folders here.
             if (path.StartsWithEx ("/users/") && path != "/users/" && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
                 
@@ -248,9 +281,9 @@ namespace p5.io.authorization.helpers
             var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
             if (path.StartsWithEx (dbPath))
                 return false;
-            
-            // Returning value of access rights check.
-            return CheckAccessRights (context, path, "read", true);
+
+            // Defaulting access to true.
+            return true;
         }
         
         /*
@@ -259,6 +292,19 @@ namespace p5.io.authorization.helpers
          */
         private static bool UserHasWriteAccessToFile (ApplicationContext context, string path)
         {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+            
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
             // Checking if this is user's file.
             if (path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
                 return true;
@@ -267,8 +313,8 @@ namespace p5.io.authorization.helpers
             if (path.StartsWithEx ("/common/"))
                 return true;
             
-            // Returning value of access rights check.
-            return CheckAccessRights (context, path, "write", false);
+            // Defaulting to false.
+            return false;
         }
 
         /*
@@ -276,6 +322,19 @@ namespace p5.io.authorization.helpers
          */
         private static bool UserHasWriteAccessToFolder (ApplicationContext context, string path)
         {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+            
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
             // Checking if this is user's file.
             if (path.StartsWithEx ("/users/") && path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
                 return true;
@@ -283,9 +342,9 @@ namespace p5.io.authorization.helpers
             // Checking if this is a common folder.
             if (path.StartsWithEx ("/common/"))
                 return true;
-            
-            // Returning value of access rights check.
-            return CheckAccessRights (context, path, "write", false);
+
+            // Defaulting to false.
+            return false;
         }
 
         /*

@@ -19,7 +19,7 @@ writing to some specific folder or file.
 ## Default file access in Phosphorus Five
 
 * Root account(s) have access to reading and writing to all files
-* Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users' files. The exception is reading files in other users' _"/documents/public/"_ folder and its sub-folders
+* Non-root accounts have read access to everything, except the _"auth.hl"_ file, main _"/web.config"_ file, _"/db/"_ folder, and other users' files. The exception is reading files in other users' _"/documents/public/"_ folder, and its sub-folders
 * Non root accounts only have write access to their own files, in addition to all _"/common/"_ files
 
 This allows any user to publicly share a file, with read-only access, such that all other users can read it but not modify it,
@@ -30,8 +30,11 @@ Files in any of the _"/documents/public/"_ folders (both _"/common"_ and _"/user
 visitor, having a direct link to the file. This is not true for files in the _"/common/documents/private/"_ folder, even though
 the files becomes both readable, and possible to edit, by any logged in user in the system.
 
-**Notice**, whether or not a file is accessible with a direct link, over HTTP, also depends upon the setup
-of your web server, and how it chooses to serve files and folders.
+**Notice**; The latter depends upon how you have setup your web server. The default _"install.sh"_ script, which sets up your system on Apache/Debian, 
+will setup apache such that it follows the above rules. If you are using another type of web server, you will have to make sure of configuring your 
+server correctly in accordance to this yourself. All of these rules **can** however be overridden, by explicitly granting or denying access to roles, 
+to one specific file or folder. Any explicitly created access object, that either grants or denies access to some file IO object, will override
+these defaults.
 
 ## Overriding file IO access
 

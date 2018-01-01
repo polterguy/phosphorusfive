@@ -272,7 +272,7 @@ In fact, it is probably better to not supply an ID when creating a new access ob
 becomes its ID.
 
 Notice, the access object system does not verify that the role or object you try to grant or deny access to actually exists. It
-is quite possible for you, to grant access to a none-existing role, to a none-existing folder.
+is quite possible for you, to grant access to a non-existing role, to a non-existing folder.
 
 
 ## Rolling your own authorization/authentication system

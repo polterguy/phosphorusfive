@@ -106,6 +106,7 @@ namespace p5.auth
 
                 // Checking is user is root, at which he has access to everything.
                 if (context.Ticket.Role == "root") {
+                    e.Args.Add ("explicit", true);
                     e.Args.Value = true;
                     return;
                 }
@@ -127,7 +128,7 @@ namespace p5.auth
                 var node = new Node ();
                 AuthenticationHelper.ListAccess (context, node);
                 
-                // Defaulting access to root node's existing value.
+                // Defaulting access to invoker node's existing value.
                 var hasAccess = e.Args.Get (context, false);
 
                 // Checking if we have any access objects at all.
@@ -167,12 +168,60 @@ namespace p5.auth
 
                         /*
                          * Looping through any remaining access rights, to see if that modifies our return value.
+                         * Making sure we return to caller whether or not anything was found at all.
                          */
+                        if (access.Count > 0)
+                            e.Args.Add ("explicit", true);
                         foreach (var idxAccess in access) {
                             if (idxAccess [0].Name == filter + ".allow") {
-                                hasAccess = true;
+
+                                // Then we must verify that the file's type is correct, if there is an explicit [file-type] argument in this access object.
+                                // Or allow access, if this is a folder request (ending eith "/") and the access object is a "folder type of access object".
+                                var type = idxAccess [0].GetChildValue ("file-type", context, "");
+                                if (!string.IsNullOrEmpty (type)) {
+
+                                    // File type declaration, making sure it matches specified path.
+                                    if (path.EndsWithEx ("." + type)) {
+                                        hasAccess = true;
+                                    } else {
+                                        hasAccess = false;
+                                    }
+
+                                } else if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
+
+                                    // Folder access.
+                                    hasAccess = true;
+
+                                } else {
+
+                                    // No type declaration for access object.
+                                    hasAccess = true;
+                                }
+
                             } else if (idxAccess [0].Name == filter + ".deny") {
-                                hasAccess = false;
+                                
+                                // Then we must verify that the file's type is correct, if there is an explicit [file-type] argument in this access object.
+                                // Or allow access, if this is a folder request (ending eith "/") and the access object is a "folder type of access object".
+                                var type = idxAccess [0].GetChildValue ("file-type", context, "");
+                                if (!string.IsNullOrEmpty (type)) {
+
+                                    // File type declaration, making sure it matches specified path.
+                                    if (path.EndsWithEx ("." + type)) {
+                                        hasAccess = false;
+                                    } else {
+                                        hasAccess = true;
+                                    }
+
+                                } else if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
+
+                                    // Folder access.
+                                    hasAccess = false;
+
+                                } else {
+
+                                    // No type declaration for access object.
+                                    hasAccess = false;
+                                }
                             }
                         }
                     }

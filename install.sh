@@ -29,22 +29,24 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get dist-upgrade
 
-# Checking if there exists a binary release file from before, and if not, 
-# downloading the latest release.
-if [ -f /binaries.zip ]
-then
-    wget https://github.com/polterguy/phosphorusfive/releases/download/v5.9/binaries.zip
-fi
+# Downloading the latest release.
+wget https://github.com/polterguy/phosphorusfive/releases/download/v5.9/binaries.zip
 
 # Installing MySQL server.
 # Notice, by default MySQL is setup without networking, hence unless user explicitly opens it.
 # up later, this should be perfectly safe.
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
-sudo apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2
+sudo apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2 ufw
 
 # Disabling mod_mono_auto to make sure we create an "advanced" configuration for mod_mono.
 sudo a2dismod mod_mono_auto
+
+# Turning on firewall for everything except SSH, HTTP and HTTPS
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 22
+sudo ufw enable
 
 # Removing any old files.
 # Notice, we don't remove "/common" and "/users" here.
@@ -109,7 +111,7 @@ sudo echo "
 #############################################################
 
 MonoAutoApplication disabled
-AddHandler mono .aspx .axd .config
+AddHandler mono .aspx .axd .config .asax .asmx
 MonoApplications \"/:/var/www/html\"
 DirectoryIndex Default.aspx
 

@@ -27,6 +27,7 @@ using System.Web;
 using System.Web.UI;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using p5.exp;
 using p5.core;
 using p5.webapp.code;
 
@@ -66,6 +67,8 @@ namespace p5.webapp
                     // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
                     // where the [url] node becomes the name of the form requested.
                     var url = HttpContext.Current.Request.RawUrl;
+                    if (url.StartsWithEx ("/Default.aspx"))
+                        url = url.Replace ("/Default.aspx", "/");
 
                     // Making sure we pass in [url] to our [p5.web.load-ui] event.
                     var args = new Node ("p5.web.load-ui");
