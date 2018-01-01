@@ -110,12 +110,24 @@ guest
 ```
 
 The above is an actual example of a relevant type of access object, where you deny all _"guest"_ accounts to write
-anything to the _"/common/"_ folder, unless it's beneath the _"//common/documents/public/micro-javascript-cache/"_ folder,
+anything to the _"/common/"_ folder, unless it's beneath the _"/common/documents/public/micro-javascript-cache/"_ folder,
 and it it is a _".js"_ type of file. This is useful if you wish to restrict all write access to your disc, which creates a dilemma,
 since some of the core system Active Events, such as the minify JavaScript event, needs to create cache files, in the above folder,
 and this event will be evaluated within the context of the user that is trying to access your site. In a demo server which I have setup
 myself for instance, I have the following access objects, which basically denies _"everything"_ for _"guest"_ accounts, except
 the bare minimum the system is dependent upon, to actually function.
+
+**Notice**, if you'd like to either deny or allow read/write access to multiple different file types, you can separate each file type with
+a pipe (|) character. The code below for instance, allows the user to modify files in the _"/foo/"_ folder, but only files of
+type _".js"_, _".css"_ or _".html"_ type. All other file types will not be allowed to be modified by the _"guest"_ account.
+
+```
+guest
+  p5.io.write-file.deny:/foo/
+guest
+  p5.io.write-file.allow:/foo/
+    file-type:js|css|html
+```
 
 ```
 *

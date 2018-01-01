@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Linq;
 using System.Globalization;
 using p5.exp;
@@ -129,7 +130,7 @@ namespace p5.auth
                 AuthenticationHelper.ListAccess (context, node);
                 
                 // Defaulting access to invoker node's existing value.
-                var hasAccess = e.Args.Get (context, false);
+                var has_access = e.Args.Get (context, false);
 
                 // Checking if we have any access objects at all.
                 if (node.Count > 0) {
@@ -177,50 +178,50 @@ namespace p5.auth
 
                                 // Then we must verify that the file's type is correct, if there is an explicit [file-type] argument in this access object.
                                 // Or allow access, if this is a folder request (ending eith "/") and the access object is a "folder type of access object".
-                                var type = idxAccess [0].GetChildValue ("file-type", context, "");
-                                if (!string.IsNullOrEmpty (type)) {
+                                var file_types = idxAccess [0].GetChildValue ("file-type", context, "").Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (file_types.Length > 0) {
 
                                     // File type declaration, making sure it matches specified path.
-                                    if (path.EndsWithEx ("." + type)) {
-                                        hasAccess = true;
+                                    if (file_types.Any (ix => path.EndsWithEx ("." + ix))) {
+                                        has_access = true;
                                     } else {
-                                        hasAccess = false;
+                                        has_access = false;
                                     }
 
                                 } else if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
 
                                     // Folder access.
-                                    hasAccess = true;
+                                    has_access = true;
 
                                 } else {
 
                                     // No type declaration for access object.
-                                    hasAccess = true;
+                                    has_access = true;
                                 }
 
                             } else if (idxAccess [0].Name == filter + ".deny") {
                                 
                                 // Then we must verify that the file's type is correct, if there is an explicit [file-type] argument in this access object.
                                 // Or allow access, if this is a folder request (ending eith "/") and the access object is a "folder type of access object".
-                                var type = idxAccess [0].GetChildValue ("file-type", context, "");
-                                if (!string.IsNullOrEmpty (type)) {
+                                var file_types = idxAccess [0].GetChildValue ("file-type", context, "").Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (file_types.Length > 0) {
 
                                     // File type declaration, making sure it matches specified path.
-                                    if (path.EndsWithEx ("." + type)) {
-                                        hasAccess = false;
+                                    if (file_types.Any (ix => path.EndsWithEx ("." + ix))) {
+                                        has_access = true;
                                     } else {
-                                        hasAccess = true;
+                                        has_access = false;
                                     }
 
                                 } else if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
 
                                     // Folder access.
-                                    hasAccess = false;
+                                    has_access = false;
 
                                 } else {
 
                                     // No type declaration for access object.
-                                    hasAccess = false;
+                                    has_access = false;
                                 }
                             }
                         }
@@ -228,7 +229,7 @@ namespace p5.auth
                 }
 
                 // Returns access to caller.
-                e.Args.Value = hasAccess;
+                e.Args.Value = has_access;
             }
         }
     }
