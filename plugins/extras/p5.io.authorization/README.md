@@ -91,6 +91,66 @@ explicitly allow access to the developer role, through its **[developer]** argum
 
 The **[p5.auth.has-access-to-path]** event is implemented and documented in [p5.auth](/plugins/extras/p5.auth).
 
+### File types and folder restrictions
+
+You can also optionally supply a **[file-type]** argument to your access objects, and/or a **[folder]** argument if you wish.
+This has the effect of restricting the file type (or that your path must be a folder) for your access objects. For instance,
+an access object such as the following, would create a _"create folder access object"_ and a _"modify/create file access"_, 
+but only for _".js"_ types of files, and for creating folders. All other file changes to the _"/common/"_ folder would be denied.
+
+```
+guest
+  p5.io.write-file.deny:/common/
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-javascript-cache/
+    folder:bool:true
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-javascript-cache/
+    file-type:js
+```
+
+The above is an actual example of a relevant type of access object, where you deny all _"guest"_ accounts to write
+anything to the _"/common/"_ folder, unless it's beneath the _"//common/documents/public/micro-javascript-cache/"_ folder,
+and it it is a _".js"_ type of file. This is useful if you wish to restrict all write access to your disc, which creates a dilemma,
+since some of the core system Active Events, such as the minify JavaScript event, needs to create cache files, in the above folder,
+and this event will be evaluated within the context of the user that is trying to access your site. In a demo server which I have setup
+myself for instance, I have the following access objects, which basically denies _"everything"_ for _"guest"_ accounts, except
+the bare minimum the system is dependent upon, to actually function.
+
+```
+*
+  p5.module.allow:/modules/hyper-ide/
+guest
+  p5.io.write-file.deny:/common/
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-codemirror-cache/
+    folder:bool:true
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-codemirror-cache/
+    file-type:js
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-css-cache/
+    folder:bool:true
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-css-cache/
+    file-type:css
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-javascript-cache/
+    folder:bool:true
+guest
+  p5.io.write-file.allow:/common/documents/public/micro-javascript-cache/
+    file-type:js
+```
+
+The above gives _"execution"_ rights for Hyper IDE, also for _"guest"_ accounts, such that any random visiting user
+can test Hyper IDE, without having to login. While at the same time, it denies these users to create any files
+beneath the _"/common/"_ folder, except _".js"_ and _".css"_ files, which is necessary to have my JavaScript and
+CSS minify logic work correctly, which is actually minifying and bundling JavaScript files and CSS files _"on demand"_.
+
+So the above, basically allows any random visitor to test Hyper IDE, without being able to create anything but CSS 
+and JavaScript files, and only beneath my _"cache"_ folders. Preventing arguably any harm that could in theory occur,
+by giving random visitors access to read my server's files and folders.
+
 ## Rolling your own authorization logic
 
 The file IO access rights of Phosphorus Five, is consciously kept naive and
