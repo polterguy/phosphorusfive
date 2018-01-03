@@ -123,6 +123,11 @@ namespace p5.web.widgets
                         if (e.Name == "p5.web.widgets.lambda-events.delete")
                             throw new LambdaException ("Cannot pass in content to [p5.web.widgets.lambda-events.delete]", idxEventNameNode, context);
 
+                        // Making sure user doesn't try to override "system events".
+                        // Cannot create an event which is already a native event.
+                        if (context.ActiveEvents.Any (ix => ix == idxEventNameNode.Name))
+                            throw new LambdaException ("Tried to create a widget lambda event that is already a system event", e.Args, context);
+
                         // Setting widget's lambda event to whatever we were given, making sure we clone the lambda supplied.
                         var clone = idxEventNameNode.Clone ();
 
