@@ -238,6 +238,7 @@ namespace p5.events
 
                     // No filter(s) given, slurping up everything
                     args.Add (new Node (eventTypeName, idx));
+
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
