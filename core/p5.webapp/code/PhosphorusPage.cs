@@ -203,6 +203,17 @@ namespace p5.webapp.code
             }
         }
 
+        /// <summary>
+        ///     Returns the title of your web page
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = ".p5.web.page.remove-viewstate-key")]
+        public void _p5_web_page_remove_viewstate_key (ApplicationContext context, ActiveEventArgs e)
+        {
+            RemoveViewStateKey ();
+        }
+
         #endregion
 
         /*

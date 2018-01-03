@@ -53,6 +53,11 @@ namespace p5.ajax.core
         // Whether or not ViewState should be removed entirely from page or not.
         bool _removeViewState = true;
 
+        // If true, this will use the base class' ViewState persister, which is useful if you for some reasons
+        // don't want to add the current request's ViewState to the state bag collection, such as doing "echo" and similar types of
+        // operations.
+        bool _useDefaultPersister = false;
+
         // Contains the list of new JavaScript objects to include in current request.
         // If Item2 of Tuple is true, it means that it is a JavaScript file inclusion, otherwise it's an inline JavaScript content inclusion.
         List<Tuple<string, bool>> _javaScriptObjectsForCurrentRequest = new List<Tuple<string, bool>> ();
@@ -221,6 +226,15 @@ namespace p5.ajax.core
         }
 
         /// <summary>
+        ///     Removes the view state key for the current request.
+        /// </summary>
+        protected void RemoveViewStateKey ()
+        {
+            _useDefaultPersister = true;
+        }
+        
+
+        /// <summary>
         ///     Handled to make sure we configure the number of ViewState entries to store in the Session object.
         /// </summary>
         /// <param name="e">EventArgs</param>
@@ -241,6 +255,10 @@ namespace p5.ajax.core
                 // we completely bypass our custom PageStatePersister, and simply returns the base implementation from System.Web.UI,
                 // to facilitate for turning OFF server-side ViewState storage entirely.
                 if (ViewStateSessionEntries == 0)
+                    return base.PageStatePersister;
+
+                // Checking if for some reasons we should bypass this logic entirely, and rely upon the base class implementation.
+                if (_useDefaultPersister)
                     return base.PageStatePersister;
                 return _statePersister ?? (_statePersister = new StatePersister (this, ViewStateSessionEntries));
             }
