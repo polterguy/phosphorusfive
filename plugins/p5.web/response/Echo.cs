@@ -58,6 +58,9 @@ namespace p5.web.ui.response
                 HttpContext.Current.Response.Write (XUtil.Single<string> (context, e.Args));
             }
 
+            // Making sure we remove ViewState entry from session.
+            context.RaiseEvent (".p5.web.page.remove-viewstate-key");
+
             // Flushing response, and making sure default content is never rendered
             HttpContext.Current.Response.OutputStream.Flush ();
             HttpContext.Current.Response.Flush ();
@@ -84,6 +87,9 @@ namespace p5.web.ui.response
 
             // Verifying user is authorized to reading from currently iterated file
             context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
+
+            // Making sure we remove ViewState entry from session.
+            context.RaiseEvent (".p5.web.page.remove-viewstate-key");
 
             // Rendering file back to client
             using (Stream fileStream = File.OpenRead (rootFolder + fileName)) {
