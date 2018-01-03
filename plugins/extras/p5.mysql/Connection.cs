@@ -64,6 +64,10 @@ namespace p5.mysql
                     // Cleaning up ...
                     connections.Remove (connection);
                     connection.Close ();
+                    
+                    // House cleaning, notice we can't really use our Args cleaner here, since caller might be interested
+                    // in the results of it after evaluation.
+                    e.Args.Value = null;
                 }
             }
         }
