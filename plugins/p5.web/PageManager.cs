@@ -229,7 +229,13 @@ namespace p5.web
             using (new ArgsRemover (e.Args)) {
 
                 // Returning current URL
-                e.Args.Value = AjaxPage.Request.RawUrl;
+                var url = AjaxPage.Request.RawUrl;
+                if (url.StartsWithEx ("/Default.aspx")) {
+
+                    // Removing the "Default.aspx" parts of our URL.
+                    url = "/" + url.Substring ("/Default.aspx".Length);
+                }
+                e.Args.Value = url;
             }
         }
 
@@ -245,7 +251,13 @@ namespace p5.web
             using (new ArgsRemover (e.Args)) {
 
                 // Returning current URL
-                e.Args.Value = AjaxPage.Request.RawUrl.Split ('?') [0];
+                var url = AjaxPage.Request.RawUrl.Split ('?') [0];
+                if (url.StartsWithEx ("/Default.aspx")) {
+
+                    // Removing the "Default.aspx" parts of our URL.
+                    url = "/" + url.Substring ("/Default.aspx".Length);
+                }
+                e.Args.Value = url;
             }
         }
 
