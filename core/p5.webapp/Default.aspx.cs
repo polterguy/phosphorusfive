@@ -64,11 +64,20 @@ namespace p5.webapp
                 // Checking if page is not postback.
                 if (!IsPostBack) {
 
-                    // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
-                    // where the [url] node becomes the name of the form requested.
+                    /*
+                     * Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
+                     * where the [url] node becomes the name of the form requested.
+                     * 
+                     * Notice, since Apache sometimes seems to resolve the root URL of our website to "/Default.aspx",
+                     * we explicitly check for that, and remove it if it exists, to completely avoid having to deal
+                     * with different URLs, resolving to the same page, in other parts of our system.
+                     */
                     var url = HttpContext.Current.Request.RawUrl;
-                    if (url.StartsWithEx ("/Default.aspx"))
-                        url = url.Replace ("/Default.aspx", "/");
+                    if (url.StartsWithEx ("/Default.aspx")) {
+
+                        // Making sure we still keep any HTTP QUERY parameters, etc.
+                        url = "/" + url.Substring ("/Default.aspx".Length);
+                    }
 
                     // Making sure we pass in [url] to our [p5.web.load-ui] event.
                     var args = new Node ("p5.web.load-ui");
