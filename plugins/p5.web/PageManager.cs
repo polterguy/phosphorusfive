@@ -186,7 +186,7 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Returns the URL/location of your web page with any HTTP GET parameters.
+        ///     Returns the URL/location of the current request with any HTTP GET parameters.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -202,7 +202,7 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Returns the URL/location of your web page without any HTTP GET parameters.
+        ///     Returns the URL/location of the current request without any HTTP GET parameters.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -214,6 +214,38 @@ namespace p5.web
 
                 // Returning current URL
                 e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.Request.RawUrl.Split ('?') [0];
+            }
+        }
+
+        /// <summary>
+        ///     Returns the relative URL/location of the current request with any HTTP GET parameters.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.get-relative-location")]
+        public void p5_web_get_relative_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new ArgsRemover (e.Args)) {
+
+                // Returning current URL
+                e.Args.Value = AjaxPage.Request.RawUrl;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the relative URL/location of the current request without any HTTP GET parameters.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.get-relative-location-url")]
+        public void p5_web_get_relative_location_url (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new ArgsRemover (e.Args)) {
+
+                // Returning current URL
+                e.Args.Value = AjaxPage.Request.RawUrl.Split ('?') [0];
             }
         }
 
