@@ -28,3 +28,6 @@
 [submodule "core/p5.webapp/modules/sulphur-five"]
 	path = core/p5.webapp/modules/sulphur-five
 	url = https://github.com/polterguy/sulphur-five
+[submodule "core/p5.webapp/modules/hyper-core"]
+	path = core/p5.webapp/modules/hyper-core
+	url = https://github.com/polterguy/hyper-core
