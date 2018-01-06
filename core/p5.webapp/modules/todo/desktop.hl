@@ -1,0 +1,20 @@
+
+/*
+ * Desktop widget.
+ *
+ * This becomes your module's 'desktop icon'.
+ */
+container
+  element:a
+  class:desktop-app shaded rounded air-inner
+  title:A simple AngularJS TODO app
+  widgets
+    span
+      class:desktop-app-name
+      widgets
+        literal
+          element:span
+          class:icon-flash desktop-app-icon
+        span
+          class:desktop-app-text
+          innerValue:TODO

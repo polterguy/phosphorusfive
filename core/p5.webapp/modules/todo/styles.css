@@ -1,0 +1,27 @@
+
+
+.bg {
+  position:relative;
+}
+
+.new-item {
+  position:absolute;
+  bottom:0;
+  right:1rem;
+}
+
+.submit-button {
+  width:auto;
+}
+
+ul.todos {
+  list-style:none;
+  margin-left:0;
+  margin-bottom:3rem;
+}
+
+ul.todos>li {
+  font-size:1.5rem;
+  margin-bottom:.5rem;
+  cursor:no-drop;
+}
