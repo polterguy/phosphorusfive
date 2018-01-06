@@ -1,8 +1,0 @@
-
-/*
- * Provide whatever uninstall logic your module requires here, if any.
- *
- * Common tasks for this file, is to delete all Active Events created by
- * your module, such as the following example illustrates.
- */
-delete-event:p5.io.unroll-path.@TODO
