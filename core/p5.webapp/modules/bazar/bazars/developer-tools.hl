@@ -19,15 +19,15 @@ name:GaiaSoul dev X tools
  * Camphora Five.
  */
 app:camphora-five
-  name:Camphora 5.6
+  name:Camphora 6.0
   description:Create data driven CRUD apps without coding, and import/export data to and from Excel etc
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.9/camphora-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.0/camphora-five.zip.pgp"
   price:Free
   local-url:camphora-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@CAMPHORA
-  version:decimal:5.6
+  version:decimal:6.0
     event:camphora.version
   author-readme:@"Camphora Five allows you to rapidly create data driven web applications, without needing to code. It allows you to create CRUD apps declaratively. Examples of use cases can be found beneath.
 
@@ -45,15 +45,15 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
  * Hypereval.
  */
 app:hypereval
-  name:Hypereval 1.6
+  name:Hypereval 6.0
   description:A Hyperlambda terminal module, allowing you to evaluate Hyperlambda from your browser
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.9/hypereval.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.0/hypereval.zip.pgp"
   price:Free
   local-url:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPEREVAL
-  version:decimal:1.6
+  version:decimal:6.0
     event:hypereval.version
   author-readme:@"Hypereval allows you to evaluate Hyperlambda from your browser. It features intellisense, syntax highlighting, skinning, and tons of other features.
 
@@ -67,15 +67,15 @@ Basically, it works more or less like a _'terminal window'_ for Hyperlambda. Use
  * Hyperbuild.
  */
 app:hyperbuild
-  name:Hyperbuild 5.6
+  name:Hyperbuild 6.0
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.9/hyperbuild.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.0/hyperbuild.zip.pgp"
   price:Free
   local-url:hyperbuild
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPERBUILD
-  version:decimal:5.6
+  version:decimal:6.0
     event:hyperbuild.version
   author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of your system, including cryptographically sign modules and such with your own PGP key, create your own Bazar declarations, etc.
 
