@@ -7,7 +7,6 @@
     <head runat="server">
         <meta charset="utf-8" />
         <title>Phosphorus Five - In the beginning there was Hyperlambda</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">

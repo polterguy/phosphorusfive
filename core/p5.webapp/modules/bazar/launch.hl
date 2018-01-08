@@ -23,13 +23,11 @@ set-widget-property:cnt
  *
  * Which for the record, is the same CSS file as the main "desktop" app's CSS file.
  */
-micro.page.minify-and-bundle-css-file
+p5.web.include-css-file
   @MICRO/media/main.css
   @MICRO/media/fonts.css
   @MICRO/media/skins/serious.css
-p5.web.include-css-file:x:/-?value
-micro.page.minify-and-bundle-css-file:@DESKTOP/media/main.css
-p5.web.include-css-file:x:/-?value
+  @DESKTOP/media/main.css
 
 
 

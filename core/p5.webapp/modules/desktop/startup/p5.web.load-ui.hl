@@ -117,11 +117,10 @@ create-event:p5.web.load-ui
          * User doesn't have access to this module.
          */
         p5.web.response.set-status-code:403
-        micro.page.minify-and-bundle-css-file
+        p5.web.include-css-file
           @MICRO/media/main.css
           @MICRO/media/fonts.css
           @MICRO/media/skins/serious.css
-        p5.web.include-css-file:x:/-?value
         p5.core.login
         return
 
