@@ -118,9 +118,9 @@ app:license
   condition:license.is-valid
   version:decimal:6.99
     event:license.version
-  author-readme:@"If you wish to create proprietary apps (closed source), and/or you want Phosphorus Five to stop bugging you about getting licensed, this is the module you'll need. This module allows you to.
+  author-readme:@"If you wish to create proprietary apps (closed source) in Hyperlambda, and/or you want Phosphorus Five to stop bugging you about getting licensed, this is the module you'll need. This module allows you to.
 
-* Create closed source applications
+* Create closed source applications (in Hyperlambda)
 * Stops bugging you about getting licensed
 * Receive professional support
 

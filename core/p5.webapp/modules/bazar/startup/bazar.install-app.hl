@@ -49,9 +49,15 @@ create-event:bazar.install-app
         :x:/../*/local-url?value
 
   /*
-   * Then evaluating any startup Hyperlambda scripts for our newly installed app,
+   * Then evaluating any installation and startup Hyperlambda file for our newly installed app,
    * if there exists such a thing.
    */
+  if
+    fetch:x:/0/0?value
+      file-exists:/modules/{0}/install.hl
+        :x:/../*/local-url?value
+    micro.evaluate.file:/modules/{0}/install.hl
+      :x:/../*/local-url?value
   if
     fetch:x:/0/0?value
       file-exists:/modules/{0}/startup.hl
