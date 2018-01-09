@@ -67,13 +67,40 @@ namespace p5.auth.helpers
          */
         public static void Login (ApplicationContext context, Node args)
         {
-            // Defaulting result of Active Event to unsuccessful
+            // Defaulting result of Active Event to unsuccessful.
             args.Value = false;
 
             // Retrieving supplied credentials
             string username = args.GetExChildValue<string> ("username", context);
             string password = args.GetExChildValue<string> ("password", context);
+            args.FindOrInsert ("password").Value = "xxx"; // In case an exception occurs.
             bool persist = args.GetExChildValue ("persist", context, false);
+
+            /*
+             * Checking if current username has attempted to login just recently, and the
+             * configured timespan for each successive login attempt per user, has not passed.
+             * 
+             * This should be able to defend us from a "brute force password attack".
+             */
+            var bruteConf = new Node (".p5.config.get", ".p5.auth.cooldown-period");
+            var cooldown = context.RaiseEvent (".p5.config.get", bruteConf) [0].Get (context, -1);
+            if (cooldown != -1) {
+
+                // User has configured the system to have a "cooldown period" for successive login attempts.
+                var bruteForceLastAttempt = new Node (".p5.web.application.get", ".p5.io.last-login-attempt-for-" + username);
+                var lastAttemptNode = context.RaiseEvent (".p5.web.application.get", bruteForceLastAttempt);
+                if (lastAttemptNode.Count > 0) {
+
+                    // Previous attempt has been attempted.
+                    var date = lastAttemptNode [0].Get<DateTime> (context, DateTime.MinValue);
+                    if ((DateTime.Now - date).TotalSeconds < cooldown) {
+                        throw new LambdaException ("You need to wait " + (DateTime.Now - date).TotalSeconds + " seconds before you can try again", args, context);
+                    }
+                }
+                bruteForceLastAttempt = new Node (".p5.web.application.set", ".p5.io.last-login-attempt-for-" + username);
+                bruteForceLastAttempt.Add ("src", DateTime.Now);
+                context.RaiseEvent (".p5.web.application.set", bruteForceLastAttempt);
+            }
 
             // Getting password file in Node format, but locking file access as we retrieve it
             Node pwdFile = AuthFile.GetAuthFile (context);
