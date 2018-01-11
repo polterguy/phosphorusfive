@@ -19,15 +19,15 @@ name:GaiaSoul dev X tools
  * Camphora Five.
  */
 app:camphora-five
-  name:Camphora 6.0
+  name:Camphora 6.1
   description:Create data driven CRUD apps without coding, and import/export data to and from Excel etc
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.0/camphora-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.1/camphora-five.zip.pgp"
   price:Free
   local-url:camphora-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@CAMPHORA
-  version:decimal:6.0
+  version:decimal:6.1
     event:camphora.version
   author-readme:@"Camphora Five allows you to rapidly create data driven web applications, without needing to code. It allows you to create CRUD apps declaratively. Examples of use cases can be found beneath.
 
@@ -45,15 +45,15 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
  * Hypereval.
  */
 app:hypereval
-  name:Hypereval 6.0
+  name:Hypereval 6.1
   description:A Hyperlambda terminal module, allowing you to evaluate Hyperlambda from your browser
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.0/hypereval.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.1/hypereval.zip.pgp"
   price:Free
   local-url:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPEREVAL
-  version:decimal:6.0
+  version:decimal:6.1
     event:hypereval.version
   author-readme:@"Hypereval allows you to evaluate Hyperlambda from your browser. It features intellisense, syntax highlighting, skinning, and tons of other features.
 
@@ -64,18 +64,40 @@ Basically, it works more or less like a _'terminal window'_ for Hyperlambda. Use
 
 
 /*
+ * Hyper Core.
+ */
+app:hyper-core
+  name:Hyper Core 6.1
+  description:A generic REST based ORM library for MySQL (and more)
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.1/hyper-core.zip.pgp"
+  price:Free
+  local-url:hyper-core
+  image:"https://phosphorusfive.files.wordpress.com/2018/01/sunscorerota.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@HYPER-CORE
+  version:decimal:6.1
+    event:hyper-core.version
+  author-readme:@"Hyper Core is a generic back for your JavaScript based front end web apps, and contains among other things, a REST based ORM library for MySQL. It is extendible in nature though, and can easily wrap any other database you want to use, or any server side business logic object for that matter.
+
+It allows you to easily control access to your back end REST based web service endpoints, by creating access objects, allowing you to fine grain access, to roles and users of your systems, to specific operations you want to allow or deny, according to roles."
+
+
+
+
+
+/*
  * Hyperbuild.
  */
 app:hyperbuild
-  name:Hyperbuild 6.0
+  name:Hyperbuild 6.1
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.0/hyperbuild.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.1/hyperbuild.zip.pgp"
   price:Free
   local-url:hyperbuild
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPERBUILD
-  version:decimal:6.0
+  version:decimal:6.1
     event:hyperbuild.version
   author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of your system, including cryptographically sign modules and such with your own PGP key, create your own Bazar declarations, etc.
 
