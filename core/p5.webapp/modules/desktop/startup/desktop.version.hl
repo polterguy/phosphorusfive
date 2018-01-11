@@ -4,4 +4,4 @@
  */
 create-event:desktop.version
 
-  return:decimal:6.0
+  return:decimal:6.1
