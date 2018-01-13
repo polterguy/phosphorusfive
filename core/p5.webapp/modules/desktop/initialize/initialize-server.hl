@@ -34,7 +34,7 @@ if
    * Including Micro CSS files.
    */
   micro.css.include
-    skin:off-white
+    skin:serious
 
   /*
    * No server salt, asking user to provide one.
