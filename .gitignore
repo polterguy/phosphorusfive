@@ -199,6 +199,9 @@ core/p5.webapp/modules/system42/**
 # Excluding DSW8
 core/p5.webapp/modules/dsw8/**
 
+# Excluding license
+core/p5.webapp/modules/license/**
+
 # Excluding users files
 core/p5.webapp/users/**
 
