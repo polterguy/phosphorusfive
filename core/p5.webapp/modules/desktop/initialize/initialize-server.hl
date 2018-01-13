@@ -1,7 +1,7 @@
 ﻿
 
 /*
- * Initialises server, by allowing user to set server salt, and/or set root password.
+ * Initialises server, by allowing user to set server salt and set root password.
  *
  * If the server needs to be setup before allowing the user to proceed to your app, or the micro web os desktop,
  * this event will return "true".
@@ -27,15 +27,14 @@ create-container-widget:desktop-main-container
 if
   p5.auth._has-salt
   not
+  or
+    p5.auth._root-password-is-null
 
   /*
-   * Checking if Micro exists, at which point we include it.
+   * Including Micro CSS files.
    */
-  vocabulary:p5.io.unroll-path.@MICRO
-  if:x:/-/*
-    p5.web.include-css-file:@MICRO/media/main.css
-    p5.web.include-css-file:@MICRO/media/skins/serious.css
-    micro.page.set-focus:server-salt
+  micro.css.include
+    skin:off-white
 
   /*
    * No server salt, asking user to provide one.
@@ -53,12 +52,11 @@ if
               /*
                * First some description.
                */
-              h3
-                innerValue:Please provide a random server salt
-              p:salt-description
-                innerValue:You don't need to remember your salt, but to maximise the security of your system, it should to be as random as possible.
-              p:salt-description-2
-                innerValue:The server salt is used to hash your passwords, in addition to seed the random number generator, when cryptographically secure random numbers are needed.
+              h1
+                innerValue:Provide root password
+              p:root-description
+                innerValue:@"Make sure you remember your password, since it's impossible to retrieve it later.
+This process will setup your <em>'root'</em> account, which you can use to administrate your system. Its username is <code>root</code>."
 
               /*
                * Then our textarea, which actually allows the user to type in a salt.
@@ -66,84 +64,18 @@ if
               literal:server-salt
                 element:textarea
                 placeholder:Provide a random server salt ...
-                rows:10
-                class:fill
+                rows:5
+                class:fill hide
+                oninit
 
-              /*
-               * Wrapper for our "save" server salt button.
-               */
-              div
-                class:right
-                widgets
-                  button
-                    innerValue:Save
-                    onclick
-
-                      /*
-                       * Retrieving server salt, and setting it.
-                       */
-                      get-widget-property:server-salt
-                        value
-                      if:x:/@get-widget-property/*/*?value
-                        =:
-
-                        /*
-                         * No salt, cannot proceed ...
-                         */
-                        set-widget-property:salt-description
-                          innerValue:@"<strong>Please provide a server salt!!</strong>"
-                        return
-
-                      /*
-                       * Setting salt.
-                       */
-                      p5.auth._set-server-salt:x:/@get-widget-property/*/*?value
-
-                      /*
-                       * Reloading URL for simplicity, which will ask the user for a root password.
-                       */
-                      p5.web.reload-location
-
-  /*
-   * Returning true to caller, to signal that server is in setup/initialize phase.
-   */
-  return:bool:true
-
-else-if
-  p5.auth._root-password-is-null
-
-  /*
-   * Checking if Micro exists, at which point we include it.
-   */
-  vocabulary:p5.io.unroll-path.@MICRO
-  if:x:/-/*
-    p5.web.include-css-file:@MICRO/media/main.css
-    p5.web.include-css-file:@MICRO/media/skins/serious.css
-    micro.page.set-focus:root-password
-
-  /*
-   * Root password is null, asking user to provide one.
-   */
-  create-widget
-    parent:desktop-main-container
-    widgets
-      div
-        class:row air-top
-        widgets
-          div
-            class:col-50 offset-25
-            widgets
-
-
-              /*
-               * First some description.
-               */
-              h3
-                innerValue:Please provide a root password
-              p:root-description
-                innerValue:Please make sure you remember your password, otherwise you will not be able to access your system!
-              p:root-description-2
-                innerValue:@"When you click 'Save', your server will be automatically setup. This might take some few minutes. Please let it finish its job without interruptions!"
+                  /*
+                   * Filling it with some default random bytes.
+                   */
+                  p5.crypto.create-random
+                    resolution:64
+                    hex:true
+                  set-widget-property:x:/../*/_event?value
+                    value:x:/@p5.crypto.create-random?value
 
               /*
                * Then our textbox widgets, asking user to provide a root password for his system.
@@ -151,11 +83,20 @@ else-if
               input:root-password
                 type:password
                 placeholder:Root password ...
+                autocomplete:new-password
                 class:fill
                 onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
+                oninit
+
+                  /*
+                   * Setting initial focus to textbox.
+                   */
+                  micro.page.set-focus:x:/../*/_event?value
+
               input:root-password-repeat
                 type:password
                 placeholder:Repeat password ...
+                autocomplete:new-password
                 class:fill
                 onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
 
@@ -165,40 +106,139 @@ else-if
               div
                 class:right
                 widgets
-                  button:setup-save-btn
-                    innerValue:Save
-                    onclick
+                  div
+                    class:strip
+                    style:"display:inline-block;"
+                    widgets
+                      button:setup-save-btn
+                        innerValue:Save
+                        title:Saves your settings
+                        onclick
 
-                      /*
-                       * Retrieving password(s), making sure they're not empty, and that they match.
-                       */
-                      get-widget-property:root-password
-                        value
-                      get-widget-property:root-password-repeat
-                        value
-                      if:x:/../*/get-widget-property/*/root-password/*?value
-                        =:
-                        or:x:/../*/get-widget-property/*/root-password/*?value
-                          !=:x:/../*/get-widget-property/*/root-password-repeat/*?value
+                          /*
+                           * Retrieving server salt, and setting it.
+                           */
+                          get-widget-property:server-salt
+                            value
+                          if:x:/@get-widget-property/*/*?value
+                            =:
 
-                        /*
-                         * Password were not given, or textbox values did not match.
-                         */
-                        set-widget-property:root-description
-                          innerValue:@"<strong>Provide a password, and make sure you repeat it exactly, character for character!!</strong>"
-                        return
+                            /*
+                             * No salt, cannot proceed ...
+                             */
+                            micro.windows.info:Please provide a server salt!!
+                              class:micro-windows-info warning
+                            return
 
-                      /*
-                       * Setting password.
-                       */
-                      eval-x:x:/+/*
-                      p5.auth._set-root-password
-                        password:x:/@get-widget-property/*/*?value
+                          /*
+                           * Retrieving password(s), making sure they're not empty, and that they match.
+                           */
+                          get-widget-property:root-password
+                            value
+                          get-widget-property:root-password-repeat
+                            value
+                          if:x:/../*/get-widget-property/*/root-password/*?value
+                            =:
 
-                      /*
-                       * Reloading URL for simplicity, since we're now done with setting up the server.
-                       */
-                      p5.web.reload-location
+                            /*
+                             * Password were not given.
+                             */
+                            micro.windows.info:Please provide a password twice
+                              class:micro-windows-info warning
+                            return
+
+                          if:x:/../*/get-widget-property/*/root-password/*?value
+                            !=:x:/../*/get-widget-property/*/root-password-repeat/*?value
+
+                            /*
+                             * Password did mot match.
+                             */
+                            micro.windows.info:Passwords did not match
+                              class:micro-windows-info warning
+                            return
+
+                          /*
+                           * Setting salt.
+                           * Notice, in case an exception occurs when we setthe password, the server salt will
+                           * already have been set.
+                           */
+                          if
+                            p5.auth._has-salt
+                            not
+                            p5.auth._set-server-salt:x:/../*/get-widget-property/*/server-salt/*?value
+
+                          /*
+                           * Setting password, making sure we wrap it in a try/catch block to provide friendly feedback
+                           * in case process was unsuccessful.
+                           */
+                          try
+                            p5.auth._set-root-password
+                              password:x:/../*/get-widget-property/*/root-password/*?value
+                          catch
+
+                            /*
+                             * Retrieving friendly information string, hopefully giving user some feedback about the passwords
+                             * rules of P5.
+                             */
+                            p5.config.get:p5.auth.password-rules-info
+                            eval-x:x:/+/*/*/*/p/*/innerValue
+                            create-widgets
+                              micro.widgets.modal:p5-password-not-accepted-modal
+                                widgets
+                                  h3
+                                    innerValue:Password not accepted
+                                  p
+                                    innerValue:x:/@p5.config.get/*?value
+                                  div
+                                    class:right
+                                    widgets
+                                      button
+                                        innerValue:OK
+                                        style:"margin-bottom:0;"
+                                        oninit
+
+                                          /*
+                                           * Setting initial focus to "OK" button.
+                                           */
+                                          micro.page.set-focus:x:/../*/_event?value
+
+                                        onclick
+
+                                          /*
+                                           * Deleting modal widget and settingfocus to the first password textbox.
+                                           */
+                                          delete-widget:p5-password-not-accepted-modal
+                                          micro.page.set-focus:root-password
+
+                            /*
+                             * Returning early, to avoid evaluation of the rest of our lambda.
+                             */
+                            return
+
+                          /*
+                           * Logging in user such thathe doesn't have to login after we refresh page.
+                           */
+                          login
+                            username:root
+                            password:x:/../*/get-widget-property/*/root-password/*?value
+                            persist:false
+
+                          /*
+                           * Reloading URL for simplicity, since we're now done with setting up the server.
+                           */
+                          p5.web.reload-location
+
+                      button
+                        innerValue:@"<span class=""icon-cog""></span>"
+                        title:Advanced
+                        onclick
+
+                          /*
+                           * Removing "hide" class of server salt textarea.
+                           */
+                          micro.css.delete:server-salt
+                            class:hide
+                          micro.page.set-focus:server-salt
 
   /*
    * Returning true to caller, to signal that server is in setup/initialize phase.

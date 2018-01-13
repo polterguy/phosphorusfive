@@ -26,6 +26,7 @@ using System.IO;
 using System.Web;
 using System.Linq;
 using System.Security;
+using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -83,7 +84,7 @@ namespace p5.auth.helpers
              * This should be able to defend us from a "brute force password attack".
              */
             var bruteConf = new Node (".p5.config.get", ".p5.auth.cooldown-period");
-            var cooldown = context.RaiseEvent (".p5.config.get", bruteConf) [0].Get (context, -1);
+            var cooldown = context.RaiseEvent (".p5.config.get", bruteConf) [0]?.Get (context, -1) ?? -1;
             if (cooldown != -1) {
 
                 // User has configured the system to have a "cooldown period" for successive login attempts.
@@ -201,21 +202,13 @@ namespace p5.auth.helpers
         }
 
         /*
-         * Returns server-salt for application
+         * Returns server-salt for application.
          */
         public static string ServerSalt (ApplicationContext context)
         {
             // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile (context);
-            var authSalt = authFile.GetChildValue<string> ("server-salt", context);
-
-            // Notice, if "auth file" salt is not (yet) set, we return null to caller, to
-            // signal that no salt has been initialized yet.
-            if (string.IsNullOrEmpty (authSalt))
-                return null;
-
-            var configSalt = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.crypto.salt")).Get (context, "$41t-goes-here-4U");
-            return authSalt + configSalt;
+            return authFile.GetChildValue<string> ("server-salt", context);
         }
 
         /*
@@ -242,6 +235,21 @@ namespace p5.auth.helpers
 
             // Making sure [password] never leaves method.
             args.FindOrInsert ("password").Value = "xxx";
+            
+            // Retrieving password rules from web.config, if any.
+            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+            if (!string.IsNullOrEmpty (pwdRule)) {
+
+                // Verifying that specified password obeys by rules from web.config.
+                Regex regex = new Regex (pwdRule);
+                if (!regex.IsMatch (password)) {
+
+                    // New password was not accepted, throwing an exception.
+                    args.FindOrInsert ("password").Value = "xxx";
+                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                }
+            }
 
             // Basic sanity check.
             if (string.IsNullOrEmpty (username) || string.IsNullOrEmpty (password) || string.IsNullOrEmpty (role))
@@ -359,6 +367,21 @@ namespace p5.auth.helpers
             // Retrieving new password and role, defaulting to null, which will not update existing values.
             string newPassword = args.GetExChildValue<string> ("password", context);
             string newRole = args.GetExChildValue<string> ("role", context);
+            
+            // Retrieving password rules from web.config, if any.
+            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+            if (!string.IsNullOrEmpty (pwdRule)) {
+
+                // Verifying that specified password obeys by rules from web.config.
+                Regex regex = new Regex (pwdRule);
+                if (!regex.IsMatch (newPassword)) {
+
+                    // New password was not accepted, throwing an exception.
+                    args.FindOrInsert ("password").Value = "xxx";
+                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                }
+            }
 
             // Retrieving system salt before we enter write lock. (important, since otherwise we'd have a deadlock condition here).
             var serverSalt = newPassword == null ? null : context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
@@ -426,7 +449,12 @@ namespace p5.auth.helpers
          */
         public static void ChangeSettings (ApplicationContext context, Node args)
         {
+            // Getting username for current context.
             string username = context.Ticket.Username;
+
+            // Verifying that there's no "funny business" going on here.
+            if (args ["password"] != null || args ["role"] != null)
+                throw new LambdaSecurityException ("You cannot change your password or role with this Active Event", args, context);
 
             // Locking access to password file as we edit user object
             AuthFile.ModifyAuthFile (
@@ -452,7 +480,23 @@ namespace p5.auth.helpers
             string password = args.GetExValue (context, "");
             if (string.IsNullOrEmpty (password))
                 throw new LambdaException ("No password supplied", args, context);
+            
+            // Retrieving password rules from web.config, if any.
+            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+            if (!string.IsNullOrEmpty (pwdRule)) {
 
+                // Verifying that specified password obeys by rules from web.config.
+                Regex regex = new Regex (pwdRule);
+                if (!regex.IsMatch (password)) {
+
+                    // New password was not accepted, throwing an exception.
+                    args.FindOrInsert ("password").Value = "xxx";
+                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                }
+            }
+
+            // Figuring out username of current context.
             string username = context.Ticket.Username;
 
             // Retrieving system salt before we enter write lock.
@@ -695,12 +739,25 @@ namespace p5.auth.helpers
          */
         public static void SetRootPassword (ApplicationContext context, Node args)
         {
-            // Retrieving password given
+            // Retrieving password given.
             string password = args.GetExChildValue<string> ("password", context);
-            if (string.IsNullOrEmpty (password))
-                throw new LambdaSecurityException ("You cannot set the root password to empty", args, context);
 
-            // Creating root account
+            // Retrieving password rules from web.config, if any.
+            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+            if (!string.IsNullOrEmpty (pwdRule)) {
+
+                // Verifying that specified password obeys by rules from web.config.
+                Regex regex = new Regex (pwdRule);
+                if (!regex.IsMatch (password)) {
+                    
+                    // New password was not accepted, throwing an exception.
+                    args.FindOrInsert ("password").Value = "xxx";
+                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                }
+            }
+
+            // Creating root account.
             var rootAccountNode = new Node ("", "root");
             rootAccountNode.Add ("password", password);
             rootAccountNode.Add ("role", "root");
