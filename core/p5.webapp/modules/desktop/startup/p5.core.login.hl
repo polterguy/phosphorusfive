@@ -73,6 +73,7 @@ create-event:p5.core.login
                     type:checkbox
                     style:"margin-bottom:0;"
                     .data-field:persist
+                    checked
                     title:Only check this box if you are using your own client, such as your personal computer or phone
                   span
                     innerValue:Remember me
