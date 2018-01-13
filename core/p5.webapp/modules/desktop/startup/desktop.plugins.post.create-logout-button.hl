@@ -66,7 +66,7 @@ create-event:desktop.plugins.post.create-logout-button
            * Creating logout logic.
            */
           set-widget-property:x:/../*/_event?value
-            title:Login
+            title:Logout
             innerValue:@"<span class=""icon-switch""></span>"
 
       onclick
