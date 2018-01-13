@@ -488,7 +488,8 @@ create-widget
                     button
                       innerValue:@"<span class=""icon-upload2""></span>"
                       title:Upload app
-                      style:"margin-bottom:0;padding-left:35px;padding-right:35px;"
+                      style:"margin-bottom:0;"
+                      class:larger
                       onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
                     button
                       innerValue:@"<span class=""icon-plus""></span>"

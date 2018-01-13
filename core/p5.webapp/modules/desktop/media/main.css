@@ -1,10 +1,9 @@
-
 .bazar-app,.desktop-app {
     float: left;
     margin-right: 15px;
     margin-bottom: 15px;
     background: linear-gradient(#fefefe,#e5e5e5);
-    color:#7a7a7a;
+    color:#888;
     transition:transform .2s ease-out;
 }
 
@@ -53,7 +52,7 @@ body,form,html {
     color: #c0c0fa;
     transform: rotate(7deg);
     transition: transform .2s ease-out;
-    color: #7a7a7a;
+    color: #888;
     outline:none;
 }
 
