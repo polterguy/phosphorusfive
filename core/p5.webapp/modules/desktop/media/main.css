@@ -1,21 +1,20 @@
+
 .bazar-app,.desktop-app {
     float: left;
     margin-right: 15px;
     margin-bottom: 15px;
-    background: linear-gradient(#fefefe,#f0f0f0)
+    background: linear-gradient(#fefefe,#e5e5e5);
+    color:#7a7a7a;
+    transition:transform .2s ease-out;
 }
 
 body,form,html {
-    min-height: 100%
-}
-
-.strip>label:first-child {
-    min-width: 100px
+    min-height: 100%;
 }
 
 .container-fullscreen {
     min-height: 100%;
-    overflow: auto
+    overflow: auto;
 }
 
 .desktop-apps {
@@ -26,86 +25,92 @@ body,form,html {
     position: relative;
     width: 35px;
     box-sizing: content-box;
-    text-align: center
+    text-align: center;
 }
 
 .desktop-app-name {
     font-size: 1rem;
     display: block;
-    text-align: center
+    text-align: center;
 }
 
 .desktop-app-text {
     position:absolute;
     top:5px;
-    right:5px;
+    left:0;
     font-size:.7rem;
+    width:calc(100% - 5px);
+    text-align:right;
 }
 .desktop-app-icon {
     margin-top: .3rem;
     display: block;
     font-size: 2rem;
-    padding: 0
+    padding: 0;
 }
 
-.desktop-app:active,.desktop-app:focus,.desktop-app:hover {
+.desktop-app:active, .desktop-app:focus, .desktop-app:hover {
     color: #c0c0fa;
-    transform: rotate(5deg)
+    transform: rotate(7deg);
+    transition: transform .2s ease-out;
+    color: #7a7a7a;
+    outline:none;
 }
 
 .desktop-app:active:nth-child(2n+1),.desktop-app:focus:nth-child(2n+1),.desktop-app:hover:nth-child(2n+1) {
-    transform: rotate(-5deg)
+    transform: rotate(-7deg);
+    transition:transform .2s ease-out;
 }
 
 @media screen and (min-width:500px) {
     .desktop-app {
-        width: 55px
+        width: 55px;
     }
 
     .desktop-app-icon {
         font-size: 3rem;
-        margin-top: .4rem
+        margin-top: .4rem;
     }
 }
 
 @media screen and (min-width:800px) {
     .desktop-app {
         width: 73px;
-        margin-top: .5rem
+        margin-top: .5rem;
     }
 
     .desktop-app-icon {
-        font-size: 4rem
+        font-size: 4rem;
     }
 }
 
 .bazar-name {
     color: #a0a0a0;
-    clear: both
+    clear: both;
 }
 
 .bazar-app {
     width: 180px;
     height: 180px;
-    position: relative
+    position: relative;
 }
 
 .bazar-app-name {
     font-size: 1.2rem;
     display: block;
-    text-align: center
+    text-align: center;
 }
 
 .bazar-app-description {
     font-size: .8rem;
     display: block;
-    text-align: left
+    text-align: left;
 }
 
 .bazar-app-price {
     position: absolute;
     bottom: 0;
-    right: 15px
+    right: 15px;
 }
 
 .bazar-leave {
@@ -113,20 +118,20 @@ body,form,html {
     top: 15px;
     right: 25px;
     font-size: 2rem;
-    color: rgba(255,255,0,1)
+    color: rgba(255,255,0,1);
 }
 
 .bazar-leave:active,.bazar-leave:focus,.bazar-leave:hover {
-    color: #ff8000
+    color: #ff8000;
 }
 
 @keyframes bazar-ajax-wait {
     0%,15% {
-        opacity: 0
+        opacity: 0;
     }
 
     100% {
-        opacity: 1
+        opacity: 1;
     }
 }
 
@@ -141,7 +146,7 @@ body,form,html {
     z-index: 1000;
     animation-name: bazar-ajax-wait;
     animation-duration: 2s;
-    animation-fill-mode: forwards
+    animation-fill-mode: forwards;
 }
 
 .bazar-ajax-wait h1 {
@@ -150,5 +155,5 @@ body,form,html {
     margin-left: auto;
     margin-right: auto;
     margin-top: 25%;
-    color: #fdfdfd
+    color: #fdfdfd;
 }

@@ -24,7 +24,7 @@ set-widget-property:cnt
  * Which for the record, is the same CSS file as the main "desktop" app's CSS file.
  */
 micro.css.include
-  skin:off-white
+  skin:serious
 p5.web.include-css-file:@DESKTOP/media/main.css
 
 
@@ -451,10 +451,9 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets(/=apps|/=upda
             style:"margin:5% auto;max-width:800px;"
             widgets
               h3
-                innerValue:Update and install apps and modules
+                innerValue:Install apps and modules
               p
-                innerValue:@"If you have a zip file, containing an app, you can upload it in the top/right corner, using the 'upload' button, or simply
-drag and drop your zip file, containing your app, unto the surface of your browser."
+                innerValue:@"If you have a zip file, containing an app or a module, you can simply drag and drop it here."
 
 
 

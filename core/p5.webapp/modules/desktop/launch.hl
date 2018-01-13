@@ -10,10 +10,10 @@
 
 
 /*
- * Including main Micro CSS files, and the off-white skin
+ * Including main Micro CSS files, and the serious skin
  */
 micro.css.include
-  skin:off-white
+  skin:serious
 
 
 
