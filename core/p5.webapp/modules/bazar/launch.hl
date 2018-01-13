@@ -23,11 +23,9 @@ set-widget-property:cnt
  *
  * Which for the record, is the same CSS file as the main "desktop" app's CSS file.
  */
-p5.web.include-css-file
-  @MICRO/media/main.css
-  @MICRO/media/fonts.css
-  @MICRO/media/skins/serious.css
-  @DESKTOP/media/main.css
+micro.css.include
+  skin:off-white
+p5.web.include-css-file:@DESKTOP/media/main.css
 
 
 

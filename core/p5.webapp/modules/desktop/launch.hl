@@ -10,12 +10,10 @@
 
 
 /*
- * Including main Micro CSS files, and the serious skin
+ * Including main Micro CSS files, and the off-white skin
  */
-p5.web.include-css-file
-  @MICRO/media/main.css
-  @MICRO/media/fonts.css
-  @MICRO/media/skins/serious.css
+micro.css.include
+  skin:off-white
 
 
 
