@@ -95,7 +95,7 @@ namespace p5.auth.helpers
                     // Previous attempt has been attempted.
                     var date = lastAttemptNode [0].Get<DateTime> (context, DateTime.MinValue);
                     if ((DateTime.Now - date).TotalSeconds < cooldown) {
-                        throw new LambdaException ("You need to wait " + (DateTime.Now - date).TotalSeconds + " seconds before you can try again", args, context);
+                        throw new LambdaException ("You need to wait " + (int)(DateTime.Now - date).TotalSeconds + " seconds before you can try again", args, context);
                     }
                 }
                 bruteForceLastAttempt = new Node (".p5.web.application.set", ".p5.io.last-login-attempt-for-" + username);
