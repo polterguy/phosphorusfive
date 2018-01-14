@@ -5,15 +5,7 @@
     background: linear-gradient(#fefefe,#e5e5e5);
     color:#888;
     transition:transform .2s ease-out;
-}
-
-body,form,html {
-    min-height: 100%;
-}
-
-.container-fullscreen {
-    min-height: 100%;
-    overflow: auto;
+    padding-bottom:1rem;
 }
 
 .desktop-apps {

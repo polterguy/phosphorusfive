@@ -249,7 +249,6 @@ for-each:x:/@bazar.bazars.get-apps/*
                         widgets
                           button
                             innerValue:Yes
-                            style:"margin-bottom:0;"
                             onclick:@"return p5.bazar_download_app(event);"
                             oninit
 
@@ -397,7 +396,6 @@ p5.bazar_download_app = function(e) {
                                         class:right
                                         widgets
                                           button
-                                            style:"margin-bottom:0;"
                                             innerValue:OK
                                             oninit
                                               micro.page.set-focus:x:/../*/_event?value
@@ -406,7 +404,6 @@ p5.bazar_download_app = function(e) {
 
                           button
                             innerValue:No
-                            style:"margin-bottom:0;"
                             onclick
 
                               /*
@@ -488,12 +485,10 @@ create-widget
                     button
                       innerValue:@"<span class=""icon-upload2""></span>"
                       title:Upload app
-                      style:"margin-bottom:0;"
                       class:larger
                       onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
                     button
                       innerValue:@"<span class=""icon-plus""></span>"
-                      style:"margin-bottom:0;"
                       title:Add Bazar URL
                       oninit
 
@@ -520,7 +515,6 @@ create-widget
 
                     button
                       innerValue:@"<span class=""icon-minus""></span>"
-                      style:"margin-bottom:0;"
                       title:Uninstall apps
                       onclick
 
@@ -531,7 +525,6 @@ create-widget
 
                     button
                       innerValue:@"<span class=""icon-home3""></span>"
-                      style:"margin-bottom:0;"
                       onclick
 
                         /*

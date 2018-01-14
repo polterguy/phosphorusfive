@@ -194,7 +194,6 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                                     widgets
                                       button
                                         innerValue:OK
-                                        style:"margin-bottom:0;"
                                         oninit
 
                                           /*

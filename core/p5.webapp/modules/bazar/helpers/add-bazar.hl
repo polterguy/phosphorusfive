@@ -45,7 +45,6 @@ create-widgets
                */
               button:bazar-add-bazar-btn
                 innerValue:Add Bazar
-                style:"margin-bottom:0;"
                 onclick
 
                   /*
@@ -64,7 +63,7 @@ create-widgets
                      * Bazar already exists in user's list of trusted Bazars.
                      */
                     p5.web.widgets.find-first-ancestor:x:/../*/_event?value
-                      class:micro-modal-content
+                      class:micro-widgets-modal-content
                     eval-x:x:/+/*
                     micro.windows.info:You're already using this Bazar
                       class:micro-windows-info warning
@@ -163,7 +162,6 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                                   widgets
                                     button
                                       innerValue:Yes
-                                      style:"margin-bottom:0;"
                                       onclick
 
                                         /*
@@ -217,7 +215,6 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
 
                                     button
                                       innerValue:No
-                                      style:"margin-bottom:0;"
                                       onclick
 
                                         /*
@@ -257,7 +254,7 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                      * Displaying error bubble to user, and returning early.
                      */
                     p5.web.widgets.find-first:bazar-add-bazar
-                      class:micro-modal-content
+                      class:micro-widgets-modal-content
                     eval-x:x:/+/*
                     micro.windows.info:Oops, not a valid Bazar URL
                       class:micro-windows-info warning
@@ -279,7 +276,6 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                */
               button
                 innerValue:Close
-                style:"margin-bottom:0;"
                 onclick
 
                   /*

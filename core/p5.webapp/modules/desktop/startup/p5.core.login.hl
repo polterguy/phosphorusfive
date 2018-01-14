@@ -13,7 +13,6 @@ create-event:p5.core.login
    */
   create-widgets
     micro.widgets.modal:desktop-login
-      class:micro-modal micro-modal-smaller
       widgets
         h3
           innerValue:Please login
@@ -67,22 +66,20 @@ create-event:p5.core.login
           div
             widgets
               label
-                style:"margin-bottom:0;"
                 widgets
+                  span
+                    innerValue:Remember me
                   input
                     type:checkbox
-                    style:"margin-bottom:0;"
                     .data-field:persist
                     checked
                     title:Only check this box if you are using your own client, such as your personal computer or phone
-                  span
-                    innerValue:Remember me
               label
-                style:"margin-bottom:0;"
                 widgets
+                  span
+                    innerValue:Change password
                   input
                     type:checkbox
-                    style:"margin-bottom:0;"
                     .data-field:change
                     title:Check this box if you'd like to change your existing password
                     onchange
@@ -111,12 +108,9 @@ create-event:p5.core.login
                           visible:false
                         micro.page.set-focus:desktop-username
 
-                  span
-                    innerValue:Change password
-
               button:desktop-login-button
                 innerValue:Login
-                style:"margin-bottom:0;float:right;"
+                style:"float:right;"
                 onclick
 
                   /*

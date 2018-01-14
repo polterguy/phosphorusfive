@@ -44,7 +44,6 @@ create-event:desktop.plugins.post.create-logout-button
      */
     create-literal-widget
       element:button
-      style:"margin-bottom:0;"
       oninit
 
         /*

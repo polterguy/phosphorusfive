@@ -46,7 +46,6 @@ create-widgets
                       button
                         innerValue:@"<span class=""icon-bin""></span>"
                         title:Delete this app. Warning, this action is permanent!
-                        style:"margin-bottom:0;"
                         onclick
 
                           /*
@@ -85,7 +84,6 @@ create-widgets
             widgets
               button
                 innerValue:Close
-                style:"margin-bottom:0;"
                 oninit
 
                   /*
