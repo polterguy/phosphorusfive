@@ -94,13 +94,11 @@ namespace p5.auth.helpers
 
                     // Previous attempt has been attempted.
                     var date = lastAttemptNode [0].Get<DateTime> (context, DateTime.MinValue);
-                    if ((DateTime.Now - date).TotalSeconds < cooldown) {
-                        throw new LambdaException ("You need to wait " + (int)(DateTime.Now - date).TotalSeconds + " seconds before you can try again", args, context);
+                    int timeSpanSeconds = System.Convert.ToInt32 ((DateTime.Now - date).TotalSeconds);
+                    if (timeSpanSeconds < cooldown) {
+                        throw new LambdaException ("You need to wait " + (cooldown - timeSpanSeconds) + " seconds before you can try again", args, context);
                     }
                 }
-                bruteForceLastAttempt = new Node (".p5.web.application.set", ".p5.io.last-login-attempt-for-" + username);
-                bruteForceLastAttempt.Add ("src", DateTime.Now);
-                context.RaiseEvent (".p5.web.application.set", bruteForceLastAttempt);
             }
 
             // Getting password file in Node format, but locking file access as we retrieve it
@@ -118,8 +116,14 @@ namespace p5.auth.helpers
             var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Checking for match on password
-            if (userNode ["password"].Get<string> (context) != hashedPassword)
-                throw new LambdaSecurityException ("Credentials not accepted", args, context); // Exact same wording as above! IMPORTANT!!
+            if (userNode ["password"].Get<string> (context) != hashedPassword) {
+
+                // Making sure we guard against brute force password attacks.
+                var bruteForceLastAttempt = new Node (".p5.web.application.set", ".p5.io.last-login-attempt-for-" + username);
+                bruteForceLastAttempt.Add ("src", DateTime.Now);
+                context.RaiseEvent (".p5.web.application.set", bruteForceLastAttempt);
+                throw new LambdaSecurityException ("Credentials not accepted", args, context);
+            }
 
             // Success, creating our ticket
             string role = userNode ["role"].Get<string> (context);
