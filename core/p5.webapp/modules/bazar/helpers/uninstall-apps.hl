@@ -1,4 +1,3 @@
-
 /*
  * Allows user to uninstall an app.
  */
@@ -66,9 +65,11 @@ create-widgets
                             class:micro-windows-info success
 
                           /*
-                           * Reloading location for simplicity.
+                           * Removing row from datagrid.
                            */
-                          p5.web.reload-location
+                          p5.web.widgets.find-first-ancestor:x:/../*/_event?value
+                            .app-row
+                          delete-widget:x:/-/*/*?value
 
           /*
            * Databinding grid.

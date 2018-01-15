@@ -3,15 +3,13 @@
  */
 container
   element:a
-  class:desktop-app shaded rounded air-inner
-  title:The Bazar is your own personal 'App Store'
+  role:button
+  class:desktop-app button shaded
+  title:Your own personal App Store
   widgets
+    literal
+      element:span
+      class:icon-gift desktop-app-icon
     span
-      class:desktop-app-name
-      widgets
-        literal
-          element:span
-          class:icon-gift desktop-app-icon
-        span
-          class:desktop-app-text
-          innerValue:Bazar
+      class:desktop-app-text
+      innerValue:Bazar
