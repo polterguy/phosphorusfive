@@ -1,3 +1,5 @@
+
+/* Commonalities between Bazar and Desktop */
 .bazar-app,.desktop-app {
     float: left;
     margin-right: 1rem;
@@ -12,6 +14,8 @@
 .bazar-app:focus,.desktop-app:focus {
     color: #999;
 }
+
+/* Desktop */
 .desktop-app {
     overflow: visible;
     position: relative;
@@ -36,17 +40,14 @@
     font-size: 2rem;
     padding: 0;
 }
-
 .desktop-app:active, .desktop-app:focus, .desktop-app:hover {
     transform: rotate(7deg);
     transition: transform .2s ease-out;
 }
-
 .desktop-app:active:nth-child(2n+1),.desktop-app:focus:nth-child(2n+1),.desktop-app:hover:nth-child(2n+1) {
     transform: rotate(-7deg);
     transition:transform .2s ease-out;
 }
-
 @media screen and (min-width:500px) {
 .desktop-app {
     width: 4rem;
@@ -55,7 +56,6 @@
     font-size: 3rem;
 }
 }
-
 @media screen and (min-width:800px) {
 .desktop-app {
     width: 5rem;
@@ -65,35 +65,30 @@
 }
 }
 
+
+
+
+/* Bazar */
+/* NOT FINISHED */
 .bazar-name {
     color: #a0a0a0;
     clear: both;
 }
-
 .bazar-app {
-    width: 180px;
-    height: 180px;
+    width: 5rem;
+    height: 5rem;
     position: relative;
 }
-
-.bazar-app-name {
-    font-size: 1.2rem;
-    display: block;
-    text-align: center;
-}
-
 .bazar-app-description {
     font-size: .8rem;
     display: block;
     text-align: left;
 }
-
 .bazar-app-price {
     position: absolute;
     bottom: 0;
     right: 15px;
 }
-
 .bazar-leave {
     position: absolute;
     top: 15px;
@@ -101,7 +96,6 @@
     font-size: 2rem;
     color: rgba(255,255,0,1);
 }
-
 .bazar-leave:active,.bazar-leave:focus,.bazar-leave:hover {
     color: #ff8000;
 }
