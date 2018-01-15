@@ -1,33 +1,22 @@
-﻿
-
 /*
- * Startup file for Bazar.
+ * Startup file.
  *
- * Simply evaluates all files in "startup" folder for Bazar app.
+ * Creates "path" event and evaluates all files in "/startup/" folder for module.
  */
 
 
 /*
- * Creates the "path" Active Event that points to our "/bazar/" folder.
- * This is done in such a way that we can install our Bazar in any folder we wish.
+ * Creates our "path" Active Event for module.
  */
-split:x:/..?name
-  =:/
-set:x:/@split/0/-
-join:x:/@split/*?name
-  sep:/
+micro.path.get-folder:x:/..?name
+trim-right:x:/@micro.path.get-folder?value
+  chars:/
 eval-x:x:/+/*
 create-event:p5.io.unroll-path.@BAZAR
-  return:/{0}
-    :x:/@join?value
-
-
-
+  return:x:/@trim-right?value
 
 
 /*
- * Evaluating all startup files for Bazar.
+ * Evaluating all other startup files.
  */
-list-files:@BAZAR/startup/
-load-file:x:/-/*?name
-eval:x:/-/*
+micro.evaluate.folder:@BAZAR/startup/

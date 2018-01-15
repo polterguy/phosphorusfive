@@ -1,8 +1,8 @@
 /*
- * Initialises our "components" and "apps", in addition to the core micro web operating system.
+ * Initialises Phosphorus Five.
  *
- * This will basically create our [p5.web.load-ui] event, in addition to evaluating all "startup.hl" files,
- * for each module installed in the core web operating system.
+ * This is being done by evaluating all "startup.hl" files, for all modules found 
+ * in the system.
  */
 
 
@@ -10,7 +10,7 @@
 
 
 /*
- * Retrieving all "startup.hl" files, inside all of our installed modules.
+ * Loding all "startup.hl" files from all modules in system.
  */
 list-folders:/modules/
 list-files:x:/@list-folders/*?name
@@ -21,10 +21,20 @@ list-files:x:/@list-folders/*?name
 
 
 /*
- * Evaluating all files from above result, to make sure we initialise all apps.
+ * Evaluating all files from above result, to make sure we initialise all modules.
  *
- * Notice, we explicitly check for micro, desktop and system42 here, and if found, we evaluate these first, before
- * we evaluate any of the other modules, since other modules might be dependent upon these modules during startup.
+ * Notice, we will evaluate these files in the following order.
+ *
+ * 1. System42's startup files
+ * 2. Micro's startup files
+ * 3. Desktop's startup files
+ * 4. All other startup files in an undetermined order
+ *
+ * This is done to make sure other modules can use features from these modules in
+ * their startup files.
+ *
+ * Notice, System42 is obsolete, and will in a future release be completely ignored.
+ * However, for the time being, we choose to still explicitly support it for 'legacy reasons'.
  */
 load-file:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")?name"
 eval:x:/-/*

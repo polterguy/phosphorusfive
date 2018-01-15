@@ -273,8 +273,6 @@
     <None Include="modules\bazar\startup\bazar.ensure-trusted-fingerprints.hl" />
     <None Include="modules\bazar\startup\bazar.install-app.hl" />
     <None Include="modules\bazar\helpers\upload-app.hl" />
-    <None Include="modules\bazar\startup\bazar.version.hl" />
-    <None Include="modules\desktop\startup\desktop.version.hl" />
     <None Include="modules\bazar\bazars\core.hl" />
     <None Include="modules\bazar\helpers\add-bazar.hl" />
     <None Include="modules\bazar\helpers\uninstall-apps.hl" />
@@ -284,6 +282,8 @@
     <None Include="modules\desktop\startup\desktop.uninstall-app.hl" />
     <None Include="modules\bazar\startup\empty-bazar-cache.hl" />
     <None Include="modules\desktop\startup\desktop.plugins.post.create-logout-button.hl" />
+    <None Include="modules\bazar\startup\version.hl" />
+    <None Include="modules\desktop\startup\version.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
