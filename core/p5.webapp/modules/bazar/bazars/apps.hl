@@ -58,14 +58,14 @@ app:sephia-five
   condition:p5.io.unroll-path.@SEPHIA
   version:decimal:6.1
     event:sephia.version
-  author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support. It is built with your privacy in mind, and has the following features.
+  author-readme:@"Sephia Five is a cryptographically secure webmail client, with PGP support. It is built with your privacy in mind, and has the following features.
 
 * PGP cryptography
-* Malware protection by denying user to download dangerous files
 * Phishing protection
-* Extremly easy to use
+* Easy to use
+* Blistering fast compared to GMail
 
-You can see a video demonstrating some of its features [here](https://www.youtube.com/watch?v=0F4SVEoD1HE). Sephia Five is Free Software, Open Source, and Gratis for individuals."
+Sephia Five is Free Software, Open Source, and Gratis for individuals - And also features a full API, if you wish to extend it."
 
 
 
@@ -87,7 +87,9 @@ app:sulphur-five
     event:sulphur.version
   author-readme:@"Sulphur Five is a secure file sharing system, built with your privacy in mind.
 
-Sulphur Five allows you to share files privately with only yourself, and protected which means with any registered user in your system, or publicly which means the world at large."
+Sulphur Five allows you to share files privately with only yourself, and protected which means with any registered user in your system, or publicly which means the world at large.
+
+Sulphur Five also has many other interesting attributes, such as the ability to describe your files using Markdown, and #hash_tagging your files."
 
 
 
@@ -107,9 +109,11 @@ app:peeples
   condition:p5.io.unroll-path.@PEEPLES
   version:decimal:6.1
     event:peeples.version
-  author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation.
+  author-readme:@"Peeples is the user management module for Phosphorus Five, that allows you to create, edit and delete users in your installation.
 
-This is the module you need if you want to create additional user accounts in your Phosphorus Five installation."
+This is the module you need if you want to create additional user accounts in your Phosphorus Five installation.
+
+In addition, it allows you to administrate your access objects, to grant or deny access to some specific part of your system, according to the roles of your users."
 
 
 
@@ -119,7 +123,7 @@ This is the module you need if you want to create additional user accounts in yo
  * Pay2Play
  */
 app:pay2play
-  name:Pay2Play 6.1
+  name:Pay2Play BETA
   description:Pay2Play allows you to write a book, publish it, and charge for access to it
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.1/pay2play.zip.pgp"
   price:Free
@@ -131,6 +135,4 @@ app:pay2play
     event:pay2play.version
   author-readme:@"Pay2Play allows you to create content, publish it, and charge for access to it. It is useful both for learning materials and tutors, in addition to authors, simply wanting a larger cut of the pie they create themselves. Notice, Pay2Play is an _'immature'_ project, and should be considered an early preview release, or a _'BETA'_ if you wish.
 
-It features a very simple to understand, and arguably _'naive'_ writing experience, based upon Markup, making it extremely easy to use. Combining it with _'unlisted'_ YouTube videos, allows you to charge for access to your YouTube videos.
-
-You can check out its [documentation here](https://github.com/polterguy/pay2play)."
+It features a very simple to understand, and arguably _'naive'_ writing experience, based upon Markup, making it extremely easy to use. Combining it with _'unlisted'_ YouTube videos, allows you to charge for access to your YouTube videos."

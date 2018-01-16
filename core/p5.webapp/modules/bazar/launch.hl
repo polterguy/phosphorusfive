@@ -25,7 +25,7 @@ set-widget-property:cnt
  */
 micro.css.include
   skin:serious
-p5.web.include-css-file:@DESKTOP/media/main.css
+p5.web.include-css-file:@BAZAR/media/main.css
 
 
 
@@ -214,7 +214,7 @@ for-each:x:/@bazar.bazars.get-apps/*
           element:a
           href:#
           role:button
-          class:bazar-app shaded rounded air-inner
+          class:bazar-app shaded rounded air-inner button
           onclick
 
             /*
@@ -238,14 +238,14 @@ for-each:x:/@bazar.bazars.get-apps/*
                     innerValue:Confirm installation of {0}
                       :x:/@_app-name?value
                   div
-                    class:success rounded air-inner
+                    class:rounded air-inner
                     innerValue:x:/@_app-author-description?value
                   div
+                    style:"clear:both;"
                     class:right
                     widgets
                       div
                         class:strip
-                        style:"display:inline-block;"
                         widgets
                           button
                             innerValue:Yes
@@ -420,7 +420,8 @@ p5.bazar_download_app = function(e) {
               innerValue:x:/..for-each/*/p5.html.html-encode/[2,3]?value
             literal
               class:bazar-app-price
-              innerValue:x:/..for-each/*/p5.html.html-encode/[4,5]?value
+              innerValue:€{0}
+                :x:/..for-each/*/p5.html.html-encode/[4,5]?value
 
 
 
@@ -480,7 +481,6 @@ create-widget
               widgets
                 div
                   class:strip toolbar
-                  style:"display:inline-block;"
                   widgets
                     button
                       innerValue:@"<span class=""icon-upload2""></span>"

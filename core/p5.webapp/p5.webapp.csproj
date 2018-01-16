@@ -61,6 +61,7 @@
     <Content Include="common\documents\private\web.config" />
     <Content Include="modules\bazar\screenshots\screenshot-1.png" />
     <Content Include="modules\desktop\media\main.css" />
+    <Content Include="modules\bazar\media\main.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -118,6 +119,7 @@
     <Folder Include="modules\desktop\" />
     <Folder Include="modules\bazar\startup\" />
     <Folder Include="modules\bazar\helpers\" />
+    <Folder Include="modules\bazar\media\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">

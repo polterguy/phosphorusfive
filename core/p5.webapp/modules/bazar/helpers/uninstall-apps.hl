@@ -81,7 +81,6 @@ create-widgets
         widgets
           div
             class:strip
-            style:"display:inline-block;"
             widgets
               button
                 innerValue:Close

@@ -1,6 +1,5 @@
 
-/* Commonalities between Bazar and Desktop */
-.bazar-app,.desktop-app {
+.desktop-app {
     float: left;
     margin-right: 1rem;
     margin-bottom: 1rem;
@@ -9,18 +8,15 @@
     padding-bottom: 1rem;
     outline: none;
     min-height: fit-content;
-}
-.bazar-app:active,.desktop-app:active,
-.bazar-app:focus,.desktop-app:focus {
-    color: #999;
-}
-
-/* Desktop */
-.desktop-app {
     overflow: visible;
     position: relative;
     box-sizing: content-box;
     text-align: center;
+}
+.desktop-app:active,
+.desktop-app:hover,
+.desktop-app:focus {
+    color: #999;
 }
 .desktop-app-text {
     position: absolute;
@@ -44,7 +40,7 @@
     transform: rotate(7deg);
     transition: transform .2s ease-out;
 }
-.desktop-app:active:nth-child(2n+1),.desktop-app:focus:nth-child(2n+1),.desktop-app:hover:nth-child(2n+1) {
+.desktop-app:active:nth-child(2n+1), .desktop-app:focus:nth-child(2n+1), .desktop-app:hover:nth-child(2n+1) {
     transform: rotate(-7deg);
     transition:transform .2s ease-out;
 }
@@ -63,71 +59,4 @@
 .desktop-app-icon {
     font-size: 4rem;
 }
-}
-
-
-
-
-/* Bazar */
-/* NOT FINISHED */
-.bazar-name {
-    color: #a0a0a0;
-    clear: both;
-}
-.bazar-app {
-    width: 5rem;
-    height: 5rem;
-    position: relative;
-}
-.bazar-app-description {
-    font-size: .8rem;
-    display: block;
-    text-align: left;
-}
-.bazar-app-price {
-    position: absolute;
-    bottom: 0;
-    right: 15px;
-}
-.bazar-leave {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 2rem;
-    color: rgba(255,255,0,1);
-}
-.bazar-leave:active,.bazar-leave:focus,.bazar-leave:hover {
-    color: #ff8000;
-}
-
-@keyframes bazar-ajax-wait {
-0%,15% {
-    opacity: 0;
-}
-100% {
-    opacity: 1;
-}
-}
-
-.bazar-ajax-wait {
-    display: block!important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,.7);
-    z-index: 1000;
-    animation-name: bazar-ajax-wait;
-    animation-duration: 2s;
-    animation-fill-mode: forwards;
-}
-
-.bazar-ajax-wait h1 {
-    display: block;
-    width: 300px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 25%;
-    color: #fdfdfd;
 }

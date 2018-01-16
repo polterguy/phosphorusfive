@@ -77,7 +77,7 @@ app:hyper-core
   condition:p5.io.unroll-path.@HYPER-CORE
   version:decimal:6.1
     event:hyper-core.version
-  author-readme:@"Hyper Core is a generic back for your JavaScript based front end web apps, and contains among other things, a REST based ORM library for MySQL. It is extendible in nature though, and can easily wrap any other database you want to use, or any server side business logic object for that matter.
+  author-readme:@"Hyper Core is a generic back for your JavaScript based front end web apps, and contains among other things, a REST based ORM library for MySQL. It is extendible in nature, and can easily wrap any other database you want to use, or any server side business logic object for that matter.
 
 It allows you to easily control access to your back end REST based web service endpoints, by creating access objects, allowing you to fine grain access, to roles and users of your systems, to specific operations you want to allow or deny, according to roles."
 
@@ -89,7 +89,7 @@ It allows you to easily control access to your back end REST based web service e
  * Hyperbuild.
  */
 app:hyperbuild
-  name:Hyperbuild 6.1
+  name:Hyperbuild BETA
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.1/hyperbuild.zip.pgp"
   price:Free
@@ -99,6 +99,6 @@ app:hyperbuild
   condition:p5.io.unroll-path.@HYPERBUILD
   version:decimal:6.1
     event:hyperbuild.version
-  author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of your system, including cryptographically sign modules and such with your own PGP key, create your own Bazar declarations, etc.
+  author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of your system, including cryptographically sign your modules with your own PGP key, create your own Bazar declarations, etc.
 
-Basically, if you want to create your own distribution, and/or modules, this module significantly simplifies that process, by automatically packaging any modules, and creating a distribution of your system's current state. This module should be considered _'BETA'_."
+If you want to create your own distribution, and/or modules, this module significantly simplifies that process, by automatically packaging any modules, and creating a distribution of your system's current state. This module should be considered _'BETA'_."
