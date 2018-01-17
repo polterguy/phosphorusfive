@@ -1,7 +1,6 @@
-﻿
 /*
  * Creates our version Active Event.
  */
 create-event:bazar.version
 
-  return:decimal:6.1
+  return:decimal:6.2
