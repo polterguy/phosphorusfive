@@ -24,15 +24,15 @@ name:GaiaSoul system modules
  * Micro
  */
 app:micro
-  name:Micro 6.2
+  name:Micro 6.3
   description:A microscopic CSS framework and component library for P5.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/micro.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/micro.zip-6-3.pgp"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@MICRO
-  version:decimal:6.2
+  version:decimal:6.3
     event:micro.version
   author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five and Hyperlambda. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps.
 
