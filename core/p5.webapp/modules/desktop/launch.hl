@@ -12,7 +12,6 @@
  * Including main Micro CSS files, and the serious skin
  */
 micro.css.include
-  skin:serious
 
 
 

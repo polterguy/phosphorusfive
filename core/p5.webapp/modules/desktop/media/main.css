@@ -1,10 +1,8 @@
-
 .desktop-app {
     float: left;
     margin-right: 1rem;
     margin-bottom: 1rem;
-    color: #999;
-    transition: transform .2s ease-out;
+    transition: transform .2s ease-out, background .2s ease-out;
     padding-bottom: 1rem;
     outline: none;
     min-height: fit-content;
@@ -13,18 +11,12 @@
     box-sizing: content-box;
     text-align: center;
 }
-.desktop-app:active,
-.desktop-app:hover,
-.desktop-app:focus {
-    color: #999;
-}
 .desktop-app-text {
     position: absolute;
     top: .25rem;
     left: 0;
     font-size: .7rem;
     font-weight: 400;
-    color: var(--placeholder-color);
     width: calc(100% - 5px);
     text-align: right;
     white-space: nowrap;
@@ -38,11 +30,11 @@
 }
 .desktop-app:active, .desktop-app:focus, .desktop-app:hover {
     transform: rotate(7deg);
-    transition: transform .2s ease-out;
+    transition: transform .2s ease-out, background .2s ease-out;
 }
 .desktop-app:active:nth-child(2n+1), .desktop-app:focus:nth-child(2n+1), .desktop-app:hover:nth-child(2n+1) {
     transform: rotate(-7deg);
-    transition:transform .2s ease-out;
+    transition: transform .2s ease-out, background .2s ease-out;
 }
 @media screen and (min-width:500px) {
 .desktop-app {

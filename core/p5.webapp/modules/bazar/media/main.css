@@ -1,10 +1,7 @@
-
 .bazar-app {
     float: left;
     margin-right: 1rem;
     margin-bottom: 1rem;
-    color: #999;
-    transition: transform .2s ease-out;
     padding-bottom: 1rem;
     outline: none;
     min-height: fit-content;
@@ -13,17 +10,10 @@
     position: relative;
     font-weight:normal;
 }
-.bazar-app:active,
-.bazar-app:hover,
-.bazar-app:focus {
-    color: #999;
-}
-
 
 /* Bazar */
 /* NOT FINISHED */
 .bazar-name {
-    color: #a0a0a0;
     clear: both;
 }
 .bazar-app-name {
@@ -47,10 +37,6 @@
     top: 15px;
     right: 25px;
     font-size: 2rem;
-    color: rgba(255,255,0,1);
-}
-.bazar-leave:active, .bazar-leave:focus, .bazar-leave:hover {
-    color: #ff8000;
 }
 
 @keyframes bazar-ajax-wait {
