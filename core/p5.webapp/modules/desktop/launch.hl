@@ -130,6 +130,24 @@ create-widget
                  * This is just a container for optional "plugin buttons", such as for instance the one
                  * created for logging in and out of Phosphorus Five.
                  */
+                button
+                  innerValue:@"<span class=""icon-cog""></span>"
+                  oninit
+
+                    /*
+                     * We do not enable settings for the default "guest" user.
+                     */
+                    whoami
+                    if:x:/-/*/default?value
+                      =:bool:true
+                      delete-widget:x:/../*/_event?value
+
+                  onclick
+
+                    /*
+                     * Launching settings form.
+                     */
+                    micro.evaluate.file:@DESKTOP/helpers/settings.hl
 
     div:desktop-apps
       class:col-100 desktop-apps

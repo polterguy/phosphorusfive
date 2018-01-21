@@ -1,0 +1,99 @@
+/*
+ * Displays settings in a modal widget.
+ */
+create-widgets
+  micro.widgets.modal:desktop-settings
+    widgets
+      h3
+        innerValue:Settings
+
+      div
+        class:strip fill
+        widgets
+          label
+            innerValue:Skin
+            class:description
+          container
+            element:select
+            info:Skin
+            .data-field:skin
+            oninit
+
+              /*
+               * Retrieving currently selected theme, defaulting to "hyperlambda".
+               */
+              .defaults
+                skin:air
+              p5.auth.my-settings.get
+
+              /*
+               * Listing all available CSS files from themes folder,
+               * and creating one option element for each, making sure
+               * we set the currently chose theme as the active.
+               */
+              list-files:@MICRO/media/skins/
+                filter:.css
+              for-each:x:/@list-files/*?name
+
+                /*
+                 * Figuring out filename, without its extension.
+                 */
+                split:x:/@_dp?value
+                  =:/
+                  =:.
+
+                /*
+                 * Checking if this is our currently selected theme.
+                 */
+                if:x:/@split/0/-2?name
+                  =:x:(/@p5.auth.my-settings.get/*/desktop/*/skin|/../*/.defaults/*/skin)/$?value
+                  add:x:/..for-each/*/create-literal-widget
+                    src:selected
+
+                /*
+                 * Creating option element wrapping currently iterated CSS file.
+                 */
+                create-literal-widget
+                  parent:x:/../*/_event?value
+                  element:option
+                  innerValue:x:/@split/0/-2?name
+
+      div
+        class:right
+        widgets
+          button
+            innerValue:Save
+            onclick
+
+              /*
+               * Retrieving old settings, and removing any old [desktop] parts.
+               */
+              p5.auth.my-settings.get
+              set:x:/@p5.auth.my-settings.get/*/desktop
+
+              /*
+               * Serializing form, to retrieve new settings, and adding a new [desktop] part.
+               */
+              micro.form.serialize:desktop-settings
+              add:x:/@p5.auth.my-settings.get
+                src:desktop
+
+              /*
+               * Adding all new settings into newly created [desktop] segment.
+               */
+              add:x:/@p5.auth.my-settings.get/*/desktop
+                src:x:/@micro.form.serialize/*
+
+              /*
+               * Adding all settings from [get] invocation now into [set] invocation, and
+               * updating settings.
+               */
+              add:x:/../*/p5.auth.my-settings.set
+                src:x:/@p5.auth.my-settings.get/*
+              p5.auth.my-settings.set
+
+              /*
+               * Deleting modal widget, and reloading the page.
+               */
+              delete-widget:desktop-settings
+              p5.web.reload-location

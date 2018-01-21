@@ -371,19 +371,24 @@ namespace p5.auth.helpers
             // Retrieving new password and role, defaulting to null, which will not update existing values.
             string newPassword = args.GetExChildValue<string> ("password", context);
             string newRole = args.GetExChildValue<string> ("role", context);
-            
+
             // Retrieving password rules from web.config, if any.
-            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
-            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
-            if (!string.IsNullOrEmpty (pwdRule)) {
+            // But only if a new password was given.
+            if (!string.IsNullOrEmpty (newPassword)) {
+                
+                // Verifying password conforms to password rules.
+                var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+                var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+                if (!string.IsNullOrEmpty (pwdRule)) {
 
-                // Verifying that specified password obeys by rules from web.config.
-                Regex regex = new Regex (pwdRule);
-                if (!regex.IsMatch (newPassword)) {
+                    // Verifying that specified password obeys by rules from web.config.
+                    Regex regex = new Regex (pwdRule);
+                    if (!regex.IsMatch (newPassword)) {
 
-                    // New password was not accepted, throwing an exception.
-                    args.FindOrInsert ("password").Value = "xxx";
-                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                        // New password was not accepted, throwing an exception.
+                        args.FindOrInsert ("password").Value = "xxx";
+                        throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                    }
                 }
             }
 

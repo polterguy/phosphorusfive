@@ -121,8 +121,10 @@ In addition, it allows you to administrate your access objects, to grant or deny
 
 /*
  * Pay2Play
+ *
+ * REMOVED until stable enought to be useful.
  */
-app:pay2play
+_app:pay2play
   name:Pay2Play BETA
   description:Pay2Play allows you to write a book, publish it, and charge for access to it
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/pay2play.zip.pgp"

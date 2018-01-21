@@ -87,8 +87,10 @@ It allows you to easily control access to your back end REST based web service e
 
 /*
  * Hyperbuild.
+ *
+ * REMOVED until stable enought to be useful.
  */
-app:hyperbuild
+_app:hyperbuild
   name:Hyperbuild BETA
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/hyperbuild.zip.pgp"

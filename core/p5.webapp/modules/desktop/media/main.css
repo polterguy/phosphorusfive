@@ -25,22 +25,25 @@
 .desktop-app-icon {
     margin-top: .75rem;
     display: block;
-    font-size: 2rem;
     padding: 0;
+}
+span.desktop-app-icon[class*="icon-"] {
+    font-size: 2rem;
 }
 .desktop-app:active, .desktop-app:focus, .desktop-app:hover {
     transform: rotate(7deg);
-    transition: transform .2s ease-out, background .2s ease-out;
+    transition: transform .2s ease-out, background .2s ease-out, box-shadow .2s ease-out;
+    color: var(--button-color);
 }
 .desktop-app:active:nth-child(2n+1), .desktop-app:focus:nth-child(2n+1), .desktop-app:hover:nth-child(2n+1) {
     transform: rotate(-7deg);
-    transition: transform .2s ease-out, background .2s ease-out;
+    transition: transform .2s ease-out, background .2s ease-out, box-shadow .2s ease-out;
 }
 @media screen and (min-width:500px) {
 .desktop-app {
     width: 4rem;
 }
-.desktop-app-icon {
+span.desktop-app-icon[class*="icon-"] {
     font-size: 3rem;
 }
 }
@@ -48,7 +51,7 @@
 .desktop-app {
     width: 5rem;
 }
-.desktop-app-icon {
+span.desktop-app-icon[class*="icon-"] {
     font-size: 4rem;
 }
 }

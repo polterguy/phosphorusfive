@@ -10,6 +10,9 @@
     position: relative;
     font-weight:normal;
 }
+.bazar-app:active, .bazar-app:focus, .bazar-app:hover {
+    color: var(--button-color);
+}
 
 /* Bazar */
 /* NOT FINISHED */
