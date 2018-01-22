@@ -1,4 +1,3 @@
-﻿
 
 /*
  * File responsible for creating our default [p5.web.load-ui] event, which basically is our default URL resolver,
@@ -44,6 +43,11 @@ create-event:p5.web.load-ui
     micro.evaluate.file:@DESKTOP/initialize/initialize-server.hl
 
   else
+
+    /*
+     * Setting default title of page.
+     */
+    p5.web.page.set-title:Phosphorus V - 7.0 - In the beginning there was Hyperlambda
 
     /*
      * Loading "pre" plugins, making sure we pass in [url] to all plugin events.
