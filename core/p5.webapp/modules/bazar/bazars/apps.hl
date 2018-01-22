@@ -24,15 +24,15 @@ name:GaiaSoul apps
  * Magic Menu
  */
 app:magic-menu
-  name:Magic Menu 6.2
+  name:Magic Menu 7.0
   description:A common menu system and speech input system for all your P5 apps
   price:Free
   local-url:magic-menu
   image:"https://phosphorusfive.files.wordpress.com/2017/11/odtssey2001_16.jpg"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/magic-menu.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/magic-menu.zip.pgp"
   condition:p5.io.unroll-path.@MAGIC
-  version:decimal:6.2
+  version:decimal:7.0
     event:magic-menu.version
   author-readme:@"Magic Menu is a bridge between natural spoken language and computer code, allowing you to evaluate Hyperlambda, as a response to natural language, by speaking phrases and words, in your own language if you wish - Or chosing menu items.
 
@@ -48,15 +48,15 @@ It supports most common languages on the planet, and can literally do anything. 
  * Sephia Five
  */
 app:sephia-five
-  name:Sephia Five 6.2
+  name:Sephia Five 7.0
   description:A secure webmail client with PGP cryptography, virus protection, spam filterint, and more
   price:Free
   local-url:sephia-five
   image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/sephia-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/sephia-five.zip.pgp"
   condition:p5.io.unroll-path.@SEPHIA
-  version:decimal:6.2
+  version:decimal:7.0
     event:sephia.version
   author-readme:@"Sephia Five is a cryptographically secure webmail client, with PGP support. It is built with your privacy in mind, and has the following features.
 
@@ -75,15 +75,15 @@ Sephia Five is Free Software, Open Source, and Gratis for individuals - And also
  * Sulphur Five
  */
 app:sulphur-five
-  name:Sulphur Five 6.2
+  name:Sulphur Five 7.0
   description:A secure file sharing system, allowing you to share files publicly, protected and private
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/sulphur-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/sulphur-five.zip.pgp"
   price:Free
   local-url:sulphur-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/secure-file-sharing.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@SULPHUR
-  version:decimal:6.2
+  version:decimal:7.0
     event:sulphur.version
   author-readme:@"Sulphur Five is a secure file sharing system, built with your privacy in mind.
 
@@ -99,15 +99,15 @@ Sulphur Five also has many other interesting attributes, such as the ability to 
  * Peeples
  */
 app:peeples
-  name:Peeples 6.2
+  name:Peeples 7.0
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/peeples.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/peeples.zip.pgp"
   price:Free
   local-url:peeples
   image:"https://phosphorusfive.files.wordpress.com/2017/08/users.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@PEEPLES
-  version:decimal:6.2
+  version:decimal:7.0
     event:peeples.version
   author-readme:@"Peeples is the user management module for Phosphorus Five, that allows you to create, edit and delete users in your installation.
 
@@ -127,13 +127,13 @@ In addition, it allows you to administrate your access objects, to grant or deny
 _app:pay2play
   name:Pay2Play BETA
   description:Pay2Play allows you to write a book, publish it, and charge for access to it
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v6.2/pay2play.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/pay2play.zip.pgp"
   price:Free
   local-url:pay2play
   image:"https://phosphorusfive.files.wordpress.com/2017/10/generic_book.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@PAY2PLAY
-  version:decimal:6.2
+  version:decimal:7.0
     event:pay2play.version
   author-readme:@"Pay2Play allows you to create content, publish it, and charge for access to it. It is useful both for learning materials and tutors, in addition to authors, simply wanting a larger cut of the pie they create themselves. Notice, Pay2Play is an _'immature'_ project, and should be considered an early preview release, or a _'BETA'_ if you wish.
 
