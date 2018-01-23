@@ -445,9 +445,9 @@
                 // Session timeout exception.
                 var err = document.createElement("div");
                 err.id = "__p5_error";
-                err.className = "p5-exception micro-modal";
+                err.className = "p5-exception micro-widgets-modal";
 
-                err.innerHTML = "<div class='micro-modal-content'><h1>Session timeout</h1><p>You can either reload your page, at which point you'll loose any form data you have supplied. Or close this window, copy your form data, and manually reload your page.</p><div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='window.location.replace(window.location.href);'>Reload</button><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
+                err.innerHTML = "<div class='micro-widgets-modal-content'><h1>Session timeout</h1><p>You can either reload your page, at which point you'll loose any form data you have supplied. Or close this window, copy your form data, and manually reload your page.</p><div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='window.location.replace(window.location.href);'>Reload</button><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
                 var body = document.getElementsByTagName("body")[0];
                 body.appendChild(err);
 
@@ -456,9 +456,9 @@
                 // Creating our error window.
                 var err = document.createElement("div");
                 err.id = "__p5_error";
-                err.className = "p5-exception micro-modal";
+                err.className = "p5-exception micro-widgets-modal";
 
-                err.innerHTML = "<div class='micro-modal-content'>" + responseHtml + "<div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
+                err.innerHTML = "<div class='micro-widgets-modal-content'>" + responseHtml + "<div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
                 var body = document.getElementsByTagName("body")[0];
                 body.appendChild(err);
             }

@@ -250,9 +250,9 @@ namespace p5.webapp.code
                 // Checking if we have exceptions handlers for current type of exception.
                 var idxTypeName = idxType.Name;
                 var args = new Node ();
-                args.Add ("_message", message);
-                args.Add ("_trace", trace);
-                args.Add ("_type", err.GetType ().Name);
+                args.Add ("message", message);
+                args.Add ("trace", trace);
+                args.Add ("type", err.GetType ().Name);
                 ApplicationContext.RaiseEvent ("p5.error." + idxTypeName, args);
                 if (args.Get (ApplicationContext, false))
                     return true;

@@ -10,7 +10,7 @@
 
 
 /*
- * Loding all "startup.hl" files from all modules in system.
+ * Loading all "startup.hl" files from all modules in system.
  */
 list-folders:/modules/
 list-files:x:/@list-folders/*?name

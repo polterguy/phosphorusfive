@@ -1,0 +1,24 @@
+﻿
+
+/*
+ * Creates our LambdaException handler event.
+ */
+create-event:p5.error.LambdaException
+
+  /*
+   * Making sure we correctly return exception to client.
+   */
+  p5.web.response.set-status-code:500
+  p5.web.response.set-status-description:500 Interal server error
+  p5.html.html-encode:x:/../*/message?value
+  p5.html.html-encode:x:/../*/trace?value
+  p5.web.echo:@"<h1>{0}</h1><p><strong>Message</strong> - '{1}'</p><pre class=""warning"">{2}</pre>"
+    :x:/../*/type?value
+    :x:/../*/p5.html.html-encode/[0,1]?value
+    :x:/../*/p5.html.html-encode/[1,2]?value
+
+
+  /*
+   * Returning true to caller, to stop exception from "propagating".
+   */
+  return:bool:true
