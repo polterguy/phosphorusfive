@@ -86,6 +86,26 @@ It allows you to easily control access to your back end REST based web service e
 
 
 /*
+ * Hyper IDE
+ */
+app:hyper-ide
+  name:Hyper IDE 6.3
+  description:A web based IDE with support for more than 100 programming languages
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/hyper-ide.zip"
+  price:Free
+  local-url:hyper-ide
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@IDE
+  version:decimal:7.0
+    event:hyper-ide.version
+  author-readme:@"Hyper IDE is a web based development environment, allowing you to create your own applications, either in Hyperlambda or any other programming language you wish to use."
+
+
+
+
+
+/*
  * Hyperbuild.
  *
  * REMOVED until stable enought to be useful.
@@ -104,23 +124,3 @@ _app:hyperbuild
   author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of your system, including cryptographically sign your modules with your own PGP key, create your own Bazar declarations, etc.
 
 If you want to create your own distribution, and/or modules, this module significantly simplifies that process, by automatically packaging any modules, and creating a distribution of your system's current state. This module should be considered _'BETA'_."
-
-
-
-
-
-/*
- * Hyper IDE
- */
-app:hyper-ide
-  name:Hyper IDE 6.3
-  description:A web based IDE with support for more than 100 programming languages
-  url:"https://phosphorusfive.files.wordpress.com/2018/01/hyper-ide.zip"
-  price:Free
-  local-url:hyper-ide
-  image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
-  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
-  condition:p5.io.unroll-path.@IDE
-  version:decimal:7.0
-    event:hyper-ide.version
-  author-readme:@"Hyper IDE is a web based development environment, allowing you to create your own applications, either in Hyperlambda or any other programming language you wish to use."
