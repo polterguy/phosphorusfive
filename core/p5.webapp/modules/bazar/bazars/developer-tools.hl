@@ -19,7 +19,7 @@ name:GaiaSoul dev X tools
  * Camphora Five.
  */
 app:camphora-five
-  name:Camphora 6.3
+  name:Camphora 7.0
   description:Create data driven CRUD apps without coding, and import/export data to and from Excel etc
   url:"https://phosphorusfive.files.wordpress.com/2018/01/camphora-five2.zip"
   price:Free
