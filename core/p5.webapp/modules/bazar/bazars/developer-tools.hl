@@ -21,7 +21,7 @@ name:GaiaSoul dev X tools
 app:camphora-five
   name:Camphora 6.3
   description:Create data driven CRUD apps without coding, and import/export data to and from Excel etc
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/camphora-five.zip.pgp"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/camphora-five2.zip"
   price:Free
   local-url:camphora-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
@@ -47,7 +47,7 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
 app:hypereval
   name:Hypereval 7.0
   description:A Hyperlambda terminal module, allowing you to evaluate Hyperlambda from your browser
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/hypereval.zip.pgp"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/hypereval.zip"
   price:Free
   local-url:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
@@ -69,7 +69,7 @@ Basically, it works more or less like a _'terminal window'_ for Hyperlambda. Use
 app:hyper-core
   name:Hyper Core 7.0
   description:A generic REST based ORM library for MySQL (and more)
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/hyper-core.zip.pgp"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/hyper-core.zip"
   price:Free
   local-url:hyper-core
   image:"https://phosphorusfive.files.wordpress.com/2018/01/sunscorerota.jpg"
@@ -115,7 +115,7 @@ If you want to create your own distribution, and/or modules, this module signifi
 app:hyper-ide
   name:Hyper IDE 6.3
   description:A web based IDE with support for more than 100 programming languages
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v7.0/hyper-ide.zip.pgp"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/hyper-ide.zip"
   price:Free
   local-url:hyper-ide
   image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
