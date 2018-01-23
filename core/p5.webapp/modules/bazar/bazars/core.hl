@@ -108,7 +108,7 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
  * License
  */
 app:license
-  name:License 6.x
+  name:License 7.x
   description:Obtain a proprietary license for Phosphorus Five
   url:"https://phosphorusfive.files.wordpress.com/2018/01/license.zip"
   price:198
@@ -116,7 +116,7 @@ app:license
   image:"https://phosphorusfive.files.wordpress.com/2017/09/license.jpg"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:license.is-valid
-  version:decimal:6.99
+  version:decimal:7.99
     event:license.version
   author-readme:@"If you wish to create proprietary apps (closed source) in Hyperlambda, and/or you want Phosphorus Five to stop bugging you about getting licensed, this is the module you'll need. This module allows you to.
 
@@ -124,4 +124,4 @@ app:license
 * Stops bugging you about getting licensed
 * Receive professional support
 
-Notice, you get all 6.x upgrades to all apps, and Phosphorus Five automatically for free, if you purchase a proprietary license."
+Notice, you get all 7.x upgrades to all apps, and Phosphorus Five automatically for free, if you purchase a proprietary license."
