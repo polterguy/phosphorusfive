@@ -24,15 +24,15 @@ name:GaiaSoul system modules
  * Micro
  */
 app:micro
-  name:Micro 6.3
+  name:Micro 7.1
   description:A microscopic CSS framework and component library for P5.
-  url:"https://phosphorusfive.files.wordpress.com/2018/01/micro.zip"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/micro-7-1.zip"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@MICRO
-  version:decimal:6.3
+  version:decimal:7.1
     event:micro.version
   author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five and Hyperlambda. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps.
 
@@ -82,15 +82,15 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
  * Desktop
  */
 app:desktop
-  name:Desktop 7.0
+  name:Desktop 7.1
   description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
-  url:"https://phosphorusfive.files.wordpress.com/2018/01/desktop.zip"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/desktop-7-1.zip"
   price:Free
   local-url:desktop
   image:"https://phosphorusfive.files.wordpress.com/2017/09/desktop-icon.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@DESKTOP
-  version:decimal:7.0
+  version:decimal:7.1
     event:desktop.version
   author-readme:@"The Desktop is the module in Phosphorus Five that is your main administrative interface, allowing you to easily start your apps, and normally the startup app for your P5 installation. Think of it as the equivalent of your Windows, Linux or Mac OSX desktop.
 

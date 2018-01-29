@@ -45,9 +45,9 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
  * Hypereval.
  */
 app:hypereval
-  name:Hypereval 7.0
+  name:Hypereval 7.1
   description:A Hyperlambda terminal module, allowing you to evaluate Hyperlambda from your browser
-  url:"https://phosphorusfive.files.wordpress.com/2018/01/hypereval.zip"
+  url:"https://phosphorusfive.files.wordpress.com/2018/01/hypereval-7-1.zip"
   price:Free
   local-url:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
