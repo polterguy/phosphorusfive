@@ -53,7 +53,7 @@ app:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPEREVAL
-  version:decimal:7.0
+  version:decimal:7.1
     event:hypereval.version
   author-readme:@"Hypereval allows you to evaluate Hyperlambda from your browser. It features intellisense, syntax highlighting, skinning, and tons of other features.
 
