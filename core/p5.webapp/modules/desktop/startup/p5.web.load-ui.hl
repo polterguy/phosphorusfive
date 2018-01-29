@@ -110,11 +110,12 @@ create-event:p5.web.load-ui
        *
        * Defaulting access to "false".
        */
+      p5.web.get-relative-location-url
       if
         p5.auth.has-access-to-path:bool:false
           filter:p5.module
-          path:/modules/{0}/launch.hl
-            :x:/@split/0?name
+          path:/modules{0}
+            :x:/@p5.web.get-relative-location-url?value
         not
 
         /*
