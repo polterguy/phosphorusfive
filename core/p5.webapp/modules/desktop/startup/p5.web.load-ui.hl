@@ -111,11 +111,13 @@ create-event:p5.web.load-ui
        * Defaulting access to "false".
        */
       p5.web.get-relative-location-url
+      trim:x:/@p5.web.get-relative-location-url?value
+        chars:/
       if
         p5.auth.has-access-to-path:bool:false
           filter:p5.module
-          path:/modules{0}
-            :x:/@p5.web.get-relative-location-url?value
+          path:/modules/{0}/
+            :x:/@trim?value
         not
 
         /*
