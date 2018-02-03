@@ -771,6 +771,14 @@ namespace p5.auth.helpers
             rootAccountNode.Add ("password", password);
             rootAccountNode.Add ("role", "root");
             CreateUser (context, rootAccountNode);
+
+            // Creating "guest account" section, which is needed for settings among other things.
+            var guestAccountName = context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context);
+            AuthFile.ModifyAuthFile (
+                context,
+                delegate (Node authFile) {
+                    authFile ["users"].Add (guestAccountName);
+                });
         }
 
         /*
