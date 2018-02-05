@@ -49,14 +49,14 @@ create-widgets
                   /*
                    * Retrieving Bazar URL user just typed in.
                    */
-                  micro.widgets.wizard-form.value:bazar-add-bazar-wizard
+                  micro.form.serialize:bazar-add-bazar-wizard
 
                   /*
                    * Loading Bazars file, to verify this Bazar doesn't already exist in it.
                    */
                   load-file:/modules/bazar/configuration/bazars.hl
                   if:x:@"/@load-file/*/*/bazar/""={0}"""
-                    :x:/@micro.widgets.wizard-form.value/*/url?value
+                    :x:/@micro.form.serialize/*/url?value
 
                     /*
                      * Bazar already exists in user's list of trusted Bazars.
@@ -80,7 +80,7 @@ create-widgets
                     /*
                      * Creating an HTTP GET request to retrieve Bazar file's content.
                      */
-                    p5.http.get:x:/@micro.widgets.wizard-form.value/*/url?value
+                    p5.http.get:x:/@micro.form.serialize/*/url?value
 
                     /*
                      * Transforming above result to lambda, to make it possible to parse manifest file,
@@ -168,7 +168,7 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                                          * These first two, have been forward evaluated above.
                                          */
                                         _keys
-                                        _bazar-url:x:/@micro.widgets.wizard-form.value/*/url?value
+                                        _bazar-url:x:/@micro.form.serialize/*/url?value
 
                                         /*
                                          * Loading both Bazars file, and trustee file, such that we
@@ -234,7 +234,7 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                       eval-x:x:/+/*/*
                       add:x:/../*/load-file/*
                         src
-                          bazar:x:/@micro.widgets.wizard-form.value/*/url?value
+                          bazar:x:/@micro.form.serialize/*/url?value
                       save-file:x:/../*/load-file/*?name
                         lambda2hyper:x:/../*/load-file/*/*
 

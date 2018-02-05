@@ -116,9 +116,9 @@ create-event:p5.core.login
                   /*
                    * Retrieving username and password, and attempting to log user into system.
                    */
-                  micro.widgets.wizard-form.value:desktop-wizared-form
+                  micro.form.serialize:desktop-wizared-form
                   add:x:/../*/try/*/login
-                    src:x:/@micro.widgets.wizard-form.value/*(/username|/password|/persist)
+                    src:x:/@micro.form.serialize/*(/username|/password|/persist)
 
                   /*
                    * Wrapping login attempt in try/catch block, since login throws if login is unsuccessful.
@@ -133,13 +133,13 @@ create-event:p5.core.login
                     /*
                      * Checking if user requested to have his password changed.
                      */
-                    if:x:/@micro.widgets.wizard-form.value/*/change?value
+                    if:x:/@micro.form.serialize/*/change?value
 
                       /*
                        * Verifying passwords are a match before proceeding.
                        */
-                      if:x:/@micro.widgets.wizard-form.value/*/new-pwd?value
-                        !=:x:/@micro.widgets.wizard-form.value/*/new-pwd-repeat?value
+                      if:x:/@micro.form.serialize/*/new-pwd?value
+                        !=:x:/@micro.form.serialize/*/new-pwd-repeat?value
 
                         /*
                          * Warning user, and aborting the rest of the evaluation of the current lambda.
@@ -152,7 +152,7 @@ create-event:p5.core.login
                       /*
                        * Changing user's password.
                        */
-                      p5.auth.misc.change-my-password:x:/@micro.widgets.wizard-form.value/*/new-pwd?value
+                      p5.auth.misc.change-my-password:x:/@micro.form.serialize/*/new-pwd?value
 
                     /*
                      * If we come this far, without an exception, our login attempt was successful, and
