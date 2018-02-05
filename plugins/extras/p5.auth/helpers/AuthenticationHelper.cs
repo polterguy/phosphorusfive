@@ -196,9 +196,15 @@ namespace p5.auth.helpers
         {
             // Retrieving "auth" file in node format
             var authFile = AuthFile.GetAuthFile (context);
+            
+            // Retrieving guest account name, to make sure we exclude it as a user, since it's not a "real user" per se.
+            var guestAccountName = context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context);
 
             // Looping through each user in [users] node of "auth" file
             foreach (var idxUserNode in authFile ["users"].Children) {
+
+                if (idxUserNode.Name == guestAccountName)
+                    continue;
 
                 // Returning user's name, and role he belongs to
                 args.Add (idxUserNode.Name, idxUserNode ["role"].Value);
@@ -460,6 +466,10 @@ namespace p5.auth.helpers
         {
             // Getting username for current context.
             string username = context.Ticket.Username;
+
+            // Making sure default user cannot change his settings.
+            if (context.Ticket.IsDefault)
+                throw new LambdaSecurityException ("The default user cannot change his settings", args, context);
 
             // Verifying that there's no "funny business" going on here.
             if (args ["password"] != null || args ["role"] != null)
@@ -778,6 +788,7 @@ namespace p5.auth.helpers
                 context,
                 delegate (Node authFile) {
                     authFile ["users"].Add (guestAccountName);
+                    authFile ["users"] ["guest"].Add ("role", context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context));
                 });
         }
 

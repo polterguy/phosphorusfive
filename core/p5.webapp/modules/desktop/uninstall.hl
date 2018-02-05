@@ -1,4 +1,3 @@
-
 /*
  * Uninstall file.
  */
@@ -8,6 +7,8 @@
 
 
 /*
- * Making sure user cannot uninstall desktop by throwing an exception.
+ * Deleting all relevant Active Events, and that's it.
  */
-throw:You can't uninstall your desktop
+delete-event:p5.io.unroll-path.@DESKTOP
+vocabulary:~desktop.
+delete-event:x:/-/*?name
