@@ -41,26 +41,6 @@ micro.widgets.paypal-button.ensure-checkout-js
 
 
 /*
- * Checking if this is an upload operation of a zip file, user wants to install as app.
- */
-split:x:/../*/url?value
-  =:/
-if:x:/@split/0/-?name
-  =:upload
-
-  /*
-   * This is an upload request of a zip/pgp file.
-   * Evaluating file responsible for handling request, installing app, and returning early
-   * to avoid evaluation of the rest of our file.
-   */
-  micro.evaluate.file:@BAZAR/helpers/upload-app.hl
-  return
-
-
-
-
-
-/*
  * Retrieving available apps.
  */
 bazar.bazars.get-apps
@@ -80,21 +60,6 @@ split:x:/-?value
 set:x:/@_app-root-url?value
   src:/{0}/
     :x:/@split/0/-?name
-
-
-
-
-
-/*
- * Creating dropzone for uploading ZIP files to install as app.
- */
-p5.web.get-root-location
-eval-x:x:/+/*
-micro.page.create-dropzone
-  url:{0}upload
-    :x:/@_app-root-url?value
-  .onfinish:@"function(uid, no_files, no_errors) {{if (no_errors != 0) {{alert('Some of your apps were not accepted');}} window.location.replace('{0}');}}"
-    :x:/@p5.web.get-root-location?value
 
 
 
@@ -481,11 +446,32 @@ create-widget
                 div
                   class:strip toolbar
                   widgets
-                    button
-                      innerValue:@"<span class=""icon-upload2""></span>"
-                      title:Upload app
-                      class:larger
-                      onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
+                    micro.widgets.upload-button
+                      class:large
+                      title:Upload and install an app from a zip file
+                      accept:.zip
+                      .onupload
+
+                        /*
+                         * Installing app(s).
+                         */
+                        for-each:x:/../*/files/*
+                          split:x:/@_dp/#/*?value
+                            =:.
+                          set:x:/@split/0/-
+                          join:x:/@split/*
+                            sep:.
+                          eval-x:x:/+/*/local-url
+                          bazar.install-app:x:/@_dp/#?value
+                            local-url:x:/@join?value
+
+                        /*
+                         * Providing some feedback to user.
+                         */
+                        micro.windows.info:{0} app(s) successfully installed
+                          :x:/../*/files/*?count
+                          class:micro-windows-info success
+
                     button
                       innerValue:@"<span class=""icon-plus""></span>"
                       title:Add Bazar URL
