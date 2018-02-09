@@ -573,5 +573,19 @@ namespace p5.ajax.widgets
         }
 
         #endregion
+
+        #region [ -- Base class overrides from System.Object -- ]
+
+        public override string ToString ()
+        {
+            return ID;
+        }
+
+        public override int GetHashCode ()
+        {
+            return ToString ().GetHashCode ();
+        }
+
+        #endregion
     }
 }
