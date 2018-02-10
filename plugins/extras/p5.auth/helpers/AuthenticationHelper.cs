@@ -456,7 +456,25 @@ namespace p5.auth.helpers
                     args,
                     context);
 
-            args.AddRange (authFile ["users"] [context.Ticket.Username].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "role"));
+            // Checking if caller is retieving a single section.
+            var section = args.GetExValue (context, "");
+            if (string.IsNullOrEmpty (section)) {
+                
+                // All settings invocation.
+                args.AddRange (authFile ["users"] [context.Ticket.Username].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "role"));
+
+            } else if (section != "password" && section != "role") {
+
+                // Single section invocation.
+                var sectionNode = authFile ["users"] [context.Ticket.Username] [section]?.Clone ();
+                if (sectionNode != null)
+                    args.Add (sectionNode);
+
+            } else {
+
+                // Illegal attempt at trying to retrieve role or password.
+                throw new LambdaSecurityException ("Illegal invocation, you can't retrieve [password] or [role]", args, context);
+            }
         }
 
         /*
@@ -480,12 +498,30 @@ namespace p5.auth.helpers
                 context,
                 delegate (Node authFile) {
 
-                    // Removing old settings
-                    authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+                    // Checking if invocation is for a single section, or if it's for everything.
+                    var section = args.GetExValue (context, "");
+                    if (string.IsNullOrEmpty (section)) {
 
-                    // Changing all settings for user
-                    foreach (var idxNode in args.Children) {
-                        authFile ["users"] [username].Add (idxNode.Clone ());
+                        // Removing old settings
+                        authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+
+                        // Changing all settings for user
+                        foreach (var idxNode in args.Children) {
+                            authFile ["users"] [username].Add (idxNode.Clone ());
+                        }
+
+                    } else if (args.Count == 1) {
+
+                        // Removing old settings
+                        authFile ["users"] [username] [section]?.UnTie (); 
+
+                        // Changing all settings for user.
+                        authFile ["users"] [username].Add (args.FirstChild.Clone ());
+
+                    } else {
+
+                        // Oops, can't set a single section to multiple values.
+                        throw new LambdaException ("You can't set a single section to multiple values", args, context);
                     }
                 });
         }
