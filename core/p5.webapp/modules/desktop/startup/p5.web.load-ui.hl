@@ -50,6 +50,13 @@ create-event:p5.web.load-ui
     p5.web.page.set-title:Phosphorus V - 7.0 - In the beginning there was Hyperlambda
 
     /*
+     * Making sure initial scale of viewport is set correctly.
+     */
+    p5.web.page.add-meta-tag:meta
+      name:viewport
+      content:@"width=device-width, initial-scale=1.0"
+
+    /*
      * Loading "pre" plugins, making sure we pass in [url] to all plugin events.
      */
     vocabulary:~desktop.plugins.pre.
