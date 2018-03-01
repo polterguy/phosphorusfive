@@ -1,7 +1,7 @@
 /*
  * Initialises Phosphorus Five.
  *
- * This is being done by evaluating all "startup.hl" files, for all modules found 
+ * This is being done by evaluating all "startup.hl" files, for all modules found
  * in the system.
  */
 
