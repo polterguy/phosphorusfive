@@ -1,8 +1,17 @@
 ﻿
 /*
- * File responsible for launching the "server manager", which among other things,
- * allows you to install new apps, by downloading the from the "bazar".
+ * File responsible for launching the "Bazar".
  */
+
+
+
+
+
+/*
+ * Including Micro CSS and main CSS file for Bazar.
+ */
+micro.css.include
+p5.web.include-css-file:@BAZAR/media/main.css
 
 
 
@@ -13,18 +22,6 @@
  */
 set-widget-property:cnt
   class:container
-
-
-
-
-
-/*
- * Including Micro CSS, adding Awesome Fonts, and including main CSS file for Bazar.
- *
- * Which for the record, is the same CSS file as the main "desktop" app's CSS file.
- */
-micro.css.include
-p5.web.include-css-file:@BAZAR/media/main.css
 
 
 
@@ -87,8 +84,7 @@ for-each:x:/@bazar.bazars.get-apps/*
     if:x:/-/*
 
       /*
-       * App is already installed.
-       * It's [condition] event was found on server from before.
+       * App is already installed, since it's [condition] event was found on server from before.
        *
        * Now checking if the server's version is newer than what's locally installed.
        */
@@ -415,7 +411,7 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets(/=apps|/=upda
               h3
                 innerValue:Install apps and modules
               p
-                innerValue:@"If you have a zip file, containing an app or a module, you can simply drag and drop it here."
+                innerValue:@"If you have a zip file, containing an app or a module, you can install it by clicking the upload button."
 
 
 
@@ -473,33 +469,7 @@ create-widget
                           class:micro-windows-info success
 
                     button
-                      innerValue:@"<span class=""icon-plus""></span>"
-                      title:Add Bazar URL
-                      oninit
-
-                        /*
-                         * Checking main configuration file, to verify users are allowed to add new Bazars,
-                         * and if not, disable the button.
-                         */
-                        p5.config.get:bazar.allow-users-adding-bazar
-                        if:x:/-/*?value
-                          !=:true
-
-                          /*
-                           * Current distro does not allow users to add new Bazars, 
-                           * simply deleting the "add" button.
-                           */
-                          delete-widget:x:/../*/_event?value
-
-                      onclick
-
-                        /*
-                         * Allowing user to add a Bazar manifest URL.
-                         */
-                        micro.evaluate.file:/modules/bazar/helpers/add-bazar.hl
-
-                    button
-                      innerValue:@"<span class=""icon-minus""></span>"
+                      innerValue:@"<span class=""icon-bin""></span>"
                       title:Uninstall apps
                       onclick
 
@@ -508,15 +478,11 @@ create-widget
                          */
                         micro.evaluate.file:/modules/bazar/helpers/uninstall-apps.hl
 
-                    button
+                    a
+                      href:/
+                      role:button
+                      class:button
                       innerValue:@"<span class=""icon-home3""></span>"
-                      onclick
-
-                        /*
-                         * Redirecting client back to root URL of P5.
-                         */
-                        p5.web.get-root-location
-                        p5.web.set-location:x:/-?value
 
         /*
          * Bazar(s) updates wrapper.
