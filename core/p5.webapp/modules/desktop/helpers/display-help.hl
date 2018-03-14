@@ -1,0 +1,433 @@
+﻿/*
+ * File responsible for displaying help.
+ *
+ * Notice, these help files are in general terms created a Hyperlambda files, to
+ * make them "interactive", such that they can contain macros, and other things,
+ * that somehow modifies the state of Hyper IDE, or in any other ways "interact"
+ * with Hyper IDE.
+ *
+ * Making sure we check for existence of widget first though, and deleting it, to
+ * easily allow user to "re-open" help, if it's already open.
+ */
+
+
+/*
+ * Sanity checking arguments.
+ */
+micro.lambda.contract.optional:x:/..
+  folder:string
+
+
+/*
+ * Default argument, if none is given by caller.
+ */
+.defaults
+  folder:@IDE/helpers/help-files/
+
+
+/*
+ * Deleting any previously created help widgets.
+ */
+if
+  fetch:x:/0/0?value
+    widget-exists:hyper-ide-help-wrapper
+  delete-widget:hyper-ide-help-wrapper
+
+
+/*
+ * Creating our help widget wrapper, making sure we forward evaluate folder.
+ */
+eval-x:x:/+/**/.folder
+create-widget:hyper-ide-help-wrapper
+  class:container-fullscreen hyper-ide-help
+  events
+
+    /*
+     * Simply returns true if help is visible.
+     */
+    hyper-ide.help-visible
+      return:bool:true
+
+
+    /*
+     * Closes help.
+     */
+    hyper-ide.close-help
+      delete-widget:hyper-ide-help-wrapper
+
+  widgets
+    div
+      class:row
+      widgets
+        div
+          class:col-100
+          widgets
+            container
+              class:shaded rounded air-inner
+              widgets
+                div
+                  class:right
+                  widgets
+                    div
+                      class:strip
+                      widgets
+                        button
+                          innerValue:@"<span class=""icon-arrow-left""></span>"
+                          onclick
+
+                            /*
+                             * Loading and displaying "index.hl" file.
+                             */
+                            hyper-ide.help.go-previous
+
+                        button
+                          innerValue:@"<span class=""icon-arrow-right""></span>"
+                          onclick
+
+                            /*
+                             * Loading and displaying "index.hl" file.
+                             */
+                            hyper-ide.help.go-next
+
+                        button
+                          innerValue:@"<span class=""icon-pencil""></span>"
+                          title:Edits the current help file
+                          onclick
+
+                            /*
+                             * Allowing user to edit the file.
+                             */
+                            p5.web.widgets.find-first:hyper-ide-help-wrapper
+                              .file
+                            get-widget-property:x:/-/*/*?value
+                              .file
+                            eval-x:x:/+/*
+                            micro.evaluate.file:@IDE/helpers/folder-explorer/expand-folder-explorer-path.hl
+                              path:x:/@get-widget-property/*/*?value
+                            p5.web.send-javascript:@"p5.$('hyper-ide-file-editor').el.scrollIntoView ({behavior:'instant'});"
+
+                        button
+                          innerValue:@"<span class=""icon-spinner11""></span>"
+                          title:Reloads the current help file
+                          onclick
+
+                            /*
+                             * Allowing user to edit the file.
+                             */
+                            p5.web.widgets.find-first:hyper-ide-help-wrapper
+                              .file
+                            get-widget-property:x:/-/*/*?value
+                              .file
+                            desktop.help.display-file:x:/-/*/*?value
+
+                        button
+                          innerValue:@"<span class=""icon-home3""></span>"
+                          onclick
+
+                            /*
+                             * Loading and displaying "index.hl" file.
+                             */
+                            desktop.help.display-file:@IDE/helpers/help-files/index.hl
+
+                container:hyper-ide-help-content
+                  class:hyper-ide-help-content
+                  oninit
+
+                    /*
+                     * Loading specified "index.hl" file, which is our "help landing page file".
+                     *
+                     * Notice, all "sub-sections" (folders) needs such a file, to function
+                     * correctly.
+                     */
+                    .folder:x:(/../*/folder|/@.defaults/*/folder)/$?value
+                    eval-x:x:/+/*
+                    desktop.help.display-file:{0}index.hl
+                      :x:/@.folder?value
+
+                  events
+
+                    /*
+                     * Opens previous file.
+                     */
+                    hyper-ide.help.go-previous
+
+                      /*
+                       * Figuring out which file is open, and opening up the "previous" file
+                       * in folder.
+                       */
+                      get-widget-property:hyper-ide-help-content
+                        .file
+                      p5.io.unroll-path:x:/@get-widget-property/*/*?value
+                      split:x:/@p5.io.unroll-path?value
+                        =:/
+                      set:x:/@split/0/-
+                      join:x:/@split/*?name
+                        sep:/
+                      list-files:/{0}/
+                        :x:/@join?value
+                        filter:.md|.hl
+                      desktop.help.display-file:x:@"/@list-files/*/""{0}""/-?name"
+                        :x:/@p5.io.unroll-path?value
+
+
+                    /*
+                     * Opens next file.
+                     */
+                    hyper-ide.help.go-next
+
+                      /*
+                       * Figuring out which file is open, and opening up the "previous" file
+                       * in folder.
+                       */
+                      get-widget-property:hyper-ide-help-content
+                        .file
+                      p5.io.unroll-path:x:/@get-widget-property/*/*?value
+                      split:x:/@p5.io.unroll-path?value
+                        =:/
+                      set:x:/@split/0/-
+                      join:x:/@split/*?name
+                        sep:/
+                      list-files:/{0}/
+                        :x:/@join?value
+                        filter:.md|.hl
+                      desktop.help.display-file:x:@"/@list-files/*/""{0}""/+?name"
+                        :x:/@p5.io.unroll-path?value
+
+
+                    /*
+                     * Displays folder content.
+                     */
+                    desktop.help.display-folder
+
+                      /*
+                       * Evaluates this file, passing in folder.
+                       */
+                      eval-x:x:/+/*
+                      micro.evaluate.file:@DESKTOP/helpers/display-help.hl
+                        folder:x:/../*/_arg?value
+
+
+                    /*
+                     * Event responsible for loading Hyperlambda interactive help file.
+                     */
+                    desktop.help.display-file
+
+                      /*
+                       * Clearing old content, if any.
+                       */
+                      clear-widget:hyper-ide-help-content
+
+                      /*
+                       * Checking file type first.
+                       */
+                      if
+                        ends-with:x:/../*/_arg?value
+                          src:.hl
+
+                        /*
+                         * Loading specified Hyperlambda file.
+                         */
+                        load-file:x:/../*/_arg?value
+                        add:x:/@load-file/*/*
+                          src
+                            parent:hyper-ide-help-content
+                        add:x:/..if/*/create-widgets
+                          src:x:/@load-file/*/*
+
+                        /*
+                         * Clearing old widget, before we load new widgets.
+                         */
+                        clear-widget:hyper-ide-help-content
+                        create-widgets
+
+                      else
+
+                        /*
+                         * Loading specified Markdown file, and converting it into HTML.
+                         */
+                        load-file:x:/../*/_arg?value
+                        markdown2html:x:/@load-file/*?value
+
+                        /*
+                         * Making sure we transform all YouTube links, such that they're replaced by
+                         * a preview of the video.
+                         */
+                        html2lambda:x:/@markdown2html?value
+                        for-each:x:@"/@html2lambda/*/p/*/#text/""=:regex:/^https:\\/\\/www.youtube.com\\/watch/"""
+
+                          /*
+                           * Replacing entire paragraph with a preview of YouTube video.
+                           */
+                          split:x:/@_dp/#?value
+                            =:?v=
+                          split:x:/@split/0/-?name
+                            =:&
+                          eval-x:x:/+/**/\@src
+                          insert-before:x:/@_dp/#/.
+                            src
+                              div
+                                @class:hyper-ide-youtube-outer-wrapper
+                                div
+                                  @class:hyper-ide-youtube-wrapper
+                                  iframe
+                                    @type:text/html
+                                    @class:hyper-ide-youtube-embed
+                                    @allowfullscreen
+                                    @src:@"https://www.youtube.com/embed/{0}?modestbranding=1&autohide=1&showinfo=0"
+                                      :x:/@split/0?name
+                          set:x:/@_dp/#/.
+
+                        /*
+                         * Making sure we transform all images linked to in paragraphs, such that they're replaced by
+                         * an img HTML tag.
+                         */
+                        for-each:x:@"/@html2lambda/*/p/*/#text/""=:regex:/^https{0,1}:\\/\\/.+\\.[png|jpg|jpeg|gif|svg]/i"""
+
+                          /*
+                           * Replacing entire paragraph with an image tag.
+                           */
+                          eval-x:x:/+/*/*/*
+                          insert-before:x:/@_dp/#/.
+                            src
+                              img
+                                @class:hyper-ide-help-image
+                                @src:x:/@_dp/#?value
+                                alt:Image
+                          set:x:/@_dp/#/.
+
+                        /*
+                         * Making sure we transform all code to use CodeMirror in "read only" mode, 
+                         * to allow syntax highlighting of code examples.
+                         */
+                        for-each:x:/@html2lambda/*/pre/*/code/*/#text
+
+                          /*
+                           * Replacing entire paragraph with an image tag.
+                           * First retrieving language mode of code.
+                           */
+                          replace:x:/@_dp/#/./*/\@class?value
+                            src:language-
+                          eval-x:x:/+
+                          .language:x:/@replace?value
+
+                          /*
+                           * Making sure we use a unique ID for our CodeMirror instance.
+                           */
+                          p5.types.guid.new
+                          replace:x:/-?value.string
+                            src:-
+
+                          /*
+                           * Checking if this is an "immediate snippet".
+                           */
+                          if:x:/@.language?value
+                            =:hyperlambda-snippet
+
+                            /*
+                             * This is an "immediate snippet", which allows for instance evaluation.
+                             * Making sure we inject an "evaluate" button.
+                             *
+                             * First removing "-snippet" parts from language mode.
+                             */
+                            set:x:/@.language?value
+                              src:hyperlambda
+
+                            /*
+                             * Making sure we inject our "evaluate" button.
+                             */
+                            eval-x:x:/+/*/*/*/\@onclick
+                            insert-after:x:/@_dp/#/./.
+                              src
+                                button
+                                  #text:@"<span class=""icon-flash""></span>"
+                                  @class:hyper-ide-evaluate-snippet-button
+                                  @onclick:@"p5.$('x_eval_{0}').raise('.onevaluate');return false;"
+                                    :x:/@replace?value
+
+                            /*
+                             * Injecting a hidden input element, which simply serves as a "wrapper" 
+                             * for our "eval" lambda object, to make sure we are able to evaluate the code
+                             * on the server side.
+                             */
+                            eval-x:x:/+/*/*/.code
+                            create-void-widget:x_eval_{0}
+                              :x:/@replace?value
+                              parent:hyper-ide-help-content
+                              element:input
+                              type:hidden
+                              .onevaluate
+                                .code:x:/@_dp/#?value
+                                try
+                                  eval:x:/@.code?value
+                                catch
+                                  micro.windows.info:x:/@message?value
+                                    class:micro-windows-info warning
+
+                          trim-right:x:/@_dp/#?value
+                          eval-x:x:/+/*/*/*
+                          insert-before:x:/@_dp/#/./.
+                            src
+                              textarea
+                                @id:x_{0}
+                                  :x:/@replace?value
+                                @disabled
+                                #text:x:/@trim-right?value
+                          set:x:/@_dp/#/./.
+                          .defaults
+                            theme:phosphorus
+                          p5.auth.my-settings.get
+                          micro.widgets.codemirror._include-javascript
+
+                          /*
+                           * Notice, special handling of "htmlmixed" mode, to also include XML, CSS and JavaScript.
+                           */
+                          if:x:/@.language?value
+                            =:htmlmixed
+                            p5.web.include-javascript-file:@MICRO/media/codemirror/mode/htmlmixed/htmlmixed.js
+                            p5.web.include-javascript-file:@MICRO/media/codemirror/mode/xml/xml.js
+                            p5.web.include-javascript-file:@MICRO/media/codemirror/mode/javascript/javascript.js
+                            p5.web.include-javascript-file:@MICRO/media/codemirror/mode/css/css.js
+                          else
+                            p5.web.include-javascript-file:@MICRO/media/codemirror/mode/{0}/{0}.js
+                              :x:/@.language?value
+                          micro.widgets.codemirror._include-css
+                          p5.web.include-css-file:@MICRO/media/codemirror/theme/{0}.css
+                            :x:(/@p5.auth.my-settings.get/*/codemirror/*/theme|/@.defaults/*/theme)/$?value
+                          p5.web.send-javascript:@"p5['x_{0}'] = CodeMirror.fromTextArea(p5.$('x_{0}').el, {{
+  mode:'{1}',
+  theme:'{2}',
+  lineNumbers:true,
+  readOnly:true,
+  styleActiveLine:true,
+  path:'/micro/media/codemirror/',
+  autofocus:false,
+  viewportMargin: Infinity
+}});
+p5['x_{0}'].setSize('100%', 'auto');
+"
+                            :x:/@replace?value
+                            :x:/@.language?value
+                            :x:(/@p5.auth.my-settings.get/*/codemirror/*/theme|/@.defaults/*/theme)/$?value
+                          micro.widgets.codemirror._include-auto-complete
+
+                        /*
+                         * Creating new widgets, wrapping the HTML from Markdown file.
+                         */
+                        lambda2html:x:/@html2lambda/*
+                        create-widget
+                          parent:hyper-ide-help-content
+                          element:div
+                          innerValue:x:/@lambda2html?value
+
+                      /*
+                       * Making sure we store the file reference, in case user wants to edit the
+                       * currently viewed file.
+                       */
+                      p5.io.unroll-path:x:/../*/_arg?value
+                      set-widget-property:hyper-ide-help-content
+                        .file:x:/@p5.io.unroll-path?value
+
+                      /*
+                       * Scrolling browser to the top of help file contents.
+                       */
+                      p5.web.send-javascript:@"p5.$('hyper-ide-help-wrapper').el.scrollIntoView ({behavior:'smooth', block:'start'});"

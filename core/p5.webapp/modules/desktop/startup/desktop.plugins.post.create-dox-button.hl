@@ -45,6 +45,7 @@ create-event:desktop.plugins.post.create-dox-button
     create-literal-widget
       element:button
       innerValue:@"<span class=""icon-question""></span>"
+      title:Display help files
       onclick
 
         /*
@@ -63,7 +64,7 @@ create-event:desktop.plugins.post.create-dox-button
           /*
            * Launching help.
            */
-          micro.evaluate.file:@IDE/helpers/display-help.hl
+          micro.evaluate.file:@DESKTOP/helpers/display-help.hl
 
         /*
          * Including relevant CSS files.
