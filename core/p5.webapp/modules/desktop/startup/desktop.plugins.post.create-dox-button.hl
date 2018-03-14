@@ -1,0 +1,79 @@
+﻿
+/*
+ * Creates our plugin Active Event, that creates a "View Documentation" button on all modules with a toolbar.
+ */
+create-event:desktop.plugins.post.create-dox-button
+
+  /*
+   * Trying to find the first widget on page with a CSS class containing the text "toolbar".
+   */
+  p5.web.widgets.find-first-like
+    class:toolbar
+  if:x:/@p5.web.widgets.find-first-like/*/*?value
+
+    /*
+     * Inserting our widget as the second last widget into our "toolbar", if possible.
+     */
+    p5.web.widgets.get-children:x:/@p5.web.widgets.find-first-like/*/0?value
+
+    /*
+     * Checking if our toolbar actually had any children at all.
+     */
+    if:x:/@p5.web.widgets.get-children/*/*
+
+      /*
+       * Toolbar has children, adding our button as the second last button within it.
+       */
+      eval-x:x:/+/*/*
+      add:x:/././*/create-literal-widget
+        src
+          before:x:/@p5.web.widgets.get-children/*/0/-?value
+
+    else
+
+      /*
+       * The toolbar had no children, simply appending button into it.
+       */
+      eval-x:x:/+/*/*
+      add:x:/././*/create-literal-widget
+        src
+          parent:x:/@p5.web.widgets.find-first-like/*/*?value
+
+    /*
+     * Creating our button widget.
+     */
+    create-literal-widget
+      element:button
+      innerValue:@"<span class=""icon-question""></span>"
+      onclick
+
+        /*
+         * Toggling visibility of help files.
+         */
+        if
+          hyper-ide.help-visible
+
+          /*
+           * Help already visible, hiding it.
+           */
+          hyper-ide.close-help
+
+        else
+
+          /*
+           * Launching help.
+           */
+          micro.evaluate.file:@IDE/helpers/display-help.hl
+
+        /*
+         * Including relevant CSS files.
+         */
+        hyper-ide.version
+        p5.web.include-css-file:@IDE/media/main.css?v={0}
+          :x:/@hyper-ide.version?value
+
+        /*
+         * Making sure we toggle toggled state of button.
+         */
+        micro.css.toggle:x:/../*/_event?value
+          class:toggled
