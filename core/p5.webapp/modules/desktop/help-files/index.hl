@@ -1,0 +1,139 @@
+﻿/*
+ * This is our main "landing page" for the help system in Hyper IDE.
+ *
+ * This file displays the general "index", and such serves as a starting ground
+ * for other files in the help system.
+ */
+h2
+  innerValue:Phosphorus Five help files
+
+p
+  innerValue:@"Welcome to the help files for Phosphorus Five. These help files can be launched from within any module, and will guide you through
+both the standard usage of Phosphorus Five, and its modules, in addition to how to create your own apps. This allows you to have these
+help files open from within the module you want to learn about."
+
+literal
+  element:h4
+  innerValue:Main section
+
+
+/*
+ * All files at "root" of help files folder.
+ */
+container
+  element:ul
+  oninit
+
+    /*
+     * Retrieving all other Hyperlambda files in the help folder.
+     */
+    list-files:@DESKTOP/help-files/
+      filter:.hl|.md
+
+    /*
+     * Removing "index.hl".
+     */
+    set:x:@"/@list-files/*/"":regex:/index.hl$/"""
+
+    /*
+     * Looping through each Hyperlambda file (except of course "index.hl").
+     */
+    for-each:x:/@list-files/*
+
+      /*
+       * Figuring out filename, without extension, and removing numbering parts.
+       */
+      split:x:/@_dp/#?name
+        =:/
+        =:.
+      replace:x:/@split/0/-2?name
+        src:regex:/[0-9]+ - /
+
+      /*
+       * Creating a list item, containing a hyperlink button, which once clicked,
+       * loads and displays the specified help file.
+       */
+      create-widget
+        parent:x:/../*/_event?value
+        element:li
+        widgets
+          a
+            href:#
+            innerValue:x:/@replace?value
+            .file:x:/@_dp/#?name
+            onclick
+
+              /*
+               * Retrieving file name, loading and displaying file, by invoking common
+               * widget lambda event, which does the heavy lifting for us.
+               */
+              get-widget-property:x:/../*/_event?value
+                .file
+              desktop.help.display-file:x:/@get-widget-property/*/*?value
+
+literal
+  element:h4
+  innerValue:Sub sections
+
+
+/*
+ * Sub-sections, these are basically folders beneath the root folder of our help system.
+ */
+container
+  element:ul
+  oninit
+
+    /*
+     * Retrieving all other folders in our main help folder.
+     */
+    list-folders:@DESKTOP/help-files/
+
+    /*
+     * Then retrieving all "help plugin folders".
+     */
+    .exe
+      for-each:x:/../*/~desktop.help-files?value
+        insert-before:x:/.
+          src:x:/@_dp?value
+    vocabulary:~desktop.help-files.
+    for-each:x:/@vocabulary/*?value
+      insert-before:x:/@.exe/0
+        src:x:/@_dp?value
+    eval:x:/@.exe
+
+    /*
+     * Looping through each folders in "/help-files/" folder.
+     */
+    for-each:x:/@list-folders/*|/@eval/*?name
+
+      /*
+       * Figuring out filename, without extension, and removing numbering parts.
+       */
+      split:x:/@_dp?value
+        =:/
+      replace:x:/@split/0/-?name
+        src:regex:/[0-9]+ - /
+
+      /*
+       * Creating a list item, containing a hyperlink button, which once clicked,
+       * loads and displays the specified help file.
+       */
+      create-widget
+        parent:x:/../*/_event?value
+        element:li
+        widgets
+          a
+            href:#
+            role:button
+            innerValue:x:/@replace?value
+            .folder:x:/@_dp?value
+            onclick
+
+              /*
+               * Retrieving file name, loading and displaying file, by invoking common
+               * widget lambda event, which does the heavy lifting for us.
+               */
+              get-widget-property:x:/../*/_event?value
+                .folder
+              desktop.help.display-file:{0}index.hl
+                :x:/@get-widget-property/*/*?value

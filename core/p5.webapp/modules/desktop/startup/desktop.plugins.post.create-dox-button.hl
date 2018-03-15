@@ -51,26 +51,19 @@ create-event:desktop.plugins.post.create-dox-button
          * Toggling visibility of help files.
          */
         if
-          hyper-ide.help-visible
+          desktop.help.is-visible
 
           /*
-           * Help already visible, hiding it.
+           * Help already visible, closing it.
            */
-          hyper-ide.close-help
+          desktop.help.close
 
         else
 
           /*
-           * Launching help.
+           * Displaying help system.
            */
-          micro.evaluate.file:@DESKTOP/helpers/display-help.hl
-
-        /*
-         * Including relevant CSS files.
-         */
-        desktop.version
-        p5.web.include-css-file:@DESKTOP/media/help.css?v={0}
-          :x:/@desktop.version?value
+          desktop.help.display
 
         /*
          * Making sure we toggle toggled state of button.

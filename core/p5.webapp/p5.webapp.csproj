@@ -286,6 +286,9 @@
     <None Include="modules\desktop\startup\version.hl" />
     <None Include="modules\desktop\startup\p5.error.LambdaException.hl" />
     <None Include="modules\desktop\startup\desktop.plugins.post.create-dox-button.hl" />
+    <None Include="modules\desktop\helpers\display-help.hl" />
+    <None Include="modules\desktop\helpers\settings.hl" />
+    <None Include="modules\desktop\startup\desktop.help.display.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

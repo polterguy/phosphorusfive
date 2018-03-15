@@ -1,0 +1,64 @@
+﻿/*
+ * This is our main "landing page" for our Hyperlambda help files.
+ */
+h2
+  innerValue:Hyperlambda
+
+p
+  innerValue:@"Welcome to <em>'The Guide'</em> to Hyperlambda. Hyperlambda is a programming language explicitly created for Phosphorus Five,
+that allows you to rapidly create your own applications. Unless you have some time to invest into learning a (new) programming language,
+you're probably not going to have much use of these parts of the documentation."
+
+/*
+ * All files at "root" of Hyperlambda help folder.
+ */
+container
+  element:ul
+  oninit
+
+    /*
+     * Retrieving all other Hyperlambda files in the help folder.
+     */
+    list-files:@DESKTOP/help-files/Hyperlambda/
+      filter:.hl|.md
+
+    /*
+     * Removing "index.hl".
+     */
+    set:x:@"/@list-files/*/"":regex:/index.hl$/"""
+
+    /*
+     * Looping through each Hyperlambda file (except of course "index.hl").
+     */
+    for-each:x:/@list-files/*
+
+      /*
+       * Figuring out filename, without extension, and removing numbering parts.
+       */
+      split:x:/@_dp/#?name
+        =:/
+        =:.
+      replace:x:/@split/0/-2?name
+        src:regex:/[0-9]+ - /
+
+      /*
+       * Creating a list item, containing a hyperlink button, which once clicked,
+       * loads and displays the specified help file.
+       */
+      create-widget
+        parent:x:/../*/_event?value
+        element:li
+        widgets
+          a
+            href:#
+            innerValue:x:/@replace?value
+            .file:x:/@_dp/#?name
+            onclick
+
+              /*
+               * Retrieving file name, loading and displaying file, by invoking common
+               * widget lambda event, which does the heavy lifting for us.
+               */
+              get-widget-property:x:/../*/_event?value
+                .file
+              desktop.help.display-file:x:/@get-widget-property/*/*?value

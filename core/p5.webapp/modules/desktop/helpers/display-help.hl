@@ -1,28 +1,35 @@
-﻿/*
- * File responsible for displaying help.
+﻿
+/*
+ * File responsible for displaying help module.
  *
- * Notice, these help files are in general terms created a Hyperlambda files, to
+ * Notice, these help files are in general terms created as Hyperlambda files, to
  * make them "interactive", such that they can contain macros, and other things,
- * that somehow modifies the state of Hyper IDE, or in any other ways "interact"
- * with Hyper IDE.
- *
- * Making sure we check for existence of widget first though, and deleting it, to
- * easily allow user to "re-open" help, if it's already open.
+ * that somehow modifies the state of Phosphorus Five, or in any other ways "interact"
+ * with the core.
  */
+
+
+
 
 
 /*
  * Sanity checking arguments.
  */
 micro.lambda.contract.optional:x:/..
-  folder:string
+  file:string
+
+
+
 
 
 /*
- * Default argument, if none is given by caller.
+ * Default value, if no [file] argument was explicitly specified.
  */
 .defaults
-  folder:@IDE/helpers/help-files/
+  file:@DESKTOP/help-files/index.hl
+
+
+
 
 
 /*
@@ -34,26 +41,32 @@ if
   delete-widget:hyper-ide-help-wrapper
 
 
+
+
+
 /*
- * Creating our help widget wrapper, making sure we forward evaluate folder.
+ * Creating our help widget wrapper, making sure we add [.files] section
+ * to parts of lambda that'll need it.
  */
-eval-x:x:/+/**/.folder
+eval-x:x:/+/**/.file
 create-widget:hyper-ide-help-wrapper
-  class:container-fullscreen hyper-ide-help
+  class:container hyper-ide-help
   events
+
 
     /*
      * Simply returns true if help is visible.
      */
-    hyper-ide.help-visible
+    desktop.help.is-visible
       return:bool:true
 
 
     /*
      * Closes help.
      */
-    hyper-ide.close-help
+    desktop.help.close
       delete-widget:hyper-ide-help-wrapper
+
 
   widgets
     div
@@ -127,22 +140,17 @@ create-widget:hyper-ide-help-wrapper
                             /*
                              * Loading and displaying "index.hl" file.
                              */
-                            desktop.help.display-file:@IDE/helpers/help-files/index.hl
+                            desktop.help.display-file:@DESKTOP/help-files/index.hl
 
                 container:hyper-ide-help-content
                   class:hyper-ide-help-content
                   oninit
 
                     /*
-                     * Loading specified "index.hl" file, which is our "help landing page file".
-                     *
-                     * Notice, all "sub-sections" (folders) needs such a file, to function
-                     * correctly.
+                     * Contains main "index.hl" file that should be displayed.
                      */
-                    .folder:x:(/../*/folder|/@.defaults/*/folder)/$?value
-                    eval-x:x:/+/*
-                    desktop.help.display-file:{0}index.hl
-                      :x:/@.folder?value
+                    .file:x:(/../*/file|/../*/.defaults/*/file)/$?value
+                    desktop.help.display-file:x:/@.file?value
 
                   events
 
@@ -192,19 +200,6 @@ create-widget:hyper-ide-help-wrapper
                         filter:.md|.hl
                       desktop.help.display-file:x:@"/@list-files/*/""{0}""/+?name"
                         :x:/@p5.io.unroll-path?value
-
-
-                    /*
-                     * Displays folder content.
-                     */
-                    desktop.help.display-folder
-
-                      /*
-                       * Evaluates this file, passing in folder.
-                       */
-                      eval-x:x:/+/*
-                      micro.evaluate.file:@DESKTOP/helpers/display-help.hl
-                        folder:x:/../*/_arg?value
 
 
                     /*
