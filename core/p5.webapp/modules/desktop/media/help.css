@@ -1,37 +1,40 @@
-
 /*
  * CSS for help files.
  */
-.hyper-ide-help {
+.desktop-help {
     position: relative;
 }
 
-.hyper-ide-help .CodeMirror {
+.desktop-help .CodeMirror {
     margin-top: 2rem;
     margin-bottom: 2rem;
 }
 
-.hyper-ide-help-content {
+.desktop-help-content {
     text-align: justify;
     margin-left: 2rem;
     margin-right: 2rem;
     margin-bottom: 5rem;
 }
-.hyper-ide-help-content .CodeMirror {
+
+.desktop-help-content .CodeMirror {
     border: solid 1px rgba(0,0,0,.2);
     box-shadow: 3px 2px 5px rgba(0,0,0,.2);
-    transition:box-shadow .2s ease-out;
+    transition: box-shadow .2s ease-out;
 }
-.hyper-ide-help-content .CodeMirror:hover {
+
+.desktop-help-content .CodeMirror:hover {
     box-shadow: 7px 7px 5px rgba(0,0,0,.5);
-    transition:box-shadow .2s ease-out;
+    transition: box-shadow .2s ease-out;
 }
-.hyper-ide-youtube-outer-wrapper {
+
+.desktop-help-youtube-outer-wrapper {
     max-width: 640px;
     margin-left: auto;
     margin-right: auto;
 }
-.hyper-ide-youtube-wrapper {
+
+.desktop-help-youtube-wrapper {
     position: relative;
     padding-bottom: 56.25%;
     padding-top: 25px;
@@ -42,7 +45,8 @@
     border-radius: 5px;
     overflow: hidden;
 }
-.hyper-ide-youtube-embed {
+
+.desktop-help-youtube-embed {
     border: none;
     position: absolute;
     top: 0;
@@ -50,7 +54,8 @@
     width: 100%;
     height: 100%;
 }
-.hyper-ide-help-image {
+
+.desktop-help-image {
     max-width: 100%;
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -60,7 +65,8 @@
     box-shadow: 3px 3px 5px rgba(0,0,0,.1);
     border-radius: 5px;
 }
-.hyper-ide-evaluate-snippet-button {
+
+.desktop-help-evaluate-snippet-button {
     padding-left: 35px;
     padding-right: 35px;
     float: right;
@@ -71,4 +77,3 @@
     position: relative;
     margin-right: .5rem;
 }
-

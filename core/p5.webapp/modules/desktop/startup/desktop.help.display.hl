@@ -1,6 +1,10 @@
 
 /*
  * Creates the event that launches the help system.
+ *
+ * Optionally pass in [file] to display a specific file, instead of loading the
+ * default file. If no default [file] is given, this event will raise [desktop.help.get-context] to determine
+ * if we should instead of loading the default help file, load a specific help file by default.
  */
 create-event:desktop.help.display
 
@@ -12,9 +16,34 @@ create-event:desktop.help.display
   /*
    * Making sure we include main CSS file for Hyper IDE.
    */
-  hyper-ide.version
-  p5.web.include-css-file:@IDE/media/main.css?v={0}
-    :x:/@hyper-ide.version?value
+  desktop.version
+  p5.web.include-css-file:@DESKTOP/media/help.css?v={0}
+    :x:/@desktop.version?value
+
+  /*
+   * Checking if no specific [file] argument as given, and if not, checking if we have
+   * some particular "context", which we'd like to prioritise.
+   */
+  if:x:/@.signal/--/file
+    not
+
+    /*
+     * No specific [file] argument was supplied by caller, checking if we have a particular context.
+     */
+    desktop.help.get-context
+    if:x:/-?value
+
+      /*
+       * A specific "context" for help exists, loading that file, instead of resorting to default file.
+       */
+      eval-x:x:/+/*
+      micro.evaluate.file:@DESKTOP/helpers/display-help.hl
+        file:x:/@desktop.help.get-context?value
+
+      /*
+       * Returning early, since we've loaded up our current "context" help file.
+       */
+      return
 
   /*
    * Evaluates the file responsible for launching help system.

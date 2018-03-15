@@ -2,10 +2,9 @@
 /*
  * File responsible for displaying help module.
  *
- * Notice, these help files are in general terms created as Hyperlambda files, to
- * make them "interactive", such that they can contain macros, and other things,
- * that somehow modifies the state of Phosphorus Five, or in any other ways "interact"
- * with the core.
+ * Invoked by [desktop.help.display]
+ * Optionally pass in [file] to display a specific file.
+ * If no [file] argument is suppled, it will by default display "@DESKTOP/help-files/index.hl"
  */
 
 
@@ -50,7 +49,7 @@ if
  */
 eval-x:x:/+/**/.file
 create-widget:hyper-ide-help-wrapper
-  class:container hyper-ide-help
+  class:container desktop-help
   events
 
 
@@ -143,7 +142,7 @@ create-widget:hyper-ide-help-wrapper
                             desktop.help.display-file:@DESKTOP/help-files/index.hl
 
                 container:hyper-ide-help-content
-                  class:hyper-ide-help-content
+                  class:desktop-help-content
                   oninit
 
                     /*
@@ -261,12 +260,12 @@ create-widget:hyper-ide-help-wrapper
                           insert-before:x:/@_dp/#/.
                             src
                               div
-                                @class:hyper-ide-youtube-outer-wrapper
+                                @class:desktop-help-youtube-outer-wrapper
                                 div
-                                  @class:hyper-ide-youtube-wrapper
+                                  @class:desktop-help-youtube-wrapper
                                   iframe
                                     @type:text/html
-                                    @class:hyper-ide-youtube-embed
+                                    @class:desktop-help-youtube-embed
                                     @allowfullscreen
                                     @src:@"https://www.youtube.com/embed/{0}?modestbranding=1&autohide=1&showinfo=0"
                                       :x:/@split/0?name
@@ -285,7 +284,7 @@ create-widget:hyper-ide-help-wrapper
                           insert-before:x:/@_dp/#/.
                             src
                               img
-                                @class:hyper-ide-help-image
+                                @class:desktop-help-image
                                 @src:x:/@_dp/#?value
                                 alt:Image
                           set:x:/@_dp/#/.
@@ -335,7 +334,7 @@ create-widget:hyper-ide-help-wrapper
                               src
                                 button
                                   #text:@"<span class=""icon-flash""></span>"
-                                  @class:hyper-ide-evaluate-snippet-button
+                                  @class:desktop-help-evaluate-snippet-button
                                   @onclick:@"p5.$('x_eval_{0}').raise('.onevaluate');return false;"
                                     :x:/@replace?value
 
