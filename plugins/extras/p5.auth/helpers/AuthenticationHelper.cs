@@ -242,6 +242,14 @@ namespace p5.auth.helpers
             string username = args.GetExValue<string> (context);
             string password = args.GetExChildValue<string> ("password", context);
             string role = args.GetExChildValue<string> ("role", context);
+            
+            // Sanity checking role name towards guest account name.
+            if (role == context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context))
+                throw new LambdaException ("Sorry, but that's the name of our guest account role.", args, context);
+            
+            // Sanity checking username towards guest account name.
+            if (username == context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context))
+                throw new LambdaException ("Sorry, but that's the name of our guest account.", args, context);
 
             // Making sure [password] never leaves method.
             args.FindOrInsert ("password").Value = "xxx";
@@ -377,6 +385,10 @@ namespace p5.auth.helpers
             // Retrieving new password and role, defaulting to null, which will not update existing values.
             string newPassword = args.GetExChildValue<string> ("password", context);
             string newRole = args.GetExChildValue<string> ("role", context);
+
+            // Sanity checking role name towards guest account name.
+            if (newRole == context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context))
+                throw new LambdaException ("Sorry, but that's the name of our guest account role.", args, context);
 
             // Retrieving password rules from web.config, if any.
             // But only if a new password was given.
@@ -896,7 +908,7 @@ namespace p5.auth.helpers
         {
             foreach (var charIdx in username) {
                 if ("abcdefghijklmnopqrstuvwxyz1234567890_-".IndexOf (charIdx) == -1)
-                    throw new SecurityException ("Sorry, you cannot use character '" + charIdx + "' in username");
+                    throw new SecurityException ("Sorry, you cannot use the character '" + charIdx + "' in your usernames");
             }
         }
 
