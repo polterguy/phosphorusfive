@@ -32,6 +32,19 @@ micro.lambda.contract.optional:x:/..
 
 
 /*
+ * Unrolling paths.
+ */
+set:x:/@.defaults/*?value
+  p5.io.unroll-path:x:/@.defaults/*?value
+if:x:/../*/file?value
+  set:x:/../*/file?value
+    p5.io.unroll-path:x:/../*/file?value
+
+
+
+
+
+/*
  * Deleting any previously created help widgets.
  */
 if
@@ -104,6 +117,17 @@ create-widget:hyper-ide-help-wrapper
                         button
                           innerValue:@"<span class=""icon-pencil""></span>"
                           title:Edits the current help file
+                          oninit
+
+                            /*
+                             * Hiding button unless Hyper IDE is available.
+                             */
+                            if
+                              hyper-ide.is-open
+                              not
+                              set-widget-property:x:/../*/_event?value
+                                visible:false
+
                           onclick
 
                             /*
@@ -121,6 +145,17 @@ create-widget:hyper-ide-help-wrapper
                         button
                           innerValue:@"<span class=""icon-spinner11""></span>"
                           title:Reloads the current help file
+                          oninit
+
+                            /*
+                             * Hiding button unless Hyper IDE is available.
+                             */
+                            if
+                              hyper-ide.is-open
+                              not
+                              set-widget-property:x:/../*/_event?value
+                                visible:false
+
                           onclick
 
                             /*
@@ -210,6 +245,12 @@ create-widget:hyper-ide-help-wrapper
                        * Clearing old content, if any.
                        */
                       clear-widget:hyper-ide-help-content
+
+                      /*
+                       * Unrolling path.
+                       */
+                      set:x:/../*/_arg?value
+                        p5.io.unroll-path:x:/../*/_arg?value
 
                       /*
                        * Checking file type first.
