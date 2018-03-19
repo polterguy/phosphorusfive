@@ -1,4 +1,3 @@
-
 ## About Phosphorus Five
 
 <img style="margin-left:1rem; float:right;max-width: 20%;" src="modules/hyper-ide/media/logo.svg" />
@@ -18,7 +17,7 @@ Phosphorus Five is built around three axioms, which you can read three MSDN Maga
 The above three USPs provides an extremely flexible application abstraction layer, on top of the .Net Framework/CLR
 or C#, allowing for you to create web apps much faster than what you'd achieve using conventional techniques.
 Phosphorus Five is particularly well suited for _"enterprise types of web apps"_, managing data, using web forms
-and similar tyopes of techniques - And probably not that well suited for apps that are intended to be massively
+and similar types of techniques - And probably not that well suited for apps that are intended to be massively
 scalable, such as social media platforms, required to responding to millions of web requests every day.
 
 Phosphorus Five contains a whole range of apps, which we refer to as the _"GaiaSoul Suite"_, that allows you
@@ -35,8 +34,41 @@ distributing your own apps. Phosphorus Five's goal, is to provide all the tools 
 your own _"private and personal Silicon Valley"_, such that you can take control over your online life, and
 not be dependent upon using any other _"cloud"_ vendors, resulting in that you loose control over your own data.
 
+### Philosophy
+
 Phosphorus Five is about privacy, freedom of expression, and the freedom to create, without having to conform
-to the terms of others.
+to the terms of others. Hence our slogan, which goes like this _"In the beginning there was Hyperlambda"_. If you
+don't understand where I picked up that slogan, feel free to pick up any Bible. The idea is _"One God each"_.
+And having a close and personal relationship to God, without any intermediaries controlling the terms, and/or
+your access. Gutenberg was my philosophical inspiration while developing Phosphorus Five. Gutenberg's idea
+was to commoditize access to _"the word"_ (AKA; God) - While my idea is to allow you to use _"the word"_ to
+communicate with your computer, without a cast of _"gurus"_ acting as intermediaries on your behalf.
+Which probably explains why I have been permanently banned from Facebook ... ;)
+
+### About the help system
+
+These help files are actually _"alive"_, which means they contain snippets of code, illustrating some concept,
+which will be evaluate on the server when you choose to evaluate the associated snippet. This gives you hopefully
+a nice and interactive way to learn Phosphorus Five, including your tactile learning abilities, creating a
+_"hands on"_ type of learning curve. Below is an example.
+
+```hyperlambda-snippet
+/*
+ * Using speech synthesis from Micro to utter a sentence.
+ *
+ * Hint; Click the button in the bottom right corner of
+ * this "snippet" to evaluate this piece of Hyperlambda.
+ */
+micro.speech.speak:Hello there, my name is Phosphorus Five
+
+/*
+ * Displaying an information bubble window.
+ */
+micro.windows.info:Hello World!
+```
+
+If you have Hypereval installed, you can also instantiate Hypereval as a plugin, and immediately start
+playing around with and modifying these code examples.
 
 ### License
 

@@ -1,5 +1,7 @@
 ## Credits and copyright information
 
+<img style="margin-left:1rem; float:right;max-width: 20%;" src="modules/hyper-ide/media/logo.svg" />
+
 * [Phosphorus Five](https://github.com/polterguy/phosphorusfive) - Copyright © 2014-2018 Thomas Hansen
 * [Hyper IDE](https://github.com/polterguy/hyper-ide) - Copyright © 2018 Thomas Hansen
 * [Hyper Core](https://github.com/polterguy/hyper-core) - Copyright © 2018 Thomas Hansen

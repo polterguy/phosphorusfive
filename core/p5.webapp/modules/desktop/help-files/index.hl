@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This is our main "landing page" for the help system in Hyper IDE.
  *
  * This file displays the general "index", and such serves as a starting ground
@@ -7,10 +7,26 @@
 h2
   innerValue:Phosphorus Five help files
 
+img
+  style:"margin-left:1rem; float:right;max-width: 20%;"
+  src:modules/hyper-ide/media/logo.svg
 p
   innerValue:@"Welcome to the help files for Phosphorus Five. These help files can be launched from within any module, and will guide you through
 both the standard usage of Phosphorus Five, and its modules, in addition to how to create your own apps. This allows you to have these
 help files open from within the module you want to learn about."
+p
+  innerValue:@"You should find at least one documentation section, for each of your apps/modules in here, ranging
+from how to create computer code in complexity, to how to send an email if you've got Sephia Five installed. Hopefully,
+this allows for everyone to become smarter, regardless how what level they want to enter from, and how deep they
+want to dive."
+
+p
+  innerValue:@"These documentation files, are consciously created such that they should bring you up from
+the point where you can barely interact with a computer, to the point of where you're a <em>'guru software developer'</em>.
+If they don't, feel free to toss me an email at thomas@gaiasoul.com. If this is your first visit to Phosphorus Five,
+I suggest you start out with either Hyper IDE (if you're a software developer), or Camphora Five, if you have never
+created software before. If you want to dive into creating Phosphorus Five web apps yourself, you'd probably want to
+start with the <em>'Hyperlambda'</em> section, and maybe moving onwards to Hyper Core afterwards."
 
 literal
   element:h4
@@ -137,3 +153,20 @@ container
                 .folder
               desktop.help.display-file:{0}index.hl
                 :x:/@get-widget-property/*/*?value
+
+h4
+  innerValue:Supplying a patch
+
+p
+  innerValue:@"Notice, for legal reasons I don't accept patches for Phosphorus Five. This is true regardless of
+how good of a software developer you are. However, if you send me one or two lines of code, or accurately describe
+a bug or a problem, I would be happy to assist you. I prefer accepting such requests at
+the <a href=""https://github.com/polterguy/phosphorusfive"">GitHub project website</a> for obvious reasons."
+
+h4
+  innerValue:Press
+
+p
+  innerValue:@"If you want to write about Phosphorus Five for a press article, you can use the logo of
+the bird, which you can find at the top of this article. You can also contact me at thomas@gaiasoul.com."
+
