@@ -71,6 +71,6 @@ and add up the PGP fingerprint for the vendor that distributed this app."
    * TODO: Support multiple zip files inside the same cryptographically signed "manifest".
    */
   eval-x:x:/+/*/local-url
-  bazar.install-app:~/temp/{0}
+  desktop.modules.install:~/temp/{0}
     :x:/@p5.mime.load/*/multipart/=signed/*/application/=zip/*/filename?value
     local-url:x:/../*/local-url?value

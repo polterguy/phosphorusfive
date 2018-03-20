@@ -4,7 +4,24 @@
  *
  * Expects [_arg] being the local folder's name, from within our "/modules/" folder.
  */
-create-event:desktop.uninstall-app
+create-event:desktop.modules.uninstall
+
+  /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.min:x:/..
+    _arg:string
+
+  /*
+   * Checking if [_arg] is a fully qualified path, and if not, making sure it becomes one.
+   */
+  if
+    starts-with:x:/../*/_arg?value
+      src:/
+    not
+    set:x:/../*/_arg?value
+      src:/modules/{0}/
+        :x:/../*/_arg?value
 
   /*
    * Checking to see if app is even installed.

@@ -273,13 +273,11 @@
     <None Include="modules\bazar\startup\bazar.bazars.get-apps.hl" />
     <None Include="modules\bazar\startup\bazar.install-bazar-app.hl" />
     <None Include="modules\bazar\startup\bazar.ensure-trusted-fingerprints.hl" />
-    <None Include="modules\bazar\startup\bazar.install-app.hl" />
     <None Include="modules\bazar\bazars\core.hl" />
     <None Include="modules\bazar\helpers\uninstall-apps.hl" />
     <None Include="modules\desktop\uninstall.hl" />
     <None Include="modules\bazar\uninstall.hl" />
     <None Include="favicon.ico" />
-    <None Include="modules\desktop\startup\desktop.uninstall-app.hl" />
     <None Include="modules\bazar\startup\empty-bazar-cache.hl" />
     <None Include="modules\desktop\startup\desktop.plugins.post.create-logout-button.hl" />
     <None Include="modules\bazar\startup\version.hl" />
@@ -340,6 +338,8 @@
     <None Include="modules\desktop\help-files\index.hl" />
     <None Include="modules\desktop\help-files\02 - Phosphorus Five pro and cons.md" />
     <None Include="modules\desktop\help-files\03 - Credits and copyright information.md" />
+    <None Include="modules\desktop\startup\desktop.modules.install.hl" />
+    <None Include="modules\desktop\startup\desktop.modules.uninstall.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

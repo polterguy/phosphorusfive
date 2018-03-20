@@ -2,23 +2,46 @@
 /*
  * Creates the Active Event that's responsible for installing an app from a zip file.
  *
- * Expects [local-url] being the local folder name for app after installation, in addition to [_arg] pointing
+ * Optionally expects [local-url] being the local folder name for app after installation, in addition to [_arg] pointing
  * to the zip file containing the app.
  */
-create-event:bazar.install-app
+create-event:desktop.modules.install
 
   /*
    * Sanity checking arguments.
    */
   micro.lambda.contract.min:x:/..
     _arg:string
+  micro.lambda.contract.optional:x:/..
     local-url:string
+
+  /*
+   * Defaults, used if no [local-url] argument was supplied.
+   */
+  .defaults
+    local-url
+
+  /*
+   * Checking if caller did not supply a [local-url], 
+   * at which point we use the zip file's filename.ß
+   */
+  if:x:/../*/local-url?value
+    not
+
+    /*
+     * Using filename as [local-url].
+     */
+    split:x:/../*/_arg?value
+      =:/
+      =:.
+    set:x:/@.defaults/*/local-url?value
+      src:x:/@split/0/-2?name
 
   /*
    * Uninstalling any previous versions of app.
    */
-  desktop.uninstall-app:/modules/{0}/
-    :x:/../*/local-url?value
+  desktop.modules.uninstall:/modules/{0}/
+    :x:(/../*/local-url|/@.defaults/*/local-url)/$?value
 
   /*
    * Unzipping app's zip file into "/modules/" folder.
@@ -36,7 +59,7 @@ create-event:bazar.install-app
    */
   if:x:/@unzip/0?name
     !=:/modules/{0}/
-      :x:/../*/local-url?value
+      :x:(/../*/local-url|/@.defaults/*/local-url)/$?value
 
     /*
      * The folder our [unzip] operation created was different than the folder
@@ -46,7 +69,7 @@ create-event:bazar.install-app
      */
     move-folder:x:/@unzip/0?name
       dest:/modules/{0}/
-        :x:/../*/local-url?value
+        :x:(/../*/local-url|/@.defaults/*/local-url)/$?value
 
   /*
    * Then evaluating any installation and startup Hyperlambda file for our newly installed app,
@@ -55,12 +78,12 @@ create-event:bazar.install-app
   if
     fetch:x:/0/0?value
       file-exists:/modules/{0}/install.hl
-        :x:/../*/local-url?value
+        :x:(/../*/local-url|/@.defaults/*/local-url)/$?value
     micro.evaluate.file:/modules/{0}/install.hl
-      :x:/../*/local-url?value
+      :x:(/../*/local-url|/@.defaults/*/local-url)/$?value
   if
     fetch:x:/0/0?value
       file-exists:/modules/{0}/startup.hl
-        :x:/../*/local-url?value
+        :x:(/../*/local-url|/@.defaults/*/local-url)/$?value
     micro.evaluate.file:/modules/{0}/startup.hl
-      :x:/../*/local-url?value
+      :x:(/../*/local-url|/@.defaults/*/local-url)/$?value

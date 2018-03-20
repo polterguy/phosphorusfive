@@ -55,7 +55,7 @@ create-widgets
                           /*
                            * Uninstalling app.
                            */
-                          desktop.uninstall-app:/modules/{0}/
+                          desktop.modules.uninstall:/modules/{0}/
                             :x:/@_app-name?value
 
                           /*

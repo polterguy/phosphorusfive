@@ -458,7 +458,7 @@ create-widget
                           join:x:/@split/*
                             sep:.
                           eval-x:x:/+/*/local-url
-                          bazar.install-app:x:/@_dp/#?value
+                          desktop.modules.install:x:/@_dp/#?value
                             local-url:x:/@join?value
 
                         /*
