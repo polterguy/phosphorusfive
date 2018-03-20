@@ -73,7 +73,7 @@ create-widgets
                */
               create-widgets
                 micro.widgets.cover:desktop-installation-cover-widget
-                  message:Please wait while your application is installed
+                  message:Please wait while your application is installed ...
 
               /*
                * Creating a pingback, which does the actual heavy lifting.

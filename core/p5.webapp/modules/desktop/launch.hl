@@ -163,8 +163,8 @@ create-widget
                  * Creates the "uninstall existing module" button.
                  */
                 button
-                  innerValue:@"<span class=""icon-bin""></span>"
-                  title:Allows you to uninstall modules
+                  innerValue:@"<span class=""icon-minus""></span>"
+                  title:Uninstall a module
                   oninit
 
                     /*
