@@ -11,7 +11,7 @@ create-widgets
       p
         innerValue:Browse to a zip file on your disc, or supply a URL to a module you want to install.
       p
-        innerValue:<strong>Warning</strong> - Do not install any modules you don't know for sure are safe, since this could compromise your system.
+        innerValue:<strong>Warning</strong> - Do not install any modules you don't know for sure are safe, since this can compromise your system.
       div
         class:strip fill
         widgets
@@ -67,6 +67,28 @@ create-widgets
           button:desktop-install-new-module
             innerValue:Install
             onclick
+
+              /*
+               * Making sure we create an obscurer, before we invoke the actual implementation.
+               */
+              create-widgets
+                micro.widgets.cover:desktop-installation-cover-widget
+                  message:Please wait while your application is installed
+
+              /*
+               * Creating a pingback, which does the actual heavy lifting.
+               */
+              micro.lambda.create-timeout
+                milliseconds:1
+                onfinish
+
+                  /*
+                   * Invoking Ajax method that is actually responsible for installing our module.
+                   */
+                  p5.web.widgets.ajax-events.raise:desktop-install-new-module
+                    .onclick
+
+            .onclick
 
               /*
                * Retrieving textbox value, and doing basic sanity check.
