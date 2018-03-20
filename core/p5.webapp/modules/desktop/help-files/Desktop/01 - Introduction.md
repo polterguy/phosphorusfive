@@ -27,6 +27,11 @@ display all your installed modules, and allow you to uninstall these. Below is a
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-uninstall-module.png
 
+**Warning** - Please be careful when uninstalling modules, since there is nothing that prevents you from
+uninstalling modules which are crucial for your Phosphorus Five installation to adequately function, such
+as the desktop itself, or Micro. Make sure you uninstall _the correct_ module, and that you don't uninstall
+modules the system is dependent upon!
+
 ### Settings and skinning your Desktop
 
 The desktop module allows you to change the skin for your Phosphorus Five installation, which is a global
