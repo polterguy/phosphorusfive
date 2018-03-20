@@ -60,7 +60,14 @@ create-widgets
                           /*
                            * Reloading location for simplicity reasons, to make sure
                            * we re-create all desktop icons, etc.
+                           *
+                           * However, before we can reload location, we'll need to make
+                           * sure user is notified on next pageload that uninstallation was a success.
                            */
+                          desktop.evaluate.on-next-pageload
+                            lambda
+                              micro.windows.info:Your module was successfully uninstalled
+                                class:micro-windows-info success
                           p5.web.reload-location
 
           /*

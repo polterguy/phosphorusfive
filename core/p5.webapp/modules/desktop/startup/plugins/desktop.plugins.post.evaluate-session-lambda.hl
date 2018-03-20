@@ -1,0 +1,22 @@
+﻿
+/*
+ * Creates the plugin that checks to see if session contains a lambda callback,
+ * which was created on the previously rendered page
+ */
+create-event:desktop.plugins.post.evaluate-session-lambda
+
+  /*
+   * Retrieving session callback lambda, if any, and evaluates it.
+   */
+  p5.web.session.get:desktop.next-pageload-lambda
+  if:x:/@p5.web.session.get/*?value
+
+    /*
+     * Making sure we clear session value.
+     */
+    p5.web.session.set:desktop.next-pageload-lambda
+
+    /*
+     * Evaluates lambda
+     */
+    eval:x:/@p5.web.session.get/*?value

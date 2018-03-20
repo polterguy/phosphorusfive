@@ -1,0 +1,20 @@
+
+/*
+ * Creates the event that allows the caller to store a lambda object,
+ * which is evaluated on the next pageload.
+ */
+create-event:desktop.evaluate.on-next-pageload
+
+  /*
+   * Sanity checking invocation
+   */
+  micro.lambda.contract.min:x:/..
+    lambda
+
+  /*
+   * Storing lambda in session.
+   */
+  lambda2hyper:x:/../*/lambda/*
+  p5.web.session.set:desktop.next-pageload-lambda
+    src:x:/@lambda2hyper?value
+

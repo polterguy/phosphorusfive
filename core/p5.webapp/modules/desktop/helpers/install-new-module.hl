@@ -84,9 +84,19 @@ create-widgets
 
                   /*
                    * Invoking Ajax method that is actually responsible for installing our module.
+                   *
+                   * Making sure we wrap invocation in a try/catch block.
                    */
-                  p5.web.widgets.ajax-events.raise:desktop-install-new-module
-                    .onclick
+                  try
+                    p5.web.widgets.ajax-events.raise:desktop-install-new-module
+                      .onclick
+                  catch
+
+                    /*
+                     * Oops, exception ocurred.
+                     */
+                    micro.windows.info:That module couldn't be installed for some reasons
+                      class:micro-windows-info warning
 
             .onclick
 
@@ -166,7 +176,14 @@ create-widgets
 
               /*
                * Reloading desktop, to have icons re-created.
+               *
+               * However, before we can reload location, we'll need to make
+               * sure user is notified on next pageload that uninstallation was a success.
                */
+              desktop.evaluate.on-next-pageload
+                lambda
+                  micro.windows.info:Your module was successfully installed
+                    class:micro-windows-info success
               p5.web.reload-location
 
       div
