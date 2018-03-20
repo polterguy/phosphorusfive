@@ -115,15 +115,6 @@ for-each:x:/@list-files/*?name
 create-widget
   parent:desktop-main-container
   class:row
-  events
-
-
-    /*
-     * Help context Active Event.
-     */
-    desktop.help.get-context
-      return:@DESKTOP/help-files/Desktop/index.hl
-
   widgets
     div
       class:col-100
