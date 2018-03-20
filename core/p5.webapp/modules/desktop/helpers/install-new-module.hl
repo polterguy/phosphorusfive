@@ -1,0 +1,160 @@
+
+/*
+ * Allows the user to install a new module, either from a URL, or
+ * by browsing to a zip file on his disc.
+ */
+create-widgets
+  micro.widgets.modal:desktop-install-new-module-modal
+    widgets
+      h3
+        innerValue:Install a new module
+      p
+        innerValue:Browse to a zip file on your disc, or supply a URL to a module you want to install.
+      p
+        innerValue:<strong>Warning</strong> - Do not install any modules you don't know for sure are safe, since this could compromise your system.
+      div
+        class:strip fill
+        widgets
+          label
+            innerValue:Module
+          input:desktop-install-new-module-text
+            type:text
+            onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-install-new-module').raise('onclick');return false;} else if (event.keyCode == 27) {p5.$('desktop-install-new-module-cancel').raise('onclick');return false;}"
+            oninit
+
+              /*
+               * Setting initial focus to textbox.
+               */
+              micro.page.set-focus:x:/../*/_event?value
+
+          micro.widgets.upload-button
+            accept:.zip
+            .onupload
+
+              /*
+               * Simply settings textbox' value to path of module uploaded, making
+               * sure we rename file in process to original filename.
+               *
+               * First checking if there exists a file with the same file name in user's
+               * temp folder,and deleting it if it does.
+               */
+              if
+                fetch:x:/0/0?value
+                  file-exists:~/temp/{0}
+                    :x:/../*/files/*/*?value
+                delete-file:~/temp/{0}
+                  :x:/../*/files/*/*?value
+
+              /*
+               * Renaming file.
+               */
+              move-file:x:/../*/files/*?value
+                dest:~/temp/{0}
+                  :x:/../*/files/*/*?value
+
+              /*
+               * Setting textbox value to filename, since actual installer logic will determine
+               * if user provided a URL or a (local) filename.
+               */
+              set-widget-property:desktop-install-new-module-text
+                value:x:/../*/files/*/*?value
+
+              /*
+               * Setting focus to textbox.
+               */
+              micro.page.set-focus:desktop-install-new-module-text
+
+          button:desktop-install-new-module
+            innerValue:Install
+            onclick
+
+              /*
+               * Retrieving textbox value, and doing basic sanity check.
+               */
+              get-widget-property:desktop-install-new-module-text
+                value
+              if:x:/@get-widget-property/*/*?value
+                =:
+
+                /*
+                 * Oops, no module supplied ...
+                 * Warning user, and returning early.
+                 */
+                micro.windows.info:You need to supply a module
+                  class:micro-windows-info warning
+                micro.page.set-focus:desktop-install-new-module-text
+                return
+
+              /*
+               * Checking if textbox value starts with "http://" or "https://", at
+               * which point we download the file before we invoke our "install new module"
+               * event.
+               */
+              if
+                starts-with:x:/@get-widget-property/*/*?value
+                  src:"http://"
+                or
+                  starts-with:x:/@get-widget-property/*/*?value
+                    src:"https://"
+
+                /*
+                 * URL, downloading file before we proceed.
+                 */
+                split:x:/@get-widget-property/*/*?value
+                  =:/
+
+                /*
+                 * Sanity checking that URL ends with "xxx.zip".
+                 */
+                if
+                  fetch:x:/0/0/-?name
+                    split:x:/@split/0/-?name
+                      =:.
+                  !=:zip
+
+                  /*
+                   * Not a URL to a zip file, warning user, and returning early.
+                   */
+                  micro.windows.info:You can only install zip files
+                    class:micro-windows-info warning
+                  micro.page.set-focus:desktop-install-new-module-text
+                  return
+
+                /*
+                 * Retrieving module from URL.
+                 */
+                p5.http.get:x:/@get-widget-property/*/*?value
+                  .onresponse
+                    .p5.io.file.save-to-stream:~/temp/{0}
+                      :x:/@split/0/-?name
+
+                /*
+                 * Installing module.
+                 */
+                desktop.modules.install:~/temp/{0}
+                  :x:/@split/0/-?name
+
+              else
+
+                /*
+                 * Local file, already uploaded.
+                 */
+                desktop.modules.install:~/temp/{0}
+                  :x:/@get-widget-property/*/*?value
+
+              /*
+               * Reloading desktop, to have icons re-created.
+               */
+              p5.web.reload-location
+
+      div
+        class:right
+        widgets
+          button:desktop-install-new-module-cancel
+            innerValue:Cancel
+            onclick
+
+              /*
+               * Simply deletes modal window.
+               */
+              delete-widget:desktop-install-new-module-modal

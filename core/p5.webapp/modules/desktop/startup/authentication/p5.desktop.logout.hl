@@ -1,10 +1,10 @@
 ﻿
 
 /*
- * File responsible for creating our [p5.core.login] event, which simply deletes all of user's temp file, destroys
+ * File responsible for creating our [p5.desktop.login] event, which simply deletes all of user's temp file, destroys
  * the context ticket for the client, and reloads the current location.
  */
-create-event:p5.core.logout
+create-event:p5.desktop.logout
 
   /*
    * Deleting user's "temp" files and folders.

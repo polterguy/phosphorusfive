@@ -1,5 +1,6 @@
+
 /*
- * Allows user to uninstall an app.
+ * Allows the user to uninstall a module.
  */
 
 
@@ -7,14 +8,14 @@
 
 
 /*
- * Creating a modal widget to allow user to type in a new Bazar URL.
+ * Creating a modal widget that displays all modules, and allows the user to uninstall a module.
  */
 create-widgets
-  micro.widgets.modal:bazar-uninstall-app
+  micro.widgets.modal:desktop-uninstall-app
     widgets
       h3
-        innerValue:Delete app
-      micro.widgets.grid:bazar-uninstall-app-grid
+        innerValue:Uninstall module(s)
+      micro.widgets.grid:desktop-uninstall-app-grid
         oninit
 
           /*
@@ -32,12 +33,10 @@ create-widgets
             /*
              * Adding item to grid
              */
-            eval-x:x:/+/*/*/*|/+/**/_app-name
+            eval-x:x:/+/*/*/*|/+/**/.app-name
             add:x:/../*/micro.widgets.grid.databind
               src
                 item
-                  .row
-                    .app-row
                   Name:x:/@split/0/-?name
                   Uninstall
                     style:"width:5px;"
@@ -50,31 +49,24 @@ create-widgets
                           /*
                            * Forward evaluated above.
                            */
-                          _app-name:x:/@split/0/-?name
+                          .app-name:x:/@split/0/-?name
 
                           /*
                            * Uninstalling app.
                            */
                           desktop.modules.uninstall:/modules/{0}/
-                            :x:/@_app-name?value
+                            :x:/@.app-name?value
 
                           /*
-                           * Giving feedback to user.
+                           * Reloading location for simplicity reasons, to make sure
+                           * we re-create all desktop icons, etc.
                            */
-                          micro.windows.info:App was successfully uninstalled
-                            class:micro-windows-info success
-
-                          /*
-                           * Removing row from datagrid.
-                           */
-                          p5.web.widgets.find-first-ancestor:x:/../*/_event?value
-                            .app-row
-                          delete-widget:x:/-/*/*?value
+                          p5.web.reload-location
 
           /*
            * Databinding grid.
            */
-          micro.widgets.grid.databind:bazar-uninstall-app-grid
+          micro.widgets.grid.databind:desktop-uninstall-app-grid
 
       div
         class:right
@@ -96,5 +88,4 @@ create-widgets
                   /*
                    * Deleting modal widget.
                    */
-                  delete-widget:bazar-uninstall-app
-
+                  delete-widget:desktop-uninstall-app

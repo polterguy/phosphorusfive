@@ -1,4 +1,4 @@
-
+﻿
 /*
  * File responsible for creating our default [p5.web.load-ui] event, which basically is our default URL resolver,
  * and "micro web operating system", allowing the user to see his desktop, installed apps, and visit the Bazar.
@@ -132,7 +132,7 @@ create-event:p5.web.load-ui
          */
         p5.web.response.set-status-code:403
         micro.css.include
-        p5.core.login
+        p5.desktop.login
         return
 
       /*

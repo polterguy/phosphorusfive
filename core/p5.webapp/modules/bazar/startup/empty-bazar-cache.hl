@@ -1,8 +1,0 @@
-﻿
-/*
- * Deletes all Bazar cache files
- */
-if
-  folder-exists:/common/documents/private/bazar-cache/
-  list-files:/common/documents/private/bazar-cache/
-  delete-file:x:/-/*?name

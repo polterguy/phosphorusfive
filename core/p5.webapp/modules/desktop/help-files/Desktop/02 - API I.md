@@ -1,10 +1,60 @@
-
 ## Desktop API I
 
-The desktop contains a rich API, which allows you to perform all sorts of tasks, which are common
+The Desktop module contains a rich API, which allows you to perform all sorts of tasks, which are common
 to all modules. This includes the responsibility of loading the help system, installation and
-uninstallation of apps and modules, etc. Below you can find the documentation for all of these common
-tasks.
+uninstallation of apps and modules, logging in and out of the system, etc.
+
+### Desktop internals
+
+What occurs when a URL is requested, is that Phosphorus Five will invoke an Active Event that is
+named **[p5.web.load-ui]**. The Desktop module will handle this event, and evaluate its URL resolver logic,
+to figure out which module the client is requesting. Then the Desktop module will evaluate the _"launch.hl"_
+file, associated with your module, and your module will take over the request from that point onwards.
+This event is raised by the core of Phosphorus Five, and handling this event is arguably the most
+important responsibility that the Desktop module has.
+
+### Authentication
+
+You can use the API events to login and log out of the system. The names of these events are as follows.
+
+* __[p5.desktop.login]__ - Shows a modal window, allowing the user to login to the system
+* __[p5.desktop.logout]__ - Logs out the current user, and deletes his or hers temporary files
+
+### Exchanging the Desktop module with your own module
+
+If you want to, you can in its entirety exchange the Desktop module, by editing your web.config
+setting called `p5.core.default-app`. This is the preferred way to exchange the Desktop module, since
+it doesn't actually remove the module, but rather overrides the default application that is loaded
+at your server's root URL. Since the Desktop module contains a lot of API events, necessary to have
+other parts of your system functioning correctly - This is a better way to exchange the main Desktop with
+your own logic, instead of physically removing or uninstalling the module.
+
+You can choose to exchange the Desktop module with any module you wish. Your desktop will still be
+available at the [/desktop](/desktop) URL, even if you exchange it with another module.
+
+### Exchanging the default skin
+
+The default skin to use, for users that haven't overridden the skin themselves explicitly, can be
+changed in your web.config, by editing the `p5.desktop.guest-skin` setting.
+
+### Desktop plugins
+
+The Desktop module will add two buttons on all modules automatically, as long as your module has
+a widget with the CSS class of _"toolbar"_ associated with it. These buttons allows the user to
+launch the help system, in addition to allowing the user to login and logout of the system.
+If you don't want these buttons to be automatically injected into your app's toolbar, then you
+can do so by simply making sure you do _not_ have any widgets in your page, with the CSS class
+of _"toolbar"_. The names of the Active Events that creates these two buttons are as follows.
+
+* __[desktop.plugins.post.create-dox-button]__ - Creates the _"launch documentation"_ button
+* __[desktop.plugins.post.create-logout-button]__ - Creates the _"login/logout"_ button
+
+**Notice**, the Desktop module will automatically invoke all Active Events that starts out with the
+name `desktop.plugins.pre.` and `desktop.plugins.post.`. These are considered to be global
+plugin events, that either should be evaluated before any modules are loaded (_"pre"_), or after
+any modules have been loaded (_"post"_). This allows you to create your own global plugins, which
+would be accessible from any module in your installation. The Magic Menu exploits this feature, to
+inject its _"launch"_ button (the magic wand button) in all modules.
 
 ### The help system
 

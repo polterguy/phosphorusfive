@@ -136,11 +136,58 @@ create-widget
               widgets
 
                 /*
-                 * This is just a container for optional "plugin buttons", such as for instance the one
-                 * created for logging in and out of Phosphorus Five.
+                 * Creates the "install new module" button.
+                 */
+                button
+                  innerValue:@"<span class=""icon-plus""></span>"
+                  title:Install a new module
+                  class:large
+                  oninit
+
+                    /*
+                     * Verifying user is root, and if not, simply deleting button.
+                     */
+                    whoami
+                    if:x:/@whoami/*/role?value
+                      !=:root
+                      delete-widget:x:/../*/_event?value
+
+                  onclick
+
+                    /*
+                     * Launching our "install new module" file.
+                     */
+                    micro.evaluate.file:@DESKTOP/helpers/install-new-module.hl
+
+                /*
+                 * Creates the "uninstall existing module" button.
+                 */
+                button
+                  innerValue:@"<span class=""icon-bin""></span>"
+                  title:Allows you to uninstall modules
+                  oninit
+
+                    /*
+                     * Verifying user is root, and if not, simply deleting button.
+                     */
+                    whoami
+                    if:x:/@whoami/*/role?value
+                      !=:root
+                      delete-widget:x:/../*/_event?value
+
+                  onclick
+
+                    /*
+                     * Launching our "install new module" file.
+                     */
+                    micro.evaluate.file:@DESKTOP/helpers/uninstall-module.hl
+
+                /*
+                 * Creates the "settings" button.
                  */
                 button
                   innerValue:@"<span class=""icon-cog""></span>"
+                  title:Change your settings
                   oninit
 
                     /*

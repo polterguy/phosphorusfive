@@ -59,9 +59,7 @@
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="common\documents\private\web.config" />
-    <Content Include="modules\bazar\screenshots\screenshot-1.png" />
     <Content Include="modules\desktop\media\main.css" />
-    <Content Include="modules\bazar\media\main.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -114,12 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="common\temp\" />
-    <Folder Include="modules\bazar\" />
-    <Folder Include="modules\bazar\bazars\" />
     <Folder Include="modules\desktop\" />
-    <Folder Include="modules\bazar\startup\" />
-    <Folder Include="modules\bazar\helpers\" />
-    <Folder Include="modules\bazar\media\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -253,40 +246,16 @@
     <None Include="common\documents\public\README.md" />
     <None Include="startup.hl" />
     <None Include="modules\README.md" />
-    <None Include="modules\bazar\configuration\bazars.hl" />
-    <None Include="modules\bazar\configuration\trusted-app-distributors.hl" />
-    <None Include="modules\bazar\desktop.hl" />
-    <None Include="modules\bazar\launch.hl" />
-    <None Include="modules\bazar\README.md" />
-    <None Include="modules\bazar\bazars\apps.hl" />
-    <None Include="modules\bazar\bazars\developer-tools.hl" />
     <None Include="modules\desktop\configuration\key-server.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
     <None Include="modules\desktop\launch.hl" />
     <None Include="modules\desktop\README.md" />
-    <None Include="modules\desktop\startup\p5.core._internals.pgp.download-key.hl" />
-    <None Include="modules\desktop\startup\p5.core.login.hl" />
-    <None Include="modules\desktop\startup\p5.core.logout.hl" />
-    <None Include="modules\desktop\startup\p5.web.load-ui.hl" />
     <None Include="modules\desktop\startup.hl" />
-    <None Include="modules\bazar\startup.hl" />
-    <None Include="modules\bazar\startup\bazar.bazars.get-apps.hl" />
-    <None Include="modules\bazar\startup\bazar.install-bazar-app.hl" />
-    <None Include="modules\bazar\startup\bazar.ensure-trusted-fingerprints.hl" />
-    <None Include="modules\bazar\bazars\core.hl" />
-    <None Include="modules\bazar\helpers\uninstall-apps.hl" />
     <None Include="modules\desktop\uninstall.hl" />
-    <None Include="modules\bazar\uninstall.hl" />
     <None Include="favicon.ico" />
-    <None Include="modules\bazar\startup\empty-bazar-cache.hl" />
-    <None Include="modules\desktop\startup\desktop.plugins.post.create-logout-button.hl" />
-    <None Include="modules\bazar\startup\version.hl" />
     <None Include="modules\desktop\startup\version.hl" />
-    <None Include="modules\desktop\startup\p5.error.LambdaException.hl" />
-    <None Include="modules\desktop\startup\desktop.plugins.post.create-dox-button.hl" />
     <None Include="modules\desktop\helpers\display-help.hl" />
     <None Include="modules\desktop\helpers\settings.hl" />
-    <None Include="modules\desktop\startup\desktop.help.display.hl" />
     <None Include="modules\desktop\help-files\Hyperlambda\01 - Introduction.md" />
     <None Include="modules\desktop\help-files\Hyperlambda\02 - An Ajax primer.md" />
     <None Include="modules\desktop\help-files\Hyperlambda\03 - Ajax Widgets.md" />
@@ -338,8 +307,17 @@
     <None Include="modules\desktop\help-files\index.hl" />
     <None Include="modules\desktop\help-files\02 - Phosphorus Five pro and cons.md" />
     <None Include="modules\desktop\help-files\03 - Credits and copyright information.md" />
-    <None Include="modules\desktop\startup\desktop.modules.install.hl" />
-    <None Include="modules\desktop\startup\desktop.modules.uninstall.hl" />
+    <None Include="modules\desktop\startup\authentication\p5.desktop.login.hl" />
+    <None Include="modules\desktop\startup\authentication\p5.desktop.logout.hl" />
+    <None Include="modules\desktop\startup\core\p5.error.LambdaException.hl" />
+    <None Include="modules\desktop\startup\core\p5.web.load-ui.hl" />
+    <None Include="modules\desktop\startup\misc\desktop.help.display.hl" />
+    <None Include="modules\desktop\startup\plugins\desktop.plugins.post.create-dox-button.hl" />
+    <None Include="modules\desktop\startup\plugins\desktop.plugins.post.create-logout-button.hl" />
+    <None Include="modules\desktop\startup\modules\desktop.modules.install.hl" />
+    <None Include="modules\desktop\startup\modules\desktop.modules.uninstall.hl" />
+    <None Include="modules\desktop\helpers\install-new-module.hl" />
+    <None Include="modules\desktop\helpers\uninstall-module.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

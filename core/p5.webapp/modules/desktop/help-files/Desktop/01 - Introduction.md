@@ -1,4 +1,3 @@
-
 ## Introduction
 
 The _"Desktop"_ module, is normally the root of your Phosphorus Five installation, and responsible for URL resolving,
@@ -30,4 +29,11 @@ to your main laptop or desktop computer.
 
 It is also very easy to create your own skin, due to some highly intuitive CSS tricks applied
 by Phosphorus Five, or the core Micro CSS framework to be more accurate. We will look at how to
-create our own skins in the documentation for _"Micro"_, later in these documentation files.
+create our own skins in the documentation for _"Micro"_ later in these documentation files. Below
+is how Hyper IDE will look like, if you choose the _"Magic Forrest"_ skin.
+
+https://phosphorusfive.files.wordpress.com/2018/03/hyper-ide-magic-forrest-skin-screenshot.png
+
+Below you can see how Camphora Five will look like if you choose the _"Aztec"_ skin.
+
+https://phosphorusfive.files.wordpress.com/2018/03/camphora-screenshot-aztec.png
