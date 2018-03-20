@@ -60,6 +60,7 @@
     <Content Include="Global.asax" />
     <Content Include="common\documents\private\web.config" />
     <Content Include="modules\desktop\media\main.css" />
+    <Content Include="modules\desktop\media\help.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -246,7 +247,6 @@
     <None Include="common\documents\public\README.md" />
     <None Include="startup.hl" />
     <None Include="modules\README.md" />
-    <None Include="modules\desktop\configuration\key-server.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
     <None Include="modules\desktop\launch.hl" />
     <None Include="modules\desktop\README.md" />

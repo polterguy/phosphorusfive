@@ -13,6 +13,20 @@ installed in your installation. This launcher icon is actually dynamically creat
 _"desktop.hl"_ file, and can to a large extent be modified as you see fit. See other parts of this
 documentation for how to create your own desktop icon.
 
+### Installing and uninstalling modules
+
+To install a new module, simply click the _"+"_ button in your toolbar, on your Desktop, while you're
+logged in as _"root"_. This will allow you to either browse to a zip file on your local computer -
+Or use an URL to some zip file on the web, which will be automatically downloaded and installed for
+you. Below is a screenshot of the installation process.
+
+https://phosphorusfive.files.wordpress.com/2018/03/desktop-install-new-module-screenshot.png
+
+Uninstallation is equally easy, simply click the _"trashcan"_ button, at which point Phosphorus will
+display all your installed modules, and allow you to uninstall these. Below is a screenshot.
+
+https://phosphorusfive.files.wordpress.com/2018/03/desktop-uninstall-module.png
+
 ### Settings and skinning your Desktop
 
 The desktop module allows you to change the skin for your Phosphorus Five installation, which is a global
