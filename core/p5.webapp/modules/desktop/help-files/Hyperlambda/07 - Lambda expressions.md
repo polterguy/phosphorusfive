@@ -1,5 +1,9 @@
 ## Lambda Expressions
 
+**Notice**, the next two chapters are significantly more theoretical in nature than the previous chapters. If it becomes boring,
+feel free to skip this chapter, and the next chapter, and return to them later as your understanding and hunger for more
+has increased.
+
 Lambda expressions are what truly makes Hyperlambda unique. Hyperlambda is nothing like your traditional programming language. For instance, 
 Hyperlambda doesn't even contain the notion of a *"variable"*. This is because everything is changeable, and potentially a variable - 
 Including Hyperlambda execution instructions. This allows you to create lambda objects, that change their execution trees, during their 
@@ -45,8 +49,8 @@ forward-slash *"/"*. The first iterator in your expression, starts out with the 
 
 Below is a piece of Hyperlambda, which demonstrates the construct. Notice, at this time, it might be beneficial for you to evaluate
 the next example in _"Hypereval"_. Hypereval is a module for Phosphorus Five, which allows you to execute Hyperlambda in _"immediate"_ mode,
-and see the results of your evaluation. Make sure you install [Hypereval](/bazar?app=hypereval), open it up by clicking the _"lightning"_
-button at the top of Hyper IDE, and click the _"eye"_ button beneath Hypereval, to enable the _"output"_ view. Then type in your code into 
+and see the results of your evaluation. Make sure you open up _"Hypereval"_ by clicking the _"lightning"_
+button at the top of Hyper IDE, and click the _"eye"_ button beneath Hypereval, to enable the _"output"_ view. Then paste in the code below into
 Hypereval's CodeMirror instance, and click the _"flash"_ button beneath Hypereval, which will evaluate your Hyperlambda.
 
 ```hyperlambda
@@ -160,9 +164,9 @@ set:x:/@_foo?value
 
 The named elder relative iterator, is arguably the closest you come in P5 to something allowing you to reference nodes like *"variables"*.
 
-To create a mental model for understanding lambda expressions, it might be useful to perceive them exactly for what they are. Think of 
+To create a mental model for understanding lambda expressions, it might be useful to perceive them as exactly what they are. Think of 
 them like reusable enumerators, that can be chained together, filtering your result set, retrieving sub portions of your original lambda.
-They're kind of like the equivalent of Linq for Phosphorus Five.
+They're kind of like the equivalent of LINQ for Phosphorus Five, if you come from a C# background.
 
 ### Converting your expression's result
 

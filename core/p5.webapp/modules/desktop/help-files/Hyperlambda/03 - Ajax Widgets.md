@@ -1,9 +1,5 @@
 ## Ajax widgets
 
-**Warning**, if you find this chapter boring, feel free to just scan it, and jump to the next chapter, and come back 
-to study this chapter in more details later. This chapter will go through all the details of Ajax widgets in P5, 
-and hence might feel boring the first read through of this book.
-
 An Ajax widget is always defined as one single HTML element. Extension widgets, which we will have a look at later, 
 might have children widgets of themselves. But all the native main widgets, corresponds to a single HTML element on your page. 
 There are 3 main widgets in P5.
@@ -12,34 +8,73 @@ There are 3 main widgets in P5.
 - **[container]** - Serves as a container for other widgets through its **[widgets]** collection
 - **[void]** - Has no content, besides its attributes
 
-By cleverly combining the void, literal, and container widgets, you can create any HTML markup you wish. 
+By cleverly combining the void, literal, and container widgets, you can create any HTML markup you wish.
 Contrary to other Ajax frameworks, you have 100% control over your resulting HTML markup in P5.
+
+**Notice**, you can also use _"automatic naming"_ for your widgets, and have the framework determine automatically
+for you, what type of widget you are creating. This is done internally in Phosphorus by checking if you provided
+an **[innerValue]** argument, a **[widgets]** argument, or none.
+
+### Creating Ajax widgets
+
+There are two main Active Events in Phosphorus Five that allows you to create Ajax Widgets, these are listed below.
+
+* __[create-widget]__ - Creates a single widget
+* __[create-widgets]__ - Creates multiple widgets
+
+Most of the time you'd probably want to use the **[create-widget]** event, to create a single widget. Sometimes it
+may be beneficial to use the plural form though, especially when you want to create extension widgets, such as
+a modal widget, or a tab widget etc.
 
 ### Widget attribues
 
-When you create a widget, you often want to associate HTML attributes with it. This is easily done, by simply adding 
-the attributes as a key/value argument to your widget. Consider the following code, which creates an HTML5 video 
+When you create a widget, you often want to associate HTML attributes with it. This is easily done, by simply adding
+the attributes as a key/value argument to your widget. Consider the following code, which creates an HTML5 video
 element for you.
 
-**Notice**, if you evaluate this code directly, using the _"flash"_ button, you'll need to scroll to the bottom of 
-this document to see its result.
-
 ```hyperlambda-snippet
-create-widget
-  parent:hyper-ide-help-content
-  element:video
-  width:320
-  height:240
-  controls
-  src:"http://www.w3schools.com/html/movie.ogg"
-  type:video/ogg
-  innerValue:Your browser needs to be updated
+/*
+ * Creates a modal widget with a video widget inside of it.
+ *
+ * Yet again, simply click anywhere outside of the modal
+ * widget to close it.
+ */
+create-widgets
+
+  /*
+   * A modal widget.
+   */
+  micro.widgets.modal
+    widgets
+      div
+        class:air air-inner
+        widgets
+
+          /*
+           * The actual video element.
+           *
+           * Notice how the Hyperlambda attributes directly
+           * corelates to HTML attributes, and the name of
+           * widget corelates to the HTML tag/element.
+           */
+          video
+            width:320
+            height:240
+            controls
+            src:"http://www.w3schools.com/html/movie.ogg"
+            type:video/ogg
+            innerValue:Your browser needs to be updated
+
+/*
+ * Notice also, since our above "video" widget contains
+ * an [innerValue], it will be created as a "literal" widget.
+ */
 ```
 
 In the above code, almost all arguments will create some sort of attribute. The resulting HTML will resemble something like the following.
 
 ```htmlmixed
-<video 
+<video
   id="x98ffe76"
   width="320"
   height="240"
@@ -50,49 +85,97 @@ In the above code, almost all arguments will create some sort of attribute. The 
 </video>
 ```
 
-All nodes you add to a widget, that does not have some special meaning, will automatically translate into an HTML attribute. P5 actually 
-knows nothing of any *"video"* element, but the ability to dynamically declare any attributes you wish, combined with being able to 
+All arguments you add to a widget, that does not have some special meaning, will automatically translate into an HTML attribute. P5 actually 
+knows nothing of any *"video"* element, or _"width"_ argument - But the ability to dynamically declare any attributes you wish, combined with being able to 
 control the HTML element used for rendering the widget, allows you to easily create any HTML you wish.
-
-In fact, in the above code, the only arguments that are handled by P5 as *"special arguments"* are **[element]**, **[parent]**, and **[innerValue]**. 
-All the other arguments are considered attributes to the resulting HTML. Notice the **[controls]** declaration above, that translates into 
-an *"empty attribute"*. If you wish to create XHTML compliant HTML, you can exchange it with `controls:controls`.
 
 ### Widget Ajax events
 
 You can associate Ajax events with your widgets the same way. P5 will determine if what you're creating is an attribute, or an Ajax event, 
 depending upon its name. If your attribute starts out with the text *"on"*, it will be considered an Ajax event. When you create an Ajax 
-event, the lambda object your Ajax event contains, will be evaluated on the server when the Ajax event is raised, and none of its code will
-ever be _"leaked"_ to the client.
+event, the lambda object your Ajax event contains, will be evaluated on the server when the Ajax event is raised.
 
 Notice, you are responsible yourselves for making sure your Ajax event is associated with a legal DOM event on the client side. You could 
 create an Ajax event called **[onfoobar]**. However, this will result in non-conforming HTML, and serve no purpose for you. The same is 
-true for attributes.
+true for attributes. In our previous chapter, we created an **[onclick]** Ajax event using this syntax.
 
-In our previous chapter, we created an **[onclick]** Ajax event using this syntax. Further down in this chapter, we will add a similar 
-Ajax event to our video element. In our next chapter, you will get to play around with some actual code, allowing you to test this out 
-for yourself.
-
-You can also create JavaScript events with similar syntax. Although if you wish to create a piece of client-side JavaScript that is 
-executed when your DOM event is raised - You will need to put your JavaScript into the _value_ of your event handler's node, instead 
-of adding it as a child lambda object. The following is an example of that. Yet again, scroll to the bottom of the page to see the result.
+You can also create JavaScript events with similar syntax. Although if you want to create a piece of client-side JavaScript that is
+executed when your DOM event is raised - You will need to put your JavaScript into the _value_ of your event handler's node, instead
+of adding it as a child lambda object. The following is an example of the latter.
 
 ```hyperlambda-snippet
-create-widget
-  parent:hyper-ide-help-content
-  element:button
-  innerValue:Click me
-  onclick:"alert('Hello JavaScript!');return false;"
+/*
+ * Creates a modal widget with a button
+ * inside of it, handling "onclick" in a JavaScript
+ * DOM event.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      literal
+        element:button
+        innerValue:Click me
+        onclick:"alert('Hello JavaScript!');return false;"
 ```
 
-You can of course attach your DOM events on the client side, using JavaScript instead, by referencing the ID of your widget. At which 
-point you can give your widget an *explicit ID* with something resembling the following code.
+**Notice**, in our above video example, we used the **[video]** widget, while in our last example we used a **[literal]**
+widget. These are logically the same widgets, since we provided an **[innerValue]** to our first video widget, implying
+it will be created as a **[literal]** widget. The type
+of widget Phosphorus renders is dynamically determined according to whether or not it contains an **[innerValue]**, a
+**[widgets]** argument, or none. However, if you know for a fact that you want to create a literal widget, and provide
+an **[innerValue]** argument to your widget - You can get away with directly declaring the widget as your HTML tag,
+and such create more semantic code, and avoid passing in an **[element]** argument. Below we illustrate this idea.
 
-```hyperlambda
-create-widget:your-id
-  parent:hyper-ide-help-content
-  element:button
-  innerValue:Click me
+```hyperlambda-snippet
+/*
+ * Creates a modal widget with two paragraphs.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      p
+        innerValue:This is the same type of widget ...
+      literal
+        element:p
+        innerValue:... as this widget, and they're both created as [literal] widgets.
+```
+
+You can also explicitly choose what ID you want to render your widget with, by providing your ID as the value
+of your widget, and/or your **[create-widget]** invocation. Below is an example.
+
+```hyperlambda-snippet
+/*
+ * Creates a modal widget with two paragraphs.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      p:foo-bar
+        innerValue:This widget is rendered with the ID of 'foo-bar'
+```
+
+#### The [oninit] event
+
+The **[oninit]** Ajax event is not strictly speaking an Ajax event, but implemented with similar semantics. It is
+a piece of lambda that will be evaluated when your widget is displayed, and typically contains initialization logic,
+or some piece of Hyperlambda, intended to be evaluated as the widget is initially displayed. Below is an example of
+usage.
+
+```hyperlambda-snippet
+/*
+ * Creates a modal widget with one p element.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      p
+        innerValue:Example of [oninit]
+        oninit
+
+          /*
+           * Evaluated as 'p' widget is displayed.
+           */
+          micro.windows.info:A paragraph was created
 ```
 
 ### Widget arguments
@@ -112,8 +195,11 @@ Below are the special arguments you can apply to your widgets.
 
 ### Positioning your widget
 
-The **[parent]**, **[before]** and **[after]** arguments, are mutually exclusive, and you can only apply one of these. If you choose to 
-use a parent argument, then your widget will be appended into this widget's children collection. If you use a parent argument, 
+The **[parent]**, **[before]** and **[after]** arguments, are mutually exclusive, and you can only apply one of these -
+And you can _only_ provide it to **[create-widget]** as an argument, or as children of your widgets if you use the
+**[create-widgets]** event.
+
+If you choose to use a parent argument, then your widget will be appended into this widget's children collection. If you use a parent argument, 
 you can optionally apply a position argument, containing an integer number, declaring at which position you want your widget to be 
 injected, instead of being appended into the collection at the end.
 
@@ -123,7 +209,7 @@ or after. You can insert your widget exactly where you wish, by cleverly using t
 
 Notice you can also completely omit any positioning arguments. This results in that a default value of *"cnt"* 
 as parent will be used. If no parent, before, or after arguments are supplied, its default position becomes a parent 
-of *"cnt"*. The *"cnt"* container, is the main root widget on your page, and the only one initially created for you by P5.
+of *"cnt"*. The *"cnt"* container, is the main root widget on your page, and the only widget initially created for you by P5.
 
 ### Which HTML element to render
 
@@ -131,6 +217,11 @@ The **[element]** declares which HTML element or *"tagName"* you want to use. Th
 allows you to create an HTML element with the name of *"foo-bar"*. Such an element, would obviously not conform to any HTML standards, 
 and would be considered invalid HTML. You are responsible for making sure your code creates valid HTML markup. The element argument, 
 if omitted, defaults to *"div"* for container widgets, *"p"* for literal widgets, and *"input"* for void widgets.
+
+**Notice**, as in our first video example in this chapter illustrates, you can ommit the **[element]** argument, and instead
+declare the HTML tag you want to render directly as the widget. This implies that you'll need to explicitly declare
+which widget type you want to create though, by either adding an **[innerValue]** argument, a **[widgets]** argument,
+or none (creates a _"void"_ widget).
 
 ### Controlling the visibility of your widget
 
@@ -197,21 +288,25 @@ such an event, is similar to raising any other types of Active Events, and there
 or a widget lambda event. Below is an example.
 
 ```hyperlambda-snippet
-create-widget
-  parent:hyper-ide-help-content
-  element:button
-  class:btn btn-primary
-  innerValue:Click me
-  onclick
+/*
+ * Creates a modal widget with one button, containing
+ * a widget lambda event.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      button
+        innerValue:Click me
+        onclick
 
-    // Raising the widget's lambda event
-    examples.foo-event
+          // Raising the widget's lambda event
+          examples.foo-event
 
-  events
+        events
 
-    // Declaring a widget lambda event
-    examples.foo-event
-      micro.windows.info:Your widget's lambda event says hello!
+          // Declaring a widget lambda event
+          examples.foo-event
+            micro.windows.info:Your widget's lambda event says hello!
 ```
 
 ### Commenting Hyperlambda
@@ -267,28 +362,40 @@ of Hyperlambda that creates a widget, which once the mouse is hovered above it, 
 widget, it retrieves one attribute, and shows an info window.
 
 ```hyperlambda-snippet
-create-widget:my_video
-  parent:hyper-ide-help-content
-  element:video
-  width:320
-  height:240
-  controls
-  src:"http://www.w3schools.com/html/movie.ogg"
-  type:video/ogg
-  innerValue:Your browser needs to be updated
-  onmouseover
-    p5.web.widgets.property.set:my_video
-      width:640
-      height:480
-  onmouseout
-    p5.web.widgets.property.get:my_video
-      src
-    micro.windows.info:x:/@p5.web.widgets.property.get/*/*?value
+/*
+ * Creates a modal widget with a video element, containing
+ * a couple of Ajax events, manipulating the widget as they're
+ * raised.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      video:my_video
+        width:320
+        height:240
+        controls
+        src:"http://www.w3schools.com/html/movie.ogg"
+        type:video/ogg
+        innerValue:Your browser needs to be updated
+        onmouseover
+
+          /*
+           * Changes the video width/height.
+           */
+          set-widget-property:my_video
+            width:640
+            height:480
+
+        onmouseout
+
+          /*
+           * Retrieves the video width/height.
+           */
+          get-widget-property:my_video
+            src
+          micro.windows.info:x:/@get-widget-property/*/*?value
 ```
 
 As you can see in our example above, you can change and retrieve multiple attributes in one invocation. You can also change and retrieve 
 attributes for multiple widgets in one invocation, by supplying a lambda expression, leading to multiple valid IDs to existing widgets. 
 We will have a look at the latter in a later chapter.
-
-Have these constructs in your mind, as we jump to our next chapter, since there you will have the chance to practice what we learned
-in this chapter.

@@ -1,9 +1,9 @@
 ## Introduction
 
 The _"Desktop"_ module, is normally the root of your Phosphorus Five installation, and responsible for URL resolving,
-in addition to providing other services to your modules, and Phosphorus Five in general. Also the Desktop module
-is completely loosely coupled from all other modules, and the core itself, and can actually be exchanged with your
-own logic, if you wish. It looks like the following, depending upon which apps you've installed, and whether
+in addition to providing other services to your modules, and Phosphorus Five in general. The Desktop module
+is also completely loosely coupled from all other modules, and the core itself, and can actually be exchanged with your
+own module and/or logic. It looks like the following, depending upon which apps you've installed, and whether
 or not you're logged into Phosphorus Five or not.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot.png
@@ -18,7 +18,8 @@ documentation for how to create your own desktop icon.
 To install a new module, simply click the _"+"_ button in your toolbar, on your Desktop, while you're
 logged in as _"root"_. This will allow you to either browse to a zip file on your local computer -
 Or use an URL to some zip file on the web, which will be automatically downloaded and installed for
-you. Below is a screenshot of the installation process.
+you. Below is a screenshot of the installation process, assuming you've just uploaded a zip file called
+_"hello.zip"_, but not yet chosen to install it.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-install-new-module-screenshot.png
 
@@ -41,13 +42,14 @@ is a screenshot of how this will look.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-settings-screenshot.png
 
-There is a whole range of skins in Phosphorus Five, that is distributed out of the box, that
-you can choose from. All of these skins are created such that they are rendered _"responsively"_,
+There is a whole range of skins in Phosphorus Five, that is distributed out of the box. All of
+these skins are created such that they are rendered _"responsively"_,
 which implies that they should perfectly well work, also on your phone or your tablet, in addition
 to your main laptop or desktop computer.
 
 It is also very easy to create your own skin, due to some highly intuitive CSS tricks applied
-by Phosphorus Five, or the core Micro CSS framework to be more accurate. We will look at how to
+by Phosphorus Five, or the core Micro CSS framework to be more accurate. And in fact, in Hyper IDE there
+is even a _"wizard"_ you can use to create your own skin. We will look at how to
 create our own skins in the documentation for _"Micro"_ later in these documentation files. Below
 is how Hyper IDE will look like, if you choose the _"Magic Forrest"_ skin.
 

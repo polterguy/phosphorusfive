@@ -1,8 +1,13 @@
-﻿/*
+/*
  * This is our main "landing page" for our Hyperlambda help files.
  */
+
 h2
   innerValue:Hyperlambda
+
+img
+  style:"margin-left:1rem; float:right;max-width: 20%;"
+  src:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
 
 p
   innerValue:@"Welcome to <em>'The Guide'</em> to Hyperlambda. Hyperlambda is a programming language explicitly created for Phosphorus Five,

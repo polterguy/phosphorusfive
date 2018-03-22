@@ -1,5 +1,12 @@
 ## Chapter 1, An Ajax primer
 
+**Notice**, if you find this chapter boring, feel free to skip over it, and jump to the next chapter, and come back
+to study this chapter in more details later. This chapter will give you an overview of Ajax, related technologies,
+and how these are consumed in Phosphorus Five - But reading it is not necessary to start using Phosphorus Five or
+Hyperlambda.
+
+### About Ajax
+
 Ajax is a technology for incrementally applying changes to an HTML page. It is an acronym, although still commonly referred to, 
 and written like the header of this chapter writes it. It means _“Asynchronous JavaScript and XML”_, and its name is actually 
 highly misleading, since it rarely have anything to do with XML. Today, most implementations will use JSON instead of XML, so 
@@ -14,7 +21,7 @@ the *"XML HTTP Request object"*. The XHR object allows you to asynchronously ret
 ability to dynamically modify the DOM, or *"Document Object Model"*, allows for the experience of *"interactive web pages"*. 
 DOM is what your HTML is creating when it is being evaluated by your browser.
 
-**Definitions**
+#### Definitions
 
 1. [Ajax](https://en.wikipedia.org/wiki/Ajax_(programming)), Asynchronous JavaScript and XML
 2. [XML](https://en.wikipedia.org/wiki/XML), eXtendible Markup Language
@@ -30,9 +37,8 @@ these subjects, you can probably find a lot of good information about these tech
 
 ### Managed Ajax internals
 
-Phosphorus Five contains a _managed_ Ajax library, which can be found [here](https://github.com/polterguy/phosphorusfive/tree/master/core/p5.ajax). 
-This Ajax library is built upon WebForms from ASP.NET, but Phosphorus Five has little in common with traditional WebForms 
-applications.
+Phosphorus Five contains a _managed_ Ajax library. This Ajax library is built upon WebForms from ASP.NET,
+but Phosphorus Five has little in common with traditional WebForms applications - So don't let that scare you.
 
 Managed Ajax simply implies that the use of JavaScript for the most parts are *optional*. With p5.ajax, you do not need to use 
 JavaScript at all to create rich interactive Ajax web pages. You *can* use JavaScript if you wish, and using JavaScript is in 
@@ -54,28 +60,29 @@ micro.windows.info:The server claims it's {0}
   :x:/@p5.types.date.now?value
 ```
 
+#### About JSON
+
 The Ajax library in P5 uses JSON internally to return data from the server. JSON is another acronym, and means _“JavaScript Object Notation”_. 
-JSON is a technology for creating JavaScript objects, which are easily transferred from your server to its clients. The reason why 
-Ajax almost never has anything to do with XML, is because JSON has almost entirely replaced XML in most Ajax libraries. A more 
-correct word for Ajax, would therefor in fact be _“Ajaj”_, suggesting _“Asynchronous JavaScript and JSON”_.
+JSON is a technology for creating JavaScript objects, which are easily transferred from your server to its clients. The reason why
+Ajax almost never has anything to do with XML, is because JSON has almost entirely replaced XML in most Ajax libraries.
 
 In P5, these parts are perfectly abstracted away for you, and there are rarely, if ever, any need to understand what goes on 
 beneath the hoods of the Ajax engine. Nor is it necessary in any ways, to modify, or interact with these parts of P5. You *can* 
 easily interact with these parts of P5 though, and extend these parts if you wish - But, you will rarely need to do such a thing.
 
-The above makes P5 a perfect beginner's Ajax framework (Ajaj?), significantly simplifying the process of creating rich Ajax 
+The above makes P5 a perfect beginner's Ajax framework, significantly simplifying the process of creating rich Ajax 
 applications. While also, due to its extensibility, and ability to allow the developer to tap into its core - Also a perfect 
 framework for the seasoned architect and software developer. Arguably, P5's design is all about *"bridging"* the complex and 
 the simple - Which you will discover as you proceed.
 
-**Managed Ajax, bringing you faster to the top**
-
-https://phosphorusfive.files.wordpress.com/2018/01/best-escalator-gearbox.png
+### Managed Ajax, bringing you faster to the top
 
 Managed Ajax also implies that it becomes much harder to create security holes, since all the code that is executed, is 
 executed on the server - And the HTML and JavaScript parts, are automatically created for you on the client side. In addition, 
 a code model where you only have to think about one concept, makes your code much more easily maintained - Contrary to a pure 
 JavaScript Ajax solution, where you often have to apply change _"all over the place"_, to change parts of your app.
+
+https://phosphorusfive.files.wordpress.com/2018/01/best-escalator-gearbox.png
 
 ### Ajax technology choices in P5
 
@@ -101,11 +108,11 @@ to build desktop applications, such as I am illustrating below.
 
 https://www.youtube.com/watch?v=RID0hg97Y0E
 
-The above technology, allows you to modify any *"widget"* on your page, from any event raised by any other *"widget"*. This 
-facilitates for a significantly less complex development model for applying changes to your page. Which is why knowledge about 
-JavaScript becomes *optional* when you use P5. When creating a P5 web app, you will in fact _"feel"_ as if you are developing 
-a Desktop Windows app, due to the above mentioned features. In fact, creating a highly rich Ajax app in P5, is probably 
-_even easier_ than creating something similar in WinForms, Xamarin forms, Qt, etc.
+Managed Ajax allows you to modify any *"widget"* on your page, from any event raised by any other *"widget"*. This
+facilitates for a significantly less complex development model for applying changes to your page. When creating a P5
+web app, you will in fact _"feel"_ as if you are developing a Desktop Windows app, due to the above mentioned features.
+In fact, creating a highly rich Ajax app in P5, is probably _even easier_ than creating something similar in WinForms,
+Xamarin forms, Qt, etc.
 
 ### Bandwidth usage
 
@@ -115,16 +122,16 @@ and its subsequent Ajax requests. The main JavaScript portions of P5, is no more
 request, is rarely more than 1KB.
 
 Other competing technologies, often requires hundreds, and sometimes even thousands of kilobytes of JavaScript, to do what 
-P5 allows you to do with 5 kilobytes. The difference in performance between P5 and some of its competing technologies, is 
-often several orders of magnitudes. Most parts of P5 have been profiled against some of the major player's technologies in 
-this area, and almost every time we do this, the competing technologies will end up consuming hundreds of times more bandwidth,
-than what P5 consumes to solve the same problem.
+P5 allows you to do with 5 kilobytes. Most parts of P5 have been profiled against some of the major player's
+technologies in this area, and almost every time we do this, the competing technologies will end up consuming
+hundreds of times more bandwidth, than what P5 consumes to solve the same problem.
 
-In fact, I am running [my own webserver out of my home](https://home.gaiasoul.com), over a plain home 5Mb internet connection - Yet 
-still, I can easily check my email, upload and download my own files securely, without any problems in regards to responsiveness. 
-Sephia Five for instance, is using 1/25th of the bandwidth that its competitor GMail is using. In addition, I have installed Hyper
-IDE on that server, with hundreds, and sometimes even thousands of guests visiting my server, every single day. Below is a graph
-showing the difference in bandwidth consumption between GMail and Sephia Five.
+In fact, I am running [my own webserver out of my home](https://home.gaiasoul.com), over a plain home 5Mb internet connection,
+on an old and discarded Windows laptop - Yet still, I can easily check my email, upload and download my own files
+securely, without any problems in regards to responsiveness. Sephia Five for instance, is using 1/25th of the bandwidth
+that its competitor GMail is using. In addition, I have installed Hyper IDE on that server, with hundreds, and
+sometimes even thousands of guests visiting my server, every single day. Below is a graph showing the difference in
+bandwidth consumption between GMail and Sephia Five.
 
 https://github.com/polterguy/sephia-five/raw/master/media/bandwidth-comparison.png
 
@@ -134,8 +141,7 @@ In a stateless web app, often your database must be more frequently queried, or 
 upon every single postback to your server. Although Hyperlambda is an extremely *"high level programming language"*, it often 
 performs surprisingly well, compared to other technologies. In addition, without state, a whole range 
 of security issues becomes much more prevalent, broadening the *"attack surface"* of your server. P5 is *secure by default*, 
-and you'll actually have to consciously do something wrong, to create security holes. In addition, the risk of leaking business 
-logic to the client, simply does not exist in P5.
+and you'll actually have to consciously do something wrong, to create security holes.
 
 An example can be illustrated by editing some item from a database. Completely stateless, a web app must store this value, 
 associated with the client somehow. This can be done through a cookie, an invisible input HTML element, or some other value 
@@ -143,9 +149,9 @@ transferred to the client - Which the server expects the client to return, when 
 a malicious client from changing this ID, making the server side code, edit a completely different item. In P5, you would by 
 default store this ID on the server, making it impossible to modify for a malicious client.
 
-Security issues like the examples above, *can* be fixed in a more stateless model of developing web apps. In P5 however, 
-they're completely non-existent, **significantly reducing the complexity of creating rock hard secure web apps**, without 
-introducing complex architecture, or pages up and down of *"remember to do this"* lists, to check before you deploy your 
+Security issues like the examples above, *can* be fixed in a more stateless model of developing web apps. In P5 however,
+they're completely non-existent, _significantly reducing the complexity of creating rock hard secure web apps_, without
+introducing complex architecture, or pages up and down of *"remember to do this"* lists, to check before you deploy your
 app into production.
 
-**Several books, arguably multiple libraries of security literature, with _"security concerns"_ - Are simply _not relevant what so ever with P5_.**
+Several books, arguably multiple libraries of security literature, with _"security concerns"_ - Are simply _not relevant_ what so ever with P5.

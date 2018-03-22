@@ -1,12 +1,15 @@
 ## Hello World
 
 **Notice**, if you have followed the _"Hello World"_ tutorial previously, you will already have this app in your _"/modules/"_ folder,
-at which point you can simply open up that folder, and browse its files instead.
+at which point you can simply open up that folder, and browse its files instead. This chapter also assumes you are
+reading it from within Hyper IDE. If you don't, then please open Hyper IDE, and return to this chapter from the help
+system inside of Hyper IDE - The latter can be done by opening up help from inside of Hyper IDE, clicking the
+_"home"_ button, and find this chapter again.
 
 In this chapter we are going to create our first real Hyperlambda application called *"Hello World"*. By walking through this application, 
 and explaining what it does, you will be armed with the knowledge required to create your own Ajax web apps.
-First make sure you select the _"/modules/"_ folder in the file explorer to your left. Then click the _"+"_ button, which will open
-up a wizard form for you, allowing you to create a new application. Name your app _"hello-world"_", and make sure you select the _"hello-world"_
+First make sure you select the _"/modules/"_ folder in the file explorer to your left. Then click the _"star"_ toolbar button, which will open
+up a wizard form for you, allowing you to create a new application. Name your app _"hello-world"_, and make sure you select the _"hello-world"_
 template project (*type* that is), and click _"Create"_.
 
 This will create a new project for you, and automatically open up its _"launch.hl"_ file. If you open up another tab window, by
@@ -40,81 +43,6 @@ is the subject of another part of the help system - But basically Micro is an al
 Bootstrap. Notice, the `@MICRO` parts is a _"system path variable"_, and will simply _"unroll"_ to `/modules/micro`, or whatever path Micro
 is installed within.
 
-Below is all the code from our _"launch.hl"_ file. If you want to, you can also simply click the _"flash"_ button, at the bottom of the 
-code, to evaluate this Hyperlambda directly. This allows you to see the results of the app, without having to create it. Notice, our 
-Hello World module can be found at the bottom of your page after having evaluated the code.
-
-```hyperlambda-snippet
-/*
- * Includes CSS for our module.
- */
-p5.web.include-css-file
-  @MICRO/media/main.css
-  @MICRO/media/fonts.css
-  @MICRO/media/skins/serious.css
-
-/*
- * Creating main wire frame for module.
- */
-create-widget
-  class:container
-  widgets
-    div
-      class:row
-      widgets
-        div
-          class:col-100
-          widgets
-            div
-              class:right
-              widgets
-                div
-                  class:strip toolbar
-                  style:"display:inline-block;"
-                  widgets
-                    button
-                      innerValue:@"<span class=""icon-home3""></span>"
-                      onclick
-
-                        /*
-                         * Redirecting user to server's root URL.
-                         */
-                        p5.web.get-root-location
-                        p5.web.set-location:x:/-?value
-
-        div
-          class:col-100
-          widgets
-            div
-              class:air-inner shaded rounded bg
-              widgets
-                h3
-                  innerValue:Hello World
-                p
-                  innerValue:@"Here is a template for your convenience, creating a default startup module wire frame for you. It contains 4 files."
-                ul
-                  widgets
-                    li
-                      innerValue:<code>'launch.hl'</code> - This is the file that is evaluated when your module is launched
-                    li
-                      innerValue:<code>'desktop.hl'</code> - This creates a 'desktop icon' for your module
-                    li
-                      innerValue:<code>'startup.hl'</code> - Evaluated when the server is started
-                    li
-                      innerValue:<code>'install.hl'</code> - Evaluated when your module is installed
-                    li
-                      innerValue:<code>'uninstall.hl'</code> - Evaluated when your module is uninstalled
-                button:foo-button
-                  innerValue:Click me!
-                  onclick
-
-                    /*
-                     * Changes the value of our button.
-                     */
-                    set-widget-property:foo-button
-                      innerValue:Hello World
-```
-
 ### Hyperlambda's structure
 
 Hyperlambda is a name/value/children file format. It allows you to declare *"graph objects"*, or *"tree structures"* - And is semantically 
@@ -132,24 +60,22 @@ https://www.youtube.com/watch?v=oML2JE8kAO0
 
 ### Ajax events
 
-In our example above, we have a couple of **[onclick]** Ajax event for our buttons. This will create an *"onclick"* DOM event handler for 
+In our Hello World app's _"launch.hl"_ file, we have a couple of **[onclick]** Ajax event for our buttons. This will create an *"onclick"* DOM event handler for 
 us, which when raised, will create an Ajax request, going towards our server, invoking its lambda object.
 Lambda objects, such as the one we have declared inside our **[onclick]** event handler, is often referred to as simply *"lambda"*. Lambda 
 objects are stored function objects, which are executed, whenever some condition is being met - Or we wish to for some reasons execute our 
 lambda. The simplicity in declaring such *"lambda objects"*, is the reason why Hyperlambda got its name.
 
 The *"lambda"* object for our _"Hello World"_ button, simply invokes the **[set-widget-property]** Active Event, with the ID of *"foo-button"*, 
-and an **[innerValue]** argument of *"Hello World"*. This changes the **[innerValue]** property of our *"foo"* widget, to whatever HTML we 
-pass in as the value of our **[innerValue]** argument. The **[set-widget-property]** is an alias to **[p5.web.widgets.property.set]**, 
-which you will see other places in our P5 examples. Many Active Events have aliases, which are alternative names, for invoking the same 
-Active Event.
+and an **[innerValue]** argument of *"Hello World"*. This changes the **[innerValue]** property of our *"foo-button"* widget, to whatever HTML we 
+pass in as the value of our **[innerValue]** argument.
 
 ### The CSS structure
 
 Micro, which is the CSS framework we are using here, has a similar structure to Bootstrap CSS. Basically a _"container/row/col"_ structure, 
 where each _"col"_ must be put into a _"row"_, and each _"row"_ must be put into a _"container"_. This is why we need to create some
 wrapper widgets, wrapping our button, before we can declare our actual button. We could of course have create our button directly, without
-neither any Micro CSS parts, nor and of the wireframing widgets around it - But this would create an _"ugly"_ result for us. Yet again, Micro
+neither any Micro CSS parts, nor any of the wireframing widgets around it - But this would create an _"ugly"_ result for us. Yet again, Micro
 is the subject of another part of this documentation.
 
 ### Additional studying, video tutorial
@@ -157,3 +83,6 @@ is the subject of another part of this documentation.
 If you still struggle with some of the parts we walked through in this chapter, you might benefit from watching the following video.
 
 https://www.youtube.com/watch?v=O9ek7JH7Ptw
+
+Feel free to play with your Hello World application, and modify it as you see fit. Suggestion, try to
+inject a **[video]** widget into it ...

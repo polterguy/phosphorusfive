@@ -15,7 +15,7 @@ in addition to changing a node, also can completely remove nodes, values, or nam
 basic *"CRUD"* operations available for your lambda objects, and its individual nodes.
 
 **Definition**; *"CRUD"* is an acronym, and means *"Create, Remove, Update and Delete"*, and is a reference to all the 4 basic operations 
-necessary to be able to dynamically *"mold"* an object, in any of its existing axis, to be able 
+necessary to be able to dynamically *"mold"* a collection of objects, in any of its existing axis, to be able 
 to *"create anything you wish, starting from any other given starting point"*.
 All of these Active Events, can be given multiple destinations. This means that a single invocation, might potentially change multiple nodes.
 
@@ -51,87 +51,74 @@ and create a modal confirmation window.
 
 ```hyperlambda-snippet
 /*
- * Includes CSS for our module.
+ * Creating a modal widget, containing our form.
  */
-micro.css.include
+create-widgets
+  micro.widgets.modal
+    widgets
+      void:first_name
+        element:input
+        placeholder:Give me your first name ...
+        class:fill
+      void:last_name
+        element:input
+        placeholder:Give me your last name ...
+        class:fill
+      literal
+        element:button
+        class:right
+        innerValue:Submit
+        onclick
 
-/*
- * Creating main wire frame for module.
- */
-create-widget
-  parent:hyper-ide-help-content
-  class:container
-  widgets
-    div
-      class:row
-      widgets
-        div
-          class:col-100
-          widgets
-            void:first_name
-              element:input
-              placeholder:Give me your first name ...
-              class:fill
-            void:last_name
-              element:input
-              placeholder:Give me your last name ...
-              class:fill
-            literal
-              element:button
-              class:btn btn-default prepend-top
-              innerValue:Submit
-              onclick
+          /*
+           * Retrieves first and last name of the user.
+           */
+          .widgets
+            first_name
+            last_name
+          get-widget-property:x:/@.widgets/*?name
+            value
 
-                /*
-                 * Retrieves first and last name of the user.
-                 */
-                .widgets
-                  first_name
-                  last_name
-                p5.web.widgets.property.get:x:/@.widgets/*?name
-                  value
+          /*
+           * Sets the [p/innerValue] further down.
+           */
+          set:x:/../**/micro.widgets.modal/**/p/*/innerValue?value
+            src:Hello there {0}, {1}
+              :x:/@get-widget-property/0/*?value
+              :x:/@get-widget-property/1/*?value
 
-                /*
-                 * Sets the [p/innerValue] further down.
-                 */
-                set:x:/../**/micro.widgets.modal/**/p/*/innerValue?value
-                  src:Hello there {0}, {1}
-                    :x:/@p5.web.widgets.property.get/0/*?value
-                    :x:/@p5.web.widgets.property.get/1/*?value
-
-                /*
-                 * Creates a modal window, now with a first and last name greeting.
-                 */
-                create-widgets
-                  micro.widgets.modal
-                    widgets
-                      h3
-                        innerValue:Hello world
-                      p
-                        innerValue
+          /*
+           * Creates another modal widget, now with a first and last name greeting.
+           */
+          create-widgets
+            micro.widgets.modal
+              widgets
+                h3
+                  innerValue:Hello world
+                p
+                  innerValue
 ```
 
-
 The first obvious thing you might see in the above **[onclick]** event handler, is that the **[innerValue]** argument to our **[p]** widget,
-in our **[micro.widgets.modal]** invocation, is actually initially *empty*. Still, when our confirmation window is shown, it is perfectly 
+in our **[micro.widgets.modal]** invocation, is actually initially *empty*. Still, when our confirmation window is shown, it is perfectly
 able to show our full name.
 
-This is because of that our **[set]** invocation concatenates the results from our **[p5.web.widgets.property.get]** invocation, and 
+This is because of that our **[set]** invocation concatenates the results from our **[get-widget-property]** invocation, and 
 prepends the text *"Hello there "* in front of the first and last name. To understand how this happens, realise that the `{0}` and 
 the `{1}` parts of our **[src]** node's value, are substituted with the result of the zeroth and first nodes' children values. Since 
-these nodes are expressions pointing to the returned value from our **[p5.web.widgets.property.get]** invocation, we end up with an 
+these nodes are expressions pointing to the returned value from our **[get-widget-property]** invocation, we end up with an 
 initial greeting, followed by the user's first name and second name.
 
 **Notice**, in programming languages we always start counting at *ZERO*! Hence, the first item, becomes the _zero'th_ item in programming.
 
 The second thing you may already have noticed, is that instead of supplying a *"static ID"* to which widgets we wish to retrieve 
 the **[value]** of, we supply an expression, leading to two values; *"first_name"* and *"last_name"*. These happens to be the IDs 
-of our two input elements in our form, which will result in that our invocation to **[p5.web.widgets.property.get]** will retrieve
+of our two input elements in our form, which will result in that our invocation to **[get-widget-property]** will retrieve
 both of these widgets' **[value]** in one invocation. Almost all Active Events in P5 can take expressions, and hence 
 do *"multiple things at the same time"*.
 
 With this in mind, realise that the expression we're using as the zeroth formatting expressions to our **[src]** node, is first retrieving 
-the **[p5.web.widgets.property.get]** node. Then it is retrieving its zeroth child, which is the node named **[first_name]** from our image 
+the **[get-widget-property]** node. Then it is retrieving its zeroth child, which is the node named **[first_name]** from our image 
 above. Then it retrieves this node's children. Since there only happens to be one child beneath this node, it will return this node's value, 
 which happens to be your first name, for the example above.
 
@@ -140,12 +127,10 @@ its **[src]** node's value, with the strings *"Thomas"* and *"Hansen"* respectiv
 After it has created its **[src]** node's value, by concatenating our strings, it will move the results of this operation into its destination, 
 which is our **[p]** node's **[innerValue]** argument. Hence, our **[innerValue]** node's value will end up being *"Hello there Thomas, Hansen"*.
 Using this type of logic, we can change parts of our lambda object, that we still haven't execute yet, resulting in that once we execute 
-this lambda, it will have a value, that we dynamically created, before we executed it.
+this lambda, it will have a value, that we dynamically created, before we evaluated it.
 
 You can of course also create execution instructions too, with similar constructs, by dynamically changing the name of some *"future node"* 
-this way.
-
-Still confused? Watch the following video.
+this way. Still confused? Watch the following video.
 
 https://www.youtube.com/watch?v=f4ZUwlbIdaE
 
@@ -155,89 +140,77 @@ The **[add]** event, allows you to append new children into other nodes. However
 
 ```hyperlambda-snippet
 /*
- * Includes CSS for our module.
+ * Creating a modal widget, containing our form.
  */
-micro.css.include
+create-widgets
+  micro.widgets.modal
+    widgets
+      void:first_name2
+        element:input
+        placeholder:Give me your first name ...
+        class:fill
+      literal
+        element:button
+        innerValue:Submit
+        onclick
 
-/*
- * Creating main wire frame for module.
- */
-create-widget
-  parent:hyper-ide-help-content
-  class:container
-  widgets
-    div
-      class:row
-      widgets
-        div
-          class:col-100
-          widgets
-            void:first_name2
-              element:input
-              placeholder:Give me your first name ...
-              class:fill
-            literal
-              element:button
-              innerValue:Submit
-              onclick
+          /*
+           * The content of this node, is dynamically created, according to
+           * the input supplied by the user
+           */
+          .exe
 
-                /*
-                 * The content of this node, is dynamically created, according to
-                 * the input supplied by the user
-                 */
-                .exe
+          /*
+           * Retrieving the input supplied by the user
+           */
+          get-widget-property:first_name2
+            value
 
-                /*
-                 * Retrieving the input supplied by the user
-                 */
-                p5.web.widgets.property.get:first_name2
-                  value
+          /*
+           * This is called "branching".
+           * Only if the result of the expression in our "if" node matches
+           * the string "Thomas", the lambda object inside of our "if"
+           * will be executed.
+           * Otherwise our "else" lambda object will execute.
+           */
+          if:x:/@get-widget-property/*/*?value
+            =:Thomas
 
-                /*
-                 * This is called "branching".
-                 * Only if the result of the expression in our "if" node matches
-                 * the string "Thomas", the lambda object inside of our "if"
-                 * will be executed.
-                 * Otherwise our "else" lambda object will execute.
-                 */
-                if:x:/@p5.web.widgets.property.get/*/*?value
-                  =:Thomas
+            /*
+             * Adding a confirmation window to our [.exe] node above.
+             */
+            add:x:/@.exe
+              src
+                micro.windows.info:Yo boss!
 
-                  /*
-                   * Adding a confirmation window to our [.exe] node above.
-                   */
-                  add:x:/@.exe
-                    src
-                      micro.windows.info:Yo boss!
+          else
 
-                else
+            /*
+             * Adding an info-tip window to our [.exe] node above.
+             */
+            add:x:/@.exe
+              src
+                micro.windows.info:Howdy stranger
 
-                  /*
-                   * Adding an info-tip window to our [.exe] node above.
-                   */
-                  add:x:/@.exe
-                    src
-                      micro.windows.info:Howdy stranger
-
-                /*
-                 * [eval] will now execute our [.exe] node, almost invoking it, as
-                 * if it was a "function" or a "method".
-                 */
-                eval:x:/@.exe
+          /*
+           * [eval] will now execute our [.exe] node, almost invoking it, as
+           * if it was a "function" or a "method".
+           */
+          eval:x:/@.exe
 ```
 
 The above example, will actually dynamically _"mold"_ your lambda object, according to what you type into the textbox. Depending
 upon what you supply in the textbox, it will **[add]** a different lambda object into its **[.exe]** lambda destination.
 
 To understand what's happening in this code, realise we're *"branching"* our lambda object, according to the return value of 
-our **[p5.web.widgets.property.get]** invocation. We will take a deeper look at the concept of *"branching"* later, but basically 
+our **[get-widget-property]** invocation. We will take a deeper look at the concept of *"branching"* later, but basically 
 if the value of our textbox is *"Thomas"*, it will **[add]** a different lambda into our **[.exe]** node, than it will with all
 other input values.
 
 Finally, it will evaluate this **[.exe]** node, and execute it as a lambda object. Hence, what we have actually done, is to 
 dynamically create a lambda object, depending upon the value of our textbox - For then to evaluate our dynamically created lambda. 
 The above code is a naive example, but the concept is extremely powerful, since it allows you to dynamically create your lambda 
-objects, during runtime. This results in that you can have the computer both create its own lambda objects, in addition to modify 
+objects during runtime. This results in that you can have the computer both create its own lambda objects, in addition to modify 
 existing lambda objects.
 
 ### Still confused?
@@ -324,7 +297,7 @@ actually want to reference - Unless you want to end up having unintentional side
 feature that allows you to *"do a lot, with a little"*. One of my favourite examples in these regards, is loading all Hyperlambda 
 files from a folder, and evaluating them in order - Which can actually be done with 4 lines of code (don't evaluate this code though).
 
-**Example of evaluating all Hyperlambda files in some folder**
+#### Example of evaluating all Hyperlambda files in some folder
 
 ```hyperlambda
 list-files:/foo
@@ -332,6 +305,10 @@ list-files:/foo
 load-file:x:/-/*?name
 eval:x:/-/*
 ```
+
+In fact, arguably due to Hyperlambda's syntax, the file system becomes an _"object"_ or a _"list of objects"_, where files
+are equally easy to evaluate and parametrize, as conventional functions and methods. This will become apparent as you
+get more hands on experience with Hyperlambda.
 
 ## Deleting stuff
 

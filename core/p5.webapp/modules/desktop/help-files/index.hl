@@ -12,14 +12,8 @@ img
   src:modules/hyper-ide/media/logo.svg
 p
   innerValue:@"Welcome to the help files for Phosphorus Five. These help files can be launched from within any module, and will guide you through
-both the standard usage of Phosphorus Five, and its modules, in addition to how to create your own apps. This allows you to have these
+both standard usage of Phosphorus Five, and its modules - In addition to how to create your own apps. This allows you to have these
 help files open from within the module you want to learn about."
-p
-  innerValue:@"You should find at least one documentation section, for each of your apps/modules in here, ranging
-from how to create computer code in complexity, to how to send an email if you've got Sephia Five installed. Hopefully,
-this allows for everyone to become smarter, regardless how what level they want to enter from, and how deep they
-want to dive."
-
 p
   innerValue:@"These documentation files, are consciously created such that they should bring you up from
 the point where you can barely interact with a computer, to the point of where you're a <em>'guru software developer'</em>.

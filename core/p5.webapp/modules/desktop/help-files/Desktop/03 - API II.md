@@ -1,6 +1,6 @@
 ## Desktop API II
 
-In addition to the previously documented API, the desktop also contains helper Active Events to
+In addition to the previously documented API parts, the desktop also contains helper Active Events to
 install and uninstall modules and applications. Below are the Active Events related to this
 listed for your convenience.
 
@@ -59,4 +59,11 @@ create-widgets
         innerValue:x:/@desktop.modules.uninstall
 ```
 
+### Module installation internals
 
+Many modules will have a file called _"install.hl"_, in addition to a file called _"uninstall.hl"_ at their root folder.
+These files are evaluated during installation and uninstallation, and they're expected to initialize and uninitialize
+your module - Whatever that implies for your module. This might include creating any databases the module is dependent
+upon, or doing other tasks that are necessary to perform before the module can be used. If you want to create custom
+Active Events as a part of your module, you should do this in a file called _"startup.hl"_ though, since this file
+will be evaluated every time the web server process reboots, or is being recycled.

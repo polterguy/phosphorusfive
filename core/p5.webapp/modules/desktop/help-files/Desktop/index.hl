@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This is our main "landing page" for our Desktop help files.
  */
 h2
@@ -6,7 +6,8 @@ h2
 
 p
   innerValue:@"The Desktop module is the GUI interface for Phosphorus Five, and responsible for loading up your modules, and
-doing basic URL resolving."
+doing basic URL resolving. It is hence arguably the <em>'core'</em> of the graphical parts, and the main entry point of
+interaction for Phosphorus Five."
 
 /*
  * All files at "root" of Desktop help folder.

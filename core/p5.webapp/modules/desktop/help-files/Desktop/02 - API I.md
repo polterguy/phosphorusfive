@@ -6,12 +6,14 @@ uninstallation of apps and modules, logging in and out of the system, etc.
 
 ### Desktop internals
 
-What occurs when a URL is requested, is that Phosphorus Five will invoke an Active Event that is
-named **[p5.web.load-ui]**. The Desktop module will handle this event, and evaluate its URL resolver logic,
+What occurs when a URL is requested, is that Phosphorus Five will raise the **[p5.web.load-ui]** Active Event.
+The Desktop module will handle this event, and evaluate its URL resolver logic,
 to figure out which module the client is requesting. Then the Desktop module will evaluate the _"launch.hl"_
 file, associated with your module, and your module will take over the request from that point onwards.
 This event is raised by the core of Phosphorus Five, and handling this event is arguably the most
-important responsibility that the Desktop module has.
+important responsibility that the Desktop module has. This allows you to easily create your own modules, such
+that they contain their own URL Resolver logic, to load up for instance pages and such, according to the URL
+specified by the client. URL resolving is _"native"_ to Phosphorus Five, and something that _"automagically happens"_.
 
 ### Authentication
 
@@ -27,10 +29,12 @@ setting called `p5.core.default-app`. This is the preferred way to exchange the 
 it doesn't actually remove the module, but rather overrides the default application that is loaded
 at your server's root URL. Since the Desktop module contains a lot of API events, necessary to have
 other parts of your system functioning correctly - This is a better way to exchange the main Desktop with
-your own logic, instead of physically removing or uninstalling the module.
+your own logic, instead of physically removing or uninstalling the module. If you choose to remove the Desktop
+module, and exchange it with your own URL resolver logic, you must at the very least handle the **[p5.web.load-ui]**
+event yourself.
 
-You can choose to exchange the Desktop module with any module you wish. Your desktop will still be
-available at the [/desktop](/desktop) URL, even if you exchange it with another module.
+You can choose to exchange the default module with any module you wish. Your desktop will still be
+available at the [/desktop](/desktop) URL, unless you uninstall the Desktop or remove it.
 
 ### Exchanging the default skin
 
@@ -65,7 +69,9 @@ the Active Event **[desktop.help.get-context]**, and if this invocation returns 
 this file will be displayed by default. You can also load the help system, and explicitly choosing
 to load a default help file as the help system is loaded, by passing in a **[file]** argument -
 Which will be treated as the default landing page when the help system is loaded. Below you can
-find the list of lambda events that are at your disposal when the help system is loaded.
+find the list of widget lambda events that are at your disposal when the help system is loaded.
+Notice, widget lambda events will not be available in a CodeMirror editor's autocomplete list,
+since they're dynamically loaded, and only available when your widget is loaded.
 
 * __[desktop.help.is-visible]__ - Returns boolean _"true"_ if the help system is running
 * __[desktop.help.close]__ - Closes the help system
@@ -75,11 +81,11 @@ find the list of lambda events that are at your disposal when the help system is
 
 #### Help system internals
 
-When you go back and forth in your help files, this implies sorting all help files from some folder
-alphabetically, and moving to the file that are alphabetically before whatever file you're currently
-displaying. This allows you to order your help files, by prepending an integer number in front of
-your file in its filename, e.g. _"01 - Some help file.md"_. This ensures that you get to decide
-which order your help files are displayed as you go back and forth.
+When you page back and forth in your help files, this implies sorting all help files from some folder
+alphabetically, and moving to the file that is alphabetically before or after whatever file you're currently
+reading. This allows you to order your help files, by prepending an integer number in front of
+your file in its filename, e.g. _"01 - Some help file.md"_. This allows you to control
+the ordering of your help files.
 
 The help system allows you to create your help files both as Markdown and as a Hyperlambda widget
 hierarchy. This gives you 100% control over how your help files are possible to interact with, and
@@ -94,15 +100,18 @@ handle your folder. The folder name for your help files, will be used as the nam
 section - Hence the last parts of the Hyper IDE folder which is called _"Hyper IDE"_.
 
 As the main landing page for the help system is launched, it will raise all Active Events that
-are named **[desktop.help-files.xxx]**, where _"xxx"_ is some piece of string you choose yourself,
+are named **[desktop.help-files.xxx]**, where _"xxx"_ is some piece of string unique to your module,
 and expect these events to return a path to some folder. These folders will be listed on the
-main _"index.hl"_ file, and allows you to create your own help extension files.
+main _"index.hl"_ file, and allows you to create your own help extension files, and have the folder
+to your own help files displayed at the landing page for the help system.
 
 If you launch the help system from within Hyper IDE, you will see that it features two additional
 buttons - A _"pencil"_ button, that allows the user to edit the file directly, by clicking that
 pencil icon - And a _"refresh"_ button, which allows you to reload the help file, once it has
 been edited. This allows the end user to add his own comments and such, directly to the help
 files themselves, and facilitates for a highly interactive help system.
+
+**Notice**, if you edit any of the help files, you'll loose your changes if you upgrade Phosphorus Five.
 
 #### Creating your own help files
 
@@ -129,7 +138,11 @@ Hyperlambda inside of your code block. Below is an example.
 
 ```hyperlambda-snippet
 /*
- * Try clicking the button in the bottom right corner of this code block.
+ * Try clicking the button in the bottom right
+ * corner of this code block.
+ *
+ * This snippet was declare by making it become
+ a "hyperlambda-snippet" type of code block.
  */
 micro.windows.info:Hello
 ```
@@ -140,9 +153,11 @@ also provide any CodeMirror mode in your code blocks that CodeMirror supports, t
 code in for instance C# or JavaScript instead. However, only Hyperlambda code blocks are possible
 to evaluate, as our above code block demonstrates.
 
-If you create your own help files, you can also embed images and videos, by simply
+If you create your own help files, you can also embed images and YouTube videos, by simply
 creating a paragraph with the URL to your YouTube video, and/or your image. Below is an example
 of such a YouTube video. Yet again, to see how I embedded the video, feel free to edit this file
 in Hyper IDE.
 
 https://www.youtube.com/watch?v=9nAVSaVJZgU
+
+Saxophone played by yours truly ...
