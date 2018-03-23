@@ -5,9 +5,13 @@ and create our own _"extension widget"_. An extension widget, is a rich and comp
 GUI element, which you can include where ever you can include a _"native"_ widget.
 So far, we have only used the core widgets. However, to create a custom and more complex widget 
 in Hyperlambda, is actually surprisingly easy. As always, the answer is to create an Active 
-Event. Execute the following code in Hypereval.
+Event. Execute the following code in Hypereval, or inline by clicking the _"flash"_ button.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * This Active Event will become an "extension widget",
+ * which you can consume anywhere you can use a widget.
+ */
 create-event:examples.widgets.foo
   return
     container
@@ -18,13 +22,17 @@ create-event:examples.widgets.foo
           innerValue:Hello even more dear world!
 ```
 
-The above is actually a custom widget. To consume it, is equally simple. Just evaluate the 
+The above is actually a custom widget. To consume it, is equally simple. Just evaluate the
 following code.
 
-```hyperlambda
-create-widget
-  widgets
-    examples.widgets.foo
+```hyperlambda-snippet
+/*
+ * Creates a modal widget with our extension widget.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      examples.widgets.foo
 ```
 
 The above should result in a simple **[container]** widget, containing two **[literal]** widgets. 
@@ -42,7 +50,10 @@ We can parametrize our custom widgets, any ways we see fit.
 Below is a slightly more useful widget, which will create a form, asking the user for both his
 name, and his address.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Creates a slightly more "useful" extension widget.
+ */
 create-event:examples.widgets.name-address
   eval-x:x:/+/**/value
   return
@@ -67,21 +78,20 @@ create-event:examples.widgets.name-address
           value:x:/../*/address?value
 ```
 
-If you evaluate the above code in Hypereval, for then to evaluate the following - You can see it in action.
+If you evaluate the above code in Hypereval, or inline in the documentation system, for then to evaluate the
+following - You can see it in action.
 
-```hyperlambda
-create-widget
-  class:container
-  widgets
-    div
-      class:row
-      widgets
-        div
-          class:col
-          widgets
-            examples.widgets.name-address:name-of-your-form
-              name:John Doe
-              address:Foo bar st. 57
+```hyperlambda-snippet
+/*
+ * Consumes our "name/address" extension widget, created
+ * in the above snippet.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      examples.widgets.name-address:name-of-your-form
+        name:John Doe
+        address:Foo bar st. 57
 ```
 
 The above code will produce something resembling the following.
@@ -93,17 +103,7 @@ acronyms that developers love, and it means _"Don't Repeat Yourself"_. If you re
 your code becomes much more difficult to modify and maintain. Imagine we later wanted to expand on our 
 original widget, and add a _"phone"_ textbox. In our above example, all we need to do, is to modify our
 extension widget, and every place we consume this extension widget, will automatically have another textbox
-within it. And since we already have a generic database layer from our previous chapter, that will simply
-store _everything_ submitted to it, all we have to do, is to invoke ...
-
-```hyperlambda
-micro.form.serialize:name-of-your-form
-add:x:/+
-  src:x:/@micro.form.serialize/*
-examples.data.create
-```
-
-... and regardless of what fields your form contains, it'll all be stored in your database!
+within it.
 
 In fact, most of Hyper IDE is exclusively built using extension widgets. The file explorer for instance, is
 an extension widget. The CodeMirror editor, is an extension widget, and so on. Using these constructs, you

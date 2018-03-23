@@ -11,8 +11,8 @@ img
 
 p
   innerValue:@"Welcome to <em>'The Guide'</em> to Hyperlambda. Hyperlambda is a programming language explicitly created for Phosphorus Five,
-that allows you to rapidly create your own applications. Unless you have some time to invest into learning a (new) programming language,
-you're probably not going to have much use of these parts of the documentation."
+that allows you to rapidly create your own applications. This <em>'book'</em> will get you rapidly started with Hyperlambda,
+in a couple of hours, by giving you practical and hands on examples that you can play around with."
 
 /*
  * All files at "root" of Hyperlambda help folder.

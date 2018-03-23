@@ -1,5 +1,9 @@
 ## Boolean algebra on expressions
 
+**Notice**, these parts are not necessary to understand in order to be productive with Hyperlambda and Phosphorus
+Five - But rather intended as _"additional study material"_, in case you want to dive deeper into it, and
+understand the entire platform.
+
 To understand how boolean algebra works in regards to expressions, it might be feasable to start out with some boolean algebra theory. 
 The easiest way to do such, is to define the 4 different boolean algebraic operators, using a simple figure. Below is a figure, we will 
 refer to, during the rest of this chapter. Try to envision it, as you continue your reading.

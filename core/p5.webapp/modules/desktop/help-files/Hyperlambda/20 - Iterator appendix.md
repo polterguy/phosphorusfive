@@ -4,6 +4,10 @@ There exists 19 expression iterators in P5. Although you can most of the time ge
 obviously all of them have to be documented. Below you can find the documentation for each of these iterators, listed in no 
 particular order.
 
+**Notice**, these parts are not necessary to understand in order to be productive with Hyperlambda and Phosphorus
+Five - But rather intended as _"additional study material"_, in case you want to dive deeper into it, and
+understand the entire platform.
+
 ### Named elder relative iterator
 
 This iterator is sometimes also referred to as the _"variable scope iterator"_, since it's the closest thing you come to 

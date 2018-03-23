@@ -20,7 +20,10 @@ but a globally accessible lambda object, and 100% semantically similar to any ot
 The eval Active Event, allows you to invoke a lambda object, and evaluate it, as if it was an Active Event. With that in mind, 
 let's use eval in some code. Paste in the following code into Hypereval.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Evaluates a lambda object.
+ */
 .exe
   micro.windows.info:x:/../*/txt?value
 eval:x:/@.exe
@@ -114,7 +117,7 @@ an **[events]** node list, that is a list of events that your lambda object can 
 for you, where you can evaluate a lambda object, supplied over for instance an HTTP web service, by an untrusted client, _without_ running 
 the risk of having the client executing malicious events. Imagine the following.
 
-```hyperlambda-snippet
+```hyperlambda
 .exe
   return:Safely evaluated by [eval-whitelist]
 eval-whitelist:x:/@.exe
@@ -132,6 +135,9 @@ Notice, this is true, even though you don't even have a foo Active Event in your
 prevents an adversary from injecting malicious code into your system.
 
 ```hyperlambda-snippet
+/*
+ * This code throws an exception!
+ */
 .exe
   foo
   return:This node will never be reached!
@@ -166,7 +172,7 @@ because it works in a completely different way, than both of our previously ment
 
 First of all, passing in arguments, or returning arguments from it, is meaningless. Because it has access to the entire lambda object anyway. 
 This point makes it also quite dangerous in day to day use, since its execution can potentially change any parts of your lambda object. For 
-an Active Event such as **[add]** or **[set]**, this is _necessary_ and wanted behavior. However, for a lambda object, you want to evaluate 
+an Active Event such as **[while]** or **[if]**, this is _necessary_ and wanted behavior. However, for a lambda object, you want to evaluate 
 yourself, this might create some really weird side-effects.
 
 The **[eval-mutable]** does for one, *not* evaluate a copy of the lambda object, but evaluates the object directly, which is why it is 

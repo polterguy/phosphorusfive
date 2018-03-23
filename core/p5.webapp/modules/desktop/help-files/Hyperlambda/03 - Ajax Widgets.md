@@ -1,43 +1,14 @@
 ## Ajax widgets
 
-An Ajax widget is always defined as one single HTML element. Extension widgets, which we will have a look at later, 
-might have children widgets of themselves. But all the native main widgets, corresponds to a single HTML element on your page. 
-There are 3 main widgets in P5.
-
-- **[literal]** - Used to render simple text or HTML through its **[innerValue]** property
-- **[container]** - Serves as a container for other widgets through its **[widgets]** collection
-- **[void]** - Has no content, besides its attributes
-
-By cleverly combining the void, literal, and container widgets, you can create any HTML markup you wish.
-Contrary to other Ajax frameworks, you have 100% control over your resulting HTML markup in P5.
-
-**Notice**, you can also use _"automatic naming"_ for your widgets, and have the framework determine automatically
-for you, what type of widget you are creating. This is done internally in Phosphorus by checking if you provided
-an **[innerValue]** argument, a **[widgets]** argument, or none.
-
-### Creating Ajax widgets
-
-There are two main Active Events in Phosphorus Five that allows you to create Ajax Widgets, these are listed below.
-
-* __[create-widget]__ - Creates a single widget
-* __[create-widgets]__ - Creates multiple widgets
-
-Most of the time you'd probably want to use the **[create-widget]** event, to create a single widget. Sometimes it
-may be beneficial to use the plural form though, especially when you want to create extension widgets, such as
-a modal widget, or a tab widget etc.
-
-### Widget attribues
-
-When you create a widget, you often want to associate HTML attributes with it. This is easily done, by simply adding
-the attributes as a key/value argument to your widget. Consider the following code, which creates an HTML5 video
-element for you.
+An Ajax widget is always defined as _one single HTML element_. Extension widgets, might have children widgets of
+themselves - But all the core widgets in P5, corresponds to a single HTML element on your page. This trait
+allows you to build your HTML/DOM (almost) exactly as you want to. Below is an example of creating a modal window, with
+a video inside of it. Notice, to close the modal window, simply click anywhere outside of the window.
+The code is explained further down in this document.
 
 ```hyperlambda-snippet
 /*
  * Creates a modal widget with a video widget inside of it.
- *
- * Yet again, simply click anywhere outside of the modal
- * widget to close it.
  */
 create-widgets
 
@@ -46,6 +17,13 @@ create-widgets
    */
   micro.widgets.modal
     widgets
+
+      /*
+       * This widget uses "automatic type inference" and becomes
+       * a [container] widget, since it has a [widgets] argument.
+       *
+       * It is rendered as a "div" HTML element.
+       */
       div
         class:air air-inner
         widgets
@@ -54,8 +32,10 @@ create-widgets
            * The actual video element.
            *
            * Notice how the Hyperlambda attributes directly
-           * corelates to HTML attributes, and the name of
-           * widget corelates to the HTML tag/element.
+           * corelates to HTML attributes.
+           *
+           * This widget becomes a [literal] widget, since it
+           * contains an [innerValue] argument.
            */
           video
             width:320
@@ -64,14 +44,86 @@ create-widgets
             src:"http://www.w3schools.com/html/movie.ogg"
             type:video/ogg
             innerValue:Your browser needs to be updated
-
-/*
- * Notice also, since our above "video" widget contains
- * an [innerValue], it will be created as a "literal" widget.
- */
 ```
 
-In the above code, almost all arguments will create some sort of attribute. The resulting HTML will resemble something like the following.
+### Widget types
+
+There are 3 main widgets in P5.
+
+- **[literal]** - Used to render simple text or HTML through its **[innerValue]** property
+- **[container]** - Serves as a container for other widgets through its **[widgets]** collection
+- **[void]** - Has no content, besides its attributes
+
+By cleverly combining the void, literal, and container widgets, you can create any HTML markup you wish.
+Contrary to other Ajax frameworks, you have 99% control over your resulting HTML markup in P5.
+To create a widget, you can use one of the following Active Events.
+
+* __[create-widget]__ - Creates a single widget
+* __[create-widgets]__ - Creates multiple widgets
+
+Most of the time you'd probably want to use **[create-widget]**, to create a single widget. Sometimes it
+may be beneficial to use the plural form, especially when you want to create extension widgets, such as
+a modal widget - But most of the time you'd probably want to use **[create-widget]** to create a single
+widget. Notice, this single widget might be a **[container]** widget, which has children widgets in its
+**[widgets]** collection. The actual widget though, still corelates to a single HTML/DOM element.
+
+The **[micro.widgets.modal]** above, is an extension widget from Micro, and you can find its documentation
+in Micro.
+
+### Automatic type inference
+
+When you create a widget, you can choose to use _"automatic type inference"_, and instead of providing the type,
+you parametrize your widget with either **[widgets]**, **[innerValue]** or none - At which point you can drop
+the **[element]** argument, since it's implicitly declared through your main widget node's name. To understand
+what this imples, realize that the following code will create the exact same widget hierarchy as the code above.
+The only difference is that our first example is using _"automatic type inference"_, while this second example
+is using explicit typing.
+
+```hyperlambda-snippet
+/*
+ * Creates a modal widget with a video widget inside of it.
+ *
+ * This example does NOT use "automatic type inference", but explicitly
+ * declares the widget type, forcing us to also explicitly declare the
+ * HTML [element] to use as an argument. This creates more "verbose" code.
+ */
+create-widgets
+
+  /*
+   * A modal widget.
+   */
+  micro.widgets.modal
+    widgets
+
+      /*
+       * Explicit type and [element] declaration.
+       */
+      container
+        element:div
+        class:air air-inner
+        widgets
+
+          /*
+           * Explicit type and [element] declaration.
+           */
+          literal
+            element:video
+            width:320
+            height:240
+            controls
+            src:"http://www.w3schools.com/html/movie.ogg"
+            type:video/ogg
+            innerValue:Your browser needs to be updated
+```
+
+The above example contains two additional lines of code, since we did not use _"automatic type inference"_ in
+our widget declaration.
+
+### HTML attributes
+
+When you create a widget, you often want to associate HTML attributes with it. This is easily done, by simply adding
+the attributes as a key/value argument to your widget. To understand this, realize that the above **[literal]**
+widget will resemble the following.
 
 ```htmlmixed
 <video
@@ -101,7 +153,8 @@ true for attributes. In our previous chapter, we created an **[onclick]** Ajax e
 
 You can also create JavaScript events with similar syntax. Although if you want to create a piece of client-side JavaScript that is
 executed when your DOM event is raised - You will need to put your JavaScript into the _value_ of your event handler's node, instead
-of adding it as a child lambda object. The following is an example of the latter.
+of adding it as a child lambda object. The following is an example of the latter. Notice, you can of course also
+attach DOM events manually, using JavaScript, to avoid mixing JavaScript and HTML.
 
 ```hyperlambda-snippet
 /*
@@ -118,30 +171,9 @@ create-widgets
         onclick:"alert('Hello JavaScript!');return false;"
 ```
 
-**Notice**, in our above video example, we used the **[video]** widget, while in our last example we used a **[literal]**
-widget. These are logically the same widgets, since we provided an **[innerValue]** to our first video widget, implying
-it will be created as a **[literal]** widget. The type
-of widget Phosphorus renders is dynamically determined according to whether or not it contains an **[innerValue]**, a
-**[widgets]** argument, or none. However, if you know for a fact that you want to create a literal widget, and provide
-an **[innerValue]** argument to your widget - You can get away with directly declaring the widget as your HTML tag,
-and such create more semantic code, and avoid passing in an **[element]** argument. Below we illustrate this idea.
-
-```hyperlambda-snippet
-/*
- * Creates a modal widget with two paragraphs.
- */
-create-widgets
-  micro.widgets.modal
-    widgets
-      p
-        innerValue:This is the same type of widget ...
-      literal
-        element:p
-        innerValue:... as this widget, and they're both created as [literal] widgets.
-```
-
 You can also explicitly choose what ID you want to render your widget with, by providing your ID as the value
-of your widget, and/or your **[create-widget]** invocation. Below is an example.
+of your widget, and/or your **[create-widget]** invocation. This is often useful when you need to have your
+widget interact with some custom JavaScript for instance. Below is an example.
 
 ```hyperlambda-snippet
 /*
@@ -309,29 +341,6 @@ create-widgets
             micro.windows.info:Your widget's lambda event says hello!
 ```
 
-### Commenting Hyperlambda
-
-Notice, the above code is also commented. You can easily create comments in Hyperlambda, either by starting out your comments 
-with `/*` and ending them with `*/` - Resulting in that the Hyperlambda parser will ignore everything in between. Alternatively, 
-you can create comments by starting your lines with `//`, which makes the parser ignore the rest of the line. Comments have no 
-semantic meaning to your lambda objects after your Hyperlambda have been parsed, and are in fact completely gone, after a lambda
-object have been created out of your Hyperlambda.
-
-As a general rule of thumb, you should try to comment your own Hyperlambda well, since this makes it easier to understand for others,
-and yourself too for that matter, 6 months down the road, when you have completely forgotten your original intentions behind your
-own code. The human mind is remarkably good at forgetting things it doesn't feel the need to remember. Below is some examples of
-comments.
-
-```hyperlambda
-// This is some node, doing something cool.
-.foo
-
-/*
- * This is another node, doing something even cooler.
- */
-.bar
-```
-
 ### Invisible properties and Ajax events
 
 Sometimes, you might need to associate some piece of data with your widget, that you do not want to render as attributes to the client. 
@@ -399,3 +408,12 @@ create-widgets
 As you can see in our example above, you can change and retrieve multiple attributes in one invocation. You can also change and retrieve 
 attributes for multiple widgets in one invocation, by supplying a lambda expression, leading to multiple valid IDs to existing widgets. 
 We will have a look at the latter in a later chapter.
+
+### Wrapping up
+
+Puuh, this was a fairly long and technical chapter. Don't despair if you didn't understand everything in this chapter,
+but refer back to it later, as your understanding of Hyperlambda has increased. If you want to see some more hands
+on code, you cah check out the _"Kitchen Skink example"_ in Hypereval.
+
+* [Open the kitchen sink example](/hypereval/widgets-kitchen-sink).
+* [Code for kitchen sink example](/hypereval) - Click _"Load snippet"_ and choose _"widgets-kitchen-sink"_.

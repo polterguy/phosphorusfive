@@ -1,6 +1,6 @@
-## Active Events
+## Your first Active Event
 
-So what is an Active Event? Short answer; Everything. In fact, the only thing you have done so far, is invoking Active Events. 
+So what is an Active Event? Short answer; __Everything__. In fact, the only thing you have done so far, is invoking Active Events. 
 The **[micro.windows.info]** invocation from one of our previous chapters, is an Active Event. The **[set]** invocation we've used several 
 times during the course of this book, also happens to be an Active Event. Active Events is the axiom, at which P5 and Hyperlambda evolves around.
 Active Events almost entirely replaces functions and methods in Hyperlambda. To illustrate how powerful Active Events are, realise that
@@ -8,16 +8,23 @@ Phosphorus Five was almost entirely created without the use of functions and met
 
 ### Your first Active Event
 
-You can easily create your own Active Events. Evaluate the following code in for instance Hypereval.
+You can easily create your own Active Events. Evaluate the following code in for instance Hypereval, or evaluate it
+inline by clicking the _"flash"_ button.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Creates an Active Event who's name is [examples.foo].
+ */
 create-event:examples.foo
   micro.windows.info:Foo was here!
 ```
 
-Then exchange the code in your Hypereval editor with the following code, and evaluate it.
+Then evaluate the following code.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Invokes our Active Event.
+ */
 examples.foo
 ```
 
@@ -35,7 +42,10 @@ To pass in arguments to an Active Event, is as easy as creating a child node in 
 somehow handle our argument. Notice, we will be using the same name for our Active Event as our first example. This will ensure that our 
 original Active Event becomes overwritten, and replaced with our new implementation, without any extra effort necessary from our side.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Creates an Active Event who's name is [examples.foo].
+ */
 create-event:examples.foo
   micro.windows.info:{0} was here!
     :x:/../*/name?value
@@ -43,16 +53,23 @@ create-event:examples.foo
 
 Afterwards you can invoke your Active Event with a **[name]** argument. Below is an example.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Invokes our Active Event.
+ */
 examples.foo
   name:Thomas Hansen
 ```
 
 Notice, this time our confirmation window is actually able to show the name of *"Thomas Hansen"*. Hence, it has obviously found our argument. 
-
-To return arguments from your Active Events is equally easy.
+To return arguments from your Active Events is equally easy. Notice, these next examples, which doesn't have
+a _"flash"_ button, are easily evaluated in Hypereval. Make sure you view the output of your evaluation though,
+such that you can see what goes on.
 
 ```hyperlambda
+/*
+ * Creates an Active Event who's name is [examples.foo].
+ */
 create-event:examples.foo
   return
     foo1:bar1
@@ -67,6 +84,9 @@ Event (yes, even the return *"keyword"* is an Active Event), and passing in what
 is an example.
 
 ```hyperlambda
+/*
+ * Creates an Active Event who's name is [examples.foo].
+ */
 create-event:examples.foo
   return:Hello World
 ```
@@ -79,9 +99,16 @@ illustrates; `examples.foo:Hello World`.
 If you pass in a value to your Active Events, you can reference this value as an **[\_arg]** node, inside of your Active Events. Evaluate this code, 
 to see its effect.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Creates an Active Event who's name is [examples.main-arg].
+ */
 create-event:examples.main-arg
   micro.windows.info:x:/../*/_arg?value
+
+/*
+ * Invokes our Active Event.
+ */
 examples.main-arg:Hello world!
 ```
 
@@ -89,7 +116,11 @@ The **[\_arg]** argument(s), are handled in a special manner though. If you pass
 expression will be evaluated *before* your event is invoked. Hence, inside of your event, you will have access to the _result_ of your expression, 
 and the expression will no longer exist. Consider this code.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Evaluates our Active Event with an expression
+ * as its [_arg] value.
+ */
 _name:Jo dude!
 examples.main-arg:x:/@_name?value
 ```
@@ -101,11 +132,19 @@ the **[\_arg]**'s value, inside of our **[examples.main-arg]** event, is a simpl
 **Notice**, if you pass in an expression leading to multiple results, you will have multiple **[\_arg]** items inside of your event.
 
 You can also pass in references to nodes as your arguments, allowing you to gain access to these nodes from within your event. Below is an example.
+Run this example through Hypereval, and make sure you view the output resulting code to see what happens.
 
 ```hyperlambda
+/*
+ * Creates an event, expecting a node by reference.
+ */
 create-event:examples.foo
   set:x:/../*/_arg/#?value
     src:Yup, we were invoked!
+
+/*
+ * Invokes our event.
+ */
 _out
 examples.foo:x:/@_out
 ```
@@ -117,7 +156,11 @@ The above example is the closest you come to _"closure"_ in Hyperlambda.
 It may be easy to believe that the name *"Hyperlambda"* is simply a marketing trick, in an attempt at trying to hype the language. However, as we 
 will see in our next example, the word hyper is in fact well deserved.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Creates an Active Event, taking a lambda object,
+ * and evaluating that lambda object twice.
+ */
 create-event:examples.two-times
   eval:x:/../*/.exe
   eval:x:/../*/.exe
@@ -125,7 +168,10 @@ create-event:examples.two-times
 
 After having executed the above code, you can execute this code in your Executor.
 
-```hyperlambda
+```hyperlambda-snippet
+/*
+ * Invokes our Active Event with a lambda object.
+ */
 examples.two-times
   .exe
     create-widget
@@ -133,10 +179,16 @@ examples.two-times
       innerValue:Echo
       onclick
         micro.windows.info:Echo was here!
+
+/*
+ * Notifying user that he must scroll to the bottom
+ * of the dox page to see the results.
+ */
+micro.windows.info:Scroll to the bottom of your page to see the result
 ```
 
-What happens in our above example, is that we pass in a lambda object, intended to be executed. The **[eval]** invocations, inside of 
-our **[examples.two-times]** event, executes the specified lambda twice. The simplicity of passing around such *"execution objects"* to other 
+What happens in our above example, is that we pass in a lambda object, intended to be evaluated. The **[eval]** invocations, inside of 
+our **[examples.two-times]** event, evaluates the specified lambda twice. The simplicity of passing around such *"evaluation objects"* to other 
 parts of your code, providing callbacks to other lambda objects, is another reason why Hyperlambda got its name. You can easily pass in such lambda 
 objects, to web service endpoints, completely reversing the responsibility of the client and the server. For the record, you can also do this *safely*.
 
@@ -173,6 +225,9 @@ and allows you to *"inject"* your own Hyperlambda logic, into the *"core kernel 
 There is nothing preventing you from creating the following Active Event.
 
 ```hyperlambda
+/*
+ * This is NOT a good name for an Active Event!
+ */
 create-event:57
   return:42
 ```
@@ -190,6 +245,9 @@ If we were to rewrite the above Active Event, with this in mind, creating a more
 the following instead.
 
 ```hyperlambda
+/*
+ * This is (possibly) a better naming convention.
+ */
 create-event:gaiasoul.the-42-answer.what-is-57
   return:42
 ```
@@ -208,6 +266,9 @@ instance, this is perfectly valid Hyperlambda, and creates an Active Event named
 sense at all.
 
 ```hyperlambda
+/*
+ * And the winner of obfuscated code olympics is ...
+ */
 create-event:
   return:{0} is the new ≈
     :x:/../*/∂?value
@@ -216,6 +277,9 @@ create-event:
 Why the above becomes almost absurd, can probably be understood, as you try to consume the above Active Event.
 
 ```hyperlambda
+/*
+ * Winning ... NOT!!
+ */
 
   ∂:¸
 ```
@@ -226,7 +290,7 @@ There are only 3 restrictions to what you can name your Active Events.
 
 * You cannot start your event name with an underscore "\_"
 * You cannot start your event name with a period "."
-* You cannot create an even who's name is "" (empty string)
+* You cannot create an event who's name is "" (empty string)
 
 These restrictions applies only to Hyperlambda though. The reason is that Active Events starting with either a ".", or a "\_", are 
 considered *"private core Active Events"*. You can create such events, but only from C#. In addition, you cannot invoke such Active Events 
@@ -268,9 +332,3 @@ I often encourage people to create lambda objects, intended for execution, by st
 make the syntax highlighter parser of the Hyperlambda code editor mark your lambda object as an *"execution object"*. Secondly, it makes such 
 execution objects more easily tracked, and increases the readability of your code. So even though this is not technically a prerequisite, 
 I find this to be a useful convention.
-
-Other types of arguments, I encourage people to simply pass in with an intelligent name, not pre-prending anything in front of the argument. 
-In a previous version of the **[eval]** event, the expectation was to prepend arguments to lamdba objects with an underscore "\_". 
-This is **no longer the case** - And the only reason why there are still any events that even uses this convention, are for historical reasons, 
-to be backwards compatible. I don't encourage people to use this syntax anymore, since a lambda object will not execute any of its arguments 
-any ways, but *"offset"* the execution pointer, to the first *"non-argument part"* of your lambda object.

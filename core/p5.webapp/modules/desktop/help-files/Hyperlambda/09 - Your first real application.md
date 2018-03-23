@@ -1,7 +1,10 @@
 ## Your first real application
 
-In this chapter, we will create a contacts application, allowing us to keep track of our friends, their emails, and phone numbers. Before 
-we can dive into our application though, there are some concepts we'll need to cover first.
+Congratulations, you should now know all the most difficult concepts you need to learn, in order to create
+rich and complex Ajax apps with Hyperlambda. We shall therefor celebrate by creating a _"fully fledged app"_.
+In this chapter, we will therefor create a contacts application, allowing us to keep track of our friends,
+their emails, and phone numbers. Before we can dive into our application though, there are some concepts
+we'll need to cover first.
 
 * Loading and saving of files
 * Parts of the folder structure of Phosphorus Five
@@ -28,7 +31,7 @@ CRUD application. Files inside of this folder, cannot in general, be accessed by
 Hence, they are your user's *"private files"*.
 
 To reference files inside of your user's home folder, you can prepend your path with a tilde `~/`. If you start out a filename with a tilde, 
-this will automatically refer to a file in your user's home folder. If you want to create a file inside of your private documents folder, 
+this will automatically refer to a file in the currently logged in user's home folder. If you want to create a file inside of your private documents folder, 
 you can use something resembling the following code.
 
 ```hyperlambda
@@ -60,23 +63,22 @@ As vaguely touched upon in one of our previous chapters, a widget can associate 
 that only exists, for as long as the widget itself exists. We will create one widget lambda event like this, to *"databind"* our HTML table.
 We will create this event with the name of **[examples.databind-addresses]**. This event can be invoked just like a normal Active Event. 
 If we wanted to, we could also pass in arguments, and return arguments from it, just as if it was a normal event. We do not need to neither 
-pass in, nor return any arguments from it though. We simply need to *"databind"* our HTML table element within it. Which we will do, 
+pass in, nor return any arguments from it though. We simply need to *"databind"* our HTML table element within it - Which we will do, 
 by loading our database file, and create an HTML table widget, for each **[item]** in our file.
 
 ### The code for our application
 
 With these concepts, at least partially covered, let's move on to the code, and show you the entire listing for an Address book web app. 
 Modify our _"Hello World"_ app's _"launch.hl"_ file from one of the first chapters, and exchange its code with the code listed below.
-Or, simply click the _"lightning"_ button at the bottom of our source listing, to evaluate it inline.
+Or, simply click the _"flash"_ button at the bottom of our source listing, to evaluate it inline. Notice, this is
+a fairly long listing, since it's arguably a _"complete web app"_. We will walk through the code later in this
+chapter, hopefully making you able to understand the ghist of it.
 
 ```hyperlambda-snippet
 /*
- * Includes CSS for our module.
+ * Includes Micro's main CSS files.
  */
-p5.web.include-css-file
-  @MICRO/media/main.css
-  @MICRO/media/fonts.css
-  @MICRO/media/skins/serious.css
+micro.css.include
 
 /*
  * Creating our main application wrapper widget.
@@ -85,7 +87,6 @@ p5.web.include-css-file
  * according to the content of our "database file".
  */
 create-widget
-  parent:hyper-ide-help-content
   class:container
   oninit
 
@@ -271,6 +272,14 @@ create-widget
                     container
                       element:tbody
                       widgets
+
+/*
+ * In case you evaluate this from the Dox, we simply
+ * make sure we create a bubble window, informing you
+ * that you'll have to scroll to the bottom of your page,
+ * to actually see the result of this Hyperlambda.
+ */
+micro.windows.info:Your 'app' can be found at the bottom of your page!
 ```
 
 ### [apply] in details
@@ -283,7 +292,7 @@ Which you may remember from a previous chapter, was the default type declaration
 Its **[src]** argument, is expected to be an expression, also leading to a node-set somehow. The way to envision the **[src]** argument, 
 is that **[apply]** iterates over its **[src]** result set, and uses the currently iterated node, as the idenity node, for creating a lambda 
 object, based upon the **[template]**, where expressions inside of your **[template]** can reference the currently iterated **[src]** node.
-The **[template]** hence, is being created once for each result from the **[src]** expression, having every iteration, use the currently 
+The **[template]** hence, is being created once for each result from the **[src]** expression, having each iteration, use the currently 
 iterated **[src]** node, as its identity node.
 
 ### Databound expressions in [apply]
@@ -398,3 +407,42 @@ Our little **[while]** trick, simply ensures we only save our 10 most recent rec
 
 The last thing we do in our **[onclick]** Ajax event, is to make sure we invoke **[examples.databind-addresses]**, which is our widget 
 lambda event, that is responsible for databinding our HTML table all over again.
+
+### Making your app secure
+
+Our invocation to **[p5.html.html-encode]** HTML _"encodes"_ your string. This is necessary to prevent an adversary
+from being able to inject malicious HTML that is rendered on the clients somehow. Such malicious HTML could be for
+instance including some malicious piece of JavaScript, that compromises the client somehow.
+To avoid this, we can invoke **[p5.html.html-encode]**, which will transform all occurrencies of angle brackets,
+and other potentially threatening characters, into their safe counterparts.
+
+### Misc. constructs
+
+The **[clear-widget]** Active Event simply empties a named widget for all of its children widgets. There also exists
+a **[delete-widget]** cousine of this event, which instead of emptying the widget, will entirely delete a named
+widget, including its children. However, since we need the actual widget to stay around, yet still need to empty
+it - We use **[clear-widget]** instead.
+
+The **[while]**, **[for-each]** and **[if]** Active Events will be covered in a later chapter. The **[file-exists]**
+event simply checks to see if a file exists on disc, and if so, returns true. Refer to the documentation for _"p5.io"_
+in the _"Plugins"_ parts of the documentation to understand how it works.
+
+In our last **[create-widget]** invocation, at the bottom of our code, there is an example of providing HTML as the **[innerValue]**
+of a widget. We are using this to create the header of our table HTML element. This will simply create _"static DOM"_
+for us, and not create widgets which we can refere to ourselves, and is sometimes a more efficient way of creating
+content/markup, than creating _"everything"_ as widgets. After all, a widget does come with some overhead.
+
+The **[micro.widgets.wizard-form]** widget and the **[micro.form.serialize]** event is documented in the
+_"Micro"_ section of these documentation files.
+
+In our application, we are also sometimes declaring the values for our nodes with double quotes surrounding the value.
+This is necessary only if your value contains complex characters, such as a (:) character, a carriage return, etc.
+If you have created string literals in C#, this may seem intuitive - And in fact these types of string values in
+Hyperlambda are identical to how you would compose a string literal in C#.
+
+### Wrapping up
+
+A nice tricks to play around with longer examples, such as these, is to create a _"snippet"_ in Hypereval, and
+make sure you save your snippet as a _"page"_ type. This allows you to keep all your examples in the same place,
+and later refer to them, as the need arises.
+

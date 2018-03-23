@@ -14,9 +14,9 @@ for-each:x:/@.people/*?value
     innerValue:x:/@_dp?value
 ```
 
-If you execute the above code in for instance the Evaluater, you will create 3 widgets, each with its **[innerValue]**, taken from 
+If you execute the above code in for instance Hypereval, you will create 3 widgets, each with its **[innerValue]**, taken from 
 the value of each child node beneath the **[.people]** node. If you add another name, and execute the code again, it will create 4 
-widgets. This is because the for-each Active Event, will evaluate its lambda object, once for each result in its source 
+widgets. This is because the **[for-each]** Active Event, will evaluate its lambda object, once for each result in its source 
 expression.
 
 ### The [for-each] loop
@@ -44,7 +44,7 @@ for-each:x:/@.people/*
 ### The reference iterator explained
 
 Notice the `:x:/@_dp/#?value` parts above, and notice especially the `/#` parts. This is the _"reference iterator"_, and will
-_"cast"_ or convert the value ot its previous result set, into a node. Since the **[\_dp]** pointer above is already pointing
+_"cast"_ or convert the value of its previous result set, into a node. Since the **[\_dp]** pointer above is already pointing
 to a node in its value, this implies that we can access that node _"by reference"_.
 
 It might help to see how your code will look like for its first iteration.
@@ -102,13 +102,30 @@ To understand the details of how to create more complex conditions for your whil
 covering **[if]** or branching conditions. However, below is an example creating a widget with each number ranging from 
 zero to five.
 
-```hyperlambda-snippet
+```hyperlambda
+/*
+ * Counter, that's incremented once for each iteration
+ * inside our [while].
+ */
 _no:int:0
+
+/*
+ * Looping [while] counter's value is less than 5.
+ */
 while:x:/@_no?value
   <:int:5
+
+  /*
+   * Creates a widget.
+   */
   create-widget
     parent:hyper-ide-help-content
     innerValue:x:/@_no?value
+
+  /*
+   * Increments counter using the math Active Event [+]
+   * in addition to [set].
+   */
   set:x:/@_no?value
     +:x:/@_no?value
       _:1

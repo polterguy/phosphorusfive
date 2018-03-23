@@ -1,23 +1,29 @@
 ## Active Events
 
+**Notice**, this is a fairly theoretical chapter, intended for system developers that already know another programming
+language from before. Feel free to skip this chapter if you find it boring, or don't understand some of its theory.
+
 In this chapter, we will start discussing the heart of P5; *Active Events*. So far, we have used this name many times during the book, 
 but we have never formally defined it, or explained it in any ways. After having read this chapter, you will hopefully have a 10.000 feet 
 astronaut's overview of the answer to the question; *"Why Active Events?"* In the next chapter, we will discuss the technical details 
 of Active Events. For the record, I once wrote an MSDN article about Active Events, which you can 
-find [here](https://msdn.microsoft.com/en-us/magazine/mt795187). 
+find below.
+
+* [MSDN Magazine Article about Active Events](https://msdn.microsoft.com/en-us/magazine/mt795187).
 
 ### Definition
 
-Active Events are first and foremost a design pattern. It is however a design pattern, that largely replaces most other design patterns 
-in this world. Simply because it solves the same problems as dozens of other design patterns do combined. Active Events also happens 
+Active Events are first and foremost a design pattern. It is however a design pattern, that largely replaces most other design patterns
+in this world. Simply because it solves the same problems as dozens of other design patterns do combined. Active Events also happens
 to solve these problems very beautifully, making sure you are able to create better cohesion in your software, while 
-retaining a larger degree of encapsulation, and end up with increased means to apply polymorphism. Hence, it also largely becomes a 
+retaining a larger degree of encapsulation, and end up with increased means to apply polymorphism. Hence, it also largely becomes a
 replacement to OOP.
 
-An Active Event is an alternative way of invoking functionality. It is, in such a way, a substitute to what traditional programming 
-refers to as *"functions"* and *"methods"*. Among its defining traits, is the fact that every Active Event, can accept the same set 
-of arguments. In fact, they all have the same input signatures, which can be condensed down to *"a bunch of nodes"* or *"a lambda object"* 
-to be specific. They also all return the exact same stuff, which again is a _"bunch of nodes"_, or a *"lambda object"*.
+An Active Event is an alternative way of invoking functionality. It is, in such a way, a substitute to what traditional programming
+refers to as *"functions"* and *"methods"*. Among its defining traits, is the fact that every Active Event, can accept the same set
+of arguments. In fact, they all have the same input signatures, which can be condensed down to *"a bunch of nodes"*.
+They also all return the exact same stuff, which again is a _"bunch of nodes"_. A _"bunch of nodes"_ is again what we refer
+to as a _"lambda object"_, which is really just a different way of stating a _"bunch of nodes"_.
 
 https://phosphorusfive.files.wordpress.com/2018/01/22hpw9.jpg
 
@@ -124,6 +130,11 @@ have changed since this video was created - But it illustrates the concept fairl
 
 https://www.youtube.com/watch?v=sUeRdmzRwbs&t=1s
 
-### References
+### Wrapping up
+
+In this chapter, we looked at Active Events, in relationship to OOP and software architecture - And hopefully,
+we created a common understanding of the advantages of using Active Events, instead of traditional OOP.
+A more thorough explanation can be found below.
 
 [MSDN Magazine, Active Events, one design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
+
