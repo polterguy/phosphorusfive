@@ -320,6 +320,7 @@
     <None Include="modules\desktop\helpers\uninstall-module.hl" />
     <None Include="modules\desktop\startup\plugins\desktop.plugins.post.evaluate-session-lambda.hl" />
     <None Include="modules\desktop\startup\misc\desktop.evaluate.on-next-pageload.hl" />
+    <None Include="modules\desktop\startup\modules\desktop.modules.list.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

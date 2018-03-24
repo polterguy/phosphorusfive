@@ -16,6 +16,7 @@ create-widgets
       h3
         innerValue:Uninstall module(s)
       micro.widgets.grid:desktop-uninstall-app-grid
+        class:hover
         oninit
 
           /*

@@ -10,7 +10,7 @@ have been created, and re-create them during consecutive callbacks/postbacks.
 
 This results in a _"ridiculously easy to understand"_ development model, arguably resembling the
 development model of Visual Basic in simplicity, or FoxPro for that matter. However, the flipside is
-that it requires much more server resources, particularly memory than a completely stateless development model.
+that it requires much more server resources, particularly memory, compared to a completely stateless development model.
 This results in that it is extremely easy to create highly advanced web applications, while it is also difficult
 (but _not_ impossible) to create apps that scales very well.
 

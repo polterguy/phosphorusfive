@@ -1,0 +1,16 @@
+
+/*
+ * Creates the Active Event returns all installed modules in the system.
+ */
+create-event:desktop.modules.list
+
+  /*
+   * Simply returns all folders inside of "/modules/".
+   */
+  list-folders:/modules/
+  for-each:x:/@list-folders/*?name
+    split:x:/@_dp?value
+      =:/
+    add:x:/../*/return
+      src:x:/@split/0/-?name
+  return

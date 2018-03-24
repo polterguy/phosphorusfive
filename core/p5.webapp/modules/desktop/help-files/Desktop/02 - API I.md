@@ -2,7 +2,25 @@
 
 The Desktop module contains a rich API, which allows you to perform all sorts of tasks, which are common
 to all modules. This includes the responsibility of loading the help system, installation and
-uninstallation of apps and modules, logging in and out of the system, etc.
+uninstallation of apps and modules, logging in and out of the system, etc. Below is a snippet of
+Hyperlambda that lists all your installed modules.
+
+```hyperlambda-snippet
+/*
+ * Lists all installed modules.
+ */
+desktop.modules.list
+
+/*
+ * Creates a modal widget with the results
+ * from above invocation.
+ */
+create-widgets
+  micro.widgets.modal
+    widgets
+      pre
+        innerValue:x:/../*/desktop.modules.list
+```
 
 ### Desktop internals
 
@@ -36,6 +54,12 @@ event yourself.
 You can choose to exchange the default module with any module you wish. Your desktop will still be
 available at the [/desktop](/desktop) URL, unless you uninstall the Desktop or remove it.
 
+**Notice**, there is nothing preventing you from entirely removing the Desktop module from your Phosphorus Five
+installation, in addition to all other modules too for that matter. If you do, you _must_ handle the
+**[p5.web.load-ui]** event in your own Hyperlambda or C#. If you do this, then Phosphorus Five will
+still provide an excellent framework for your needs, allowing you to entirely create your own web apps,
+without any of the _"core"_ Phosphorus Five components available though.
+
 ### Exchanging the default skin
 
 The default skin to use, for users that haven't overridden the skin themselves explicitly, can be
@@ -68,10 +92,13 @@ can interact with programmatically as you see fit. As the help system is loaded,
 the Active Event **[desktop.help.get-context]**, and if this invocation returns a path to a file,
 this file will be displayed by default. You can also load the help system, and explicitly choosing
 to load a default help file as the help system is loaded, by passing in a **[file]** argument -
-Which will be treated as the default landing page when the help system is loaded. Below you can
-find the list of widget lambda events that are at your disposal when the help system is loaded.
-Notice, widget lambda events will not be available in a CodeMirror editor's autocomplete list,
-since they're dynamically loaded, and only available when your widget is loaded.
+Which will be treated as the default landing page when the help system is loaded. This allows you
+to create _"context sensitive help files"_, with specific help buttons at some section of your
+module/app.
+
+Below you can find the list of widget lambda events that are at your disposal when the help system
+is loaded. Notice, widget lambda events will not be available in a CodeMirror editor's autocomplete
+list, since they're dynamically loaded, and only available when your widget is loaded.
 
 * __[desktop.help.is-visible]__ - Returns boolean _"true"_ if the help system is running
 * __[desktop.help.close]__ - Closes the help system

@@ -3,7 +3,7 @@
 The _"Desktop"_ module, is normally the root of your Phosphorus Five installation, and responsible for URL resolving,
 in addition to providing other services to your modules, and Phosphorus Five in general. The Desktop module
 is also completely loosely coupled from all other modules, and the core itself, and can actually be exchanged with your
-own module and/or logic. It looks like the following, depending upon which apps you've installed, and whether
+own module, and/or logic. It looks like the following, depending upon which apps you've installed, and whether
 or not you're logged into Phosphorus Five or not.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot.png
@@ -19,7 +19,8 @@ To install a new module, simply click the _"+"_ button in your toolbar, on your 
 logged in as _"root"_. This will allow you to either browse to a zip file on your local computer -
 Or use an URL to some zip file on the web, which will be automatically downloaded and installed for
 you. Below is a screenshot of the installation process, assuming you've just uploaded a zip file called
-_"hello.zip"_, but not yet chosen to install it.
+_"hello.zip"_, but not yet chosen to install it. Notice, you can also supply a URL to a zip file on
+the web, that contains your module.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-install-new-module-screenshot.png
 
@@ -58,3 +59,9 @@ https://phosphorusfive.files.wordpress.com/2018/03/hyper-ide-magic-forrest-skin-
 Below you can see how Camphora Five will look like if you choose the _"Aztec"_ skin.
 
 https://phosphorusfive.files.wordpress.com/2018/03/camphora-screenshot-aztec.png
+
+Some skins have larger fonts than others, while some have darker colors. As you install Phosphorus Five,
+you might benefit from taking some time initially to pick your skin, according to your needs. You can also
+create your own skin, entirely from scratch, if none of the skins that comes out of the box seems to fit
+your needs. You can also select your own personal CodeMirror theme, from for instance Hyper IDE's settings,
+to further customize how Phosphorus Five appears.

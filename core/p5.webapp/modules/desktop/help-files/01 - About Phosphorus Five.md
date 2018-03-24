@@ -5,10 +5,8 @@
 Phosphorus Five is a web operating system, and a web application development framework, with some pretty
 unique USPs. Among other things, it's extremely dynamic in nature, allowing for orchestrating your application
 building blocks together, almost the same way you would assemble LEGO bricks into creations.
-Phosphorus Five is a highly modularized, dynamic, and flexible web operating system, created as a thin layer
-on top of your existing web server and underlaying operating system.
-
-Phosphorus Five is built around three axioms, which you can read three MSDN Magazine articles about at the following URLs.
+Phosphorus Five is built around three axioms, which you can read three MSDN Magazine articles about at the
+following URLs. Notice, these articles are fairly technical in nature, and intended for software developers.
 
 * [Active Events](https://msdn.microsoft.com/en-us/magazine/mt795187), providing a functional alternative to OOP, where polymorphism and encapsulation is being performed at the _"function level"_ instead of at the class level
 * [Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119), which is a natural consequence of Active Events
@@ -32,17 +30,19 @@ to rapidly create your web apps, one way or another. Some examples of such apps 
 Phosphorus Five is about privacy, freedom of expression, and the freedom to create - Without having to conform
 to the terms of others. Hence our slogan, which goes like this _"In the beginning there was Hyperlambda"_. If you
 don't understand where I picked up that slogan, feel free to pick up any Bible. The idea is to allow for a close and
-personal relationship to God, without any intermediaries controlling the terms, and/or your access. Gutenberg was
-my philosophical inspiration while developing Phosphorus Five. Gutenberg's idea was to commoditize access to
-_"the word"_ (AKA; God) - While my idea is to allow you to use _"the word"_ to communicate with your computer,
-without a cast of _"gurus"_ acting as intermediaries on your behalf.
+personal relationship to the act of creation, without any intermediaries controlling the terms, and/or your access.
+Gutenberg was my philosophical inspiration while developing Phosphorus Five. Gutenberg's idea was to commoditize
+access to _"the word"_ (AKA; God) - While my idea is to allow you to use _"the word"_ to communicate with your
+computer, and have it do what you want it to do, without a cast of _"gurus"_ acting as intermediaries on your
+behalf, or some shady people spying on your data and privacy in the process.
 
 ### About the help system
 
 These help files are actually _"alive"_, which means they contain snippets of code, illustrating some concept,
 which will be evaluated on the server when you choose to evaluate the associated snippet. This gives you hopefully
 a nice and interactive way to learn Phosphorus Five, including your tactile learning abilities, creating a
-_"hands on"_ type of learning curve. Below is an example.
+_"hands on"_ type of learning curve. Below is an example. Notice, this example only works in browsers that have
+speech synthesis. Hint; Google Chrome does ...
 
 ```hyperlambda-snippet
 /*
@@ -60,7 +60,9 @@ micro.windows.info:Hello World!
 ```
 
 You can also copy and paste example snippets, such as the above, into Hypereval - At which point you can modify them,
-and play around with them, to include the tactile parts of your brain while learning.
+and play around with them, to include the tactile parts of your brain while learning. If you want to learn
+Hyperlambda, I have written a _"book"_ about it, which you can find by clicking the _"home"_ button in the help
+files, and choosing the _"Hyperlambda"_ sub section.
 
 ### License
 

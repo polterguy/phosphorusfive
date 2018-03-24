@@ -20,7 +20,7 @@ the point where you can barely interact with a computer, to the point of where y
 If they don't, feel free to toss me an email at thomas@gaiasoul.com. If this is your first visit to Phosphorus Five,
 I suggest you start out with either Hyper IDE (if you're a software developer), or Camphora Five, if you have never
 created software before. If you want to dive into creating Phosphorus Five web apps yourself, you'd probably want to
-start with the <em>'Hyperlambda'</em> section, and maybe moving onwards to Hyper Core afterwards."
+start with the <em>'Hyperlambda'</em> section."
 
 literal
   element:h4
@@ -162,5 +162,6 @@ h4
 
 p
   innerValue:@"If you want to write about Phosphorus Five for a press article, you can use the logo of
-the bird, which you can find at the top of this article. You can also contact me at thomas@gaiasoul.com."
+the bird, which you can find at the top of this article. You can also contact me at thomas@gaiasoul.com, if you
+want to interview me for some reasons. Hint, I do consultancy work, as long as I can get to use Phosphorus Five."
 
