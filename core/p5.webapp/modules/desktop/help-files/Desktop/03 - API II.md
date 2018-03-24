@@ -67,3 +67,22 @@ your module - Whatever that implies for your module. This might include creating
 upon, or doing other tasks that are necessary to perform before the module can be used. If you want to create custom
 Active Events as a part of your module, you should do this in a file called _"startup.hl"_ though, since this file
 will be evaluated every time the web server process reboots, or is being recycled.
+
+### Evaluating Hyperlambda on next pageload
+
+The Desktop module also contains a helper Active Event, that allows you to persist some piece of Hyperlambda,
+and evaluate this Hyperlambda on the next pageload. This is useful in a lot of scenarios, such as for instance
+if you need to reload the location, and provide feedback to the user after having reloaded the browser.
+This event is called **[desktop.evaluate.on-next-pageload]**, and it require you to supply a **[lambda]**
+lambda callback. Below is an example of usage. Notice, this snippet will reload your location!
+
+```hyperlambda-snippet
+/*
+ * Creates a "future lambda" object, and reloads
+ * the current location.
+ */
+desktop.evaluate.on-next-pageload
+  lambda
+    micro.windows.info:Thank you for reloading me!
+p5.web.reload-location
+```
