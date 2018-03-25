@@ -7,9 +7,6 @@
 [submodule "core/p5.webapp/modules/hyper-ide"]
 	path = core/p5.webapp/modules/hyper-ide
 	url = https://github.com/polterguy/hyper-ide
-[submodule "core/p5.webapp/modules/hyperbuild"]
-	path = core/p5.webapp/modules/hyperbuild
-	url = https://github.com/polterguy/hyperbuild
 [submodule "core/p5.webapp/modules/hypereval"]
 	path = core/p5.webapp/modules/hypereval
 	url = https://github.com/polterguy/hypereval
