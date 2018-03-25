@@ -1,12 +1,19 @@
-﻿/*
+/*
  * This is our main "landing page" for our Plugins help files.
  */
 h2
   innerValue:Plugins
 
+img
+  style:"margin-left:1rem; float:right;max-width: 20%;"
+  src:"https://phosphorusfive.files.wordpress.com/2018/03/legobrick.png"
+
 p
-  innerValue:@"Here you can find the documentation for all the plugins in Phosphorus Five. These parts of the documentation
-explains the different Active Event assemblies, their Active Events, and how to consume these in your own Hyperlambda applications."
+  innerValue:@"Here you can find the reference documentation for all the plugins in Phosphorus Five.
+These parts of the documentation explains the different Active Event assemblies, their Active Events,
+and how to consume these in your own Hyperlambda applications. Notice, this part of the documentation is fairly
+dry and technical in nature. If this is your first encounter with Phosphorus Five, I suggest you rather
+start out with the <em>'Hyperlambda'</em> section, which provides a tutorial point of entry to P5."
 
 
 /*

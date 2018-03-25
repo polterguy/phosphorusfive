@@ -10,17 +10,16 @@ https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot.png
 
 As you can see above, the Desktop module will create one _"desktop launcher icon"_ for each app you've
 installed in your installation. This launcher icon is actually dynamically created from your apps'
-_"desktop.hl"_ file, and can to a large extent be modified as you see fit. See other parts of this
-documentation for how to create your own desktop icon.
+_"desktop.hl"_ file, and can to a large extent be modified as you see fit. See the _"Hyperlambda"_ section
+of the documentation for a more thorough description of how to create your own desktop icons.
 
 ### Installing and uninstalling modules
 
 To install a new module, simply click the _"+"_ button in your toolbar, on your Desktop, while you're
 logged in as _"root"_. This will allow you to either browse to a zip file on your local computer -
-Or use an URL to some zip file on the web, which will be automatically downloaded and installed for
+Or supply an URL to some zip file on the web, which will be automatically downloaded and installed for
 you. Below is a screenshot of the installation process, assuming you've just uploaded a zip file called
-_"hello.zip"_, but not yet chosen to install it. Notice, you can also supply a URL to a zip file on
-the web, that contains your module.
+_"hello.zip"_, but not yet chosen to install it.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-install-new-module-screenshot.png
 

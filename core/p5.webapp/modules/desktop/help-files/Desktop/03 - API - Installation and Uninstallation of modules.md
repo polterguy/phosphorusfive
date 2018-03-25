@@ -1,8 +1,7 @@
-## Desktop API II
+## Desktop API - Installation and Uninstallation of modules
 
 In addition to the previously documented API parts, the desktop also contains helper Active Events to
-install and uninstall modules and applications. Below are the Active Events related to this
-listed for your convenience.
+install and uninstall modules and applications. You can find these events below.
 
 * __[desktop.modules.install]__ - Installs a new module. Expects __[\_arg]__ being the path to a zip file, containing your module
 * __[desktop.modules.uninstall]__ - Uninstalls the specified __[\_arg]__ module
@@ -15,7 +14,8 @@ supply a **[local-url]** argument, the zip file's name will be used by default. 
 zip file, containing your module has versioning numbers in it, or similar constructs, which often
 is the case when you for instance release modules through GitHub - You might want to explicitly
 supply a **[local-url]**, to avoid having multiple modules with different versions being installed
-side by side - Which can create all sorts of _"weird problems"_ for you.
+side by side - Which can create all sorts of _"weird problems"_ for you. Or, make sure you remove the
+versioning information from your zip file, before you install it.
 
 **Notice**, when you install a module, any previously installed modules with the same name will
 be uninstalled before your module is installed.
@@ -61,28 +61,14 @@ create-widgets
 
 ### Module installation internals
 
-Many modules will have a file called _"install.hl"_, in addition to a file called _"uninstall.hl"_ at their root folder.
-These files are evaluated during installation and uninstallation, and they're expected to initialize and uninitialize
-your module - Whatever that implies for your module. This might include creating any databases the module is dependent
-upon, or doing other tasks that are necessary to perform before the module can be used. If you want to create custom
-Active Events as a part of your module, you should do this in a file called _"startup.hl"_ though, since this file
-will be evaluated every time the web server process reboots, or is being recycled.
+Many modules will have a file called _"install.hl"_, in addition to a file called _"uninstall.hl"_ at their
+root folder. These files are evaluated during installation and uninstallation, and they're expected to
+initialize and uninitialize your module - Whatever that implies for your module. This might include
+creating any databases the module is dependent upon, or doing other tasks that are necessary to perform
+before the module can be used.
 
-### Evaluating Hyperlambda on next pageload
-
-The Desktop module also contains a helper Active Event, that allows you to persist some piece of Hyperlambda,
-and evaluate this Hyperlambda on the next pageload. This is useful in a lot of scenarios, such as for instance
-if you need to reload the location, and provide feedback to the user after having reloaded the browser.
-This event is called **[desktop.evaluate.on-next-pageload]**, and it require you to supply a **[lambda]**
-lambda callback. Below is an example of usage. Notice, this snippet will reload your location!
-
-```hyperlambda-snippet
-/*
- * Creates a "future lambda" object, and reloads
- * the current location.
- */
-desktop.evaluate.on-next-pageload
-  lambda
-    micro.windows.info:Thank you for reloading me!
-p5.web.reload-location
-```
+**Notice** - If you want to create custom Active Events as a part of your module, you
+should do this in a file called _"startup.hl"_, since this file will be evaluated every time the web
+server process reboots, or is being recycled somehow. If you look at any of the core modules in Phosphorus
+Five, you will see how they create their Active Event in their _"startup.hl"_ file - Often indirectly,
+by evaluating all files in some specific folder.

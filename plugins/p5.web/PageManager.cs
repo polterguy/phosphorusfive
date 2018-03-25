@@ -218,7 +218,7 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Returns the relative URL/location of the current request with any HTTP GET parameters.
+        ///     Returns the relative URL/location of the current request with all HTTP GET parameters.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -10,10 +10,12 @@ h2
 img
   style:"margin-left:1rem; float:right;max-width: 20%;"
   src:modules/hyper-ide/media/logo.svg
+
 p
   innerValue:@"Welcome to the help files for Phosphorus Five. These help files can be launched from within any module, and will guide you through
 both standard usage of Phosphorus Five, and its modules - In addition to how to create your own apps. This allows you to have these
 help files open from within the module you want to learn about."
+
 p
   innerValue:@"These documentation files, are consciously created such that they should bring you up from
 the point where you can barely interact with a computer, to the point of where you're a <em>'guru software developer'</em>.
@@ -82,7 +84,7 @@ container
               desktop.help.display-file:x:/@get-widget-property/*/*?value
 
 literal
-  element:h4
+  element:h3
   innerValue:Sub sections
 
 
@@ -148,20 +150,25 @@ container
               desktop.help.display-file:{0}index.hl
                 :x:/@get-widget-property/*/*?value
 
-h4
+h3
   innerValue:Supplying a patch
 
 p
   innerValue:@"Notice, for legal reasons I don't accept patches for Phosphorus Five. This is true regardless of
-how good of a software developer you are. However, if you send me one or two lines of code, or accurately describe
+what an amazingly skilled software developer you are. However, if you send me one or two lines of code, or accurately describe
 a bug or a problem, I would be happy to assist you. I prefer accepting such requests at
-the <a href=""https://github.com/polterguy/phosphorusfive"">GitHub project website</a> for obvious reasons."
+the <a href=""https://github.com/polterguy/phosphorusfive"">GitHub project website</a>, for obvious reasons. It
+is also extremely easy to create your own modules and plugins for Phosphorus Five, extending it, if you find
+it lacking some favourite feature of yours."
 
-h4
+p
+  innerValue:For ethical reasons, I don't wrap software components or libraries that are not Open Source in nature! At least not into the core itself.
+
+h3
   innerValue:Press
 
 p
   innerValue:@"If you want to write about Phosphorus Five for a press article, you can use the logo of
 the bird, which you can find at the top of this article. You can also contact me at thomas@gaiasoul.com, if you
-want to interview me for some reasons. Hint, I do consultancy work, as long as I can get to use Phosphorus Five."
+want to interview me for some reasons, or need additional information about the system."
 

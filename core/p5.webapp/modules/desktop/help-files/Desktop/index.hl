@@ -4,11 +4,21 @@
 h2
   innerValue:Desktop
 
+img
+  style:"margin-left:1rem; float:right;max-width: 20%;"
+  src:modules/hyper-ide/media/logo.svg
+
 p
   innerValue:@"The Desktop module is the GUI interface for Phosphorus Five, and responsible for loading up your modules, and
 doing basic URL resolving. It is hence arguably the <em>'core'</em> of the graphical parts, and the main entry point of
 interaction for Phosphorus Five. It hence is the <em>'host application'</em> for all your modules and applications
 in Phosphorus Five."
+
+p
+  innerValue:@"The Desktop <em>'module'</em> is what is normally loaded at your server's root URL, and what you find
+<a href=""/"">here</a>. It can be replaced in its entirety, but since it contains some Active Events, to help
+with installation and uninstallation of modules and apps, among other things - A better solution is to override
+the default module in your web.config file, and still keep the Desktop module around."
 
 /*
  * All files at "root" of Desktop help folder.
