@@ -284,10 +284,28 @@ create-widget:hyper-ide-help-wrapper
                         markdown2html:x:/@load-file/*?value
 
                         /*
+                         * Transforming HTML to lambda, such that we can semantically modify it,
+                         * according to our needs.
+                         */
+                        html2lambda:x:/@markdown2html?value
+
+                        /*
+                         * Making sure all hyperlinks have target=_blank.
+                         */
+                        for-each:x:/@html2lambda/**/a
+
+                          /*
+                           * Adding target attribute.
+                           */
+                          add:x:/@_dp/#
+                            src
+                              @target:_blank
+                              @class:desktop-help-external-link
+
+                        /*
                          * Making sure we transform all YouTube links, such that they're replaced by
                          * a preview of the video.
                          */
-                        html2lambda:x:/@markdown2html?value
                         for-each:x:@"/@html2lambda/*/p/*/#text/""=:regex:/^https:\\/\\/www.youtube.com\\/watch/"""
 
                           /*

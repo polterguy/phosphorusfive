@@ -32,56 +32,8 @@ literal
 /*
  * All files at "root" of help files folder.
  */
-container
-  element:ul
-  oninit
-
-    /*
-     * Retrieving all other Hyperlambda files in the help folder.
-     */
-    list-files:@DESKTOP/help-files/
-      filter:.hl|.md
-
-    /*
-     * Removing "index.hl".
-     */
-    set:x:@"/@list-files/*/"":regex:/index.hl$/"""
-
-    /*
-     * Looping through each Hyperlambda file (except of course "index.hl").
-     */
-    for-each:x:/@list-files/*
-
-      /*
-       * Figuring out filename, without extension, and removing numbering parts.
-       */
-      split:x:/@_dp/#?name
-        =:/
-        =:.
-      replace:x:/@split/0/-2?name
-        src:regex:/[0-9]+ - /
-
-      /*
-       * Creating a list item, containing a hyperlink button, which once clicked,
-       * loads and displays the specified help file.
-       */
-      create-widget
-        parent:x:/../*/_event?value
-        element:li
-        widgets
-          a
-            href:#
-            innerValue:x:/@replace?value
-            .file:x:/@_dp/#?name
-            onclick
-
-              /*
-               * Retrieving file name, loading and displaying file, by invoking common
-               * widget lambda event, which does the heavy lifting for us.
-               */
-              get-widget-property:x:/../*/_event?value
-                .file
-              desktop.help.display-file:x:/@get-widget-property/*/*?value
+desktop.help.widgets.help-index
+  folder:@DESKTOP/help-files/
 
 literal
   element:h3

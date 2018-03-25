@@ -1,0 +1,68 @@
+
+/*
+ * Creates the extension widget that displays a folder as a bulleted list
+ */
+create-event:desktop.help.widgets.help-index
+
+  /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.min:x:/..
+    folder:string
+
+  /*
+   * Retrieving all files in specified folder.
+   */
+  list-files:x:/../*/folder?value
+    filter:.hl|.md
+
+  /*
+   * Removing "index.hl".
+   */
+  set:x:@"/@list-files/*/"":regex:/index.hl$/"""
+
+  /*
+   * Looping through each Hyperlambda and Markdown file,
+   * except of course "index.hl".
+   */
+  for-each:x:/@list-files/*
+
+    /*
+     * Figuring out filename, without extension, and removing numbering parts.
+     */
+    split:x:/@_dp/#?name
+      =:/
+      =:.
+    replace:x:/@split/0/-2?name
+      src:regex:/[0-9]+ - /
+
+    /*
+     * Creating a list item, containing a hyperlink button, which once clicked,
+     * loads and displays the specified help file.
+     */
+    eval-x:x:/+/*/*/*/*/*(/innerValue|/.file)
+    add:x:/../*/return/*/ul/*/widgets
+      src
+        li
+          widgets
+            a
+              href:#
+              innerValue:x:/@replace?value
+              .file:x:/@_dp/#?name
+              onclick
+
+                /*
+                 * Retrieving file name, loading and displaying file, by invoking common
+                 * widget lambda event, which does the heavy lifting for us.
+                 */
+                get-widget-property:x:/../*/_event?value
+                  .file
+                desktop.help.display-file:x:/@get-widget-property/*/*?value
+
+
+  /*
+   * Returns widget to caller.
+   */
+  return
+    ul
+      widgets
