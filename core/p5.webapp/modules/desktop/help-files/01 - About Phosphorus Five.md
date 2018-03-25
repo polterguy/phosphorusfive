@@ -52,6 +52,7 @@ speech synthesis. Hint; Google Chrome does ...
  * this "snippet" to evaluate this piece of Hyperlambda.
  */
 micro.speech.speak:Hello, my name is Phosphorus Five
+  voice:Karen
 
 /*
  * Displaying an information bubble window.
