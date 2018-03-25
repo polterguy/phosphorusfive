@@ -1,6 +1,13 @@
 /*
  * Uninstall file.
+ *
+ * Notice, we don't allow the user to simply uninstall this module,
+ * since it would highly likely break the entire installation.
+ *
+ * The module can still be uninstalled, by either physically editing this
+ * file, or removing the module manually.
  */
+throw:You cannot uninstall this module!
 
 
 
