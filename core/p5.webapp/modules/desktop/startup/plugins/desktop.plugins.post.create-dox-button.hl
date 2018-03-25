@@ -46,6 +46,20 @@ create-event:desktop.plugins.post.create-dox-button
       element:button
       innerValue:@"<span class=""icon-question""></span>"
       title:Display help files
+      oninit
+
+        /*
+         * Checking if help has already been launched.
+         */
+        if
+          desktop.help.is-visible
+
+          /*
+           * Help already visible, toggling button.
+           */
+          micro.css.toggle:x:/../*/_event?value
+            class:toggled
+
       onclick
 
         /*
