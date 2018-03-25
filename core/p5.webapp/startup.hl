@@ -25,19 +25,15 @@ list-files:x:/@list-folders/*?name
  *
  * Notice, we will evaluate these files in the following order.
  *
- * 1. System42's startup files
- * 2. Micro's startup files
- * 3. Desktop's startup files
- * 4. All other startup files in an undetermined order
+ * 1. Micro's startup files
+ * 2. Desktop's startup files
+ * 3. All other startup files in undetermined order
  *
- * This is done to make sure other modules can use features from these modules in
- * their startup files.
- *
- * Notice, System42 is obsolete, and will in a future release be completely ignored.
- * However, for the time being, we choose to still explicitly support it for 'legacy reasons'.
+ * This is done to make sure other modules can use features from Micro and the Desktop
+ * in their startup files.
  */
-load-file:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")?name"
+load-file:x:@"/@list-files/*(/""~/micro/""|/""~/desktop/"")?name"
 eval:x:/-/*
-set:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")"
+set:x:@"/@list-files/*(/""~/micro/""|/""~/desktop/"")"
 load-file:x:/@list-files/*?name
 eval:x:/-/*
