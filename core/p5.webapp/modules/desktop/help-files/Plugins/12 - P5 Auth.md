@@ -1,4 +1,3 @@
-
 ## p5.auth, authentication and authorization
 
 This folder contains the Active Events related to users and roles management. It allows you to create new users, and
@@ -144,7 +143,7 @@ whoami
 
 The above Hyperlambda will return the following. Notice, it will not return settings or the password for the user.
 
-```
+```hyperlambda
 whoami
   username:root
   role:root
