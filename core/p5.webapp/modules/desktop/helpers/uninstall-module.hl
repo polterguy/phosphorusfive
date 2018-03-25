@@ -14,7 +14,7 @@ create-widgets
   micro.widgets.modal:desktop-uninstall-app
     widgets
       h3
-        innerValue:Uninstall module(s)
+        innerValue:Uninstall
       micro.widgets.grid:desktop-uninstall-app-grid
         class:hover
         oninit
@@ -44,7 +44,7 @@ create-widgets
                     widgets
                       button
                         innerValue:@"<span class=""icon-bin""></span>"
-                        title:Delete this app. Warning, this action is permanent!
+                        title:Uninstall module
                         onclick
 
                           /*
@@ -53,23 +53,67 @@ create-widgets
                           .app-name:x:/@split/0/-?name
 
                           /*
-                           * Uninstalling app.
+                           * Making sure user confirms uninstallation, with another modal widget.
                            */
-                          desktop.modules.uninstall:/modules/{0}/
-                            :x:/@.app-name?value
+                          eval-x:x:/+/*/*/*/h3/*/innerValue
+                          create-widgets
+                            micro.widgets.modal:desktop-confirm-uninstallation
+                              widgets
+                                div
+                                  class:warning air-inner
+                                  widgets
+                                    h3
+                                      innerValue:Confirm uninstallation of '{0}'
+                                        :x:/@.app-name?value
+                                    p
+                                      innerValue:@"<strong>Warning</strong> - This action is permanent, and will entirely delete your module, and uninstall it from your Phosphorus Five installation.
+    Are you sure you want to continue?"
+                                div
+                                  class:strip right
+                                  widgets
+                                    button
+                                      innerValue:Yes
+                                      onclick
 
-                          /*
-                           * Reloading location for simplicity reasons, to make sure
-                           * we re-create all desktop icons, etc.
-                           *
-                           * However, before we can reload location, we'll need to make
-                           * sure user is notified on next pageload that uninstallation was a success.
-                           */
-                          desktop.evaluate.on-next-pageload
-                            lambda
-                              micro.windows.info:Your module was successfully uninstalled
-                                class:micro-windows-info success
-                          p5.web.reload-location
+                                        /*
+                                         * Forward evaluated above.
+                                         */
+                                        .app-name:x:/@split/0/-?name
+
+                                        /*
+                                         * Uninstalling app.
+                                         */
+                                        desktop.modules.uninstall:/modules/{0}/
+                                          :x:/@.app-name?value
+
+                                        /*
+                                         * Reloading location for simplicity reasons, to make sure
+                                         * we re-create all desktop icons, etc.
+                                         *
+                                         * However, before we can reload location, we'll need to make
+                                         * sure user is notified on next pageload that uninstallation was a success.
+                                         */
+                                        desktop.evaluate.on-next-pageload
+                                          lambda
+                                            micro.windows.info:Your module was successfully uninstalled
+                                              class:micro-windows-info success
+                                        p5.web.reload-location
+
+                                    button
+                                      innerValue:No
+                                      oninit
+
+                                        /*
+                                         * Setting initial focus to "No" button.
+                                         */
+                                        micro.page.set-focus:x:/../*/_event?value
+
+                                      onclick
+
+                                        /*
+                                         * Deleting secondary modal widget.
+                                         */
+                                        delete-widget:desktop-confirm-uninstallation
 
           /*
            * Databinding grid.
