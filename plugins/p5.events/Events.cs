@@ -101,6 +101,38 @@ namespace p5.events
         }
 
         /// <summary>
+        ///     Creates (or deletes) an Active Event, depending upon whether or not any lambda objects were supplied.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.events.get")]
+        [ActiveEvent (Name = "get-event")]
+        [ActiveEvent (Name = ".get-event")]
+        public static void p5_events_get (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Acquire write lock, since we're consuming object shared amongst more than one thread (_events).
+            _lock.EnterReadLock ();
+            try {
+
+                // Checking if event exists.
+                var list = new List<Node> ();
+                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
+                    if (_events.ContainsKey (idx)) {
+                        list.Add (_events [idx]);
+                    }
+                }
+                e.Args.Value = null;
+                e.Args.Clear ();
+                e.Args.AddRange (list.Select (ix => ix.Clone ()));
+
+            } finally {
+
+                // Making sure we release lock in a finally, such that we can never exit method, without releasing our lock.
+                _lock.ExitReadLock ();
+            }
+        }
+
+        /// <summary>
         ///     Lists all dynamically created Active Events.
         /// </summary>
         /// <param name="context">Application Context</param>
