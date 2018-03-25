@@ -59,6 +59,12 @@ multiple events at the same time though, which the **[create-event]**, without a
 does _not_. Besides, it is probably better to be more clear in your vocabulary, and explicitly
 use the Active Event **[delete-event]**, to communicate your intent more precisely.
 
+### Retrieving events
+
+The **[get-event]** Active Event, allows you to retrieve the lambda object associated with
+some specific event. Pass in either a static constant string, or an expression leading to multiple
+event names. If the event does not exist, nothing will be returned.
+
 ### Stateful Active Events
 
 Sometimes, it might be necessary to create a _"stateful"_ Active Event. Meaning, an Active Event,
