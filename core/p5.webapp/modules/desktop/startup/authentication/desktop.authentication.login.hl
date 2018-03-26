@@ -1,12 +1,11 @@
-﻿
 
 /*
- * File responsible for creating our [p5.desktop.login] event, which simply displays a modal widget, 
+ * File responsible for creating our [desktop.authentication.login] event, which simply displays a modal widget,
  * allowing the user to log into system.
  *
  * Pass in [message] to give the user a clue about why he has to log in.
  */
-create-event:p5.desktop.login
+create-event:desktop.authentication.login
 
   /*
    * Displays a modal window allowing the user to login.
