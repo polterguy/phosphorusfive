@@ -58,6 +58,11 @@ If you wish to read these articles, you might benefit from reading them sequenti
 before you dive into Hyperlambda. However, all of the above articles are highly technical in nature, and intended for system
 developers. You might still have good use of Phosphorus Five without being a system developer.
 
+## Documentation
+
+Phosphorus Five is _extremely well documented_, and to a large extent literate. It contains a context sensitive and interactive
+help system as an integral part of itself, describing literally every single aspect of the system.
+
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms

@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		README.md = README.md
-		TODO.txt = TODO.txt
 		LICENSE = LICENSE
 		install.sh = install.sh
 		resources\p5-raw.png = resources\p5-raw.png
