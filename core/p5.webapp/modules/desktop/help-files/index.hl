@@ -128,7 +128,9 @@ h3
   innerValue:Print documentation
 
 p
-  innerValue:@"Below is a button that will automatically generate a PDF file for you, containing all Markdown files in the documentation system. Notice, this process might take some time, depending upon how much documentation you have for your installation."
+  innerValue:@"Below is a button that will automatically generate a PDF file for you, containing all Markdown files in the documentation system. Notice, this process might take some time, depending upon how much documentation you have for your installation.
+Also, please realise that the plugin I am using to actually perform my HTML to PDF conversion, which is called iTextSharp, unfortunately doesn't
+handle 'pre' HTML elements well - So there is no code examples in the PDF version of the documentation."
 
 div
   class:right

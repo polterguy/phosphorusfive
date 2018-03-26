@@ -7,6 +7,19 @@
 
 
 /*
+ * Checking if PDF file already exists, at which point we return it
+ * immediately to avoid going through the generation process.
+ */
+if
+  fetch:x:/0/0?value
+    file-exists:~/documents/private/Phosphorus Five Documentation.pdf
+  return:~/documents/private/Phosphorus Five Documentation.pdf
+
+
+
+
+
+/*
  * Buffer node for entire HTML, containing HTML for all Markdown files in system.
  */
 .html:"<html><head><title>Foo</title></head><body><h1>Phosphorus Five</h1>"
@@ -145,19 +158,6 @@ set:x:/@html2lambda/**/pre
  * Transforming lambda back to HTML.
  */
 lambda2html:x:/@html2lambda/*
-
-
-
-
-
-/*
- * Creates our PDF file, and returns its path to caller, first checking
- * if it already exists - And if it exists, deleting it.
- */
-if
-  fetch:x:/0/0?value
-    file-exists:~/documents/private/Phosphorus Five Documentation.pdf
-  delete-file:~/documents/private/Phosphorus Five Documentation.pdf
 html2pdf:~/documents/private/Phosphorus Five Documentation.pdf
   css-file:@DESKTOP/media/print-help.css
   src:x:/@lambda2html?value
