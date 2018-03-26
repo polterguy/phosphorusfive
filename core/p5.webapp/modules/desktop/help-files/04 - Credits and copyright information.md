@@ -1,6 +1,6 @@
 ## Credits and copyright information
 
-<img style="margin-left:1rem; float:right;max-width: 20%;" src="modules/hyper-ide/media/logo.svg" />
+<img style="margin-left:1rem; float:right;max-width: 20%;" src="/modules/hyper-ide/media/logo.svg" />
 
 * [Phosphorus Five](https://github.com/polterguy/phosphorusfive), and all other modules - Copyright © 2014-2018 Thomas Hansen
 * [.Net Framework](https://www.microsoft.com/net/download) - Copyright © 2000-2018 Microsoft Corporation
@@ -45,7 +45,7 @@ In addition, I would like to say a special thank you to the following people and
 * All my friends for being amazing and helping me at a point in my life when I was not _"OK"_
 * And last but not least, my beautiful and amazing _"wife"_ and partner, Lisbeth Aardal, for supporting me in a time of my life, when the word utter despair, was a much too soft of a description, for describing my status
 
-### None mentioned, not forgotten
+### None mentioned, none forgotten
 
 <img style="margin-left:1rem; float:right;max-width: 20%;" src="https://phosphorusfive.files.wordpress.com/2018/02/thomas.jpg" />
 
@@ -68,7 +68,7 @@ consider purchasing a _"commercial license"_ for the system - Or at the very lea
 any ways you can. This system, believe it or not, was in its entirety created by one single human being -
 Me that is - And I am _not_ a rich man. In fact, quite the contrary! You can donate money to me below.
 
-[Donate through PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=4RL5XLLZYNBF2)
+[Donate through PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4RL5XLLZYNBF2)
 
 Kind regards,
 
