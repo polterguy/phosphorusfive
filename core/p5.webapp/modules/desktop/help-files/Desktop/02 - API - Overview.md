@@ -60,8 +60,8 @@ the **[p5.web.get-relative-location-url]** event.
 
 You can use the API events to login and log out of the system. The names of these events are as follows.
 
-* __[p5.desktop.login]__ - Shows a modal window, allowing the user to login to the system
-* __[p5.desktop.logout]__ - Logs out the current user, and deletes his or hers temporary files
+* __[desktop.authentication.login]__ - Shows a modal window, allowing the user to login to the system
+* __[desktop.authentication.logout]__ - Logs out the current user, and deletes his or hers temporary files
 
 **Hint**; You can use the **[whoami]** event to figure out the username and role of the current request.
 
