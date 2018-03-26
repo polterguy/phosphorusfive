@@ -1,6 +1,6 @@
 ## About Phosphorus Five
 
-<img style="margin-left:1rem; float:right;max-width: 20%;" src="modules/hyper-ide/media/logo.svg" />
+<img style="margin-left:1rem; float:right;max-width: 20%;" src="/modules/hyper-ide/media/logo.svg" />
 
 Phosphorus Five is a web operating system, and a web application development framework, with some pretty
 unique USPs. Among other things, it's extremely dynamic in nature, allowing for orchestrating your application
@@ -64,8 +64,3 @@ You can also copy and paste example snippets, such as the above, into Hypereval 
 and play around with them, to include the tactile parts of your brain while learning. If you want to learn
 Hyperlambda, I have written a _"book"_ about it, which you can find by clicking the _"home"_ button in the help
 files, and choosing the _"Hyperlambda"_ sub section.
-
-### License
-
-Phosphorus Five is distributed under the terms of the GPL license version 3, but proprietary options exists
-if you want to create _"closed source"_ or _"proprietary software"_.
