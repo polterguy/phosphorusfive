@@ -75,6 +75,6 @@ create-event:desktop.plugins.post.create-logout-button
          */
         whoami
         if:x:/@whoami/*/default?value
-          p5.desktop.login
+          desktop.authentication.login
         else
-          p5.desktop.logout
+          desktop.authentication.logout
