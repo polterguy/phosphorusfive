@@ -5,7 +5,7 @@ Phosphorus Five is a Web Operating System and a full stack Web Application Devel
 interactive and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
 allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
 
-![alt screenshot](https://phosphorusfive.files.wordpress.com/2018/03/camphora-five-screenshot-address-book.png)
+![alt screenshot](https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot-github.png)
 
 Out of the box, Phosphorus Five contains the following components.
 
