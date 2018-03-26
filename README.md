@@ -29,9 +29,9 @@ such that it contains the correct connection string for your MySQL installation 
 
 Phosphorus Five consists of three basic innovations.
 
-* Managed Ajax
-* Active Events
-* Hyperlambda
+* __Managed Ajax__
+* __Active Events__
+* __Hyperlambda__
 
 The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
