@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>p5.lambda</RootNamespace>
     <ReleaseVersion>1.0</ReleaseVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,9 +57,6 @@
     <Compile Include="keywords\extras\Platform.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

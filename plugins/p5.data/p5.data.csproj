@@ -8,7 +8,7 @@
     <RootNamespace>p5.data</RootNamespace>
     <AssemblyName>p5.data</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,9 +52,6 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\p5.exp\p5.exp.csproj">
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>

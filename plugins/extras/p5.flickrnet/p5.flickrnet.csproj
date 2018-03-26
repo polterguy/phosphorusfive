@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>p5.flickrnet</RootNamespace>
     <AssemblyName>p5.flickrnet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -49,8 +49,5 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>p5.core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
   </ItemGroup>
 </Project>

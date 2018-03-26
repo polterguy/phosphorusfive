@@ -8,7 +8,7 @@
     <RootNamespace>p5.mail</RootNamespace>
     <AssemblyName>p5.mail</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,10 +37,11 @@
       <HintPath>..\..\..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.18.0\lib\net45\MimeKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.2.0.2\lib\net45\MimeKit.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="MailKit">
-      <HintPath>..\..\..\packages\MailKit.1.18.0\lib\net45\MailKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MailKit.2.0.2\lib\net45\MailKit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +64,5 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="README.md" />
   </ItemGroup>
 </Project>

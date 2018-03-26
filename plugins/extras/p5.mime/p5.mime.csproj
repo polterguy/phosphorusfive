@@ -8,7 +8,7 @@
     <RootNamespace>p5.mime</RootNamespace>
     <AssemblyName>p5.mime</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,8 +39,9 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.18.0\lib\net45\MimeKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.2.0.2\lib\net45\MimeKit.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,6 +71,5 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="README.md" />
   </ItemGroup>
 </Project>
