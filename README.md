@@ -35,19 +35,16 @@ Phosphorus Five consists of three basic innovations.
 
 The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
-it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically. In fact, when you use the Ajax library, you can
-create your web apps, the same way you would normally create a desktop application. The Ajax library is extremely extendible, allowing you to create
-your own markup, exactly as you wish. This is because there fundamentally exists only one single Ajax widget in the library. This approach allows 
-you to declare your HTML tags, attributes, dynamically remove and change any parts of your DOM element, also during Ajax callbacks.
+it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
 
 Hyperlambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
-together, as shown above in the Hello World example. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly
-_"comes alive"_, and creating rich web apps, becomes ridiculously easy.
+together. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly _"become alive"_, and creating rich web apps,
+becomes much easier than what you would expect.
 
-Combined, the above USPs arguably makes Phosphorus Five a _"5th Generation Programming Language"_.ß
+Combined, the above USPs arguably makes Phosphorus Five a _"5th Generation Programming Language"_.
 
 ## MSDN Magazine articles
 
