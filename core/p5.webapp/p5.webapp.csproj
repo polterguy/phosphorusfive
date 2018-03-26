@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="common\temp\" />
+    <Folder Include="modules\desktop\startup\authentication\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -307,8 +308,6 @@
     <None Include="modules\desktop\help-files\04 - Credits and copyright information.md" />
     <None Include="modules\desktop\help-files\index.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
-    <None Include="modules\desktop\startup\authentication\p5.desktop.login.hl" />
-    <None Include="modules\desktop\startup\authentication\p5.desktop.logout.hl" />
     <None Include="modules\desktop\startup\core\p5.error.LambdaException.hl" />
     <None Include="modules\desktop\startup\core\p5.web.load-ui.hl" />
     <None Include="modules\desktop\startup\misc\.DS_Store" />
@@ -328,6 +327,8 @@
     <None Include="modules\desktop\README.md" />
     <None Include="modules\desktop\startup.hl" />
     <None Include="modules\desktop\uninstall.hl" />
+    <None Include="modules\desktop\startup\authentication\desktop.authentication.login.hl" />
+    <None Include="modules\desktop\startup\authentication\desktop.authentication.logout.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
