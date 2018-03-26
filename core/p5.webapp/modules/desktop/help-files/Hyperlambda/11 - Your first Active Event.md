@@ -151,6 +151,35 @@ examples.foo:x:/@_out
 
 The above example is the closest you come to _"closure"_ in Hyperlambda.
 
+### [vocabulary], which events does your server speak?
+
+The **[vocabulary]** Active Event will dynamically retrieve the names of all Active Events that your server
+happens to know. You can optionally pass in a filter, such as e.g. `~desktop.`, which will retrieve only
+the events that starts out with the name `desktop.`. You can also provide an exact match, which allows you
+to check if some specific event exists, e.g. `desktop.modules.install`. Below is an example of retrieving
+all events that are related to Hyper IDE.
+
+```hyperlambda-snippet
+/*
+ * Retrieves all of Hyper IDE's Active Events.
+ */
+vocabulary:~hyper-ide.
+
+/*
+ * Displays above results in a modal widget.
+ */
+eval-x:x:/+/*/*/*/*
+create-widgets
+  micro.widgets.modal
+    widgets
+      pre
+        innerValue:x:/@vocabulary
+```
+
+**Notice**, you can also invoke the **[get-event]** event to retrieve the lambda object for your Active Event(s).
+Combining this with lambda contract which are documented in the Micro section, you can actually dynamically
+figure out which arguments your Active Events require.
+
 ### Hyping Hyperlambda
 
 It may be easy to believe that the name *"Hyperlambda"* is simply a marketing trick, in an attempt at trying to hype the language. However, as we 
