@@ -124,3 +124,42 @@ p
 the bird, which you can find at the top of this article. You can also contact me at thomas@gaiasoul.com, if you
 want to interview me for some reasons, or need additional information about the system."
 
+h3
+  innerValue:Print documentation
+
+p
+  innerValue:@"Below is a button that will automatically generate a PDF file for you, containing all Markdown files in the documentation system. Notice, this process might take some time, depending upon how much documentation you have for your installation."
+
+div
+  class:right
+  widgets
+    button
+      class:large
+      title:Prints documentation files
+      innerValue:@"<span class=""icon-printer""></span>"
+      onclick
+
+        /*
+         * Creating a cover widget.
+         */
+        create-widgets
+          micro.widgets.cover:desktop-help-print-cover
+            message:Please wait while I generate your PDF file ...
+
+        /*
+         * Creating a timeout to make sure cover widget is displayed on client side.
+         */
+        micro.lambda.create-timeout
+          milliseconds:1
+          onfinish
+
+            /*
+             * Creates our PDF file.
+             */
+            micro.evaluate.file:@DESKTOP/helpers/create-documentation-pdf.hl
+
+            /*
+             * Deleting cover widget, and downloading PDF.
+             */
+            delete-widget:desktop-help-print-cover
+            micro.download.file:x:/@micro.evaluate.file?value

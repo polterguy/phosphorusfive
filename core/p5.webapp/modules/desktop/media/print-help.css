@@ -1,0 +1,58 @@
+* {
+    font-family: Arial;
+    font-size: 18px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 28px;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 40px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 35px;
+    page-break-before: always;
+}
+
+h3 {
+    font-size: 30px;
+}
+
+h4 {
+    font-size: 25px;
+}
+
+h5 {
+    font-size: 20px;
+}
+
+h6 {
+    font-size: 20px;
+}
+
+p {
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: justify;
+}
+
+ul, ol {
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: disc;
+}
+
+/* DOESN'T WORK due to bug in iTextSharp! */
+pre, code {
+    margin-bottom: 28px;
+    font-family: monospace;
+    white-space: pre;
+    background-color: #fdfdfd;
+}
+
