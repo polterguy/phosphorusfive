@@ -5,59 +5,25 @@ Phosphorus Five is a Web Operating System and a full stack Web Application Devel
 interactive and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
 allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
 
-![alt screenshot](resources/screenshot-desktop-2.png)
+![alt screenshot](https://phosphorusfive.files.wordpress.com/2018/03/camphora-five-screenshot-address-book.png)
+
+Out of the box, Phosphorus Five contains the following components.
+
+* Hyper IDE - A web based IDE, with support for 100+ programming languages
+* Camphora Five - A CRUD app generator allowing yout to create rich CRUD apps in seconds
+* Magic Menu - A global _"navbar"_, with support for speech recognition and speech synthesis
+
+... plus more!
 
 ## Installation
 
-[Read about installation here](https://github.com/polterguy/phosphorusfive/releases). Basically, it allows you to install it either locally,
-running its code version through e.g. Visual Studio, or installing the binary release on for instance a Linux/Ubuntu server.
-The default source installation has no dependencies besides .Net/Mono, unless you want to install additional _"apps"_ through its Bazar.
+You can install it on a production Ubuntu/Linux server with an automated script, taking care of all dependencies, with 3 simple commands. Or
+you can download its code version, and play around with it locally, on your Windows, Mac, or Linux machine. If you choose the latter, you will
+have to [make sure you have MySQL Server installed somehow](https://dev.mysql.com/downloads/mysql/) on your computer, since Phosphorus Five
+is dependent upon MySQL to function correctly. If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file,
+such that it contains the correct connection string for your MySQL installation (Hint; Provide your MySQL password in it).
 
-### Cloning Phosphorus Five
-
-Phosphorus Five has several _"submodules"_. The most important one being [Micro](https://github.com/polterguy/micro). If you get weird 
-styling issues as you clone Phosphorus Five, make your you have Micro inside of your _"/core/p5.webapp/modules/"_ folder. If you clone
-Phosphorus Five _"recursively"_, it will pull in all of its submodules, including [Micro](https://github.com/polterguy/micro), 
-[Hyper IDE](https://github.com/polterguy/hyper-ide), [Sephia Five](https://github.com/polterguy/sephia-five), etc. This is the easiest
-way to test **everything** in Phosphorus Five during cloning, including Hyper IDE.
-
-However, some of these modules are **dependent upon MySQL**, which means you'll have to install MySQL, in **addition to GnuPG**. If you get
-the _"bluescreen of death"_ during startup, make sure you have both MySQL and GnuPG installed on your system. The 
-[default zip file installation](https://github.com/polterguy/phosphorusfive/releases) does not have these dependencies, and is probably
-easier to get started with.
-
-### Downloading apps through the Bazar
-
-Phosphorus Five contains an integrated _"App Store"_. This allows you to install lots of apps on your server, while it is running, without
-having to interrupt normal usage. This is the preferred way to fill Phosphorus Five with apps, but it is **dependent upon GnuPG**. In a Linux
-system, simply make sure you install gnu pg with e.g. `sudo apt-get install gnupg`. On Mac OSX, you can use for instance _"GPG Keychain"_.
-You can probably find some sort of GnuPG system, also for Windows. GnuPG makes sure only cryptographically signed packages are installed on 
-your system.
-
-## Creating your own apps
-
-Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_. Hyperlambda is a modularised web application programming language, for
-creating highly modularised components. Hyperlambda allows you to seemlessly integrate your modules together, and _"orchestrate"_ building blocks -
-Similarly to how you would create things out of LEGO. An example of some Hyperlambda can be found below.
-
-```
-create-widget:foo
-  element:button
-  innerValue:Click me!
-  onclick
-    set-widget-property:foo
-      innerValue:I was clicked!
-```
-
-Notice, the primary starting ground for learning how to code in Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
-In addition, the reference documentation can be found as specific README files for each project. To see the documentation for P5, please
-refer to these links.
-
-* [Main documentation](https://github.com/polterguy/phosphorusfive-dox), tutorial style dox
-* [core](core/), reference documentation
-* [plugins](plugins/), reference documentation
-* [modules](core/p5.webapp/modules/), how the modularized parts of Phosphorus Five works
-* [The Bazar](core/p5.webapp/modules/bazar/), the integrated _"AppStore"_ that comes with P5 out of the box
+* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)
 
 ## 3 basic innovations
 
@@ -76,72 +42,12 @@ you to declare your HTML tags, attributes, dynamically remove and change any par
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
-You can read an MSDN article about Active Events [here](https://msdn.microsoft.com/en-us/magazine/mt795187).
 
-Hyperlambda, and lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
+Hyperlambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
 together, as shown above in the Hello World example. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly
 _"comes alive"_, and creating rich web apps, becomes ridiculously easy.
 
-### C#, a dynamic programming language!
-
-These three innovations combined, makes C# become a _"dynamic"_ programming language. In fact, much more dynamic probably, than any other dynamic programming
-language you have ever used.
-
-## Encapsulation and polymorphism without OOP
-
-The 3 USPs mentioned above, facilitates for a development model, which allows you to combine your existing C# skills,
-creating plugins, where you can assemble your apps, in a loosely coupled architecture. This is in stark
-contrast to the traditional way of _"carving out"_ apps, using strongly and statically typed interfaces for plugins, which often creates a 
-much higher degree of dependencies between your app's different components.
-
-The paradox is, that due to neither using OOP nor inheritance or types, in any ways, Hyperlambda facilitates for arguably perfect encapsulation 
-and polymorphism, without even as much as a trace of classic inheritance, OOP, or types. Hyperlambda is a _"functional programming language"_ on 
-top of the CLR, making the act of orchestrating CLR modules, loosely coupled together, in a highly dynamic environment, easily achieved.
-
-## C# samples
-
-For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there are some examples of this in 
-the [samples folder](/samples/). Although Phosphorus Five is massively huge, and contains of more than 30 projects - You can still pick¨
-out any single module you want to use (almost), and only use this part of the project.
-
-## More dox
-
-Some of the folders inside of P5 have specific documentation for that particular module or folder. Feel free to start reading up at e.g.
-
-* [plugins](plugins/)
-* [core](core/)
-
-Below is an extensive list of the documentation to all plugins in the core, in on single list, for your convenience. But there might also exist
-other P5 components out there, in addition to that it is extremely easy to [roll your own plugin](/samples/p5.active-event-sample-plugin), 
-if you know some C# from before.
-
-* [p5.config](/plugins/p5.config) - Accessing your app's configuration settings
-* [p5.data](/plugins/p5.data) - A super fast memory based database
-* [p5.events](/plugins/p5.events) - Creating custom Active Events from Hyperlambda
-* [p5.hyperlambda](/plugins/p5.hyperlambda) - The Hyperlambda parser
-* [p5.io](/plugins/p5.io) - File input and output, in addition to folder management
-* [p5.lambda](/plugins/p5.lambda) - The core "keywords" in P5
-* [p5.math](/plugins/p5.math) - Math Active Events
-* [p5.strings](/plugins/p5.strings) - String manipulation in P5
-* [p5.types](/plugins/p5.types) - The types supported by P5
-* [p5.web](/plugins/p5.web) - Everything related to web (Ajax widgets among other things)
-* [p5.auth](/plugins/extras/p5.auth) - User and role management
-* [p5.crypto](/plugins/extras/p5.crypto) - Some of the cryptography features of P5, other parts of the cryptography features can be found in p5.mime and p5.io.zip
-* [p5.csv](/plugins/extras/p5.csv) - Handling CSV files in P5
-* [p5.flickr](/plugins/extras/p5.flickrnet) - Searching for images on Flickr
-* [p5.html](/plugins/extras/p5.html) - Parsing and creating HTML in P5
-* [p5.http](/plugins/extras/p5.http) - HTTP REST support in P5
-* [p5.imaging](/plugins/extras/p5.imaging) - Managing and manipulating images from P5
-* [p5.authorization](/plugins/extras/p5.io.authorization) - Authorization features in P5
-* [p5.io.zip](/plugins/extras/p5.io.zip) - Zip'ing and unzip'ing files, also supports AES cryptography
-* [p5.json](/plugins/extras/p5.json) - Parsing and creating JSON
-* [p5.mail](/plugins/extras/p5.mail) - Complex and rich SMTP and POP3 support, which is far better than the internal .Net classes for accomplishing the same
-* [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
-* [p5.mime](/plugins/extras/p5.mime) - MIME support, in addition to PGP, and handling your GnuPG database
-* [p5.mysql](/plugins/extras/p5.mysql) - MySQL data adapter
-* [p5.pdf](/plugins/extras/p5.pdf) - Creating PDF documents in P5
-* [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
-* [p5.xml](/plugins/extras/p5.xml) - XML support in P5
+Combined, the above USPs arguably makes Phosphorus Five a _"5th Generation Programming Language"_.ß
 
 ## MSDN Magazine articles
 
@@ -152,11 +58,10 @@ P5 have been published three times in Microsoft's MSDN Magazine. Read the articl
 3. [Could Managed AJAX Put Your Web Apps in the Fast Lane](https://msdn.microsoft.com/en-us/magazine/mt826343)
 
 If you wish to read these articles, you might benefit from reading them sequentially, to make sure you understand Active Events, 
-before you dive into Hyperlambda.
+before you dive into Hyperlambda. However, all of the above articles are highly technical in nature, and intended for system
+developers. You might still have good use of Phosphorus Five without being a system developer.
 
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
-of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
-our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/). The easiest way to obtain a license,
-is to simply purchase one through Phosphorus Five's _"Bazar"_.
+of the Gnu Public License, version 3, in addition to that commercially license are available for a fee.
