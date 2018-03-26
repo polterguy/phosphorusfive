@@ -9,9 +9,9 @@ allows you to orchestrate your apps together, almost as if they were made out of
 
 Out of the box, Phosphorus Five contains the following components.
 
-* Hyper IDE - A web based IDE, with support for 100+ programming languages
-* Camphora Five - A CRUD app generator allowing yout to create rich CRUD apps in seconds
-* Magic Menu - A global _"navbar"_, with support for speech recognition and speech synthesis
+* __Hyper IDE__ - A web based IDE, with support for 100+ programming languages
+* __Camphora Five__ - A CRUD app generator allowing you to create rich CRUD apps in seconds
+* __Magic Menu__ - A global _"navbar"_, with support for speech recognition and speech synthesis
 
 ... plus more!
 
