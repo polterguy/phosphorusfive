@@ -19,3 +19,5 @@ throw:You cannot uninstall this module!
 delete-event:p5.io.unroll-path.@DESKTOP
 vocabulary:~desktop.
 delete-event:x:/-/*?name
+delete-event:p5.error.Exception
+delete-event:p5.web.load-ui
