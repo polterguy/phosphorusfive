@@ -1,0 +1,173 @@
+/*
+ * Creates a PDF file containing all Markdown files from the documentation.
+ */
+
+
+
+
+
+/*
+ * Buffer node for entire HTML, containing HTML for all Markdown files in system.
+ */
+.html:"<html><head><title>Foo</title></head><body><h1>Phosphorus Five</h1>"
+
+
+
+
+
+/*
+ * Lists all documentation files at root of help files.
+ */
+list-files:@DESKTOP/help-files/
+  filter:.md
+
+
+
+
+
+/*
+ * Converts all main files to HTML, and appending into above [.html].
+ */
+load-file:x:/@list-files/*?name
+for-each:x:/@load-file/*?value
+  markdown2html:x:/@_dp?value
+  set:x:/@.html?value
+    src:{0}{1}
+      :x:/@.html?value
+      :x:/@markdown2html?value
+
+
+
+
+
+/*
+ * Converts all subsection files to HTML, and appending into above [.html].
+ */
+.exe
+  for-each:x:/../*/~desktop.help-files?value
+    insert-before:x:/.
+      src:x:/@_dp?value
+vocabulary:~desktop.help-files.
+for-each:x:/@vocabulary/*?value
+  insert-before:x:/@.exe/0
+    src:x:/@_dp?value
+eval:x:/@.exe
+for-each:x:/@eval/*?name
+  list-files:x:/@_dp?value
+    filter:.md
+  load-file:x:/@list-files/*?name
+  for-each:x:/@load-file/*?value
+    markdown2html:x:/@_dp?value
+    set:x:/@.html?value
+      src:{0}{1}
+        :x:/@.html?value
+        :x:/@markdown2html?value
+
+
+
+
+
+/*
+ * Closing document.
+ */
+set:x:/@.html?value
+  src:{0}</body></html>
+    :x:/@.html?value
+
+
+
+
+
+/*
+ * Semantically massaging our ouput.
+ */
+html2lambda:x:/@.html?value
+
+
+
+
+
+/*
+ * Massaging images, to make them float inline.
+ */
+for-each:x:/@html2lambda/**/img
+
+  /*
+   * Adding style attribute.
+   */
+  add:x:/+/*/*
+    src:x:/@_dp/#
+  insert-before:x:/@_dp/#
+    src
+      p
+        @style:"text-align:center;"
+  set:x:/@_dp/#
+
+
+
+
+
+/*
+ * Replacing all image paragraphs.
+ */
+for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https{0,1}:\\/\\/.+\\.[png|jpg|jpeg|gif|svg]/i"""
+
+  /*
+   * Replacing entire paragraph with an image tag.
+   */
+  eval-x:x:/+/*/*/*
+  add:x:/@_dp/#/.
+    src
+      img
+        @src:x:/@_dp/#?value
+        @alt:Image
+  set:x:/@_dp/#/./*/\#text
+
+
+
+
+
+/*
+ * Entirely removing code examples.
+ */
+set:x:/@html2lambda/**/pre
+  src
+    p
+      strong
+        #text:Warning
+      #text:" - Due to a bug in iTextSharp, all code examples have been removed! Please refer to the dynamic documentation in the system itself to see the code examples."
+
+
+
+
+
+/*
+ * Transforming lambda back to HTML.
+ */
+lambda2html:x:/@html2lambda/*
+
+
+
+
+
+/*
+ * Creates our PDF file, and returns its path to caller, first checking
+ * if it already exists - And if it exists, deleting it.
+ */
+if
+  fetch:x:/0/0?value
+    file-exists:~/documents/private/Phosphorus Five Documentation.pdf
+  delete-file:~/documents/private/Phosphorus Five Documentation.pdf
+html2pdf:~/documents/private/Phosphorus Five Documentation.pdf
+  css-file:@DESKTOP/media/print-help.css
+  src:x:/@lambda2html?value
+
+
+
+
+
+/*
+ * Returns path to file to caller.
+ */
+return:~/documents/private/Phosphorus Five Documentation.pdf
+
