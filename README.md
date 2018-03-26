@@ -68,3 +68,5 @@ are in the system, simply click the "?" button, and you can read in depth topics
 
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee.
+
+* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)
