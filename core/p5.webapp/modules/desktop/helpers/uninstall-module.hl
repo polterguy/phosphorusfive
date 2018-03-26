@@ -1,4 +1,3 @@
-
 /*
  * Allows the user to uninstall a module.
  */
@@ -81,10 +80,17 @@ create-widgets
                                         .app-name:x:/@split/0/-?name
 
                                         /*
-                                         * Uninstalling app.
+                                         * Uninstalling app, wrapping our attempt in a try/catch block,
+                                         * to make sure we show intelligent feedback if uninstallation was
+                                         * not successful.
                                          */
-                                        desktop.modules.uninstall:/modules/{0}/
-                                          :x:/@.app-name?value
+                                        try
+                                          desktop.modules.uninstall:/modules/{0}/
+                                            :x:/@.app-name?value
+                                        catch
+                                          micro.windows.info:x:/@message?value
+                                            class:micro-windows-info warning
+                                          return
 
                                         /*
                                          * Reloading location for simplicity reasons, to make sure
