@@ -61,7 +61,8 @@ developers. You might still have good use of Phosphorus Five without being a sys
 ## Documentation
 
 Phosphorus Five is _extremely well documented_, and to a large extent literate. It contains a context sensitive and interactive
-help system as an integral part of itself, describing literally every single aspect of the system.
+help system as an integral part of itself, describing literally every single aspect of the system. Regardless of where you
+are in the system, simply click the "?" button, and you can read in depth topics about any aspect of the system.
 
 ## License
 
