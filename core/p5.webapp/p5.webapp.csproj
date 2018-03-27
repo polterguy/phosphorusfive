@@ -329,6 +329,7 @@
     <None Include="modules\desktop\uninstall.hl" />
     <None Include="modules\desktop\startup\authentication\desktop.authentication.login.hl" />
     <None Include="modules\desktop\startup\authentication\desktop.authentication.logout.hl" />
+    <None Include="modules\desktop\startup\misc\desktop.license.check.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

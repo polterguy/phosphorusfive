@@ -1,0 +1,154 @@
+
+/*
+ * Creates the event that checks if the license is valid, and if not, displays a "purchase modal widget".
+ */
+create-event:desktop.license.check
+
+  /*
+   * Checks if license is valid, and if so, returning immediately.
+   */
+  if
+    license.is-valid
+
+    /*
+     * User has a valid license, nothing to do here.
+     */
+    return
+
+  /*
+   * We only display the purchasing options for a "root account".
+   * For other requests, we simply inject a widget informing the user about his rights.
+   */
+  whoami
+  if:x:/@whoami/*/role?value
+    =:root
+
+    /*
+     * This is a root account.
+     *
+     * Checking if we have already warned user this session.
+     */
+    p5.web.session.get:desktop.license-info-shown
+    if:x:/@p5.web.session.get/*?value
+
+      /*
+       * We have already warned user during the current session.
+       */
+      return
+
+    /*
+     * Storing the fact that we have warned the user during the current session.
+     */
+    p5.web.session.set:desktop.license-info-shown
+      src:bool:true
+
+    /*
+     * Including PayPal script.
+     */
+    micro.widgets.paypal-button.ensure-checkout-js
+
+    /*
+     * Creating our modal widget.
+     */
+    create-widgets
+      micro.widgets.modal:purchase-license-modal
+        widgets
+          h3
+            innerValue:This is Free Software software
+          img
+            src:@"https://phosphorusfive.files.wordpress.com/2018/02/thomas.jpg"
+            style:"max-width:25%;margin-left:1rem;float:right;border-radius: .5rem; box-shadow: 3px 3px 5px rgba(0,0,0,.2);"
+          p
+            innerValue:@"Phosphorus Five is distributed under the terms of the GPL version 3. This does <strong>not</strong>
+allow you to create proprietary (closed source) software, <strong>unless</strong> you have bought a proprietary license from me."
+          p
+            innerValue:@"If you want to create closed source software, you
+will have to purchase a commercial license from me below. A proprietary license will cost you 498€, and is valid for one
+single server or development machine."
+
+          /*
+           * Our actual PayPal button, allowing the user to purchase a license.
+           */
+          div
+            style:"clear:both;"
+            class:air center
+            widgets
+              micro.widgets.paypal-button
+                price:498
+                custom:Single machine P5 license
+                .onok
+
+                  /*
+                   * Downloading license to user's client.
+                   */
+                  p5.web.set-location:@"https://phosphorusfive.files.wordpress.com/2018/03/license.zip"
+
+                  /*
+                   * Deleting modal widget.
+                   */
+                  delete-widget:purchase-license-modal
+
+                  /*
+                   * Informing user about what he'll need to do.
+                   */
+                  create-widget
+                    class:container
+                    position:0
+                    widgets
+                      div
+                        class:row
+                        widgets
+                          div
+                            class:col air-inner air success shaded rounded micro-drop-down micro-fade-in
+                            widgets
+                              h1
+                                class:center
+                                innerValue:Thank you
+                              p
+                                innerValue:@"Thank you for supporting me, and Phosphorus Five. Contributions such as yours, to obtain proprietary licensing
+options, ensures that I can continue to create and deliver great software to you. As a bonus, I have included a link to 'Hyperbuild'
+for you below, which allows you to create backups of your system. Feel free to download it now, you can install it later."
+                              ul
+                                widgets
+                                  li
+                                    widgets
+                                      a
+                                        href:@"https://github.com/polterguy/hyperbuild/archive/v8.0.zip"
+                                        innerValue:Download Hyperbuild
+                              p
+                                innerValue:Kind regards,
+                              p
+                                innerValue:Thomas Hansen
+                              h3
+                                class:center
+                                innerValue:Installation instructions
+                              p
+                                innerValue:@"Go to your main desktop, click the '+' button, and upload your license file to your server.
+Then click the 'Install' button. Below is a screenshot of how this should look like. Notice, you might want to keep your license file securely stored
+somewhere, in case you need to re-install your server, or go back to an earlier backup of your system."
+                              img
+                                style:"max-width:80%;margin-left: auto; margin-right: auto;display: block;border-radius: .5rem; box-shadow: 3px 3px 5px rgba(0,0,0,.2);"
+                                class:air-bottom
+                                src:@"https://phosphorusfive.files.wordpress.com/2018/03/license-installation-instructions-screenshot.png"
+                        
+
+          a
+            href:#
+            style:"position:absolute; top:1rem; right:1rem;"
+            innerValue:@"<span class=""icon-cross""></span>"
+            onclick
+
+              /*
+               * Deleting modal widget.
+               */
+              delete-widget:purchase-license-modal
+  else
+
+    /*
+     * This is not a root account, injecting GPL information on page.
+     */
+    create-widget
+      element:div
+      class:license-info
+      title:This is free software, and you can contact the administrator of this server to request a copy of his source code
+      innerValue:@"<a target=""_blank"" href=""https://github.com/polterguy/phosphorusfive"">This is Free Software</a>"

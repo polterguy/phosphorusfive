@@ -151,3 +151,8 @@ create-event:p5.web.load-ui
       eval-x:x:/+/*
       eval:x:/@_dp?value
         url:x:/../*/url?value
+
+    /*
+     * Checking if license is valid.
+     */
+    desktop.license.check
