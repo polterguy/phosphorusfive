@@ -81,9 +81,12 @@ create-widgets
                 visible:false
               set-widget-property:install-label-txt
                 innerValue:Local URL
+              delete-widget-property:desktop-install-new-module
+                disabled
 
           button:desktop-install-new-module
             innerValue:Install
+            disabled
             onclick
 
               /*
