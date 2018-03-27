@@ -47,11 +47,17 @@ to create closed source software. Phosphorus Five will ask you if you want to pu
 _"commercial license"_ every now and then, unless you have already obtained one. Unless you somehow have
 legally acquired the right to use Phosphorus Five in proprietary (Closed Source) software - Then you are
 __not legally allowed to create closed source software, and you must distribute your source code, to anyone
-simply visiting your website or app__!
+simply visiting your website or app if they request it__!
 
 Of course, the fix for the above, if you are uncertain about your legal status in these regards, is
-to simply purchase a commercial license. This will also give you _"extended support and rights"_ in other
-regards.
+to simply purchase a commercial license. This will also give you _"extended support"_, in addition
+to access to a backup module that allows you to easily create backups of your system.
+
+**Notice**, if you don't have a valid proprietary license, a small widget will be automatically
+added to all of your pages, in the bottom right corner, which is displayed for all non-root accounts,
+informing them about their rights in regards to the source code of the system. Purchasing a valid
+proprietary license removes this link, and also prevents the system from asking you about purchasing
+a license.
 
 ### The license terms
 
