@@ -16,7 +16,7 @@ Since Phosphorus Five, and more explicitly the _"Managed Ajax"_ parts distribute
 and this JavaScript is an integral part of the core framework itself - This implies that all who are visiting
 a website and/or a webapp that you have created with Managed Ajax are in fact _"executing GPL code"_. Since
 your own code is built around Managed Ajax, this results in that you are legally obliged to providing the
-source code for your own derivated works, to everyone who asks you for a copy - Unless you have a proprietary
+source code for your own derived works, to everyone who asks you for a copy - Unless you have a proprietary
 license. So for all practical concerns, Phosphorus Five's choice of GPL, effectively results in becoming
 an _"Affero GPL license"_.
 
@@ -34,30 +34,23 @@ this GPL library, and not necessarily your entire solution's code. This is becau
 binding between Active Event assemblies, does not create a _"derivated work"_, or in any ways _"links"_
 between the different assemblies.
 
-So basically, you can consume GPL libraries and modules as LGPL, while you are obliged to distributing
-your own source code - Unless you obtain a commercial license from me.
+So basically, you can consume GPL CLR libraries and modules as if they were LGPL libraries.
 
 #### Quid pro quo and dual licensing options
 
 Phosphorus Five is distributed under the idea of _"Quid Pro Quo"_, which translates into
 _"Something for Something"_. The idea is that either you create Free and Open Source Software yourself, or
 you pay me money to help sustain further development and maintenance of the framework.
-This implies that unless you want to create Free Software, you _have to obtain a proprietary license_,
-to create closed source software. Phosphorus Five will ask you if you want to purchase such a
-_"commercial license"_ every now and then, unless you have already obtained one. Unless you somehow have
-legally acquired the right to use Phosphorus Five in proprietary (Closed Source) software - Then you are
-__not legally allowed to create closed source software, and you must distribute your source code, to anyone
-simply visiting your website or app if they request it__!
+This implies that unless you want to create Free Software, you _have to obtain a proprietary license_.
+Phosphorus Five will ask you if you want to purchase such a
+_"commercial license"_ every now and then, in addition to informing your visitors about their rights. If
+you purchase a commercial license, Phosphorus Five will automatically remove any links on your modules,
+and stop asking you about purchasing a license.
 
 Of course, the fix for the above, if you are uncertain about your legal status in these regards, is
 to simply purchase a commercial license. This will also give you _"extended support"_, in addition
-to access to a backup module that allows you to easily create backups of your system.
-
-**Notice**, if you don't have a valid proprietary license, a small widget will be automatically
-added to all of your pages, in the bottom right corner, which is displayed for all non-root accounts,
-informing them about their rights in regards to the source code of the system. Purchasing a valid
-proprietary license removes this link, and also prevents the system from asking you about purchasing
-a license.
+to access to a backup module that allows you to easily create backups of your system. It is also the
+ethical and morally right thing to do, once you realise the amount of work I have put into the system!
 
 ### The license terms
 

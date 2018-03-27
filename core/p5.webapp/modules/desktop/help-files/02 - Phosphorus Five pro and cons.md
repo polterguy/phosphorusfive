@@ -3,10 +3,10 @@
 <img style="margin-left:1rem; float:right;max-width: 20%;" src="/modules/hyper-ide/media/logo.svg" />
 
 The main idea with Phosphorus Five is to significantly simplify the development of web apps, that responsively
-renders on all devices. This implies that some _"shortcuts"_ has to be applied. Among other things, Phosphorus Five
-in general is a server-side stateful web application framework. This means that your widgets are stored on the server
-side. This again creates a beautiful development model, where you don't have to manually track which widgets
-have been created, and re-create them during consecutive callbacks/postbacks.
+renders on all devices. This implies that some _"shortcuts"_ has to be applied. Among other things, Phosphorus
+Five is in general a stateful server-side web application framework. This implies that your widgets are stored
+on the server, which creates a beautiful development model, where you don't have to manually track which
+widgets have been created, or re-create them during consecutive callbacks/postbacks.
 
 This results in a _"ridiculously easy to understand"_ development model, arguably resembling the
 development model of Visual Basic in simplicity, or FoxPro for that matter. However, the flipside is
@@ -25,4 +25,6 @@ consecutive server requests, etc.
 
 Phosphorus Five was created to allow for easily creating rich and interactive web apps, not social media hubs, stealing
 the hearts and minds of half the world. If you want to create _"the next Facebook"_, I wish you good luck, as I
-point you as far away from Phosphorus Five as I can possibly do ... ;)
+point you as far away from Phosphorus Five as I can possibly do ...
+
+> Hardware is cheap, developers not!
