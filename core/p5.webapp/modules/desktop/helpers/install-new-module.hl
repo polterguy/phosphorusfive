@@ -8,18 +8,17 @@ create-widgets
     widgets
       h3
         innerValue:Install a new module
-      p
-        innerValue:Browse to a zip file on your disc, or supply a URL to a module you want to install.
-      p
+      p:install-info-paragraph
+        innerValue:Browse to a zip file on your disc, containing your module.
+      p:install-info-warning
         innerValue:<strong>Warning</strong> - Do not install any modules you don't know for sure are safe, since this can compromise your system.
       div
         class:strip fill
         widgets
-          label
+          label:install-label-txt
             innerValue:Module
           input:desktop-install-new-module-text
             type:text
-            onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-install-new-module').raise('onclick');return false;} else if (event.keyCode == 27) {p5.$('desktop-install-new-module-cancel').raise('onclick');return false;}"
             oninit
 
               /*
@@ -53,16 +52,35 @@ create-widgets
                   :x:/../*/files/*/*?value
 
               /*
+               * Removing all non-wanted characters from filename, such as versioning information, etc.
+               */
+              match:x:/../*/files/*/*?value
+                src:regex:/[-a-z]+/
+              trim:x:/@match/0?name
+                chars:-
+
+              /*
                * Setting textbox value to filename, since actual installer logic will determine
                * if user provided a URL or a (local) filename.
                */
               set-widget-property:desktop-install-new-module-text
-                value:x:/../*/files/*/*?value
+                .file:x:/../*/files/*/*?value
+                value:x:/@trim?value
 
               /*
-               * Setting focus to textbox.
+               * Setting focus to install button.
                */
-              micro.page.set-focus:desktop-install-new-module-text
+              micro.page.set-focus:desktop-install-new-module
+
+              /*
+               * Changing info widget's content, and deleting warning widget.
+               */
+              set-widget-property:install-info-paragraph
+                innerValue:Optionally supply a custom <strong>[local-url]</strong>, which becomes your module's name, before you click 'Install'. Don't change this unless you understand what it implies.
+              set-widget-property:install-info-warning
+                visible:false
+              set-widget-property:install-label-txt
+                innerValue:Local URL
 
           button:desktop-install-new-module
             innerValue:Install
@@ -105,7 +123,8 @@ create-widgets
                */
               get-widget-property:desktop-install-new-module-text
                 value
-              if:x:/@get-widget-property/*/*?value
+                .file
+              if:x:/@get-widget-property/*/*/value?value
                 =:
 
                 /*
@@ -118,61 +137,12 @@ create-widgets
                 return
 
               /*
-               * Checking if textbox value starts with "http://" or "https://", at
-               * which point we download the file before we invoke our "install new module"
-               * event.
+               * Installing module.
                */
-              if
-                starts-with:x:/@get-widget-property/*/*?value
-                  src:"http://"
-                or
-                  starts-with:x:/@get-widget-property/*/*?value
-                    src:"https://"
-
-                /*
-                 * URL, downloading file before we proceed.
-                 */
-                split:x:/@get-widget-property/*/*?value
-                  =:/
-
-                /*
-                 * Sanity checking that URL ends with "xxx.zip".
-                 */
-                if
-                  fetch:x:/0/0/-?name
-                    split:x:/@split/0/-?name
-                      =:.
-                  !=:zip
-
-                  /*
-                   * Not a URL to a zip file, warning user, and returning early.
-                   */
-                  micro.windows.info:You can only install zip files
-                    class:micro-windows-info warning
-                  micro.page.set-focus:desktop-install-new-module-text
-                  return
-
-                /*
-                 * Retrieving module from URL.
-                 */
-                p5.http.get:x:/@get-widget-property/*/*?value
-                  .onresponse
-                    .p5.io.file.save-to-stream:~/temp/{0}
-                      :x:/@split/0/-?name
-
-                /*
-                 * Installing module.
-                 */
-                desktop.modules.install:~/temp/{0}
-                  :x:/@split/0/-?name
-
-              else
-
-                /*
-                 * Local file, already uploaded.
-                 */
-                desktop.modules.install:~/temp/{0}
-                  :x:/@get-widget-property/*/*?value
+              eval-x:x:/+/*/local-url
+              desktop.modules.install:~/temp/{0}
+                :x:/@get-widget-property/*/*/.file?value
+                local-url:x:/@get-widget-property/*/*/value?value
 
               /*
                * Reloading desktop, to have icons re-created.
