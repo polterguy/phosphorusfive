@@ -1,6 +1,6 @@
 ## About Phosphorus Five
 
-<img style="margin-left:1rem; float:right;max-width: 20%;" src="/modules/hyper-ide/media/logo.svg" />
+<img class="desktop-help-icon-image" src="/modules/hyper-ide/media/logo.svg" />
 
 Phosphorus Five is a web operating system, and a web application development framework, with some pretty
 unique USPs. Among other things, it's extremely dynamic in nature, allowing for orchestrating your application

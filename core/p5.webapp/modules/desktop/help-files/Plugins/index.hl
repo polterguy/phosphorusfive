@@ -5,8 +5,8 @@ h2
   innerValue:Plugins
 
 img
-  style:"margin-left:1rem; float:right;max-width: 20%;"
-  src:"https://phosphorusfive.files.wordpress.com/2018/03/legobrick.png"
+  class:desktop-help-icon-image
+  src:"https://phosphorusfive.files.wordpress.com/2018/03/2000px-plastic_brick_red-svg.png"
 
 p
   innerValue:@"Here you can find the reference documentation for all the plugins in Phosphorus Five.

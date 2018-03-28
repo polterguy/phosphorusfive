@@ -1,6 +1,6 @@
 ## License
 
-<img style="margin-left:1rem; float:right;max-width: 20%;" src="/modules/hyper-ide/media/logo.svg" />
+<img class="desktop-help-icon-image" src="/modules/hyper-ide/media/logo.svg" />
 
 Phosphorus Five and all related modules are distributed under the terms of the GPL version 3, as published
 by the Free Software Foundation. However, to make a long story short, this implies that you are legally

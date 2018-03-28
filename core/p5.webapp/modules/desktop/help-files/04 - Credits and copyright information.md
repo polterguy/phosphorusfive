@@ -1,6 +1,6 @@
 ## Credits and copyright information
 
-<img style="margin-left:1rem; float:right;max-width: 20%;" src="/modules/hyper-ide/media/logo.svg" />
+<img class="desktop-help-icon-image" src="/modules/hyper-ide/media/logo.svg" />
 
 * [Phosphorus Five](https://github.com/polterguy/phosphorusfive) - Copyright © 2014-2018 Thomas Hansen
 * [.Net Framework](https://www.microsoft.com/net/download) - Copyright © 2000-2018 Microsoft Corporation
@@ -21,10 +21,11 @@
 * [Normalize CSS](github.com/necolas/normalize.css) - Copyright © ?
 * [CSS Beautify](https://github.com/senchalabs/cssbeautify) - Copyright © 2011 - 2013 Sencha Inc.
 
-All other Phosphorus Five modules, are the sole copyright of 
-Thomas Hansen - And unless explicitly granted through an individually named _"proprietary enabling license"_,
-all Phosphorus Five components and modules are distributed under the terms of the GPL license version 3,
-as published by the Free Software Foundation. See the [Free Software Foundation website](https://www.fsf.org/) for details.
+Except for the Phosphorus Five main logo, the images in the project are the copyright of [WikiMedia Foundation](https://commons.wikimedia.org/wiki/Main_Page).
+All other Phosphorus Five modules, are the sole copyright of Thomas Hansen - And unless explicitly granted
+through an individually named _"proprietary enabling license"_, all Phosphorus Five components and modules
+are distributed under the terms of the GPL license version 3, as published by the Free Software Foundation.
+See the [Free Software Foundation website](https://www.fsf.org/) for details.
 
 See the above respective Open Source projects for licensing information, but in general they are all _"permissive"_ in nature,
 except iTextSharp, which is distributed under an Affero GPL license.

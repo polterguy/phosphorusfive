@@ -10,6 +10,13 @@
     margin-bottom: 2rem;
 }
 
+.desktop-help-icon-image {
+    margin-left:1rem;
+    float:right;
+    max-width: 25%;
+    width: 192px;
+}
+
 .desktop-help-content {
     text-align: justify;
     margin-left: 2rem;

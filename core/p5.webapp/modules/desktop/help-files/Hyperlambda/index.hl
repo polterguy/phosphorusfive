@@ -6,7 +6,7 @@ h2
   innerValue:Hyperlambda
 
 img
-  style:"margin-left:1rem; float:right;max-width: 25%;"
+  class:desktop-help-icon-image
   src:"https://phosphorusfive.files.wordpress.com/2018/03/768px-lambda_lc-svg.png"
 
 p

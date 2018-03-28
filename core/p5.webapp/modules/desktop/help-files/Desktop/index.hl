@@ -5,8 +5,8 @@ h2
   innerValue:Desktop
 
 img
-  style:"margin-left:1rem; float:right;max-width: 20%;"
-  src:modules/hyper-ide/media/logo.svg
+  class:desktop-help-icon-image
+  src:"https://phosphorusfive.files.wordpress.com/2018/03/wikipedia_logo_3d_gold.png"
 
 p
   innerValue:@"The Desktop module is the GUI interface for Phosphorus Five, and responsible for loading up your modules, and
