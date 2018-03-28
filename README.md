@@ -30,15 +30,14 @@ connection string for your MySQL installation.
 
 ## 3 basic innovations
 
-Phosphorus Five consists of three basic innovations.
+Phosphorus Five contains 3 basic innovations.
 
 * __Managed Ajax__
 * __Active Events__
 * __Hyperlambda__
 
 The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
-Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
-it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically.
+Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
@@ -59,7 +58,7 @@ Phosphorus Five has been published 3 times in Microsoft's MSDN Magazine. Read th
 
 ## Documentation
 
-Phosphorus Five is _extremely well documented_, and to a large extent literate. It contains a context sensitive and interactive
+Phosphorus Five is _extremely well documented_. It contains a context sensitive and interactive
 help system as an integral part of itself, describing all aspects of the system. Regardless of where you
 are in the system, simply click the "?" button, and you can read in depth topics about the module you need help for.
 
