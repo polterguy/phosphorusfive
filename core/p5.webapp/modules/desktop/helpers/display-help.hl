@@ -140,7 +140,6 @@ create-widget:hyper-ide-help-wrapper
                             eval-x:x:/+/*
                             micro.evaluate.file:@IDE/helpers/folder-explorer/expand-folder-explorer-path.hl
                               path:x:/@get-widget-property/*/*?value
-                            p5.web.send-javascript:@"p5.$('hyper-ide-file-editor').el.scrollIntoView ({behavior:'instant'});"
 
                         button
                           innerValue:@"<span class=""icon-spinner11""></span>"
@@ -479,8 +478,3 @@ p5['x_{0}'].setSize('100%', 'auto');
                       p5.io.unroll-path:x:/../*/_arg?value
                       set-widget-property:hyper-ide-help-content
                         .file:x:/@p5.io.unroll-path?value
-
-                      /*
-                       * Scrolling browser to the top of help file contents.
-                       */
-                      p5.web.send-javascript:@"p5.$('hyper-ide-help-wrapper').el.scrollIntoView ({behavior:'smooth', block:'start'});"
