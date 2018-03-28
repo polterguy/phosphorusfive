@@ -42,22 +42,18 @@ Active Events allows you to loosely couple your modules together, without having
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
 
 Hyperlambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
-together. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly _"become alive"_, and creating rich web apps,
-becomes much easier than what you would expect.
+together. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly _"become alive"_, and creating rich web apps
+becomes surprisingly easy.
 
 Combined, the above USPs arguably makes Phosphorus Five a _"5th Generation Programming Language"_.
 
 ## MSDN Magazine articles
 
-P5 have been published three times in Microsoft's MSDN Magazine. Read the articles below written by yours truly.
+Phosphorus Five has been published 3 times in Microsoft's MSDN Magazine. Read the articles below, written by yours truly.
 
 1. [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 2. [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
 3. [Could Managed AJAX Put Your Web Apps in the Fast Lane](https://msdn.microsoft.com/en-us/magazine/mt826343)
-
-If you wish to read these articles, you might benefit from reading them sequentially, to make sure you understand Active Events, 
-before you dive into Hyperlambda. However, all of the above articles are highly technical in nature, and intended for system
-developers. You might still have good use of Phosphorus Five without being a system developer.
 
 ## Documentation
 
