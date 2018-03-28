@@ -64,6 +64,12 @@ and play around with them, to include the tactile parts of your brain while lear
 Hyperlambda, I have written a _"book"_ about it, which you can find by clicking the _"home"_ button in the help
 files, and choosing the _"Hyperlambda"_ sub section.
 
+### Sponsoring the project
+
+If you are interested in sponsoring the project, you can send an email to thomas@gaiasoul.com. This allows
+you to have your company or business associated with the project, and be explicitly mentioned in the help files,
+with some company pitch.
+
 ### None mentioned, none forgotten
 
 <img style="margin-left:1rem; float:right;max-width: 20%;" src="https://phosphorusfive.files.wordpress.com/2018/02/thomas.jpg" />

@@ -1,9 +1,9 @@
 Phosphorus Five - A Web Operating System
 ===============
 
-Phosphorus Five is a Web Operating System and a full stack Web Application Development Framework, for consuming and developing rich and highly 
-interactive and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
-allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
+Phosphorus Five is a .Net based Web Operating System and a full stack Web Application Development Framework, for consuming and
+creating rich and highly interactive secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_,
+which allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
 
 ![alt screenshot](https://phosphorusfive.files.wordpress.com/2018/03/github-screenshot-desktop.png)
 
@@ -20,10 +20,12 @@ Out of the box, Phosphorus Five contains the following components.
 You can install it on a production Ubuntu/Linux server with an automated script, taking care of all dependencies, with 3 simple commands. Or
 you can download its code version, and play around with it locally, on your Windows, Mac, or Linux machine. If you choose the latter, you will
 have to [make sure you have MySQL Server installed somehow](https://dev.mysql.com/downloads/mysql/) on your computer, since Phosphorus Five
-is dependent upon MySQL to function correctly. If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file,
-such that it contains the correct connection string for your MySQL installation (Hint; Provide your MySQL password in it).
+is dependent upon MySQL to function correctly. In addition, to making sure you have [Visual Studio](https://www.visualstudio.com/vs/community/)
+or [Mono Develop](https://www.monodevelop.com/) installed on your local machine. If you download the source version, make sure you edit
+the `/core/p5.webapp/web.config` file, such that it contains the correct connection string for your MySQL installation (Hint; Provide your
+MySQL password in it).
 
-* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)
+* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases) - Both binary release and source code
 
 ## 3 basic innovations
 
