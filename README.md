@@ -2,7 +2,7 @@ Phosphorus Five - A Web Operating System
 ===============
 
 Phosphorus Five is a .Net based Web Operating System and a full stack Web Application Development Framework, for consuming and
-creating rich and highly interactive secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_,
+creating rich and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_,
 which allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
 
 ![alt screenshot](https://phosphorusfive.files.wordpress.com/2018/03/github-screenshot-desktop.png)
@@ -26,7 +26,7 @@ use the source code version.
 * [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases) - Both binary release and source code
 
 **Notice** - If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it contains the correct
-connection string for your MySQL installation.
+connection string for your MySQL installation. This normally implies simply adding your password to the existing connection string.
 
 ## 3 basic innovations
 
