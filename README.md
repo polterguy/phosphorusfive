@@ -21,10 +21,12 @@ You can install Phosphorus Five on a production Ubuntu/Linux server with an auto
 you can download its code version, and play around with it locally, on your Windows, Mac, or Linux machine. If you choose the latter, you will
 have to [make sure you have MySQL Server installed somehow](https://dev.mysql.com/downloads/mysql/) on your computer.
 In addition, you need [Visual Studio](https://www.visualstudio.com/vs/community/) or [Mono Develop](https://www.monodevelop.com/) to
-use the source code version. If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it
-contains the correct connection string for your MySQL installation.
+use the source code version.
 
 * [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases) - Both binary release and source code
+
+**Notice** - If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it contains the correct
+connection string for your MySQL installation.
 
 ## 3 basic innovations
 
