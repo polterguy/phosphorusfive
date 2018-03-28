@@ -80,6 +80,11 @@ create-event:desktop.plugins.post.create-dox-button
            */
           desktop.help.display
 
+          /*
+           * Srolling Hypereval into view.
+           */
+          micro.page.scroll-into-view:hyper-ide-help-wrapper
+
         /*
          * Making sure we toggle toggled state of button.
          */
