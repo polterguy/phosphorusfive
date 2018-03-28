@@ -28,6 +28,8 @@ use the source code version.
 **Notice** - If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it contains the correct
 connection string for your MySQL installation. This normally implies simply adding your password to the existing connection string.
 
+**Important** - If you use the source code version on Windows, make sure you turn off _"browser sync"_!
+
 ## 3 basic innovations
 
 Phosphorus Five contains 3 basic innovations.
