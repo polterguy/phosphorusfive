@@ -6,8 +6,8 @@ creating rich and secure web apps. It contains an entirely unique programming la
 which allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
 
 <p align="center">
-<a alt="_blank" href="https://www.youtube.com/watch?v=BLll2Wx0yFo">
-<img src="https://phosphorusfive.files.wordpress.com/2018/03/screenshot-youtube-infomercial.png" />
+<a target="_blank" href="https://www.youtube.com/watch?v=BLll2Wx0yFo">
+<img alt="A one minute introduction video about Phosphorus Five" title="A one minute introduction video about Phosphorus Five" src="https://phosphorusfive.files.wordpress.com/2018/03/screenshot-youtube-infomercial.png" />
 </a>
 </p>
 
