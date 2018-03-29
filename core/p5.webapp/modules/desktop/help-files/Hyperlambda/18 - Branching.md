@@ -232,9 +232,8 @@ else
 
 The above regular expression will match anything starting with a capital letter, followed by x lower case letters, ending with 
 the string _"sen"_. Basically, matching any name ending with the string _"sen"_, which is a common surname in Norway.
-
-How to create regular expressions will be dealt with in a later appendix, but basically, a regular expression starts and ends 
-with a "/", followed by optionally some regex options. In addition, a regular expression has the type declaration of `:regex:`.
+For more information about regular expressions, please refer to the _"Plugins"_ parts of the documentation,
+and more specifically the _"p5.types"_ sub section.
 
 **Warning**; Regular expressions are notoriously difficult to read and understand! Be careful with them!
 
