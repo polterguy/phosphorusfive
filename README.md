@@ -5,7 +5,7 @@ Phosphorus Five is a .Net based Web Operating System and a full stack Web Applic
 creating rich and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_,
 which allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
 
-[![A one minute YouTube video about Phosphorus Five](https://img.youtube.com/vi/BLll2Wx0yFo/0.jpg)](https://www.youtube.com/watch?v=BLll2Wx0yFo)
+[![A one minute YouTube video about Phosphorus Five](https://phosphorusfive.files.wordpress.com/2018/03/screenshot-youtube-infomercial.png)](https://www.youtube.com/watch?v=BLll2Wx0yFo)
 
 Out of the box, Phosphorus Five contains the following components.
 
