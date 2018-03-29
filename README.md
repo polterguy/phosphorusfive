@@ -38,7 +38,7 @@ or at their peak feature set.
 
 ## MSDN Magazine articles
 
-Phosphorus Five has been published 3 times in Microsoft's MSDN Magazine. Read the articles below, written by yours truly.
+Phosphorus Five has been published 3 times in Microsoft's MSDN Magazine.
 
 1. [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 2. [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
