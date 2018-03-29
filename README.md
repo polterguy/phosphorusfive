@@ -36,9 +36,7 @@ or at their peak feature set.
 
 **Important** - If you use the source code version on Windows in Visual Studio, _make sure you turn off "browser sync" in Visual Studio_.
 
-## MSDN Magazine articles
-
-Phosphorus Five has been published 3 times in Microsoft's MSDN Magazine.
+## MSDN Magazine articles about Phosphorus Five
 
 1. [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 2. [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
