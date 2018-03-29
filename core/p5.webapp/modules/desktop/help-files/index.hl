@@ -22,7 +22,7 @@ both standard usage of Phosphorus Five, and its modules - In addition to how to 
 help files open from within the module you want to learn about."
 
 p
-  innerValue:@"These documentation files, are consciously created such that they should bring you up from
+  innerValue:@"These documentation files, are carefully created such that they should bring you up from
 the point where you can barely interact with a computer, to the point of where you're a <em>'guru software developer'</em>.
 If they don't, feel free to toss me an email at thomas@gaiasoul.com. If this is your first visit to Phosphorus Five,
 I suggest you start out with either Hyper IDE (if you're a software developer), or Camphora Five, if you have never
@@ -184,7 +184,7 @@ h3
 p
   innerValue:@"Below is a button that will automatically generate a PDF file for you, containing all Markdown files in the documentation system. Notice, this process might take some time, depending upon how much documentation you have for your installation.
 Also, please realise that the plugin I am using to actually perform my HTML to PDF conversion, which is called iTextSharp, unfortunately doesn't
-handle 'pre' HTML elements well - So there is no code examples in the PDF version of the documentation."
+handle 'pre' HTML elements well - So there are no code examples in the PDF version of the documentation."
 
 div
   class:right
