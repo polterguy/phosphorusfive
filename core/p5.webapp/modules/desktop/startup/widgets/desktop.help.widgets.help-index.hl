@@ -1,4 +1,3 @@
-
 /*
  * Creates the extension widget that displays a folder as a bulleted list
  */
@@ -32,9 +31,13 @@ create-event:desktop.help.widgets.help-index
      */
     split:x:/@_dp/#?name
       =:/
+    replace:x:/@split/0/-?name
+      src:regex:/^[0-9]+ - /
+    split:x:/@replace?value
       =:.
-    replace:x:/@split/0/-2?name
-      src:regex:/[0-9]+ - /
+    set:x:/@split/0/-
+    join:x:/@split/*?name
+      sep:.
 
     /*
      * Creating a list item, containing a hyperlink button, which once clicked,
@@ -47,7 +50,7 @@ create-event:desktop.help.widgets.help-index
           widgets
             a
               href:#
-              innerValue:x:/@replace?value
+              innerValue:x:/@join?value
               .file:x:/@_dp/#?name
               onclick
 

@@ -77,7 +77,8 @@ create-widget
 
 The above example has 7 _"nodes"_ in total, where 3 of the nodes are children of some other node. If you add
 two consecutive spaces (SP) on a new line, you open up the children node hierarchy of the node above it, and you
-can add children to the above node.
+can add children to the above node. For a more detailed explanation about Hyperlambda's syntax, please
+refer to the _"Plugins"_ documentation, and more specifically its _"p5.hyperlambda"_ section.
 
 ### External articles and references
 

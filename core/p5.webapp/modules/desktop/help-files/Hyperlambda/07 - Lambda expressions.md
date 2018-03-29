@@ -195,9 +195,9 @@ The most common types are listed below;
 * `.string` - String, which is the default type in P5
 * `.node` - Hyperlambda, with a single root node
 
-In our appendixes, you can find a complete reference, of all the built-in types in P5. The type system for
-Hyperlambda is extendible though, and you can easily create your own types, by adding a couple of Active
-Events with special names and namespaces into your application pool.
+In our _"Plugins/p5.types"_ documentation section, you can find a complete reference, of all the built-in
+types in P5. The type system for Hyperlambda is extendible though, and you can easily create your own
+types, by adding a couple of Active Events with special names and namespaces into your application pool.
 
 ### Creating a mental model for expressions
 
