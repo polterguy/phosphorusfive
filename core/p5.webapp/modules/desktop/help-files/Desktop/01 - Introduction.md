@@ -6,7 +6,7 @@ is also completely loosely coupled from all other modules, and the core itself, 
 own module. It looks like the following, depending upon which apps you've installed, and whether
 or not you're logged into Phosphorus Five or not.
 
-https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot.png
+https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot-five-apps.png
 
 As you can see above, the Desktop module will create one _"desktop launcher icon"_ for each app you've
 installed in your installation. This launcher icon is actually dynamically created from your apps'
@@ -26,6 +26,10 @@ Uninstallation is equally easy, simply click the _"-"_ button, at which point Ph
 display all your installed modules, and allow you to uninstall these. Below is a screenshot.
 
 https://phosphorusfive.files.wordpress.com/2018/03/desktop-uninstall-module.png
+
+**Notice**, if you have a zip file which you are not entirely sure is safe, you can upload it using Hyper IDE,
+and unzip it, to your _"/modules/"_ folder, and then read its code. When you have confirmed it is safe, you
+can evaluate its _"startup.hl"_ file, before you allow non-root accounts to access the module.
 
 ### Settings and skinning your Desktop
 

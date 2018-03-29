@@ -12,7 +12,10 @@ This results in a _"ridiculously easy to understand"_ development model, arguabl
 development model of Visual Basic in simplicity, or FoxPro for that matter. However, the flipside is
 that it requires much more server resources, particularly memory, compared to a completely stateless development model.
 This results in that it is extremely easy to create highly advanced web applications, while it is also difficult
-(but _not_ impossible) to create apps that scales very well.
+(but _not_ impossible) to create apps that scales very well. Hyperlambda does also have some overhead
+compared to a language that's closer to the hardware, such as C# or C++ - So it is not intended for creating
+CPU resource intensive algorithms in. Its purpose is to tie together algorithms created in C# and
+other programming languages.
 
 In general, for the above reasons, you should not expect Phosphorus Five to scale _"into heaven"_, allowing
 for millions of consecutive users simultaneously accessing your server - Unless you bypass parts of the core,

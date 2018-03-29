@@ -61,6 +61,7 @@
     <Content Include="common\documents\private\web.config" />
     <Content Include="modules\desktop\media\help.css" />
     <Content Include="modules\desktop\media\main.css" />
+    <Content Include="users\README.md" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -114,6 +115,7 @@
   <ItemGroup>
     <Folder Include="common\temp\" />
     <Folder Include="modules\desktop\startup\authentication\" />
+    <Folder Include="users\root\documents\private\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -241,12 +243,10 @@
     <Content Include="README.md" />
     <Content Include="common\README.md" />
     <None Include="users\root\documents\public\README.md" />
-    <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
     <None Include="startup.hl" />
-    <None Include="modules\README.md" />
     <None Include="favicon.ico" />
     <None Include="modules\desktop\helpers\display-help.hl" />
     <None Include="modules\desktop\helpers\install-new-module.hl" />
@@ -330,6 +330,8 @@
     <None Include="modules\desktop\startup\authentication\desktop.authentication.login.hl" />
     <None Include="modules\desktop\startup\authentication\desktop.authentication.logout.hl" />
     <None Include="modules\desktop\startup\misc\desktop.license.check.hl" />
+    <None Include="modules\desktop\helpers\create-documentation-pdf.hl" />
+    <None Include="users\root\documents\private\README.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>

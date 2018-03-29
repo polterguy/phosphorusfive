@@ -65,8 +65,12 @@ create-event:p5.web.load-ui
       eval:x:/@_dp?value
         url:x:/../*/url?value
 
-    if:x:/../*/url?value
-      =:/
+    /*
+     * Figuring out URL entities.
+     */
+    micro.url.get-entities
+    if:x:/@micro.url.get-entities/*?count
+      =:int:0
 
       /*
        * Root URL was requested, loading the main desktop, but first checking if system has been configured with
@@ -91,18 +95,13 @@ create-event:p5.web.load-ui
        * For instance, to load some sub folder in Micro, the URL could be "/micro/foo/bar", etc ...
        * However, determining the URL, and doing the actual resolving, is up to the specific module itself, 
        * and not done by this startup file.
-       */
-      split:x:/../*/url?value
-        =:/
-        =:?
-
-      /*
+       *
        * Checking if app exists, and if not, returning some simple 404 Not found.
        */
       if
         fetch:x:/0/0?value
           file-exists:/modules/{0}/launch.hl
-            :x:/@split/0?name
+            :x:/@micro.url.get-entities/0?name
         not
 
         /*
@@ -124,7 +123,7 @@ create-event:p5.web.load-ui
         p5.auth.has-access-to-path:bool:false
           filter:p5.module
           path:/modules/{0}/
-            :x:/@trim?value
+            :x:/@micro.url.get-entities/0?name
         not
 
         /*
@@ -140,7 +139,7 @@ create-event:p5.web.load-ui
        */
       eval-x:x:/+/*/url
       micro.evaluate.file:/modules/{0}/launch.hl
-        :x:/@split/0?name
+        :x:/@micro.url.get-entities/0?name
         url:x:/../*/url?value
 
     /*

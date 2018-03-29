@@ -49,6 +49,15 @@ create-event:desktop.plugins.post.create-dox-button
       oninit
 
         /*
+         * Checking if URL contains a help file reference.
+         */
+        p5.web.query.get:help
+        if:x:/@p5.web.query.get/*?value
+          eval-x:x:/+/*
+          desktop.help.display
+            file:x:/@p5.web.query.get/*?value
+
+        /*
          * Checking if help has already been launched.
          */
         if

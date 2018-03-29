@@ -18,10 +18,7 @@ them though, we'll need to have a look at the folder structure of P5.
 
 The most important folder for this chapter is called *"users"*. This folder will contain one folder for each user you have in your P5 installation. 
 By default, P5 has only one user, which is your *"root"* user - So typically as you start out with P5, there will only be one folder here. This 
-folder will be the *"root"* folder. You can browse this folder using your folder explorer in Hyper IDE. Below is a screenshot of how this
-folder looks like in my installation.
-
-https://phosphorusfive.files.wordpress.com/2018/01/users-folder-screenshot.png
+folder will be the *"root"* folder. You can browse this folder using your folder explorer in Hyper IDE.
 
 Inside of your user's folder, the *"root"* folder that is, you can find a *"documents"* folder. This is the equivalent of *"Your documents"* 
 in windows, or *"Home"* in Linux. This is important to understand for this chapter, since we will store our *"database"* within this folder. 

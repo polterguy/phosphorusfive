@@ -2,11 +2,11 @@
 
 <img class="desktop-help-icon-image" src="/modules/hyper-ide/media/logo.svg" />
 
-Phosphorus Five is a web operating system, and a web application development framework, with some pretty
-unique USPs. Among other things, it's extremely dynamic in nature, allowing for orchestrating your application
-building blocks together, almost the same way you would assemble LEGO bricks into creations.
+Phosphorus Five is an open source web operating system, and a web application development framework, with some
+pretty unique USPs. Among other things, it's extremely dynamic in nature, allowing for orchestrating your
+application building blocks together, almost the same way you would assemble LEGO bricks into creations.
 Phosphorus Five is built around three axioms, which you can read three MSDN Magazine articles about at the
-following URLs. Notice, these articles are fairly technical in nature, and intended for software developers.
+following URLs. Notice, these articles are intended for software developers.
 
 * [Active Events](https://msdn.microsoft.com/en-us/magazine/mt795187), providing a functional alternative to OOP, where polymorphism and encapsulation is being performed at the _"function level"_ instead of at the class level
 * [Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119), which is a natural consequence of Active Events
@@ -17,6 +17,10 @@ or C#, allowing you to create web apps much faster than what you'd achieve using
 Phosphorus Five is particularly well suited for _"enterprise types of web apps"_, managing data, using web forms
 and similar types of techniques - And probably not that well suited for apps that are intended to be massively
 scalable, such as social media platforms, required to respond to millions of web requests every day.
+
+* [Download Phosphorus Five's latest version](https://github.com/polterguy/phosphorusfive/releases)
+
+https://www.youtube.com/watch?v=BLll2Wx0yFo
 
 Phosphorus Five contains a whole range of apps, which we refer to as the _"GaiaSoul Suite"_, that allows you
 to rapidly create your web apps, one way or another. Some examples of such apps are given below.

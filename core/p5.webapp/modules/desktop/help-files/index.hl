@@ -5,7 +5,12 @@
  * for other files in the help system.
  */
 h2
-  innerValue:Phosphorus Five help files
+  innerValue:
+  oninit
+    desktop.version
+    set-widget-property:x:/../*/_event?value
+      innerValue:Phosphorus Five version {0}
+        :x:/@desktop.version?value
 
 img
   class:desktop-help-icon-image
@@ -53,6 +58,55 @@ container
     list-folders:@DESKTOP/help-files/
 
     /*
+     * Looping through each folders in "/help-files/" folder.
+     */
+    for-each:x:/@list-folders/*?name
+
+      /*
+       * Figuring out filename, without extension, and removing numbering parts.
+       */
+      split:x:/@_dp?value
+        =:/
+      replace:x:/@split/0/-?name
+        src:regex:/[0-9]+ - /
+
+      /*
+       * Creating a list item, containing a hyperlink button, which once clicked,
+       * loads and displays the specified help file.
+       */
+      create-widget
+        parent:x:/../*/_event?value
+        element:li
+        widgets
+          a
+            href:#
+            role:button
+            innerValue:x:/@replace?value
+            .folder:x:/@_dp?value
+            onclick
+
+              /*
+               * Retrieving file name, loading and displaying file, by invoking common
+               * widget lambda event, which does the heavy lifting for us.
+               */
+              get-widget-property:x:/../*/_event?value
+                .folder
+              desktop.help.display-file:{0}index.hl
+                :x:/@get-widget-property/*/*?value
+
+literal
+  element:h3
+  innerValue:Modules
+
+
+/*
+ * Sub-sections, these are basically folders beneath the root folder of our help system.
+ */
+container
+  element:ul
+  oninit
+
+    /*
      * Then retrieving all "help plugin folders".
      */
     .exe
@@ -61,14 +115,14 @@ container
           src:x:/@_dp?value
     vocabulary:~desktop.help-files.
     for-each:x:/@vocabulary/*?value
-      insert-before:x:/@.exe/0
+      insert-before:x:/@.exe/0/-
         src:x:/@_dp?value
     eval:x:/@.exe
 
     /*
      * Looping through each folders in "/help-files/" folder.
      */
-    for-each:x:/@list-folders/*|/@eval/*?name
+    for-each:x:/@eval/*?name
 
       /*
        * Figuring out filename, without extension, and removing numbering parts.

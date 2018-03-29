@@ -96,7 +96,7 @@ create-widgets
 
 The above code will produce something resembling the following.
 
-https://phosphorusfive.files.wordpress.com/2018/01/extension-widget-screenshot.png
+https://phosphorusfive.files.wordpress.com/2018/03/first-widget-screenshot.png
 
 The brilliance of this construct, is that we get to keep our code very _"DRY"_. DRY is another one of those
 acronyms that developers love, and it means _"Don't Repeat Yourself"_. If you repeat a lot of code, then

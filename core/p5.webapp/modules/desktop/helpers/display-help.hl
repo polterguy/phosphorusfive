@@ -115,6 +115,21 @@ create-widget:hyper-ide-help-wrapper
                             hyper-ide.help.go-next
 
                         button
+                          innerValue:@"<span class=""icon-link""></span>"
+                          title:Get the URL to the currently viewed help file
+                          onclick
+
+                            /*
+                             * Retrieving the URL for the currently viewed help file, and opening it
+                             * in a new browser window.
+                             */
+                            get-widget-property:hyper-ide-help-content
+                              .file
+                            p5.html.url-encode:x:/@get-widget-property/*/*?value
+                            p5.web.send-javascript:@"window.open('/?help={0}')"
+                              :x:/@p5.html.url-encode?value
+
+                        button
                           innerValue:@"<span class=""icon-pencil""></span>"
                           title:Edits the current help file
                           oninit
