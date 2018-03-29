@@ -34,7 +34,7 @@ connection string for your MySQL installation. This normally implies simply addi
 Phosphorus Five will run even without a valid MySQL database connection string - However, some of its apps will not function at all,
 or at their peak feature set.
 
-**Important** - If you use the source code version on Windows in Visual Studio, __make sure you turn off "browser sync" in Visual Studio__.
+**Important** - If you use the source code version on Windows in Visual Studio, _make sure you turn off "browser sync" in Visual Studio_.
 
 ## MSDN Magazine articles
 
