@@ -31,7 +31,7 @@ use the source code version.
 
 **Notice** - If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it contains the correct
 connection string for your MySQL installation. This normally implies simply adding your password to the existing connection string.
-Phosphorus Five will run even without a valid MySQL database connection string - However, some of its apps will not function at all,
+Phosphorus Five will run without a valid MySQL database connection string - However, some of its apps will not function at all,
 or at their peak feature set.
 
 **Important** - If you use the source code version on Windows in Visual Studio, _make sure you turn off "browser sync" in Visual Studio_.
