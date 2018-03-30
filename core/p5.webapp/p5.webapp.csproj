@@ -60,8 +60,9 @@
     <Content Include="Global.asax" />
     <Content Include="common\documents\private\web.config" />
     <Content Include="modules\desktop\media\help.css" />
-    <Content Include="modules\desktop\media\main.css" />
     <Content Include="users\README.md" />
+    <Content Include="modules\desktop\media\print-help.css" />
+    <Content Include="modules\desktop\media\logo.svg" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -304,8 +305,6 @@
     <None Include="modules\desktop\help-files\Plugins\index.hl" />
     <None Include="modules\desktop\help-files\01 - About Phosphorus Five.md" />
     <None Include="modules\desktop\help-files\02 - Phosphorus Five pro and cons.md" />
-    <None Include="modules\desktop\help-files\03 - License terms.md" />
-    <None Include="modules\desktop\help-files\04 - Credits and copyright information.md" />
     <None Include="modules\desktop\help-files\index.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
     <None Include="modules\desktop\startup\core\p5.error.LambdaException.hl" />
@@ -332,7 +331,9 @@
     <None Include="modules\desktop\startup\misc\desktop.license.check.hl" />
     <None Include="modules\desktop\helpers\create-documentation-pdf.hl" />
     <None Include="users\root\documents\private\README.md" />
-    <None Include="modules\desktop\help-files\05 - Modules meta information.hl" />
+    <None Include="modules\desktop\help-files\03 - Modules meta information.hl" />
+    <None Include="modules\desktop\help-files\04 - License terms.md" />
+    <None Include="modules\desktop\help-files\05 - Credits and copyright information.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>

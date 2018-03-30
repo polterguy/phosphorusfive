@@ -1,6 +1,6 @@
 ## Pros and cons with Phosphorus Five
 
-<img class="desktop-help-icon-image" src="/modules/hyper-ide/media/logo.svg" />
+<img class="desktop-help-icon-image" src="/modules/desktop/media/logo.svg" />
 
 The main idea with Phosphorus Five is to significantly simplify the development of web apps, that responsively
 renders on all devices. This implies that some _"shortcuts"_ has to be applied. Among other things, Phosphorus

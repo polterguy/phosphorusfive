@@ -1,6 +1,6 @@
 ## Credits and copyright information
 
-<img class="desktop-help-icon-image" src="/modules/hyper-ide/media/logo.svg" />
+<img class="desktop-help-icon-image" src="/modules/desktop/media/logo.svg" />
 
 * [Phosphorus Five](https://github.com/polterguy/phosphorusfive) - Copyright © 2014-2018 Thomas Hansen
 * [.Net Framework](https://www.microsoft.com/net/download) - Copyright © 2000-2018 Microsoft Corporation
