@@ -18,15 +18,6 @@ micro.css.include
 
 
 /*
- * Including main desktop CSS file.
- */
-p5.web.include-css-file:@DESKTOP/media/main.css
-
-
-
-
-
-/*
  * Creating main content container.
  */
 create-container-widget:desktop-main-container
