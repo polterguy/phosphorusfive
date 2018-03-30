@@ -1,4 +1,3 @@
-
 /*
  * Creates the event that checks if the license is valid, and if not, displays a "purchase modal widget".
  */
@@ -17,6 +16,7 @@ create-event:desktop.license.check
 
   /*
    * We only display the purchasing options for a "root account".
+   *
    * For other requests, we simply inject a widget informing the user about his rights.
    */
   whoami
@@ -130,7 +130,7 @@ somewhere, in case you need to re-install your server, or go back to an earlier 
                                 style:"max-width:80%;margin-left: auto; margin-right: auto;display: block;border-radius: .5rem; box-shadow: 3px 3px 5px rgba(0,0,0,.2);"
                                 class:air-bottom
                                 src:@"https://phosphorusfive.files.wordpress.com/2018/03/license-installation-instructions-screenshot.png"
-                        
+
 
           a
             href:#
