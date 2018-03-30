@@ -27,7 +27,7 @@ create-widgets
             /*
              * Adding item to grid
              */
-            eval-x:x:/+/*/*/*|/+/**(/.app-name|/.app-description)
+            eval-x:x:/+/*/*/*|/+/**/.app-name
             add:x:/../*/micro.widgets.grid.databind
               src
                 item
@@ -46,15 +46,9 @@ create-widgets
                           .app-name:x:/@_dp/#?name
 
                           /*
-                           * Retrieving app's description.
-                           */
-                          .app-description:x:/@_dp/#/*/description?value
-                          markdown2html:x:/@.app-description?value
-
-                          /*
                            * Making sure user confirms uninstallation, with another modal widget.
                            */
-                          eval-x:x:/+/*/*/*/h3/*/innerValue|/+/**/div/=app-description/*
+                          eval-x:x:/+/*/*/*/h3/*/innerValue
                           create-widgets
                             micro.widgets.modal:desktop-confirm-uninstallation
                               widgets
@@ -66,9 +60,7 @@ create-widgets
                                         :x:/@.app-name?value
                                     p
                                       innerValue:@"<strong>Warning</strong> - This action is permanent, and will entirely delete your module, and uninstall it from your Phosphorus Five installation.
-Are you sure you want to continue? Below is the developer's description of the module."
-                                div:app-description
-                                  innerValue:x:/@markdown2html?value
+Are you sure you want to continue?"
                                 div
                                   class:strip right
                                   widgets

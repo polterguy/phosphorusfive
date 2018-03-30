@@ -1,6 +1,6 @@
 # Desktop
 
-This is the desktop module for [Phosphorus Five](https://github.com/polterguy/phosphorusfive). It is normally the
+This is the _"desktop"_ module for [Phosphorus Five](https://github.com/polterguy/phosphorusfive). It is normally the
 module that can be found at your server's root URL. It contains several helper events, necessary for your system
 to function - In addition to that it allows you to easily launch your other modules, as a _"starter menu"_.
 

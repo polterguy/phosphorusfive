@@ -1,0 +1,241 @@
+/*
+ * Displays meta information about modules, by dynamically querying
+ * them for information.
+ */
+h2
+  innerValue:Modules
+img
+  class:desktop-help-icon-image
+  src:modules/hyper-ide/media/logo.svg
+p
+  innerValue:Click any module to retrieve additional information about it.
+
+ul
+  oninit
+
+    /*
+     * Retrieves all installed modules, and displays their names, with
+     * the ability to retrieve more information about them.
+     */
+    desktop.modules.list
+    for-each:x:/@desktop.modules.list/*
+      create-widget
+        element:li
+        parent:x:/../*/_event?value
+        widgets
+          a
+            href:#
+            innerValue:x:/@_dp/#?name
+            .description:x:/@_dp/#/*/description?value
+            onclick
+
+              /*
+               * Displays the description for module, its icon, and additional
+               * information about it.
+               */
+              set-widget-property:modules-meta-info
+                visible:true
+              clear-widget:modules-meta-info
+              get-widget-property:x:/../*/_event?value
+                .description
+                innerValue
+              markdown2html:x:/@get-widget-property/*/*/.description?value
+              create-widget
+                parent:modules-meta-info
+                element:div
+                innerValue:x:/@markdown2html?value
+
+              /*
+               * Checking if there exists an icon file for module.
+               */
+              if
+                fetch:x:/0/0?value
+                  file-exists:/modules/{0}/desktop.hl
+                    :x:/@get-widget-property/*/*/innerValue?value
+                load-file:/modules/{0}/desktop.hl
+                  :x:/@get-widget-property/*/*/innerValue?value
+                add:x:/./*/create-widgets
+                  src:x:/@load-file/*/*
+                add:x:/./*/create-widgets/*
+                  src
+                    parent:modules-meta-info
+                    position:0
+                add:x:/./*/create-widgets/*
+                  src
+                    style:"float:right; display:block; margin-left:1rem;"
+                eval-x:x:/+/*/*
+                add:x:/./*/create-widgets/*
+                  src
+                    href:x:/@get-widget-property/*/*/innerValue?value
+                create-widgets
+
+              /*
+               * Creating View Meta button.
+               */
+              eval-x:x:/+/**/desktop.help.view-module-meta-information
+              create-widget
+                parent:modules-meta-info
+                element:button
+                style:"float:right;"
+                innerValue:View meta information
+                onclick
+
+                  /*
+                   * Invoking event responsible for displaying
+                   * additional meta information about module.
+                   */
+                  desktop.help.view-module-meta-information:x:/@get-widget-property/*/*/innerValue?value
+
+  widgets
+
+div:modules-meta-info
+  visible:false
+  class:success air-inner rounded shaded
+  widgets
+  events
+
+    /*
+     * Recursively returns all Hyperlambda files from given [_arg] folder,
+     * and returns them to caller.
+     */
+    desktop.help.get-files
+      list-files:x:/../*/_arg?value
+        filter:.hl
+      add:x:/../*/return
+        src:x:/@list-files/*?name
+      list-folders:x:/../*/_arg?value
+      for-each:x:/@list-folders/*?name
+        add:x:/../*/return
+          desktop.help.get-files:x:/@_dp?value
+      return
+
+
+    /*
+     * Displays additional meta information about module.
+     *
+     * Expects [_arg] being module's name.
+     */
+    desktop.help.get-events
+      .signal
+      for-each:x:/@.signal/--(!/_event)/<-?name
+        load-file:x:/@_dp?value
+        for-each:x:/@load-file/**/create-event?value
+          add:x:/../*/return
+            src:x:/@_dp?value
+      return
+
+
+    /*
+     * Displays meta information about a single event in a modal widget.
+     */
+    desktop.help.display-single-event
+      micro.lambda.contract.get:x:/../*/_arg?value
+      if:x:/@micro.lambda.contract.get/*/*
+        not
+        micro.windows.info:No lambda contract for specified event
+          class:micro-windows-info warning
+        return
+      eval-x:x:/+/*/*/*/*
+      create-widgets
+        micro.widgets.modal
+          widgets
+            h3
+              innerValue:Lambda contract for event
+            pre
+              innerValue:x:/@micro.lambda.contract.get/0
+
+
+    /*
+     * Displays additional meta information about module.
+     *
+     * Expects [_arg] being module's name.
+     */
+    desktop.help.view-module-meta-information
+
+      /*
+       * Retrieving all files inside of module.
+       */
+      desktop.help.get-files:/modules/{0}/
+        :x:/@_arg?value
+
+      /*
+       * Retrieving all events created by above files.
+       */
+      add:x:/+
+        src:x:/@desktop.help.get-files/*
+      desktop.help.get-events
+
+      /*
+       * Databinding our "events" section.
+       */
+      apply:x:/../*/create-widget/*/widgets/=events
+        src:x:/@desktop.help.get-events/*
+        template
+          li
+            widgets
+              a
+                href:#
+                {innerValue}:x:?name
+                onclick
+                  get-widget-property:x:/../*/_event?value
+                    innerValue
+                  desktop.help.display-single-event:x:/@get-widget-property/*/*?value
+
+      /*
+       * Creating a header for our "events" section.
+       */
+      create-widget
+        parent:modules-meta-info
+        element:h2
+        innerValue:Events created by module
+
+      /*
+       * List of events.
+       */
+      create-widget
+        parent:modules-meta-info
+        element:ol
+        widgets:events
+
+      /*
+       * Databinding our files list differently according to whether or
+       * not Hyper IDE is open.
+       *
+       * If Hyper IDE is open, we allow for clicking the files, to view its content.
+       */
+      if
+        hyper-ide.is-open
+        apply:x:/../*/create-widget/*/widgets/=files
+          src:x:/@desktop.help.get-files/*
+          template
+            li
+              widgets
+                a
+                  href:#
+                  {innerValue}:x:?name
+                  onclick
+                    get-widget-property:x:/../*/_event?value
+                      innerValue
+                    hyper-ide.folder-explorer.select-path:x:/@get-widget-property/*/*?value
+      else
+        apply:x:/../*/create-widget/*/widgets/=files
+          src:x:/@desktop.help.get-files/*
+          template
+            li
+              {innerValue}:x:?name
+
+      /*
+       * Creating a header for our "files" section.
+       */
+      create-widget
+        parent:modules-meta-info
+        element:h2
+        innerValue:Hyperlambda files
+
+      /*
+       * List of files.
+       */
+      create-widget
+        parent:modules-meta-info
+        element:ol
+        widgets:files
