@@ -40,10 +40,15 @@ ul
                 .description
                 innerValue
               markdown2html:x:/@get-widget-property/*/*/.description?value
+              html2lambda:x:/@markdown2html?value
+              add:x:/@html2lambda/**/img
+                src
+                  @style:"display:block;margin-left:auto;margin-right:auto;border-radius:.5rem;box-shadow:3px 3px 5px rgba(0,0,0,.2);"
+              lambda2html:x:/@html2lambda/*
               create-widget
                 parent:modules-meta-info
                 element:div
-                innerValue:x:/@markdown2html?value
+                innerValue:x:/@lambda2html?value
 
               /*
                * Checking if there exists an icon file for module.

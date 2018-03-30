@@ -332,6 +332,7 @@
     <None Include="modules\desktop\startup\misc\desktop.license.check.hl" />
     <None Include="modules\desktop\helpers\create-documentation-pdf.hl" />
     <None Include="users\root\documents\private\README.md" />
+    <None Include="modules\desktop\help-files\05 - Modules meta information.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
