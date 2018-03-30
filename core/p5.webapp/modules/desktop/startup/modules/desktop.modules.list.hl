@@ -13,4 +13,22 @@ create-event:desktop.modules.list
       =:/
     add:x:/../*/return
       src:x:/@split/0/-?name
+
+    /*
+     * Checking if there exists a README.md file for current module.
+     */
+    if
+      fetch:x:/0/0?value
+        file-exists:{0}README.md
+          :x:/@_dp?value
+      load-file:{0}README.md
+        :x:/@_dp?value
+      eval-x:x:/+/*/*
+      add:x:/../*/return/0/-
+        src
+          description:x:/@load-file/*?value
+
+  /*
+   * Returning modules to caller.
+   */
   return

@@ -1,9 +1,16 @@
-The main desktop for the "micro web operating system"
-========
+# Desktop
 
-This folder contains all the files relevant to the desktop of your tiny "micro web operating system". It basically creates
-a launcher desktop environment for your root URL, and allows your users to launch which ever apps they have installed
-in their _"/modules/"_ folder.
+This is the desktop module for [Phosphorus Five](https://github.com/polterguy/phosphorusfive). It is normally the
+module that can be found at your server's root URL. It contains several helper events, necessary for your system
+to function - In addition to that it allows you to easily launch your other modules, as a _"starter menu"_.
 
-If you do not want to use this feature of Phosphorus Five, you can simply delete the entire folder, at which point you're
-gonne have to create your own **[p5.web.load-ui]** URL resolver yourself.
+## Installation
+
+Desktop is automatically installed when you install Phosphorus Five.
+
+## License
+
+Desktop is free and open source software, and licensed under the terms
+of the Gnu Public License, version 3, in addition to that a proprietary enabling license is available for a fee.
+
+* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)

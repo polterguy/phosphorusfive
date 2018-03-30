@@ -21,23 +21,17 @@ create-widgets
           /*
            * Checking which apps are installed, and creating one grid row for each app.
            */
-          list-folders:/modules/
-          for-each:x:/@list-folders/*?name
-
-            /*
-             * Figuring out app's name.
-             */
-            split:x:/@_dp?value
-              =:/
+          desktop.modules.list
+          for-each:x:/@desktop.modules.list/*
 
             /*
              * Adding item to grid
              */
-            eval-x:x:/+/*/*/*|/+/**/.app-name
+            eval-x:x:/+/*/*/*|/+/**(/.app-name|/.app-description)
             add:x:/../*/micro.widgets.grid.databind
               src
                 item
-                  Name:x:/@split/0/-?name
+                  Name:x:/@_dp/#?name
                   Uninstall
                     style:"width:5px;"
                     widgets
@@ -49,12 +43,18 @@ create-widgets
                           /*
                            * Forward evaluated above.
                            */
-                          .app-name:x:/@split/0/-?name
+                          .app-name:x:/@_dp/#?name
+
+                          /*
+                           * Retrieving app's description.
+                           */
+                          .app-description:x:/@_dp/#/*/description?value
+                          markdown2html:x:/@.app-description?value
 
                           /*
                            * Making sure user confirms uninstallation, with another modal widget.
                            */
-                          eval-x:x:/+/*/*/*/h3/*/innerValue
+                          eval-x:x:/+/*/*/*/h3/*/innerValue|/+/**/div/=app-description/*
                           create-widgets
                             micro.widgets.modal:desktop-confirm-uninstallation
                               widgets
@@ -66,7 +66,9 @@ create-widgets
                                         :x:/@.app-name?value
                                     p
                                       innerValue:@"<strong>Warning</strong> - This action is permanent, and will entirely delete your module, and uninstall it from your Phosphorus Five installation.
-    Are you sure you want to continue?"
+Are you sure you want to continue? Below is the developer's description of the module."
+                                div:app-description
+                                  innerValue:x:/@markdown2html?value
                                 div
                                   class:strip right
                                   widgets
@@ -77,7 +79,7 @@ create-widgets
                                         /*
                                          * Forward evaluated above.
                                          */
-                                        .app-name:x:/@split/0/-?name
+                                        .app-name:x:/@_dp/#?name
 
                                         /*
                                          * Uninstalling app, wrapping our attempt in a try/catch block,
@@ -85,8 +87,7 @@ create-widgets
                                          * not successful.
                                          */
                                         try
-                                          desktop.modules.uninstall:/modules/{0}/
-                                            :x:/@.app-name?value
+                                          desktop.modules.uninstall:x:/@.app-name?value
                                         catch
                                           micro.windows.info:x:/@message?value
                                             class:micro-windows-info warning
