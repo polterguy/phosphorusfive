@@ -1,7 +1,18 @@
 /*
- * Creates the event that checks if the license is valid, and if not, displays a "purchase modal widget".
+ * Creates the event that checks if the license is valid, and if not, 
+ * displays a "purchase modal widget".
+ *
+ * Optionally supply a [force] argument, and set its value to "true" to
+ * force the creation of this window, even though it has been previously
+ * shown during the current session of the user.
  */
 create-event:desktop.license.check
+
+  /*
+   * Sanity checking arguments.
+   */
+  micro.lambda.contract.optional:x:/..
+    force:bool
 
   /*
    * Checks if license is valid, and if so, returning immediately.
@@ -30,6 +41,8 @@ create-event:desktop.license.check
      */
     p5.web.session.get:desktop.license-info-shown
     if:x:/@p5.web.session.get/*?value
+      and:x:/../*/force?value
+        !=:bool:true
 
       /*
        * We have already warned user during the current session.
@@ -57,14 +70,20 @@ create-event:desktop.license.check
             innerValue:This is Free Software software
           img
             src:@"https://phosphorusfive.files.wordpress.com/2018/02/thomas.jpg"
-            style:"max-width:25%;margin-left:1rem;float:right;border-radius: .5rem; box-shadow: 3px 3px 5px rgba(0,0,0,.2);"
+            style:"max-width:25%;margin-left:1rem;margin-bottom:1rem;float:right;border-radius: .5rem; box-shadow: 3px 3px 5px rgba(0,0,0,.2);"
           p
-            innerValue:@"Phosphorus Five is distributed under the terms of the GPL version 3. This does <strong>not</strong>
-allow you to create proprietary (closed source) software, <strong>unless</strong> you have bought a proprietary license from me."
+            class:justify
+            innerValue:@"Phosphorus Five is distributed under the terms of the GPL license version 3. This does <em>not</em>
+allow you to create proprietary (closed source) software, <em>unless</em> you have bought a proprietary license from me."
           p
-            innerValue:@"If you want to create closed source software, you
-will have to purchase a commercial license from me below. A proprietary license will cost you 498€, and is valid for one
-single server or development machine."
+            class:justify
+            innerValue:@"If you want to create closed source software, and you want to remove the <em>'promotional link'</em>
+that is injected on your modules - You have to purchase a proprietary license from me below. A proprietary
+license will cost you 498€, and is valid for a single machine. If you purchase a license, you will also be entitled to
+extended support, and you will gain access to a backup/build-system module called Hyperbuild."
+          p
+            class:justify
+            innerValue:@"All purchases comes with a 30 days money back guarantee. No questions asked!"
 
           /*
            * Our actual PayPal button, allowing the user to purchase a license.
@@ -106,8 +125,9 @@ single server or development machine."
                                 innerValue:Thank you
                               p
                                 innerValue:@"Thank you for supporting me, and Phosphorus Five. Contributions such as yours, to obtain proprietary licensing
-options, ensures that I can continue to create and deliver great software to you. As a bonus, I have included a link to 'Hyperbuild'
-for you below, which allows you to create backups of your system. Feel free to download it now, you can install it later."
+options, ensures that I can continue to create and deliver great software to you. As a bonus, I have included a link to <em>'Hyperbuild'</em>
+for you below, which allows you to create backups of your system, and replicate it to create your own custom builds.
+Feel free to download Hyperbuild now - You can install it later."
                               ul
                                 widgets
                                   li
@@ -121,7 +141,7 @@ for you below, which allows you to create backups of your system. Feel free to d
                                 innerValue:Thomas Hansen
                               h3
                                 class:center
-                                innerValue:Installation instructions
+                                innerValue:License installation instructions
                               p
                                 innerValue:@"Go to your main desktop, click the '+' button, and upload your license file to your server.
 Then click the 'Install' button. Below is a screenshot of how this should look like. Notice, you might want to keep your license file securely stored

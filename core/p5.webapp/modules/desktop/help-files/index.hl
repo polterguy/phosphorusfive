@@ -176,6 +176,52 @@ p
 the bird, which you can find at the top of this article. You can also contact me at thomas@gaiasoul.com, if you
 want to interview me for some reasons, or need additional information about the system."
 
+div
+  oninit
+    if
+      license.is-valid
+      set-widget-property:x:/../*/_event?value
+        visible:false
+  widgets
+    h3
+      innerValue:Purchase proprietary license
+
+    p
+      innerValue:@"Although Phosphorus Five is Open Source, it features what is commonly referred to as a <em>'Dual License option'</em>.
+This requires you to obtain a proprietary license to be able to (legally) create Close Source applications.
+Also realise that selling such licenses is actually my sole source of income, and by you purchasing a proprietary license
+from me, allows me to focus on creating new features and fixing bugs for you. Below is a button will allow you
+to purchase a proprietary license of the system, and such give me the monetary means to continue my work, which is
+to make your job easier. Please conside purchasing a proprietary license for Phosphorus Five. All payments are secured by PayPal."
+    div
+      class:center
+      widgets
+        a
+          href:#
+          class:jumbo-button
+          widgets
+            span
+              innerValue:Purchase license
+            literal
+              element:span
+              class:icon-paypal
+              onclick
+
+                /*
+                 * Creating a lambda object for being evaluated on next pageload,
+                 * before we reload the page.
+                 */
+                desktop.evaluate.on-next-pageload
+                  lambda
+                    desktop.help.display:@DESKTOP/help-files/index.hl
+                    desktop.license.check
+                      force:bool:true
+
+                /*
+                 * Reloading location.
+                 */
+                p5.web.reload-location
+
 h3
   innerValue:Print documentation
 
