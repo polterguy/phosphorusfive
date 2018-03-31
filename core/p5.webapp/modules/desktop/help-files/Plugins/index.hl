@@ -6,7 +6,7 @@ h2
 
 img
   class:desktop-help-icon-image
-  src:"https://phosphorusfive.files.wordpress.com/2018/03/2000px-plastic_brick_red-svg.png"
+  src:"https://phosphorusfive.files.wordpress.com/2018/03/plugin-icon.png"
 
 p
   innerValue:@"Here you can find the reference documentation for all the plugins in Phosphorus Five.

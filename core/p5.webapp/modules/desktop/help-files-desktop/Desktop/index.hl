@@ -6,7 +6,7 @@ h2
 
 img
   class:desktop-help-icon-image
-  src:"https://phosphorusfive.files.wordpress.com/2018/03/wikipedia_logo_3d_gold.png"
+  src:"https://phosphorusfive.files.wordpress.com/2018/03/rocket-desktop.png"
 
 p
   innerValue:@"The Desktop module is the GUI interface for Phosphorus Five, and responsible for loading up your modules, and
@@ -30,7 +30,7 @@ container
     /*
      * Retrieving all other Hyperlambda files in the help folder.
      */
-    list-files:@DESKTOP/help-files/Desktop/
+    list-files:@DESKTOP/help-files-desktop/Desktop/
       filter:.hl|.md
 
     /*

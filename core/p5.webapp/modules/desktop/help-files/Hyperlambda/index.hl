@@ -7,7 +7,7 @@ h2
 
 img
   class:desktop-help-icon-image
-  src:"https://phosphorusfive.files.wordpress.com/2018/03/768px-lambda_lc-svg.png"
+  src:"https://phosphorusfive.files.wordpress.com/2018/03/lambda-hyper.png"
 
 p
   innerValue:@"Welcome to <em>'The Guide'</em> to Hyperlambda. Hyperlambda is a programming language explicitly created for Phosphorus Five,
