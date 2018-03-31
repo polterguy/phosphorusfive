@@ -189,10 +189,14 @@ div
     p
       innerValue:@"Although Phosphorus Five is Open Source, it features what is commonly referred to as a <em>'Dual License option'</em>.
 This requires you to obtain a proprietary license to be able to (legally) create Close Source applications.
-Also realise that selling such licenses is actually my sole source of income, and by you purchasing a proprietary license
-from me, allows me to focus on creating new features and fixing bugs for you. Below is a button will allow you
-to purchase a proprietary license of the system, and such give me the monetary means to continue my work, which is
-to make your job easier. Please conside purchasing a proprietary license for Phosphorus Five. All payments are secured by PayPal."
+Also realise that selling licenses is my sole source of income, and my users' willingness to purchase such
+licenses from me, is what makes it possible for me to continue developing Phosphorus Five, creating value for you.
+Below is a button you can click to purchase a proprietary license, and such give me the monetary
+means to continue my work, which is to make <em>your job easier</em>. All payments are secured by PayPal, and I provide
+a 30 day money back guarantee. For quantum discounts (above 4 licenses), please contact me on thomas@gaiasoul.com.
+Quantum discounts starts at 20% for 5 licenses or more. I also provide additional services for enterprises, such as
+code reviews, creation of custom modules, and similar constructs - However, such services starts at a much higher entry
+point than a single machine license."
     div
       class:center
       widgets
