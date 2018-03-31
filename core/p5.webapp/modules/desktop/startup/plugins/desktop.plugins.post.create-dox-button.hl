@@ -1,4 +1,3 @@
-
 /*
  * Creates our plugin Active Event, that creates a "View Documentation" button on all modules with a toolbar.
  */
@@ -10,6 +9,20 @@ create-event:desktop.plugins.post.create-dox-button
   p5.web.widgets.find-first-like
     class:toolbar
   if:x:/@p5.web.widgets.find-first-like/*/*?value
+
+    /*
+     * Verifying user has access to help.
+     */
+    if
+      p5.auth.has-access-to-path:bool:false
+        filter:p5.module
+        path:/modules/desktop/help/
+      not
+
+      /*
+       * User doesn't have access to this module.
+       */
+      return
 
     /*
      * Inserting our widget as the second last widget into our "toolbar", if possible.

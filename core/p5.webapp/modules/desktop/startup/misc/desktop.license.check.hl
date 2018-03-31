@@ -19,6 +19,8 @@ create-event:desktop.license.check
    */
   if
     license.is-valid
+    and:x:/../*/force?value
+      !=:bool:true
 
     /*
      * User has a valid license, nothing to do here.
@@ -33,6 +35,8 @@ create-event:desktop.license.check
   whoami
   if:x:/@whoami/*/role?value
     =:root
+    or:x:/../*/force?value
+      =:bool:true
 
     /*
      * This is a root account.
