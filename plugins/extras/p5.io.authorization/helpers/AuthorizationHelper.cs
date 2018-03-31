@@ -51,7 +51,7 @@ namespace p5.io.authorization.helpers
                 // Making sure we do a lowers comparison.
                 if (!UserHasReadAccessToFile (context, filename.ToLowerInvariant ()))
                     throw new LambdaException (
-                        string.Format ("File '{0}' is off limits", filename),
+                        string.Format ("Access denied to '{0}'", filename),
                         stack,
                         context);
             }
@@ -75,7 +75,7 @@ namespace p5.io.authorization.helpers
                 // Making sure we do a lowers comparison.
                 if (!UserHasWriteAccessToFile (context, filename.ToLowerInvariant ()))
                     throw new LambdaException (
-                        string.Format ("File '{0}' is off limits", filename),
+                        string.Format ("Access denied to '{0}'", filename),
                         stack,
                         context);
             }
@@ -99,7 +99,7 @@ namespace p5.io.authorization.helpers
                 // Making sure we do a lowers comparison.
                 if (!UserHasReadAccessToFolder (context, foldername.ToLowerInvariant ()))
                     throw new LambdaException (
-                        string.Format ("Folder '{0}' is off limits", foldername),
+                        string.Format ("Access denied to '{0}'", foldername),
                         stack,
                         context);
             }
@@ -124,7 +124,7 @@ namespace p5.io.authorization.helpers
                 // Making sure we do a lowers comparison.
                 if (!UserHasWriteAccessToFolder (context, foldername.ToLowerInvariant ()))
                     throw new LambdaException (
-                        string.Format ("Folder '{0}' is off limits", foldername),
+                        string.Format ("Access denied to '{0}'", foldername),
                         stack,
                         context);
             }
