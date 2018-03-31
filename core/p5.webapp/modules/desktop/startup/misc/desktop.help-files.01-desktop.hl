@@ -1,0 +1,6 @@
+/*
+ * Help file Active Event sink.
+ */
+create-event:desktop.help-files.01-desktop
+
+  return:@DESKTOP/help-files-desktop/Desktop/

@@ -18,8 +18,7 @@ img
 
 p
   innerValue:@"Welcome to the help files for Phosphorus Five. These help files can be launched from within any module, and will guide you through
-both standard usage of Phosphorus Five, and its modules - In addition to how to create your own apps. This allows you to have these
-help files open from within the module you want to learn about."
+standard usage of Phosphorus Five, and its modules - In addition to how to create your own apps."
 
 p
   innerValue:@"These documentation files, are carefully created such that they should bring you up from
@@ -160,15 +159,14 @@ h3
   innerValue:Supplying a patch
 
 p
-  innerValue:@"Notice, for legal reasons I don't accept patches for Phosphorus Five. This is true regardless of
-what an amazingly skilled software developer you are. However, if you send me one or two lines of code, or accurately describe
-a bug or a problem, I would be happy to assist you. I prefer accepting such requests at
+  innerValue:@"Notice, for legal reasons I don't accept patches for Phosphorus Five. However, if you send me one or
+two lines of code, or accurately describe a bug or a problem - I would be happy to assist you. I prefer accepting such requests at
 the <a href=""https://github.com/polterguy/phosphorusfive"">GitHub project website</a>, for obvious reasons. It
 is also extremely easy to create your own modules and plugins for Phosphorus Five, extending it, if you find
 it lacking some favourite feature of yours."
 
 p
-  innerValue:For ethical reasons, I don't wrap software components or libraries that are not Open Source in nature! At least not into the core itself.
+  innerValue:For ethical reasons, I don't wrap software components or libraries that are not Open Source in nature.
 
 h3
   innerValue:Press

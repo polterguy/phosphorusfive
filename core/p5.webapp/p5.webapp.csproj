@@ -117,6 +117,8 @@
     <Folder Include="common\temp\" />
     <Folder Include="modules\desktop\startup\authentication\" />
     <Folder Include="users\root\documents\private\" />
+    <Folder Include="modules\desktop\help-files-desktop\" />
+    <Folder Include="modules\desktop\help-files-desktop\Desktop\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -253,11 +255,6 @@
     <None Include="modules\desktop\helpers\install-new-module.hl" />
     <None Include="modules\desktop\helpers\settings.hl" />
     <None Include="modules\desktop\helpers\uninstall-module.hl" />
-    <None Include="modules\desktop\help-files\Desktop\01 - Introduction.md" />
-    <None Include="modules\desktop\help-files\Desktop\02 - API - Overview.md" />
-    <None Include="modules\desktop\help-files\Desktop\03 - API - Installation and Uninstallation of modules.md" />
-    <None Include="modules\desktop\help-files\Desktop\04 - API - Help system.md" />
-    <None Include="modules\desktop\help-files\Desktop\index.hl" />
     <None Include="modules\desktop\help-files\Hyperlambda\01 - Introduction.md" />
     <None Include="modules\desktop\help-files\Hyperlambda\02 - An Ajax primer.md" />
     <None Include="modules\desktop\help-files\Hyperlambda\03 - Ajax Widgets.md" />
@@ -275,33 +272,6 @@
     <None Include="modules\desktop\help-files\Hyperlambda\20 - Iterator appendix.md" />
     <None Include="modules\desktop\help-files\Hyperlambda\21 - Boolean algebraic expressions.md" />
     <None Include="modules\desktop\help-files\Hyperlambda\index.hl" />
-    <None Include="modules\desktop\help-files\Plugins\03 - P5 Data.md" />
-    <None Include="modules\desktop\help-files\Plugins\04 - P5 Events.md" />
-    <None Include="modules\desktop\help-files\Plugins\05 - P5 Hyperlambda.md" />
-    <None Include="modules\desktop\help-files\Plugins\06 - P5 IO.md" />
-    <None Include="modules\desktop\help-files\Plugins\07 - P5 Lambda.md" />
-    <None Include="modules\desktop\help-files\Plugins\08 - P5 Math.md" />
-    <None Include="modules\desktop\help-files\Plugins\09 - P5 Strings.md" />
-    <None Include="modules\desktop\help-files\Plugins\10 - P5 Types.md" />
-    <None Include="modules\desktop\help-files\Plugins\11 - P5 Web.md" />
-    <None Include="modules\desktop\help-files\Plugins\12 - P5 Auth.md" />
-    <None Include="modules\desktop\help-files\Plugins\13 - P5 Crypto.md" />
-    <None Include="modules\desktop\help-files\Plugins\14 - P5 CSV.md" />
-    <None Include="modules\desktop\help-files\Plugins\15 - P5 FlickrNet.md" />
-    <None Include="modules\desktop\help-files\Plugins\16 - P5 HTML.md" />
-    <None Include="modules\desktop\help-files\Plugins\17 - P5 HTTP.md" />
-    <None Include="modules\desktop\help-files\Plugins\18 - P5 Imaging.md" />
-    <None Include="modules\desktop\help-files\Plugins\19 - P5 IO authorization.md" />
-    <None Include="modules\desktop\help-files\Plugins\20 - P5 IO Zip.md" />
-    <None Include="modules\desktop\help-files\Plugins\21 - P5 JSON.md" />
-    <None Include="modules\desktop\help-files\Plugins\22 - P5 Mail.md" />
-    <None Include="modules\desktop\help-files\Plugins\23 - P5 Markdown.md" />
-    <None Include="modules\desktop\help-files\Plugins\24 - P5 MIME.md" />
-    <None Include="modules\desktop\help-files\Plugins\25 - P5 MySQL.md" />
-    <None Include="modules\desktop\help-files\Plugins\26 - P5 PDF.md" />
-    <None Include="modules\desktop\help-files\Plugins\27 - P5 Threading.md" />
-    <None Include="modules\desktop\help-files\Plugins\28 - P5 XML.md" />
-    <None Include="modules\desktop\help-files\Plugins\29 - Creating your own plugins.md" />
     <None Include="modules\desktop\help-files\Plugins\index.hl" />
     <None Include="modules\desktop\help-files\01 - About Phosphorus Five.md" />
     <None Include="modules\desktop\help-files\02 - Phosphorus Five pro and cons.md" />
@@ -334,6 +304,40 @@
     <None Include="modules\desktop\help-files\03 - Modules meta information.hl" />
     <None Include="modules\desktop\help-files\04 - License terms.md" />
     <None Include="modules\desktop\help-files\05 - Credits and copyright information.md" />
+    <None Include="modules\desktop\help-files\Plugins\03 - p5.data.md" />
+    <None Include="modules\desktop\help-files\Plugins\04 - p5.events.md" />
+    <None Include="modules\desktop\help-files\Plugins\05 - p5.hyperlambda.md" />
+    <None Include="modules\desktop\help-files\Plugins\06 - p5.io.md" />
+    <None Include="modules\desktop\help-files\Plugins\07 - p5.lambda.md" />
+    <None Include="modules\desktop\help-files\Plugins\08 - p5.math.md" />
+    <None Include="modules\desktop\help-files\Plugins\09 - p5.strings.md" />
+    <None Include="modules\desktop\help-files\Plugins\10 - p5.types.md" />
+    <None Include="modules\desktop\help-files\Plugins\11 - p5.web.md" />
+    <None Include="modules\desktop\help-files\Plugins\12 - p5.auth.md" />
+    <None Include="modules\desktop\help-files\Plugins\13 - p5.crypto.md" />
+    <None Include="modules\desktop\help-files\Plugins\14 - p5.csv.md" />
+    <None Include="modules\desktop\help-files\Plugins\15 - p5.flickrnet.md" />
+    <None Include="modules\desktop\help-files\Plugins\16 - p5.html.md" />
+    <None Include="modules\desktop\help-files\Plugins\17 - p5.http.md" />
+    <None Include="modules\desktop\help-files\Plugins\18 - p5.imaging.md" />
+    <None Include="modules\desktop\help-files\Plugins\19 - p5.io.authorization.md" />
+    <None Include="modules\desktop\help-files\Plugins\20 - p5.io.zip.md" />
+    <None Include="modules\desktop\help-files\Plugins\21 - p5.json.md" />
+    <None Include="modules\desktop\help-files\Plugins\22 - p5.mail.md" />
+    <None Include="modules\desktop\help-files\Plugins\23 - p5.markdown.md" />
+    <None Include="modules\desktop\help-files\Plugins\24 - p5.mime.md" />
+    <None Include="modules\desktop\help-files\Plugins\25 - p5.mysql.md" />
+    <None Include="modules\desktop\help-files\Plugins\26 - p5.pdf.md" />
+    <None Include="modules\desktop\help-files\Plugins\27 - p5.threading.md" />
+    <None Include="modules\desktop\help-files\Plugins\28 - p5.xml.md" />
+    <None Include="modules\desktop\help-files\Plugins\29 - p5.webapp.md" />
+    <None Include="modules\desktop\help-files\Plugins\30 - Creating your own plugins.md" />
+    <None Include="modules\desktop\help-files-desktop\Desktop\01 - Introduction.md" />
+    <None Include="modules\desktop\help-files-desktop\Desktop\02 - API - Overview.md" />
+    <None Include="modules\desktop\help-files-desktop\Desktop\03 - API - Installation and Uninstallation of modules.md" />
+    <None Include="modules\desktop\help-files-desktop\Desktop\04 - API - Help system.md" />
+    <None Include="modules\desktop\help-files-desktop\Desktop\index.hl" />
+    <None Include="modules\desktop\startup\misc\desktop.help-files.01-desktop.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

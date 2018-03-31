@@ -4,6 +4,8 @@ This is the _"desktop"_ module for Phosphorus Five. It is normally the
 module that can be found at your server's root URL. It contains several helper events, necessary for your system
 to function, such as your help system, launching of modules, etc.
 
+![screenshot](https://phosphorusfive.files.wordpress.com/2018/03/desktop-screenshot1.png)
+
 ## Installation
 
 The Desktop module is automatically installed when you install Phosphorus Five.

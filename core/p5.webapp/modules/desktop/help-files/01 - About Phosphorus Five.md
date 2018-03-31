@@ -8,7 +8,7 @@ application building blocks together, almost the same way you would assemble LEG
 Phosphorus Five is built around three axioms, which you can read three MSDN Magazine articles about at the
 following URLs. Notice, these articles are intended for software developers.
 
-* [Active Events](https://msdn.microsoft.com/en-us/magazine/mt795187), providing a functional alternative to OOP, where polymorphism and encapsulation is being performed at the _"function level"_ instead of at the class level
+* [Active Events](https://msdn.microsoft.com/en-us/magazine/mt795187), providing a functional alternative to OOP, where polymorphism and encapsulation is being performed at the _"function level"_, instead of at the class level
 * [Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119), which is a natural consequence of Active Events
 * [Managed Ajax](https://msdn.microsoft.com/en-us/magazine/mt826343), providing an automatic bridge between your server side Hyperlambda and your client side JavaScript
 
@@ -22,12 +22,12 @@ scalable, such as social media platforms, required to respond to millions of web
 
 https://www.youtube.com/watch?v=BLll2Wx0yFo
 
-Phosphorus Five contains a whole range of apps, which we refer to as the _"GaiaSoul Suite"_, that allows you
+Phosphorus Five contains a whole range of apps, that allows you
 to rapidly create your web apps, one way or another. Some examples of such apps are given below.
 
 * __Hyper IDE__ - A web based Integrated Development Environment
-* __Magic Menu__ - A global navigation system, with support for speech recognition and speech synthesis, allowing you to use _"natural language"_ to control your computer
 * __Camphora Five__ - A CRUD app generator, allowing you to create CRUD apps, literally in seconds, without requiring you to know any programming
+* __Magic Menu__ - A global navigation system, with support for speech recognition and speech synthesis, allowing you to use _"natural language"_ to control your computer
 
 ### Vision
 
@@ -38,10 +38,10 @@ personal relationship to the act of creation, without any intermediaries control
 Gutenberg was my philosophical inspiration while developing Phosphorus Five. Gutenberg's idea was to commoditize
 access to _"the word"_ (AKA; God) - While my idea is to allow you to use _"the word"_ to communicate with your
 computer, and have it do what you want it to do, without a cast of _"gurus"_ acting as intermediaries on your
-behalf, or some shady people spying on your data and privacy in the process. My vision can be summed up with
+behalf - Or some shady people spying on your data and privacy in the process. My vision can be summed up with
 the following sentence.
 
-> Facilitate for a distributed world wide web by simplifying the act of creating rich web applications
+> Facilitate for a secure and distributed world wide web by simplifying the act of creating rich web applications
 
 ### About the help system
 

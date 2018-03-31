@@ -10,7 +10,7 @@ allowing you to create closed source modules and apps. However, due to the techn
 details of Phosphorus Five, this creates a couple of legal _"licensing anomalies"_, which you might be
 interested in understanding.
 
-#### With Managed Ajax the GPL becomes Affero GPL
+### With Managed Ajax the GPL becomes Affero GPL
 
 Since Phosphorus Five, and more explicitly the _"Managed Ajax"_ parts distributes JavaScript to the client,
 and this JavaScript is an integral part of the core framework itself - This implies that all who are visiting
@@ -22,7 +22,7 @@ an _"Affero GPL license"_.
 
 **Notice**, this has been verified by licensing experts working for the Free Software Foundation!
 
-#### With Active Events the GPL becomes LGPL
+### With Active Events the GPL becomes LGPL
 
 Another peculiarity, is that since the Active Events design pattern, creates an extremely loosely coupled
 binding, between your code, and the Active Events that are implemented in C# - This results in that parts
@@ -30,13 +30,29 @@ of the GPL license is effectively _"invalidated"_, since your derived work, can 
 _"linking"_ to GPL code. This results in that you can consume a GPL library, in for instance C#, and
 the effective result, becomes that this library you create in C#, can for all practical concerns be
 consumed more or less like an LGPL library. Implying you only have to distribute the C# code that wraps
-this GPL library, and not necessarily your entire solution's code. This is because of the loosely
-binding between Active Event assemblies, does not create a _"derivated work"_, or in any ways _"links"_
+this GPL library, and not necessarily your entire solution's code. This is because of that the loosely
+binding between Active Event assemblies, does not create a _"derived work"_, or in any ways _"links"_
 between the different assemblies.
 
-So basically, you can consume GPL CLR libraries and modules as if they were LGPL libraries.
+So basically, you can consume GPL Active Event assemblies as if they were LGPL libraries.
 
-#### Quid pro quo and dual licensing options
+### Phosphorus Five is free and gratis for developers
+
+The proprietary license for Phosphorus Five is sold on a _"per server basis"_. This implies that if
+you are a software developer, creating software for others - You don't need to purchase a license, and
+only the customer, who wants to actually host your work needs to obtain a license. If you're a developer
+working as a consultant, creating software for customers of you - You can use the Open Source version,
+as long as you make sure your customer obtains a _"commercial license"_ to run your work, when he
+deploys his solution on his server.
+
+**Notice**, you will need one license for every server you are running Phosphorus Five.
+
+A proprietary license allows for using every major version of the system within the period you obtained
+your license. If you for instance obtains a license for the 8.0 version, you can use the same license
+for the 8.1, 8.2, 8.x etc version. You only have to obtain a new license during _"major version changes"_,
+such as for the above example when I release the 9.0 version.
+
+### Quid pro quo and dual licensing options
 
 Phosphorus Five is distributed under the idea of _"Quid Pro Quo"_, which translates into
 _"Something for Something"_. The idea is that either you create Free and Open Source Software yourself, or
@@ -47,11 +63,13 @@ _"commercial license"_ every now and then, in addition to informing your visitor
 you purchase a commercial license, Phosphorus Five will automatically remove any links on your modules,
 and stop asking you about purchasing a license.
 
-Of course, the fix for the above, if you are uncertain about your legal status in these regards, is
+If you are uncertain about your legal status in regards to the license terms, the fix is
 to simply purchase a commercial license. This will also give you _"extended support"_, in addition
 to access to a backup module that allows you to easily create backups of your system. It is also the
-ethical and morally right thing to do, once you realise the amount of work I have put into the system!
+ethical and morally right thing to do, once you realise the amount of work I have put into the system.
+If you can afford a license, purchasing one is the morally right thing to do. I have spent more than a
+decade researching and developing the ideas that lead to Phosphorus Five.
 
-### The license terms
+### The GPL license terms
 
-The exact wording of the license can be seen [here](https://www.gnu.org/licenses/gpl-3.0.txt).
+The exact wording of the GPL license can be seen [here](https://www.gnu.org/licenses/gpl-3.0.txt).
