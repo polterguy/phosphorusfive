@@ -18,6 +18,27 @@ micro.css.include
 
 
 /*
+ * Checking if user has configured a logo to use.
+ */
+p5.config.get:p5.desktop.logo
+if:x:/@p5.config.get/*?value
+  p5.config.get:p5.desktop.logo.url
+  eval-x:x:/+/**(/href|/src)
+  add:x:/../*/create-container-widget
+    src
+      widgets
+        a
+          href:x:/@p5.config.get/*?value
+          widgets
+            img
+              src:x:/../*/p5.config.get/*?value
+              style:"position:fixed;bottom:0;right:0;width:200px;max-width:25%;"
+
+
+
+
+
+/*
  * Creating main content container.
  */
 create-container-widget:desktop-main-container
