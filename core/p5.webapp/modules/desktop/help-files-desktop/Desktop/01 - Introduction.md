@@ -104,3 +104,7 @@ to your needs.
 You can also override the default skin used by Phosphorus Five in your web.config file, by editing the settings
 called `p5.desktop.guest-skin`. This setting is used for guest visitors to your server, in addition to that it
 is the default skin used for any users that has not explicitly overriden which skin they want to use.
+
+You can also override the default title used for Phosphorus Five, which is a web.config setting called `p5.desktop.default-title`.
+The value of this setting will be used for any modules that does not explicitly override the title,
+such as the Desktop module itself for instance.
