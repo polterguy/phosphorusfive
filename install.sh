@@ -9,7 +9,9 @@ echo "Automatic installation script for Phosphorus Five."
 echo "Please let it finish, without interruptions, which might take some time."
 echo "Notice, Phosphorus Five is licensed as GPLv3."
 echo ""
-echo "This script will also update, upgrade, and further secure your system."
+echo "This script will also update, upgrade, and further secure your Linux server."
+echo ""
+echo "This script will periodically require input from you."
 echo ""
 echo "The software is distributed in the hope that it will be useful,"
 echo "but WITHOUT ANY WARRANTY; without even the implied warranty of"
@@ -30,7 +32,7 @@ sudo apt-get upgrade
 sudo apt-get dist-upgrade
 
 # Downloading the latest release.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v7.2/binaries.zip
+wget https://github.com/polterguy/phosphorusfive/releases/download/v8.0/binaries.zip
 
 # Installing MySQL server.
 # Notice, by default MySQL is setup without networking, hence unless user explicitly opens it.
@@ -57,9 +59,7 @@ sudo rm /var/www/html/Global.asax
 sudo rm /var/www/html/README.md
 sudo rm /var/www/html/startup.hl
 sudo rm -r -f /var/www/html/bin
-sudo rm -r -f /var/www/html/modules/desktop
-sudo rm -r -f /var/www/html/modules/bazar
-sudo rm -r -f /var/www/html/modules/micro
+sudo rm -r -f /var/www/html/modules
 
 # Creating a temporary folder to hold output.
 mkdir p5
@@ -98,15 +98,9 @@ sudo echo "
 # Configuring apache to accept requests for ASP.NET, and route them into Mono
 sudo echo "
 
-
-
-
-
 #############################################################
 #
-# Phosphorus Five configurations
-# These parts was added as a part of the install.sh script 
-# while installing Phosphorus Five.
+# Phosphorus Five configuration
 #
 #############################################################
 
@@ -174,7 +168,27 @@ ServerTokens Prod
 
 # Turning OFF ETags, to avoid information leaking.
 FileETag None
+" > /etc/apache2/phosphorus.conf
+
+
+
+# Modifying apache2.conf file
+sudo echo "
+
+#############################################################
+#
+# Includes Phosphorus Five configuration file
+#
+#############################################################
+
+Include /etc/apache2/phosphorus.conf
+
 " >> /etc/apache2/apache2.conf
+
+
+
+
+
 
 # Installing SSL keys, if user wants to.
 
