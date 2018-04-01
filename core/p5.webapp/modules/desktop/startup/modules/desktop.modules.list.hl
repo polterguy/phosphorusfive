@@ -1,4 +1,3 @@
-
 /*
  * Creates the Active Event returns all installed modules in the system.
  */
@@ -27,6 +26,23 @@ create-event:desktop.modules.list
       add:x:/../*/return/0/-
         src
           description:x:/@load-file/*?value
+
+    /*
+     * Checking if there exists a version.hl file for current module.
+     */
+    if
+      fetch:x:/0/0?value
+        file-exists:{0}startup/version.hl
+          :x:/@_dp?value
+      load-file:{0}startup/version.hl
+        :x:/@_dp?value
+      set:x:/+?name
+        src:x:/@load-file/*/0?value
+      foo
+      eval-x:x:/+/*/*
+      add:x:/../*/return/0/-
+        src
+          version:x:/@add/-2?value
 
   /*
    * Returning modules to caller.
