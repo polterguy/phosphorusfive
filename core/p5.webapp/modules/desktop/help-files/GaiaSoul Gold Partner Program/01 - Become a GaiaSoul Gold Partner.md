@@ -15,7 +15,7 @@ hide us in the process.
 to become partners_. So the first thing you will have to do, is to purchase at least one license, which you can
 do by clicking the _"Home"_ button in this documentation file. This is to avoid people applying for a partner
 membership, to simply reduce their own personal licensing costs. We only want partners who are actually dedicated
-to reselling the system becoming our partners. However, this mght imply simply selling licenses to your customers,
+to reselling the system becoming our partners. However, this might imply simply selling licenses to your customers,
 if you are a developer, making a cut in the process.
 
 ### Profit sharing
@@ -42,7 +42,7 @@ both on feedback into the project, and number of licenses sold.
 A GaiaSoul Gold Partner will be taught in details how to in its entirety rebrand the system, and create a
 completely unique distribution, making the system appear such that it's almost an _"inhouse product"_. We
 will also teach you how to create your own customizations, such as plugins, distribute Hypereval snippets,
-camphora apps, etc, etc, etc. Basically, it allows you to completely create your own unique system, according
+Camphora apps, etc, etc, etc. Basically, it allows you to completely create your own unique system, according
 to your customers' needs, and distribute this version of the system to your clients.
 
 ### Priority support
@@ -57,26 +57,40 @@ offer you code reviews, etc - Depending upon your volume and needs.
 As a GaiaSoul Gold Partner, you also gain access to additional training material, particularly on how to create
 your own distribution. These might be in the form of documents, and/or videos, which explains to you in details,
 exactly how you can go about branding the system, and customizing it - _Without_ becoming incompatible with future
-releases of Phosphorus Five. Arguably, this teaches you how to _"fork"_ the system, while still maintaining
-compatiblility towards future releases.
+releases of Phosphorus Five. Arguably, this teaches you how to _"fork"_ the system, and adding your own little
+_"secret sauce"_ in the your distribution - While still maintaining compatiblility with future releases.
+
+### Bonus material
+
+We will also periodically release bonus modules, which we only give access to for our partners. This might include
+Magic Menu commands, Hypereval snippets, Hyper IDE plugins, or entire applications and modules - Allowing you
+to create a _"bonus distribution"_, being much more than the _"core download"_ of Phosphorus Five's Open Source
+and Free Software distribution. We will also supply you with additional tutoring material, such as how to
+further tighten your security of your distribution, setup the system on multiple heterogenous servers, etc, etc, etc.
 
 ### Partner obligations
 
 A GaiaSoul Gold Partner is expected to do all _"first level support"_, which is support about basic usage
-of the system, its modules, and its configuration etc. However, there should be a lot of material, both in
-these help files, and in our partner package to get you started with this. We only accept support/bug
-reports/feature requests directly from our partners, and none of your customers can send us direct support
-requests, unless they purchased directly from us - At which point they're not your customer, but ours.
-However, this allows you to keep your customers as _yours_, and almost completely _"hide"_ us in the process.
+of the system, its modules, and its configuration etc towards _your customers_. However, there should be a
+lot of material, both in these help files, and in our partner package, to get you started with this. We
+only accept support/bug reports/feature requests directly from our partners, and none of your customers
+can send us direct support requests, unless they purchased directly from us - At which point they're not
+your customer, but ours. However, this allows you to keep your customers as _yours_, and almost completely
+_"hide"_ us in the process.
 
-A GaiaSoul Gold Partner is also expected to proactively market his distribution, and setting up a website,
-or at least a sub section on an existing website mentioning the product, is expected - And/or actively
-communicate the system in the blogosphere and on social media. For partners that are particularly good at
+A GaiaSoul Gold Partner is also expected to proactively market his distribution, and setting up a website
+marketing his distribution - Or at least mention his distribution on a sub section on an existing website -
+And/or actively communicate the system in the blogosphere and on social media. For partners that are particularly good at
 fulfilling their obligations, a special section in the core distribution will be rewarded, mentioning
-your products, with links to your website.
+your products and distribution, with links to your website.
+
+**Notice**, we also expect you to follow up on your customers, and make sure they obey by the license rules
+of Phosphorus Five - Proactively!
 
 ### How to apply
 
 To apply for becoming a GaiaSoul Gold Partner, please send an email to thomas@gaiasoul.com - And make sure
 you include your PayPal transaction reference ID, such that we can verify that you have purchased at least
 one proprietary license of Phosphorus Five.
+
+**Notice**, we only accept applicants who have bought their license directly from us, for obvious reasons.
