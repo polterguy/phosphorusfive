@@ -18,12 +18,26 @@ membership, to simply reduce their own personal licensing costs. We only want pa
 to reselling the system becoming our partners. However, this might imply simply selling licenses to your customers,
 if you are a developer, making a cut in the process.
 
+### Who can apply?
+
+Actually, anyone, as long as you have bought a valid license for the 8.x release, and you have bought it from us
+directly. And in fact, realistically, due to the nature of Phosphorus Five, you don't need to be a multi million
+dollar shop to become a partner. If you've got your own company, with only you being an employee, but you have
+multiple customers which you are creating software for, and you want to use Phosphorus Five to create your
+solutions - You can become a partner, and make a cut in the process, in addition to getting a lot of other
+benefits too. This allows you to in fact get a return on your initial investment of a single machine license
+after only having sold 3-4 additional licenses of Phosphorus Five, to your customers. And in fact, from that
+point and onwards, making 30% off every single license you sell.
+
 ### Profit sharing
 
 Your customers again, will still have to purchase using the PayPal button at the index page of the documentation.
 But when they do, they will get a 20% discount on their license price. This payment will be associated with
 you automatically, and when we have received a valid payment, and 30 days have passed - To make sure the purchase
-is not invalidated later by the customer - You will be given 30% of the total price.
+is not invalidated later by the customer - You will be given 30% of the total price. And since Phosphorus Five
+after all is a web application development framework, and it's being sold on a per machine basis - This implies
+that every time you install a new Phosphorus Five server for one of your customers, you get 30% of the profit.
+Which comes in addition to whatever price you choose to charge for your modules, apps or services.
 
 **Notice** - You will need your own PayPal account since we need to transfer you your share over PayPal.
 
@@ -66,7 +80,18 @@ We will also periodically release bonus modules, which we only give access to fo
 Magic Menu commands, Hypereval snippets, Hyper IDE plugins, or entire applications and modules - Allowing you
 to create a _"bonus distribution"_, being much more than the _"core download"_ of Phosphorus Five's Open Source
 and Free Software distribution. We will also supply you with additional tutoring material, such as how to
-further tighten your security of your distribution, setup the system on multiple heterogenous servers, etc, etc, etc.
+further tighten your security of your distribution, setup the system on multiple heterogenous servers, etc, etc,
+etc.
+
+We will also give you access to additional material explaining how to create your own documentation files, to
+replace (parts) of the documentation, and create documentation for your own modules and apps - In addition to
+how to allow your customers to purchase additional modules from you, from within Phosphorus Five, etc. The last
+point would arguably give you your own personal app store, with automatic PayPal integration, leading to your
+PayPal account, where you can charge whatever you wish for your own modules, and keep the entire profit yourself.
+
+Whatever you charge yourself for your own modules, and/or bonus material we give you access to, is _your business_,
+as long as you make sure your customers obeys by our license terms, and have valid licenses for Phosphorus Five
+from us.
 
 ### Partner obligations
 
