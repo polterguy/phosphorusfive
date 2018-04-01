@@ -1,4 +1,3 @@
-﻿
 /*
  * File responsible for creating our default [p5.web.load-ui] event, which basically is our default URL resolver,
  * and "micro web operating system", allowing the user to see his desktop, installed apps, and visit the Bazar.
@@ -47,7 +46,8 @@ create-event:p5.web.load-ui
     /*
      * Setting default title of page.
      */
-    p5.web.page.set-title:Phosphorus V - 7.0 - In the beginning there was Hyperlambda
+    p5.config.get:p5.desktop.default-title
+    p5.web.page.set-title:x:/@p5.config.get/*?value
 
     /*
      * Making sure initial scale of viewport is set correctly.
