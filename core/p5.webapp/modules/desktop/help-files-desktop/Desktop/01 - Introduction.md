@@ -92,3 +92,15 @@ micro.evaluate.file:/startup.hl
  */
 micro.windows.info:Done!
 ```
+
+### Branding
+
+You can add your own custom logo, and a link to your website on the desktop if you want to. This is done by
+editing your web.config file, and modifying the `p5.desktop.logo` and the `p5.desktop.logo.url` settings. The
+logo will be rendered in the bottom right corner of your desktop, leading to whatever URL you want it to lead
+to when clicked. There is an example configuration setting there, which you can uncomment, and modify according
+to your needs.
+
+You can also override the default skin used by Phosphorus Five in your web.config file, by editing the settings
+called `p5.desktop.guest-skin`. This setting is used for guest visitors to your server, in addition to that it
+is the default skin used for any users that has not explicitly overriden which skin they want to use.

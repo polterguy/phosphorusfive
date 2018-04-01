@@ -1,0 +1,24 @@
+/*
+ * This is our main "landing page" for our Partners help files section.
+ */
+h2
+  innerValue:Partners
+
+img
+  class:desktop-help-icon-image
+  src:"/modules/desktop/media/logo.svg"
+
+p
+  innerValue:@"This section contains information about our partners, and our partner program. Among other things,
+we allow partners to rebrand and resell the system for us, earning money for themselves in the process."
+
+p
+  innerValue:@"A GaiaSoul Gold Partner has many benefits, such as having access to privileged support, less
+expensive license costs, etc. However, a partner also has obligations."
+
+
+/*
+ * All files at "root" of Partners' help folder.
+ */
+desktop.help.widgets.help-index
+  folder:@DESKTOP/help-files/Partners/

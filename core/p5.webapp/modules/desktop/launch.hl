@@ -181,7 +181,7 @@ create-widget
                   onclick
 
                     /*
-                     * Launching our "install new module" file.
+                     * Launching our "uninstall module" file.
                      */
                     micro.evaluate.file:@DESKTOP/helpers/uninstall-module.hl
 

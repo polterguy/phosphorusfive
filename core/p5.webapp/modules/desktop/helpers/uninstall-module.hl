@@ -94,8 +94,18 @@ Are you sure you want to continue?"
                                          */
                                         desktop.evaluate.on-next-pageload
                                           lambda
+
+                                            /*
+                                             * Giving user some feecback, in addition to re-launching uninstall
+                                             * module, in case user wants to uninstall multiple modules.
+                                             */
                                             micro.windows.info:Your module was successfully uninstalled
                                               class:micro-windows-info success
+                                            micro.evaluate.file:@DESKTOP/helpers/uninstall-module.hl
+
+                                        /*
+                                         * Reloading location, now with an "evaluate on next pageload" lambda object.
+                                         */
                                         p5.web.reload-location
 
                                     button

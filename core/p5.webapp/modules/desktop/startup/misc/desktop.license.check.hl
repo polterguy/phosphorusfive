@@ -137,7 +137,7 @@ Feel free to download Hyperbuild now - You can install it later."
                                   li
                                     widgets
                                       a
-                                        href:@"https://github.com/polterguy/hyperbuild/archive/v8.1.zip"
+                                        href:@"https://github.com/polterguy/hyperbuild/archive/v8.2.zip"
                                         innerValue:Download Hyperbuild
                               p
                                 innerValue:Kind regards,
