@@ -25,7 +25,9 @@ ul
         widgets
           a
             href:#
-            innerValue:x:/@_dp/#?name
+            innerValue:{0} - {1}
+              :x:/@_dp/#?name
+              :x:/@_dp/#/*/version?value
             .description:x:/@_dp/#/*/description?value
             onclick
 
