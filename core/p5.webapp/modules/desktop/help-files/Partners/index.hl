@@ -9,8 +9,9 @@ img
   src:"/modules/desktop/media/logo.svg"
 
 p
-  innerValue:@"This section contains information about our partners, and our partner program. Among other things,
-we allow partners to rebrand and resell the system for us, earning money for themselves in the process."
+  innerValue:@"This section contains information about our GaiaSoul Gold Partners, and our partner program.
+Among other things, we allow partners to rebrand and resell the system for us, earning money for themselves
+in the process."
 
 p
   innerValue:@"A GaiaSoul Gold Partner has many benefits, such as having access to privileged support, less
