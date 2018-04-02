@@ -13,35 +13,57 @@ hide us in the process.
 
 **Notice** - We only allow people and companies who have _already purchased at least one valid license for the
 8.x version to become partners_. So the first thing you will have to do, is to purchase at least one license,
-which you can do by clicking the _"Home"_ button in this documentation file.
+which you can do by clicking the _"home"_ button in this documentation file.
+
+### How can you sell Free Software?
+
+The above question has as many answers as there are distributors - However, why does money hold value?
+Money is basically just coloured toilet paper, right? The reasons why money holds value, is because you
+can do things with it, that you cannot do with coloured toilet paper. The same is true for a proprietary
+license of Phosphorus Five. I have spent more than a decade researching the ideas that are implemented
+in Phosphorus Five. This implies tens of thousands of hours, making _your_ job easier. Is your work
+worth money? If your answer is no to the previous question, please let me hire you, such that you can
+work for me for free! ;)
+
+> Free as in Freedom, _not_ as in Free Beer!
+
+https://www.youtube.com/watch?v=kFUSenWxrOM
 
 ### Who can apply?
 
 Actually, anyone, as long as you have bought a valid license for the 8.x release, and you have bought it directly
 from us. And in fact, realistically, due to the nature of Phosphorus Five, you don't need to be a multi million
 dollar shop to become a partner. If you've got your own company, with only you being an employee, but you have
-multiple customers which you are creating software for, and you want to use Phosphorus Five to create your
+multiple customers that you are creating software for, and you want to use Phosphorus Five to create your
 solutions - You can become a partner, and make a cut in the process, in addition to getting a lot of other
-benefits too. This allows you to in fact get a return on your initial investment of a single machine license
-after only having sold 2 additional licenses of Phosphorus Five to your customers - And in fact, from that
-point and onwards, make 50% profit from every single license you sell.
+benefits too. In fact, even if you have only _one_ customer, but this single customer needs to install
+Phosphorus Five on multiple servers, you can still make money by becoming a partner. This allows you to
+get a return on your initial investment of a single machine license after having only sold 2 additional
+machine licenses of Phosphorus Five to your customer(s) - And in fact, from that
+point and onwards, make 50% profit from every single machine license you sell.
 
 In fact, if you simply have your own blog, and you're interested in learning Phosphorus Five, and earn money
 selling a beautiful web operating system - You have everything you need to become a partner, and make a 50% cut
-of every license you sell.
+of every license you sell. Arguably, we encourage you to _"fork"_ the system, and sell licenses of it, making
+50% profit from each license you sell.
 
 ### Profit sharing
 
-Your customers, will still have to purchase using the PayPal button at the index page of the documentation.
-But when they do, you will get 50% of each license they purchase. This payment will be associated with
-you automatically, and when we have received a valid payment, and 30 days have passed - To make sure the purchase
-is not invalidated later by the customer - You will be given 50% of the total price, minus PayPal fees.
-And since Phosphorus Five after all is a web application development framework, and it's being sold on a
-per machine basis - This implies that every time you install a new Phosphorus Five server for one of your
-customers, you get 50% of the profit. Which of course comes in addition to whatever price you choose to charge for
-your modules, apps or services.
+Your customers, will still have to purchase using the PayPal button at the index page of the documentation -
+Unless you are setting up the entire system for your customer, and have given him a total quote of installation,
+setup, etc - At which point you can use a personal PayPal link which we will provide you with, allowing you
+to purchase licenses _directly yourself_, on behalf of your customer(s), for a net 50% of the normal price.
 
-**Notice** - You will need your own PayPal account since we need to transfer you your share over PayPal.
+If your customers purchase your distribution, you will get 50% profit from each license they purchase. This
+payment will be associated with you automatically, and when we have received a valid payment, and 30 days
+have passed - To make sure the purchase is not invalidated later by the customer - You will be given 50% of
+the total price, minus PayPal fees. And since Phosphorus Five after all is a web application development
+framework, and it's being sold on a per machine basis - This implies that every time you install a new
+Phosphorus Five server for one of your customers, you get 50% of the profit. Which of course comes in
+addition to whatever price you choose to charge for your modules, apps or services.
+
+**Notice** - You will need your own PayPal account, since we either need to transfer you your share over PayPal,
+or you'll need to purchase on behalf of your customer(s) using PayPal.
 
 ### Free Marketing
 
@@ -65,9 +87,10 @@ to your customers' needs, and distribute this version of the system to your clie
 A GaiaSoul Gold Partner also have priority support, and can request Skype conversations with the architect of
 the system, and send emails directly to the main architect - And even request a phone conversation if there's
 an absolute emergency. We also to some extent will help out with development of your own products, and can
-offer you code reviews, etc.
+offer you code reviews, help with your own code, etc.
 
-**Notice**, this require you to have at least some minimum volume on the amount of licenses you sell.
+**Notice**, this require you to have at least some minimum volume on the amount of licenses you sell, or at
+least a well argued intention to sell some minimum volume of licenses.
 
 ### Additional tutoring material
 
@@ -108,12 +131,10 @@ and/or its terms, each major release.
 A GaiaSoul Gold Partner is expected to do all _"first level support"_ for his customers, which is support about
 basic usage of the system, its modules, and its configuration. However, there should be a
 lot of material, both in these help files, and in our partner package, to get you started with this. We
-only accept support/bug reports/feature requests directly from our partners, and none of your customers
-can send us direct support requests, unless they purchased directly from us - At which point they're not
-your customer, but ours. However, this allows you to keep your customers as _yours_, and almost completely
-_"hide"_ us in the process.
+do not accept support requests originating from your customers. However, this allows you to keep your
+customers as _yours_, and almost completely _"hide"_ us in the process, building your own network of clients.
 
-A GaiaSoul Gold Partner is also expected to proactively market his distribution, and setup a website
+A GaiaSoul Gold Partner is also expected to proactively market his distribution, and if possible setup a website
 marketing his distribution - Or at least mention his distribution on a sub section on an existing website -
 And/or actively communicate the system in the blogosphere and on social media. For partners that are particularly good at
 fulfilling their obligations, a special section in the core distribution will be rewarded, mentioning
@@ -126,6 +147,7 @@ license rules of Phosphorus Five - Proactively!
 
 To apply for becoming a GaiaSoul Gold Partner, please send an email to thomas@gaiasoul.com - And make sure
 you include your PayPal transaction reference ID, such that we can verify that you have purchased at least
-one proprietary license of Phosphorus Five.
+one proprietary license of Phosphorus Five. Please also explain with one or two paragraphs how you intend to
+market, brand and resell your distribution - With links to your website(s), if relevant.
 
 **Notice**, we only accept applicants who have bought their license directly from us, for obvious reasons.
