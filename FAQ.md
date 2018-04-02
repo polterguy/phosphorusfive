@@ -62,11 +62,13 @@ Yup!
 ### What are your personal political preferences?
 
 Anarchy! I don't like Trump, I don't like Hilary, and I certainly do not like
-Obama either - In fact, when I think closely about this, I don't think I have ever
+Obama either - In fact, when I think more thoroughly about this, I don't think I have ever
 met a politician whom I like, and whom I would enjoy having a conversation with, and
 certainly never met one whom I would trust with the decision making processes over my
 life. If you have a problem with that, may I suggest _"voting harder"_
 the next time ...?
+
+> Kim Jong Il, Stalin, Hitler, Obama, Trump - They're all the same to me ...
 
 ### How can I become your best friend?
 
