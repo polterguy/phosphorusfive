@@ -101,6 +101,10 @@ Go create your own universe.
 I do however take suggestions from others, and I do consider myself quite polite - Contrary to many others
 in my position ... (You know who I'm talking about here I assume, without me having to mention names ... ;) )
 
+### What's your sense of humor?
+
+I consider [Dr. Strangelove to be the Mona Lisa of Humor](https://www.youtube.com/watch?v=A9ihKq34Ozc).
+
 ### What's your email address?
 
 thomas@gaiasoul.com
