@@ -70,8 +70,6 @@ life.
 I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
 even if my life depended upon it!
 
-> Kim Jong Il, Stalin, Hitler, Obama, Trump - They're all the same to me ...
-
 ### How on Earth did you do this? (Create Phosphorus Five)
 
 I spent 13 years researching the same idea, and I followed Winston Churchill's advice,
@@ -87,11 +85,11 @@ Phosphorus Five comes out in the other end ...
 I am the Gaia Lactical Overlord, and Ajax Uhuru Uber Guru, Il Duce, Der Fuhrer
 and Kim Jong Il the 3rd when it comes to the final decisions in regards to the future development
 of Phosphorus Five. 100% dictator, and overlord of Phosphorus Five. Basically, I created
-my own little universe here, and I intend to stay _"god"_ within it - Don't like the idea?
+my own little universe here, and I intend to be _"god"_ within it - Don't like the idea?
 Go create your own universe.
 
-I do however take suggestions from others, and I do consider myself quite polite - Contrary to many others
-in my position ... (You know who I'm talking about here I assume, without me having to mention names ... ;) )
+I do however take suggestions from others, and I do consider myself quite polite - Contrary to others
+in my position ...
 
 ### What's your sense of humor?
 
