@@ -70,6 +70,13 @@ which goes like this ...
 Then mix a little bit of brilliance, and a little bit of madness to the pot - And __VOILA!__
 Phosphorus Five comes out in the other end ...
 
+### Who controls the development of Phosphorus Five?
+
+I am the Gaia Lactival Overlord, and Ajax Uhuru Uber Guru, Il Duce, Der Fuhrer
+and Kim Jong Il the 3rd. Pure 100% dictator. I do however take suggestions from
+others, and I consider myself polite. Contrary to many others in my position ...
+(You know who I'm talking about here I assume, without me having to mention names ... ;) )
+
 ### What's your email address?
 
 thomas@gaiasoul.com
