@@ -65,8 +65,7 @@ create-event:desktop.license.check
     micro.widgets.paypal-button.ensure-checkout-js
 
     /*
-     * Checking if current installation is a "distributor" distro, and if
-     * so, making sure we associate the transaction with the distributor.
+     * Making sure we associate the transaction with the distributor's key, if any.
      */
     p5.config.get:p5.desktop.distributor-key
     if:x:/@p5.config.get/*?value
@@ -74,10 +73,6 @@ create-event:desktop.license.check
       add:x:/././*/create-widgets/**/micro.widgets.paypal-button
         src
           custom:x:/@p5.config.get/*?value
-    else
-      add:x:/././*/create-widgets/**/micro.widgets.paypal-button
-        src
-          custom:Single machine P5 license
 
     /*
      * Creating our modal widget.
