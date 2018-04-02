@@ -3,7 +3,7 @@
 <img class="desktop-help-icon-image" src="/modules/desktop/media/logo.svg" />
 
 Partners are allowed to resell the system, according to a 50/50 profit sharing key. This implies that
-you are allowed to keep 50% of the revenue for yourself for each license you sell.
+a partner gets to keep 50% of the revenue from each license he or she sells to his customers.
 You apply for becoming a partner by sending an email to thomas@gaiasoul.com - At which point if you are accepted,
 you will be sent instructions on an email, showing you how to practically implement reselling the system.
 Basically, this implies creating your own distribution (zip file) of the system, with a couple of pre-configured
@@ -23,8 +23,8 @@ dollar shop to become a partner. If you've got your own company, with only you b
 multiple customers which you are creating software for, and you want to use Phosphorus Five to create your
 solutions - You can become a partner, and make a cut in the process, in addition to getting a lot of other
 benefits too. This allows you to in fact get a return on your initial investment of a single machine license
-after only having sold 2 additional licenses of Phosphorus Five to your customers. And in fact, from that
-point and onwards, making 50% profit from every single license you sell.
+after only having sold 2 additional licenses of Phosphorus Five to your customers - And in fact, from that
+point and onwards, make 50% profit from every single license you sell.
 
 In fact, if you simply have your own blog, and you're interested in learning Phosphorus Five, and earn money
 selling a beautiful web operating system - You have everything you need to become a partner, and make a 50% cut
@@ -75,7 +75,7 @@ As a GaiaSoul Gold Partner, you also gain access to additional training material
 your own distribution. These might be in the form of documents, and/or videos, which explains to you in details,
 exactly how you can go about branding the system, and customizing it - _Without_ becoming incompatible with future
 releases of Phosphorus Five. Arguably, this teaches you how to _"fork"_ the system, and adding your own little
-_"secret sauce"_ in the your distribution - While still maintaining compatiblility with future releases.
+_"secret sauce"_ in your own distribution - While still maintaining compatiblility with future releases.
 
 ### Bonus material
 
@@ -83,7 +83,7 @@ We will also periodically release bonus material, which we only give access to f
 Magic Menu commands, Hypereval snippets, Hyper IDE plugins, or entire applications and modules - Allowing you
 to create a _"bonus distribution"_, being much more than the _"core download"_ of Phosphorus Five's Open Source
 and Free Software distribution. We will also supply you with additional tutoring material, such as how to
-further tighten your security of your distribution, setup the system on multiple heterogenous servers, etc, etc,
+further tighten the security of your distribution, setup the system on multiple heterogenous servers, etc, etc,
 etc.
 
 We will also give you access to additional material explaining how to create your own documentation files, to
@@ -96,6 +96,12 @@ the selling of these modules yourself.
 Whatever you charge yourself for your own modules, and/or bonus material we give you access to, is _your business_,
 as long as you make sure your customers obeys by our license terms, and have valid licenses for Phosphorus Five
 from us.
+
+### Our guarantee
+
+We give you this right, irrevocably for the current major release of Phosphorus Five. Which means that we don't
+change these terms during the 8.x release cycle of the system. We (might) reconsider the partner program though,
+and/or its terms, each major release.
 
 ### Partner obligations
 
