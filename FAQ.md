@@ -92,7 +92,7 @@ my own little universe here, and I intend to be _"god"_ within it - Don't like t
 Go create your own universe.
 
 I do however take suggestions from others, and I do consider myself quite polite, and I am
-famous for changing my mind, once the facts no longer compiles.
+famous for changing my mind, once my existing mind no longer compiles.
 
 ### What's your sense of humor?
 
