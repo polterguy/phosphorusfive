@@ -25,6 +25,7 @@ ul
         widgets
           a
             href:#
+            .module:x:/@_dp/#?name
             innerValue:{0} - {1}
               :x:/@_dp/#?name
               :x:/@_dp/#/*/version?value
@@ -40,7 +41,7 @@ ul
               clear-widget:modules-meta-info
               get-widget-property:x:/../*/_event?value
                 .description
-                innerValue
+                .module
               markdown2html:x:/@get-widget-property/*/*/.description?value
               html2lambda:x:/@markdown2html?value
               add:x:/@html2lambda/**/img
@@ -58,9 +59,9 @@ ul
               if
                 fetch:x:/0/0?value
                   file-exists:/modules/{0}/desktop.hl
-                    :x:/@get-widget-property/*/*/innerValue?value
+                    :x:/@get-widget-property/*/*/.module?value
                 load-file:/modules/{0}/desktop.hl
-                  :x:/@get-widget-property/*/*/innerValue?value
+                  :x:/@get-widget-property/*/*/.module?value
                 add:x:/./*/create-widgets
                   src:x:/@load-file/*/*
                 add:x:/./*/create-widgets/*
@@ -73,7 +74,7 @@ ul
                 eval-x:x:/+/*/*
                 add:x:/./*/create-widgets/*
                   src
-                    href:x:/@get-widget-property/*/*/innerValue?value
+                    href:x:/@get-widget-property/*/*/.module?value
                 create-widgets
 
               /*
@@ -91,7 +92,7 @@ ul
                    * Invoking event responsible for displaying
                    * additional meta information about module.
                    */
-                  desktop.help.view-module-meta-information:x:/@get-widget-property/*/*/innerValue?value
+                  desktop.help.view-module-meta-information:x:/@get-widget-property/*/*/.module?value
 
   widgets
 
