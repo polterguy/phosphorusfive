@@ -103,7 +103,7 @@ in my position ... (You know who I'm talking about here I assume, without me hav
 
 ### What's your sense of humor?
 
-I consider [Dr. Strangelove to be the Mona Lisa of Humor](https://www.youtube.com/watch?v=A9ihKq34Ozc).
+I consider [this to be the Mona Lisa of Humor](https://www.youtube.com/watch?v=so8NQficzZg).
 
 ### What's your email address?
 
