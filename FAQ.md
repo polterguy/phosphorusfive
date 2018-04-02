@@ -1,5 +1,4 @@
 # FAQ
-===============
 
 ### Who create Phosphorus Five?
 
@@ -70,3 +69,7 @@ which goes like this ...
 
 Then mix a little bit of brilliance, and madness to the pot - And __VOILA!__
 Phosphorus Five comes out in the other end ...
+
+### What's your email address?
+
+thomas@gaiasoul.com
