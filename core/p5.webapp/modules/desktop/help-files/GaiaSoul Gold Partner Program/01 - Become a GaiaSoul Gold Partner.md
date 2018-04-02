@@ -105,8 +105,8 @@ and/or its terms, each major release.
 
 ### Partner obligations
 
-A GaiaSoul Gold Partner is expected to do all _"first level support"_, which is support about basic usage
-of the system, its modules, and its configuration etc towards _your customers_. However, there should be a
+A GaiaSoul Gold Partner is expected to do all _"first level support"_ for his customers, which is support about
+basic usage of the system, its modules, and its configuration. However, there should be a
 lot of material, both in these help files, and in our partner package, to get you started with this. We
 only accept support/bug reports/feature requests directly from our partners, and none of your customers
 can send us direct support requests, unless they purchased directly from us - At which point they're not
@@ -119,8 +119,8 @@ And/or actively communicate the system in the blogosphere and on social media. F
 fulfilling their obligations, a special section in the core distribution will be rewarded, mentioning
 your products and distribution, with links to your website.
 
-**Notice**, we also expect you to follow up on your customers, and make sure they obey by the license rules
-of Phosphorus Five - Proactively!
+**Notice**, we also expect you to follow up on your customers, and make sure your customers obeys by the
+license rules of Phosphorus Five - Proactively!
 
 ### How to apply
 
