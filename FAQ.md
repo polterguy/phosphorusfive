@@ -91,8 +91,8 @@ of Phosphorus Five. 100% dictator, and overlord of Phosphorus Five. Basically, I
 my own little universe here, and I intend to be _"god"_ within it - Don't like the idea?
 Go create your own universe.
 
-I do however take suggestions from others, and I do consider myself quite polite - Contrary to others
-in my position ...
+I do however take suggestions from others, and I do consider myself quite polite, and I am
+famous for changing my mind, once the facts no longer compiles.
 
 ### What's your sense of humor?
 
