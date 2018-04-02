@@ -1,5 +1,17 @@
 # FAQ
 
+### How do I get support?
+
+[By submitting an issue here](https://github.com/polterguy/phosphorusfive/issues)
+
+### How do I report a bug?
+
+[By submitting an issue here](https://github.com/polterguy/phosphorusfive/issues)
+
+### How do I request a feature?
+
+[By submitting an issue here](https://github.com/polterguy/phosphorusfive/issues)
+
 ### Who create Phosphorus Five?
 
 Every single line of code was created by me (Thomas Hansen), except where I use
@@ -72,10 +84,10 @@ Phosphorus Five comes out in the other end ...
 
 ### Who controls the development of Phosphorus Five?
 
-I am the Gaia Lactival Overlord, and Ajax Uhuru Uber Guru, Il Duce, Der Fuhrer
-and Kim Jong Il the 3rd. Pure 100% dictator. I do however take suggestions from
-others, and I consider myself polite. Contrary to many others in my position ...
-(You know who I'm talking about here I assume, without me having to mention names ... ;) )
+I am the Gaia Lactical Overlord, and Ajax Uhuru Uber Guru, Il Duce, Der Fuhrer
+and Kim Jong Il the 3rd. 100% dictator, and overlord of Phosphorus Five. I do however
+take suggestions from others, and I consider myself polite - Contrary to many others
+in my position ... (You know who I'm talking about here I assume, without me having to mention names ... ;) )
 
 ### What's your email address?
 
