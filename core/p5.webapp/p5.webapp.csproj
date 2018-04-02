@@ -63,6 +63,13 @@
     <Content Include="users\README.md" />
     <Content Include="modules\desktop\media\print-help.css" />
     <Content Include="modules\desktop\media\logo.svg" />
+    <Content Include="media\android-chrome-192x192.png" />
+    <Content Include="media\android-chrome-512x512.png" />
+    <Content Include="media\apple-touch-icon.png" />
+    <Content Include="media\favicon-16x16.png" />
+    <Content Include="media\favicon-32x32.png" />
+    <Content Include="media\mstile-150x150.png" />
+    <Content Include="media\safari-pinned-tab.svg" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -333,6 +340,8 @@
     <None Include="modules\desktop\help-files-desktop\Desktop\04 - API - Help system.md" />
     <None Include="modules\desktop\help-files-desktop\Desktop\index.hl" />
     <None Include="modules\desktop\startup\misc\desktop.help-files.01-desktop.hl" />
+    <None Include="media\browserconfig.xml" />
+    <None Include="media\site.webmanifest" />
   </ItemGroup>
   <ItemGroup />
 </Project>

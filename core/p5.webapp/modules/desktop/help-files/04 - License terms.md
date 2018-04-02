@@ -80,6 +80,10 @@ in Phosphorus Five. This implies tens of thousands of hours, making _your_ job e
 worth money? If your answer is no to the previous question, please let me hire you, such that you can
 work for me for free! ;)
 
+In addition to that you get the right to create closed source software with a proprietary license, you
+also get lots of other things - Such as professional support, access to private support, additional
+modules which I only distribute to developers with a proprietary license, etc, etc, etc.
+
 > Free as in Freedom, _not_ as in Free Beer!
 
 ### The GPL license terms

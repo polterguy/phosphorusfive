@@ -25,6 +25,14 @@ in Phosphorus Five. This implies tens of thousands of hours, making _your_ job e
 worth money? If your answer is no to the previous question, please let me hire you, such that you can
 work for me for free! ;)
 
+As a GaiaSoul Gold Partner you get exclusive access to additional modules and material, nobody else gets
+access to. This allows you to provide a lot of additional value, on top of the Free Software core, which
+makes your offer shine, and makes it easy for you to explain why people should pay you for a zip file.
+This comes in addition to any additional services you deliver yourself to sugar coat the pill, such
+as support, hosting, services, modules you build, etc. Also remember that you're not legally allowed to
+create anything but Open Source software without a proprietary license, and that evverybody with a
+proprietary license, can consume the free software modules created by others in their proprietary distributions.
+
 > Free as in Freedom, _not_ as in Free Beer!
 
 https://www.youtube.com/watch?v=kFUSenWxrOM
