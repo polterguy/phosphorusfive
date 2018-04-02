@@ -72,13 +72,6 @@ even if my life depended upon it!
 
 > Kim Jong Il, Stalin, Hitler, Obama, Trump - They're all the same to me ...
 
-### How can I become your best friend?
-
-Fork Mono, rip out everything not related to ASP.NET WebForms, stay compatible to
-the CLR (to allow for using 3rd party libraries), and make a script that installs
-your stuff on Apache, that's dead simple to build - And I'll (almost) tattoo your
-name on my chest, above my heart, with a _"friends forever"_ above your head!
-
 ### How on Earth did you do this? (Create Phosphorus Five)
 
 I spent 13 years researching the same idea, and I followed Winston Churchill's advice,
