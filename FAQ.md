@@ -53,7 +53,10 @@ Probably yes ...
 
 Probably yes, people tend to remember meeting me. I consider myself an _"opinionated nomadic software developer"_,
 and I travel a lot, and often I stay at the same place for several years, before I move on,
-to see more of this beautiful Earth of ours.
+to see more of this beautiful Earth of ours. Sometimes in unconventional ways, such
+as when I hitchhiked through California as a street performer, playing guitar. Or
+when I roamed around the entire Europe with a camping car for 6 months. I'm
+almost positively certain about that I must have some _"Gypsy blood"_ beneath my skin.
 
 ### Are you the guy playing Saxophone, Harmonica, Guitar on your videos?
 
