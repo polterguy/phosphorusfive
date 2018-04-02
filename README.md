@@ -49,6 +49,6 @@ of the Gnu Public License, version 3, in addition to that a proprietary enabling
 
 * [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)
 
-## FAQ (funny version)
+## FAQ
 
-* [FAQ](FAQ.md) - Most of the _"real"_ FAQ can be found indirectly in the docs for ths system ...
+* [FAQ](FAQ.md) - With a little dash of humor ... ;)
