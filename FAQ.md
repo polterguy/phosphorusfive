@@ -85,9 +85,9 @@ Phosphorus Five comes out in the other end ...
 ### Who controls the development of Phosphorus Five?
 
 I am the Gaia Lactical Overlord, and Ajax Uhuru Uber Guru, Il Duce, Der Fuhrer
-and Kim Jong Il the 3rd when it comes to the final decisions in regards to future development
+and Kim Jong Il the 3rd when it comes to the final decisions in regards to the future development
 of Phosphorus Five. 100% dictator, and overlord of Phosphorus Five. Basically, I created
-my own little universe here, and I intend to stay _"god"_ within in - Don't like the idea?
+my own little universe here, and I intend to stay _"god"_ within it - Don't like the idea?
 Go create your own universe.
 
 I do however take suggestions from others, and I do consider myself quite polite - Contrary to many others
