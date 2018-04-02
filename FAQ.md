@@ -65,8 +65,7 @@ Anarchy! I don't like Trump, I don't like Hilary, and I certainly do not like
 Obama either - In fact, when I think more thoroughly about this, I don't think I have ever
 met a politician whom I like, and whom I would enjoy having a conversation with - And
 I have certainly never met one whom I would trust with the decision making processes in my
-life. If you have a problem with that, may I suggest _"voting harder"_
-the next time ...?
+life.
 
 I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
 even if my life depended upon it!
