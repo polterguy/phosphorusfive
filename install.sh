@@ -2,6 +2,54 @@
 
 clear
 
+#                     *********************************************
+#                     *     About this script                     *
+#                     *     This script will do the following     *
+#                     *********************************************
+#
+#   1. Upgrade your Linux distro, and install all updates
+#   2. Install uncomplicated firewall, and shut down all ports except 22 (SSH), 80 (HTTP) and 443 (HTTPS)
+#   3. Install Apache
+#   4. Install MySQL, without network drivers, and the password of "SomeRandomPassword" (consider changing this if you like).
+#      Although this is technically not important, since no network drivers are enabled in MySQL anyways.
+#   5. Install GnuPG, and create a .gnupg folder for your Apache user
+#   6. Install Mono
+#   7. Install mod_mono (Apache bindings), and disable the "auto configuration" module
+#   8. Install unzip
+#   9. Give ownership of your entire /var/www folder, recursively to your Apache user
+#  10. Configure your /var/www/html folder to accept ASP.NET requests, and route these to mod_mono (Mono's ASP.NET process)
+#  11. Create the file "/etc/apache2/phosphorus.conf", which contains general Phosphorus Settings, in addition to
+#      some Mono settings, and include this file into your main Apache configuration file, which allows you to run your
+#      website as an ASP.NET/Mono website.
+#  12. Then it will ask you if you want to install an SSL certificate from "Let's Encrypt", at which point if you
+#      answer yes to this, you must already have a domain setup, and a DNS record pointing to your server's IP address.
+#  13. Download the binary release of Phosphorus Five, unzip it, and copy all files into your main Apache folder.
+#  14. Restart your Apache process, to allow for all configurations to be re-initialized.
+#
+#      Notice, this script is created explicitly to install a Phosphorus Five server, but it can probably be
+#      modified to create a "generic ASP.NET/Mono" WebSite for Apache.
+#      The script has only been tested with Ubuntu servers, however it _might_ also work with other Debian
+#      based systems.
+#      This script will _significantly_ increase the security of your server.
+#      The script is intended to be executed on a "vanilla" Ubuntu Linux server, implying a newly setup
+#      "clean" Ubuntu server.
+#
+#      WARNING - It will delete all files and folders you have from before in your main Apache folder.
+#      Consider creating a backup of these files, if you are upgrading an existing server!
+#
+#      If you have an existing MySQL server running, or MySQL locally installed on your server from before,
+#      you might have to manually edit the /var/www/html/web.config file, and change the MySQL connection string
+#      after having executed this script.
+#      In general terms the script is "greedy", and requires your entire Apache folder for its own things.
+#      But you can probably manually edit this afterwards, if you'd like for your server to have specific folder(s),
+#      from where it runs (for instance) PHP website(s), etc.
+#
+#      The script follows most "best practices" in regards to tightening your web server, such as turning
+#      off server identification, versioning, ETags, etc.
+#      In addition, it correctly tightens the security of all your special Phosphorus Five folders, such as
+#      your users' private folders, to prevent direct downloading of files, etc.
+
+
 # First giving user some information about what this script actually does.
 
 echo "================================================================================"
