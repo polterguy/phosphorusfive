@@ -70,6 +70,18 @@ ethical and morally right thing to do, once you realise the amount of work I hav
 If you can afford a license, purchasing one is the morally right thing to do. I have spent more than a
 decade researching and developing the ideas that lead to Phosphorus Five.
 
+### How can you sell Free Software?
+
+Why does money hold value?
+Money is basically just coloured paper, right? The reasons why money holds value, is because you
+can do things with it, that you cannot do with coloured paper. The same is true for a proprietary
+license of Phosphorus Five. I have spent more than a decade researching the ideas that are implemented
+in Phosphorus Five. This implies tens of thousands of hours, making _your_ job easier. Is your work
+worth money? If your answer is no to the previous question, please let me hire you, such that you can
+work for me for free! ;)
+
+> Free as in Freedom, _not_ as in Free Beer!
+
 ### The GPL license terms
 
 The exact wording of the GPL license can be seen [here](https://www.gnu.org/licenses/gpl-3.0.txt).

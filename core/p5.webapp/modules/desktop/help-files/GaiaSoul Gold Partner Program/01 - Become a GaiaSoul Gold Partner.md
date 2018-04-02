@@ -18,8 +18,8 @@ which you can do by clicking the _"home"_ button in this documentation file.
 ### How can you sell Free Software?
 
 The above question has as many answers as there are distributors - However, why does money hold value?
-Money is basically just coloured toilet paper, right? The reasons why money holds value, is because you
-can do things with it, that you cannot do with coloured toilet paper. The same is true for a proprietary
+Money is basically just coloured paper, right? The reasons why money holds value, is because you
+can do things with it, that you cannot do with coloured paper. The same is true for a proprietary
 license of Phosphorus Five. I have spent more than a decade researching the ideas that are implemented
 in Phosphorus Five. This implies tens of thousands of hours, making _your_ job easier. Is your work
 worth money? If your answer is no to the previous question, please let me hire you, such that you can
