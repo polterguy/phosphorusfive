@@ -108,3 +108,7 @@ I consider [this to be the Mona Lisa of Humor](https://www.youtube.com/watch?v=s
 ### What's your email address?
 
 thomas@gaiasoul.com
+
+### Can I buy you a cup of coffe, a dinner, or a new Harley Davidson?
+
+[Sure](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BXLLPEF2AG7VC), thank you :)
