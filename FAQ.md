@@ -60,8 +60,11 @@ Probably yes ...
 
 ### Are you the guy playing Saxophone, Harmonica, Guitar, Singing on your videos?
 
-Yup! My main hobbies includes creation of music, and I almost plays equally
-many instruments, as I know programming languages.
+Yup! My main hobbies, besides traveling, includes creation of music, and I almost plays equally
+many instruments, as I know programming languages. Sometimes you'll see me playing on
+the streets, of some weird city, where few of you have ever been. I once hitchhiked
+through California, making a living as a street musician, sleeping outside. What
+can I say, I probably have som _"Gypsy blood"_ in me ... ;)
 
 ### What are your personal political preferences?
 
