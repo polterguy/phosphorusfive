@@ -24,7 +24,6 @@ clear
 #  11. Then it will ask you if you want to install an SSL certificate from "Let's Encrypt", at which point if you
 #      answer yes to this, you must already have a domain setup, and a DNS record pointing to your server's IP address.
 #      The script will create a cron job, automatically renewing your SSL keypair if you choose to instal an SSL keypair.
-#      It will use 4096 keybit strength on your keypair!
 #  12. Download the binary release of Phosphorus Five, unzip it, and copy all files into your main Apache folder.
 #
 #      Notice, this script is created explicitly to install a Phosphorus Five server, but it can probably be
@@ -249,9 +248,6 @@ echo "Do you wish to install an SSL keypair on your server?"
 echo "This step requires a pre-configured domain and DNS record."
 read -p "[y/n] " yn
 if [[ $yn =~ ^[Yy]$ ]]; then
-
-  # Making sure we use 4096 key bit strength
-  rsa-key-size = 4096
 
   # Standard installation instructions, according to Let's Encrypt
   sudo apt-get install software-properties-common
