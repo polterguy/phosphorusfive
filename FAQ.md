@@ -96,7 +96,7 @@ which goes like this ...
 
 > Never, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever give up!
 
-Then mix a little bit of brilliance, and a little bit of madness - And __VOILA!__
+Then mix in a little bit of brilliance, and a little bit of madness - And __VOILA!__
 Phosphorus Five comes out in the other end ...
 
 ### Who controls the development of Phosphorus Five?
@@ -112,19 +112,21 @@ famous for changing my mind, once my existing mind no longer compiles. You are a
 play with me, inside of my little Universe, as long as you are nice to others, and
 restrain yourself from being rude.
 
-### Are you crazy?
+### When did you start to code?
 
-Probably, but a part of the definition of madness, is that you're not capable
-of neutrally assessing it yourself. However, here's a direct quote from one
-of my programming articles over at MSDN Magazine, which I arguably think
-sums it up pretty nicely ...
+When I was 8 years old, which was in 1982.
+
+### Doesn't your ideas violate 50 years of best practices?
+
+Yes, but so did Quantum Mechanics in the early 20th century in regards to physics.
+I think MSDN Magazine sums this up very well though, in the
+[following article](https://msdn.microsoft.com/en-us/magazine/mt795187).
 
 > When I approached MSDN Magazine Senior Contributing Editor James McCaffrey to review the preliminary draft of this article, he came away fairly outraged by some of the opinions and ideas put forward by the author. Most days, that would spell curtains for an article draft. But as McCaffrey notes, it’s all too common for new ideas in software engineering to be dismissed simply because they’re new. And while McCaffrey says he’s still outraged by many of the statements in this article, we both agree that it may provoke a lot of thought about software design and methodology paradigms.  —Michael Desmond
 
 Phosphorus Five is about as _"weird"_ as it is possible to come in regards to
 programming - But a more interesting question would be; _"Does it work for you?"_ -
-At which point whether or not my ideas are pure madness or not, should no longer
-be of any relevance to anybody but my wife. I'd like to paraphrase David Mermin here.
+At which point whether or not my ideas are _"weird"_ or not becomes irrelevant.
 
 > Shut up and code!
 
