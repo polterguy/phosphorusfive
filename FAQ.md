@@ -84,7 +84,10 @@ public schools to be the primary engine in societies brainwashing machine. Still
 I know more programming languages, and often times more math and physics too for
 that matter, than most PhDs and Professors I have met in my life. Believing
 that _"education"_ equals _"schooling"_ is a mistake few repeat more than once
-around me ... ;)
+around me ...
+
+I have probably read multiple libraries about programming, and possibly also
+written a couple of libraries too for that matter ...
 
 ### How on Earth did you do this? (Create Phosphorus Five)
 
