@@ -218,8 +218,9 @@ FileETag None
 
 
 
-# Modifying apache2.conf file
-sudo echo "
+# Modifying apache2.conf file, but only if it is necessary
+if ! grep -q 'Include /etc/apache2/phosphorusfive.conf' /etc/apache2/apache2.conf; then
+  sudo echo "
 
 #############################################################
 #
@@ -227,9 +228,10 @@ sudo echo "
 #
 #############################################################
 
-Include /etc/apache2/phosphorus.conf
+Include /etc/apache2/phosphorusfive.conf
 
 " >> /etc/apache2/apache2.conf
+fi
 
 
 
@@ -237,17 +239,28 @@ Include /etc/apache2/phosphorus.conf
 
 
 # Installing SSL keys, if user wants to.
-
-# Then asking user to confirm installation.
 echo "Do you wish to install an SSL keypair on your server?"
 echo "This step requires a pre-configured domain and DNS record."
 read -p "[y/n] " yn
 if [[ $yn =~ ^[Yy]$ ]]; then
+
+  # Making sure we use 4096 key bit strength
+  rsa-key-size = 4096
+
+  # Standard installation instructions, according to Let's Encrypt
   sudo apt-get install software-properties-common
   sudo add-apt-repository ppa:certbot/certbot
   sudo apt-get update
   sudo apt-get install python-certbot-apache
   sudo certbot --apache
+
+  # Creating a CRON job, auto-renewing SSL keys if it's time.
+  sudo echo "
+  export HOME=\"/root\"
+  export PATH=\"\${PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"
+  certbot-auto --no-self-upgrade certonly
+" > /etc/cron.daily/certbot-renew
+  chmod a+x /etc/cron.daily/certbot-renew
 fi
 
 # Restarting Apache.
