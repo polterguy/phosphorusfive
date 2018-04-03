@@ -77,12 +77,14 @@ life.
 I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
 even if my life depended upon it! I support _"nobody for President!"_
 
-### What is your formal education
+### What is your formal education?
 
 9 years of elementary school. I am autodidact, and I am proud about it. I consider
 public schools to be the primary engine in societies brainwashing machine. Still
-I know more programming languages, and often times more math too, than most
-PhDs I have met in my life.
+I know more programming languages, and often times more math and physics too for
+that matter, than most PhDs and Professors I have met in my life. Believing
+that _"education"_ equals _"schooling"_ is a mistake few repeat more than once
+around me ... ;)
 
 ### How on Earth did you do this? (Create Phosphorus Five)
 
