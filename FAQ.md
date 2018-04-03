@@ -115,7 +115,7 @@ restrain yourself from being rude.
 ### Are you crazy?
 
 Probably, but a part of the definition of madness, is that you're not capable
-of neutrally realise it yourself. However, here's a direct quote from one
+of neutrally assessing it yourself. However, here's a direct quote from one
 of my programming articles over at MSDN Magazine, which I arguably think
 sums it up pretty nicely ...
 
@@ -124,7 +124,9 @@ sums it up pretty nicely ...
 Phosphorus Five is about as _"weird"_ as it is possible to come in regards to
 programming - But a more interesting question would be; _"Does it work for you?"_ -
 At which point whether or not my ideas are pure madness or not, should no longer
-be of any relevance to anybody but my wife ...
+be of any relevance to anybody but my wife. I'd like to paraphrase Heisenberg here.
+
+> Shut up and code!
 
 ### What's your sense of humor?
 
