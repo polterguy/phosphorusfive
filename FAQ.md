@@ -77,6 +77,8 @@ life.
 I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
 even if my life depended upon it! I support _"nobody for President!"_
 
+> The belief in politicians, _any_ politician, is a psychiatric disease, from which there exists no cure
+
 ### What is your formal education?
 
 9 years of elementary school. I am autodidact, and I am proud about it. I consider
@@ -141,3 +143,6 @@ and services.
 ### How do you look like?
 
 Very beautiful ... ;)
+
+I guess you're just gonna have to download the system to find the answer to that
+question :D
