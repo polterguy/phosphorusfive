@@ -210,6 +210,9 @@ events, that are invoking for instance **[p5.mysql.select]**, with parameters sp
 create events that safely selects data from your database, without having an adversary being able to for instance
 create SQL injection attacks, by allowing him to directly invoke the SQL select event himself.
 
+**Warning** - For the above reasons, you can _never_ (securely) invoke an event that is somehow taking a lambda
+object as an argument from its caller, and evaluates this lambda object.
+
 ### [eval-mutable] for keyword developers
 
 The last overload, namely **[eval-mutable]**, is for the most parts for keyword developers, and rarely something
