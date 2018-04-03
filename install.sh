@@ -2,16 +2,17 @@
 
 clear
 
-#                     *********************************************
-#                     *     About this script                     *
-#                     *     This script will do the following     *
-#                     *********************************************
+#                         *********************************************
+#                         *     About this script                     *
+#                         *     This script will do the following     *
+#                         *********************************************
 #
 #   1. Upgrade your Linux distro, and install all updates
-#   2. Install uncomplicated firewall, and shut down all ports except 22 (SSH), 80 (HTTP) and 443 (HTTPS)
+#   2. Install "uncomplicated firewall", and shut down all ports except 22 (SSH), 80 (HTTP) and 443 (HTTPS)
 #   3. Install Apache
 #   4. Install MySQL, without network drivers, and the password of "SomeRandomPassword" (consider changing this if you like).
-#      Although this is technically not important, since no network drivers are enabled in MySQL anyways.
+#      Although this is technically not important, since no network drivers are enabled in MySQL anyways, and all networks
+#      ports are anyways closed by "ufw".
 #   5. Install Mono
 #   6. Install mod_mono (Apache bindings), and disable the "auto configuration" module
 #   7. Install unzip
@@ -22,10 +23,12 @@ clear
 #      website as an ASP.NET/Mono website.
 #  11. Then it will ask you if you want to install an SSL certificate from "Let's Encrypt", at which point if you
 #      answer yes to this, you must already have a domain setup, and a DNS record pointing to your server's IP address.
+#      The script will create a cron job, automatically renewing your SSL keypair if you choose to instal an SSL keypair.
+#      It will use 4096 keybit strength on your keypair!
 #  12. Download the binary release of Phosphorus Five, unzip it, and copy all files into your main Apache folder.
 #
 #      Notice, this script is created explicitly to install a Phosphorus Five server, but it can probably be
-#      modified to create a "generic ASP.NET/Mono" WebSite for Apache.
+#      modified to create a highly secure "generic ASP.NET/Mono" WebSite for Apache if you modify it slightly.
 #      The script has only been tested with Ubuntu servers, however it _might_ also work with other Debian
 #      based systems.
 #      This script will _significantly_ increase the security of your server.
@@ -122,6 +125,9 @@ rm -f -r p5
 # Editing web.config file, making sure we get the password correctly.
 sudo sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
+# "localhost" doesn't always work, so we replace it with 127.0.0.1, to make sure MySQL connections works correctly.
+sudo sed -i 's/server=localhost;/server=127.0.0.1;/g' /var/www/html/web.config
+
 # Making GnuPG folder for Apache process.
 sudo mkdir /var/www/.gnupg    
 
@@ -214,7 +220,7 @@ ServerTokens Prod
 
 # Turning OFF ETags, to avoid information leaking.
 FileETag None
-" > /etc/apache2/phosphorus.conf
+" > /etc/apache2/phosphorusfive.conf
 
 
 
