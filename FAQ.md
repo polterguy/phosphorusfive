@@ -12,6 +12,15 @@
 
 [By submitting an issue here](https://github.com/polterguy/phosphorusfive/issues)
 
+### How do I submit a patch?
+
+You don't. For legal reasons I cannot accept patches to Phosphorus Five. You can
+fork it, submit a bug report, tap into its plugin architecture, and probably
+change any aspect of it without rendering your code incompatible - But I cannot
+accept patches to it. Sorry. If you can accurately describe your problem though,
+preferably with a simple to use reproducible, I would love to help you out.
+I also deeply appreciate suggestions.
+
 ### Who create Phosphorus Five?
 
 Every single line of code was created by me (Thomas Hansen), except where I use
@@ -20,8 +29,8 @@ mark as such.
 
 ### Who owns the copyright for Phosphorus Five?
 
-It is in its entirety owned by Thomas Hansen, in person, which is a conscious choice,
-since it gives me a higher amount of security and freedom.
+It is in its entirety owned by Thomas Hansen, in person, me that is, which is a
+conscious choice, since it gives me a higher amount of security and freedom.
 
 ### Can I invest in Phosphorus Five?
 
@@ -49,29 +58,21 @@ with terrorists, and, quote _"people who hate your freedoms"_.
 
 Probably yes ...
 
-### Did we once meet in San Francisco, Barcelona, Copenhagen, "pick your city"?
+### Are you the guy playing Saxophone, Harmonica, Guitar, Singing on your videos?
 
-Probably yes, people tend to remember meeting me. I consider myself an _"opinionated nomadic software developer"_,
-and I travel a lot, and often I stay at the same place for several years, before I move on,
-to see more of this beautiful Earth of ours. Sometimes in unconventional ways, such
-as when I hitchhiked through California as a street performer, playing guitar, sleeping outside. Or
-when I roamed around the entire Europe with a camping car for 6 months. I'm
-almost positively certain about that I must have some _"Gypsy blood"_ beneath my skin.
-
-### Are you the guy playing Saxophone, Harmonica, Guitar on your videos?
-
-Yup!
+Yup! My main hobbies includes creation of music, and I almost plays equally
+many instruments, as I know programming languages.
 
 ### What are your personal political preferences?
 
-Anarchy! I don't like Trump, I don't like Hilary, and I certainly do not like
+Anarchy! I don't like Trump, I don't like Hilary, and I don't like
 Obama either - In fact, when I think more thoroughly about this, I don't think I have ever
 met a politician whom I like, and whom I would enjoy having a conversation with - And
 I have certainly never met one whom I would trust with the decision making processes in my
 life.
 
 I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
-even if my life depended upon it!
+even if my life depended upon it! I support _"nobody for President!"_
 
 ### How on Earth did you do this? (Create Phosphorus Five)
 
@@ -80,19 +81,21 @@ which goes like this ...
 
 > Never, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever give up!
 
-Then mix a little bit of brilliance, and a little bit of madness to the pot - And __VOILA!__
+Then mix a little bit of brilliance, and a little bit of madness - And __VOILA!__
 Phosphorus Five comes out in the other end ...
 
 ### Who controls the development of Phosphorus Five?
 
-I am the Gaia Lactical Overlord, and Ajax Uhuru Uber Guru, Il Duce, Der Fuhrer
+I am the Gaia Lactical Overlord, and Ajax Uber Uhuru Guru, Il Duce, Der Fuhrer,
 and Kim Jong Il the 3rd when it comes to the final decisions in regards to the future development
-of Phosphorus Five. 100% dictator, and overlord of Phosphorus Five. Basically, I created
-my own little universe here, and I intend to be _"god"_ within it - Don't like the idea?
-Go create your own universe.
+of Phosphorus Five. 100% dictator, the resurrected Kublai Khan, sole emperor over Phosphorus Five.
+I created my own little universe here, and I intend to be _"god"_ within it - Don't like the idea?
+[Go create your own universe](https://github.com/new).
 
 I do however take suggestions from others, and I do consider myself quite polite, and I am
-famous for changing my mind, once my existing mind no longer compiles.
+famous for changing my mind, once my existing mind no longer compiles. You are also welcome to
+play with me, inside of my little Universe, as long as you are nice to others, and
+restrain yourself from being rude.
 
 ### What's your sense of humor?
 
@@ -101,6 +104,20 @@ I consider [this to be the Mona Lisa of Humor](https://www.youtube.com/watch?v=s
 ### What's your email address?
 
 thomas@gaiasoul.com
+
+### Can I sponsor the project?
+
+Sure, if you represent a company, and or some individual with a deep wallet, and
+you'd like to be represented as an _"official sponsor"_ to the project - Feel free
+to shoot me an email at thomas@gaiasoul.com. I am in the process of setting up
+a general sponsor thing, allowing for sponsors to be mentioned in the documentation
+for the system, with a small pitch about their produtcs and services, and a link
+to their website. Which might (or might not) get you more customers to your products
+and services.
+
+### Can I resell Phosphorus Five?
+
+[Yup](https://www.youtube.com/watch?v=kFUSenWxrOM)!
 
 ### Can I buy you a cup of coffe, a dinner, or a new Harley Davidson?
 
