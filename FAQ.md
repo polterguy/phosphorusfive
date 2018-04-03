@@ -68,14 +68,21 @@ can I say, I probably have som _"Gypsy blood"_ in me ... ;)
 
 ### What are your personal political preferences?
 
-Anarchy! I don't like Trump, I don't like Hilary, and I don't like
-Obama either - In fact, when I think more thoroughly about this, I don't think I have ever
+__Anarchy__! I don't like Trump, I don't like Hilary, and I don't like
+Obama - In fact, when I think more thoroughly about this, I don't think I have ever
 met a politician whom I like, and whom I would enjoy having a conversation with - And
 I have certainly never met one whom I would trust with the decision making processes in my
 life.
 
 I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
 even if my life depended upon it! I support _"nobody for President!"_
+
+### What is your formal education
+
+9 years of elementary school. I am autodidact, and I am proud about it. I consider
+public schools to be the primary engine in societies brainwashing machine. Still
+I know more programming languages, and often times more math too, than most
+PhDs I have met in my life.
 
 ### How on Earth did you do this? (Create Phosphorus Five)
 
