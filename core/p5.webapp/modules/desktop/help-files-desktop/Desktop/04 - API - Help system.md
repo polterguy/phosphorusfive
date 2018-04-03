@@ -1,4 +1,3 @@
-
 ## Desktop API - The help system
 
 The help system can be consumed and displayed from anywhere you are in Phosphorus Five by invoking
@@ -105,3 +104,15 @@ in Hyper IDE.
 https://www.youtube.com/watch?v=9nAVSaVJZgU
 
 Saxophone played by yours truly ...
+
+#### Advanced - Controlling the positioning of the help system
+
+If you want the help system to be loaded in a specific widget, or its **[create-widget]** invocation
+to be given additional arguments for some reasons - You can handle the **[desktop.help.get-widget-arguments]**
+event, for instance as a widget lambda event in your own modules. Whatever this event returns, will
+be appended into the **[create-widget]** invocation that creates the help system widget. This allows
+you to return arguments such as **[parent]**, **[before]** and **[position]**, which allows you to
+control where the help system is displayed from within your own custom modules. There is an example
+in the Magic Menu of how to handle this event, which is necessary to avoid having the help system
+being loaded at the bottom, since this would mess with the _"never ending scrolling"_ experience
+of the Magic Menu.

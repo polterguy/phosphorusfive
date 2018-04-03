@@ -1,4 +1,3 @@
-﻿
 /*
  * File responsible for displaying help module.
  *
@@ -51,6 +50,19 @@ if
   fetch:x:/0/0?value
     widget-exists:hyper-ide-help-wrapper
   delete-widget:hyper-ide-help-wrapper
+
+
+
+
+
+/*
+ * Checking if there's an explicit container "sink" on page where
+ * we should display the help widget.
+ */
+desktop.help.get-widget-arguments
+if:x:/@desktop.help.get-widget-arguments/*
+  add:x:/../*/create-widget
+    src:x:/@desktop.help.get-widget-arguments/*
 
 
 
