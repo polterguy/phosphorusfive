@@ -112,6 +112,15 @@ famous for changing my mind, once my existing mind no longer compiles. You are a
 play with me, inside of my little Universe, as long as you are nice to others, and
 restrain yourself from being rude.
 
+### Are you mad?
+
+Probably, but a part of the definition of madness, is that you're not capable
+of neutrally realise it yourself. However, here's a direct quote from one
+of my programming articles over at MSDN Magazine, which I arguably think
+myself sums it up pretty nicely ...
+
+> When I approached MSDN Magazine Senior Contributing Editor James McCaffrey to review the preliminary draft of this article, he came away fairly outraged by some of the opinions and ideas put forward by the author. Most days, that would spell curtains for an article draft. But as McCaffrey notes, it’s all too common for new ideas in software engineering to be dismissed simply because they’re new. And while McCaffrey says he’s still outraged by many of the statements in this article, we both agree that it may provoke a lot of thought about software design and methodology paradigms.  —Michael Desmond
+
 ### What's your sense of humor?
 
 Besides from my own jokes, which normally I am the only one who understands,
