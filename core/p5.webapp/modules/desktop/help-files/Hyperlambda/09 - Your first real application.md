@@ -95,8 +95,8 @@ micro.css.include
 
 /*
  * Creating our main application wrapper widget.
- * This widget contains at the very least our "add contact" button, 
- * in addition to also possible an HTML table, dynamically created, 
+ * This widget contains at the very least our "add contact" button,
+ * in addition to also possible an HTML table, dynamically created,
  * according to the content of our "database file".
  */
 create-widget
@@ -104,8 +104,8 @@ create-widget
   oninit
 
     /*
-     * Making sure we initially databind our address HTML table, 
-     * by invoking our "widget lambda event", that is declared 
+     * Making sure we initially databind our address HTML table,
+     * by invoking our "widget lambda event", that is declared
      * further down on page.
      */
     examples.databind-addresses
@@ -119,7 +119,7 @@ create-widget
           widgets
 
             /*
-             * This becomes the wrapper widget for our HTML table, 
+             * This becomes the wrapper widget for our HTML table,
              * containing our "list of contacts".
              */
             container:table_wrapper
@@ -134,7 +134,7 @@ create-widget
               onclick
 
                 /*
-                 * Using a "wizard window" to retrieve name, 
+                 * Using a "wizard window" to retrieve name,
                  * email and phone from user.
                  */
                 create-widgets
@@ -165,7 +165,7 @@ create-widget
                             micro.form.serialize:my-input-form
 
                             /*
-                             * Loading database file, if it exists, and appending 
+                             * Loading database file, if it exists, and appending
                              * its old values into our [save-file] invocation.
                              */
                             file-exists:~/documents/private/adr.hl
@@ -204,7 +204,7 @@ create-widget
                               src:x:/@lambda2hyper?value
 
                             /*
-                             * Making sure we databind our HTML table again, to make sure 
+                             * Making sure we databind our HTML table again, to make sure
                              * our newly added record is shown.
                              */
                             examples.databind-addresses
@@ -222,17 +222,17 @@ create-widget
             /*
              * The "databind" table event.
              *
-             * This Active Event simply loads our "database file", and creates 
+             * This Active Event simply loads our "database file", and creates
              * our HTML table accordingly.
              *
-             * The first line in our event, becomes its name, meaning we can 
-             * invoke it by simply adding a node with a name matching this 
+             * The first line in our event, becomes its name, meaning we can
+             * invoke it by simply adding a node with a name matching this
              * Active Event's name.
              */
             examples.databind-addresses
 
               /*
-               * This invocation clears our HTML table wrapper widget for 
+               * This invocation clears our HTML table wrapper widget for
                * any previous content.
                */
               clear-widget:table_wrapper
@@ -271,7 +271,7 @@ create-widget
                             innerValue:x:/@_dp/#/*/phone?value
 
                 /*
-                 * Now our "tbody" HTML widget below should contain on "tr" widget 
+                 * Now our "tbody" HTML widget below should contain on "tr" widget
                  * for each row from our "database file".
                  * Each "tr" widget again, should contain one "td" widget for the name,
                  * email and phone from our contact.
