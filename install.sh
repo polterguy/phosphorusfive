@@ -12,19 +12,17 @@ clear
 #   3. Install Apache
 #   4. Install MySQL, without network drivers, and the password of "SomeRandomPassword" (consider changing this if you like).
 #      Although this is technically not important, since no network drivers are enabled in MySQL anyways.
-#   5. Install GnuPG, and create a .gnupg folder for your Apache user
-#   6. Install Mono
-#   7. Install mod_mono (Apache bindings), and disable the "auto configuration" module
-#   8. Install unzip
-#   9. Give ownership of your entire /var/www folder, recursively to your Apache user
-#  10. Configure your /var/www/html folder to accept ASP.NET requests, and route these to mod_mono (Mono's ASP.NET process)
-#  11. Create the file "/etc/apache2/phosphorus.conf", which contains general Phosphorus Settings, in addition to
+#   5. Install Mono
+#   6. Install mod_mono (Apache bindings), and disable the "auto configuration" module
+#   7. Install unzip
+#   8. Give ownership of your entire /var/www folder, recursively to your Apache user
+#   9. Configure your /var/www/html folder to accept ASP.NET requests, and route these to mod_mono (Mono's ASP.NET process)
+#  10. Create the file "/etc/apache2/phosphorus.conf", which contains general Phosphorus Settings, in addition to
 #      some Mono settings, and include this file into your main Apache configuration file, which allows you to run your
 #      website as an ASP.NET/Mono website.
-#  12. Then it will ask you if you want to install an SSL certificate from "Let's Encrypt", at which point if you
+#  11. Then it will ask you if you want to install an SSL certificate from "Let's Encrypt", at which point if you
 #      answer yes to this, you must already have a domain setup, and a DNS record pointing to your server's IP address.
-#  13. Download the binary release of Phosphorus Five, unzip it, and copy all files into your main Apache folder.
-#  14. Restart your Apache process, to allow for all configurations to be re-initialized.
+#  12. Download the binary release of Phosphorus Five, unzip it, and copy all files into your main Apache folder.
 #
 #      Notice, this script is created explicitly to install a Phosphorus Five server, but it can probably be
 #      modified to create a "generic ASP.NET/Mono" WebSite for Apache.
@@ -87,7 +85,7 @@ wget https://github.com/polterguy/phosphorusfive/releases/download/v8.0/binaries
 # up later, this should be perfectly safe.
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
-sudo apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2 ufw
+sudo apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip ufw
 
 # Disabling mod_mono_auto to make sure we create an "advanced" configuration for mod_mono.
 sudo a2dismod mod_mono_auto
