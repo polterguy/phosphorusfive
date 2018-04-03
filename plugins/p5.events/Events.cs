@@ -210,8 +210,21 @@ namespace p5.events
             }
 
             // Raising Active Event, if it exists.
-            if (lambda != null)
-                XUtil.EvaluateLambda (context, lambda, e.Args);
+            if (lambda != null) {
+
+                // Making sure we do not pass in whitelist to event invocation, if it is specified.
+                if (context.Ticket.Whitelist == null) {
+                    XUtil.EvaluateLambda (context, lambda, e.Args);
+                } else {
+                    var whitelist = context.Ticket.Whitelist;
+                    context.Ticket.Whitelist = null;
+                    try {
+                        XUtil.EvaluateLambda (context, lambda, e.Args);
+                    } finally {
+                        context.Ticket.Whitelist = whitelist;
+                    }
+                }
+            }
         }
 
         /*
