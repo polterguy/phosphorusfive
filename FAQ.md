@@ -112,7 +112,9 @@ restrain yourself from being rude.
 
 ### What's your sense of humor?
 
-I consider [this to be the Mona Lisa of Humor](https://www.youtube.com/watch?v=so8NQficzZg).
+Besides from my own jokes, which normally I am the only one who understands,
+I consider [this](https://www.youtube.com/watch?v=so8NQficzZg)  to be the Mona
+Lisa of Humor.
 
 ### What's your email address?
 
