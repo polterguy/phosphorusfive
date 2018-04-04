@@ -40,7 +40,11 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = "p5.web.response.set-status-code")]
         public static void p5_web_response_set_status_code (ApplicationContext context, ActiveEventArgs e)
         {
-            HttpContext.Current.Response.StatusCode = e.Args.GetExValue<int> (context);
+            try {
+                HttpContext.Current.Response.StatusCode = e.Args.GetExValue<int> (context);
+            } catch {
+                ; // For some reasons, windows doesn't allow us to change the status code after having set the HTTP headers.
+            }
         }
 
         /// <summary>
