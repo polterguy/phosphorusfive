@@ -1,4 +1,4 @@
-## Introduction
+## Introduction to the Desktop
 
 The _"Desktop"_ module, is normally the root of your Phosphorus Five installation, and responsible for URL resolving -
 In addition to providing other services to your modules, and Phosphorus Five in general. The Desktop module

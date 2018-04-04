@@ -10,10 +10,8 @@
 * [MailKit](https://github.com/jstedfast/MailKit) - Copyright © 2013-2018 Xamarin Inc. (www.xamarin.com)
 * [BouncyCastle](https://www.bouncycastle.org/) - Copyright © 2013-2018 Legion of the Bouncy Castle Inc
 * [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - Copyright © ? Mike Krüger and others
-* [iTextSharp](https://github.com/itext/itextsharp) - Copyright © 1998-2017 iText Group NV
 * [MySQL](https://www.mysql.com/) - Copyright © 2018 Oracle Corporation, and/or its affiliates
 * [CsvHelper](https://joshclose.github.io/CsvHelper/) - Copyright © 2018 2009-2017 Josh Close and Contributors
-* [FlickrNet](https://github.com/samjudson/flickr-net) - Copyright © ? Sam Judson
 * [AjaxMin](http://ajaxmin.codeplex.com/) - Copyright © ? Ron Logan
 * [CommonMark.NET](https://github.com/Knagis/CommonMark.NET) - Copyright © ? Knagis
 * [HTML Agility Pack](http://html-agility-pack.net/) - Copyright © ? Simon Mourier
@@ -27,8 +25,8 @@ through an individually named _"proprietary enabling license"_, all Phosphorus F
 are distributed under the terms of the GPL license version 3, as published by the Free Software Foundation.
 See the [Free Software Foundation website](https://www.fsf.org/) for details.
 
-See the above respective Open Source projects for licensing information, but in general they are all _"permissive"_ in nature,
-except iTextSharp, which is distributed under an Affero GPL license.
+See the above respective Open Source projects for licensing information, but in general they are all _"permissive"_
+in nature.
 
 In addition, I would like to say a special thank you to the following people and organisations.
 
