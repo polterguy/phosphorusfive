@@ -8,7 +8,7 @@
     <RootNamespace>p5.auth</RootNamespace>
     <AssemblyName>p5.auth</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
