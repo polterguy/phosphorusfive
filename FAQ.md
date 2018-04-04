@@ -64,30 +64,7 @@ Yup! My main hobbies, besides traveling, includes creation of music, and I almos
 many instruments, as I know programming languages. Sometimes you'll see me playing on
 the streets, of some weird city, where few of you have ever been. I once hitchhiked
 through California, making a living as a street musician, sleeping outside. What
-can I say, I probably have som _"Gypsy blood"_ in me ... ;)
-
-### What are your personal political preferences?
-
-__Anarchy__! I don't like Trump, I don't like Hilary, and I don't like
-Obama - In fact, when I think more thoroughly about this, I don't think I have ever
-met a politician whom I like, and whom I would enjoy having a conversation with - And
-I have certainly never met one whom I would trust with the decision making processes in my
-life.
-
-I am a purebred __Anarchist__, to the bone! And you couldn't get me to vote,
-even if my life depended upon it! I support _"nobody for President!"_
-
-> The belief in politicians, _any_ politician, is a psychiatric disease, from which there exists no cure
-
-### What is your formal education?
-
-9 years of elementary school. I am autodidact, and I am proud of it. I consider
-public schools to be the primary engine in societies brainwashing machine. Still
-I know more programming languages, and often times more math and physics too for
-that matter, than most PhDs and Professors I have met in my life. Believing
-that _"education"_ equals _"schooling"_ is a mistake few repeat more than once
-around me. I have probably read multiple libraries about programming, and possibly also
-written a couple of libraries too for that matter ...
+can I say, I probably have som _"Gypsy blood"_ in me ...
 
 ### How on Earth did you do this? (Create Phosphorus Five)
 
@@ -104,31 +81,9 @@ Phosphorus Five comes out in the other end ...
 I am the Gaia Lactical Overlord, and Ajax Uber Uhuru Guru, Il Duce, Der Fuhrer,
 and Kim Jong Il the 3rd when it comes to the final decisions in regards to the future development
 of Phosphorus Five. 100% dictator, the resurrected Kublai Khan, sole emperor over Phosphorus Five.
-I created my own little universe here, and I intend to be _"god"_ within it - Don't like the idea?
-[Go create your own universe](https://github.com/new).
 
-I do however take suggestions from others, and I do consider myself quite polite, and I am
-famous for changing my mind, once my existing mind no longer compiles. You are also welcome to
-play with me, inside of my little Universe, as long as you are nice to others, and
-restrain yourself from being rude.
-
-### When did you start to code?
-
-When I was 8 years old, which was in 1982.
-
-### Doesn't your ideas violate 50 years of best practices?
-
-Yes, but so did Quantum Mechanics in the early 20th century in regards to physics.
-I think MSDN Magazine sums this up very well though, in the
-[following article](https://msdn.microsoft.com/en-us/magazine/mt795187).
-
-> When I approached MSDN Magazine Senior Contributing Editor James McCaffrey to review the preliminary draft of this article, he came away fairly outraged by some of the opinions and ideas put forward by the author. Most days, that would spell curtains for an article draft. But as McCaffrey notes, it’s all too common for new ideas in software engineering to be dismissed simply because they’re new. And while McCaffrey says he’s still outraged by many of the statements in this article, we both agree that it may provoke a lot of thought about software design and methodology paradigms.  —Michael Desmond
-
-Phosphorus Five is about as _"weird"_ as it is possible to come in regards to
-programming - But a more interesting question would be; _"Does it work for you?"_ -
-At which point whether or not my ideas are _"weird"_ or not becomes irrelevant.
-
-> Shut up and code!
+I do however love suggestions and feedback from others, and I do consider myself quite polite, and I am
+famous for changing my mind, once my existing mind no longer compiles.
 
 ### What's your sense of humor?
 
@@ -157,10 +112,3 @@ and services.
 ### Can I buy you a cup of coffe, a dinner, or a new Harley Davidson?
 
 [Sure](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BXLLPEF2AG7VC), thank you :)
-
-### How do you look like?
-
-Very beautiful ... ;)
-
-I guess you're just gonna have to download the system to find out the answer to that
-question :D
