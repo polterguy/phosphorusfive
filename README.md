@@ -24,17 +24,23 @@ Out of the box, Phosphorus Five contains the following components.
 You can install Phosphorus Five on a production Ubuntu/Linux server with an automated script, taking care of all dependencies. Or
 you can download its code version, and play around with it locally, on your Windows, Mac, or Linux machine. If you choose the latter, you will
 have to [make sure you have MySQL Server installed somehow](https://dev.mysql.com/downloads/mysql/) on your computer.
-In addition, you need [Visual Studio](https://www.visualstudio.com/vs/community/) or [Mono Develop](https://www.monodevelop.com/) to
+In addition, you need [Visual Studio/Xamarin](https://www.visualstudio.com/vs/community/) or [Mono Develop](https://www.monodevelop.com/) to
 use the source code version.
 
 * [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases) - Both binary release and source code
 
-**Notice** - If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it contains the correct
+**Notice - Source Code** - If you download the source version, make sure you edit the `/core/p5.webapp/web.config` file, such that it contains the correct
 connection string for your MySQL installation. This normally implies simply adding your password to the existing connection string.
 Phosphorus Five will run without a valid MySQL database connection string - However, some of its apps will not function at all,
-or at their peak feature set.
+or at their peak performance.
 
-**Important** - If you use the source code version on Windows in Visual Studio, _make sure you turn off "browser sync" in Visual Studio_.
+**Notice - Binaries** - The automatic Linux script has only been tested on Ubuntu Server version 16.04.4, but might also work on other versions. This script
+will also _sigificantly_ increase the security of your box, in addition to patching your box, updating it, and making sure it's using the latest
+stable versions of all software it installs - Such as for instance Mono version 5.10. The script expects a _"vanilla"_ Linux Ubuntu Server, and will
+_remove_ any existing websites you have configured for your Apache folder.
+
+**Notice - Source Code version on Windows** - If you use the source code version on Windows in Visual Studio, _make sure you turn off "browser sync"
+in Visual Studio_.
 
 ## MSDN Magazine articles about Phosphorus Five
 

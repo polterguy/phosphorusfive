@@ -33,7 +33,6 @@
     <Reference Include="CsvHelper">
       <HintPath>..\..\..\packages\CsvHelper.7.1.0\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lambda2Csv.cs" />

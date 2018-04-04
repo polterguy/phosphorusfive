@@ -74,6 +74,12 @@ if [[ ! $yn =~ ^[Yy]$ ]]; then
   exit
 fi
 
+# Making sure we're able to install latest version of Mono
+# Ubuntu's version is hopelessly outdated!!
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+echo "deb http://download.mono-project.com/repo/ubuntu stable-xenial main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+
+
 # Making sure we update and upgrade our server.
 sudo apt-get update
 sudo apt-get upgrade

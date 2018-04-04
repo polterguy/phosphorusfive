@@ -30,11 +30,11 @@ in nature.
 
 In addition, I would like to say a special thank you to the following people and organisations.
 
-* My three diamonds, you know who you are
-* Jeffrey Steadfast for giving me excellent support and help when ever I got stuck in MimeKit or MailKit
+* Jeffrey Steadfast for giving me excellent support and help when ever I got stuck in MimeKit or MailKit. This man's brilliance, and willingness to serve, cannot be emphasized enough!
+* Gary Gray for providing extensive feedback, and helping finding bugs in the system. I am positively certain about that this man holds some special sort of superpowers when it comes to being able to find bugs, I couldn't even imagine could possibly exist!
 * Svein Daniel Solvenus for providing feedback in the early stages of the project
-* Gary Gray for providing extensive feedback, and helping find bugs in the system
 * Michael Desmond and James McCaffrey for allowing me to write three articles at MSDN Magazine
 * The Mono project for making my work possible
 * All my friends for being amazing and beautiful
+* My three diamonds, you know who you are
 * And last but not least, my beautiful and amazing partner, Lisbeth Aardal, for always being supportive and loving me, despite my _"quirks"_
