@@ -262,7 +262,7 @@ div
              * Creates our documentation file.
              */
             try
-              micro.evaluate.file:@DESKTOP/helpers/create-documentation-pdf.hl
+              micro.evaluate.file:@DESKTOP/helpers/create-documentation-print.hl
             catch
               micro.windows.info:x:/@message?value
                 class:micro-windows-info warning

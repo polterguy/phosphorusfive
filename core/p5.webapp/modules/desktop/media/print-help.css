@@ -1,58 +1,44 @@
+:root {
+    --font-size: 22px;
+    --background: #ffffff;
+}
 * {
     font-family: Arial;
-    font-size: 18px;
 }
-
-h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 28px;
-    font-weight: bold;
-}
-
 h1 {
-    font-size: 40px;
+    display: block;
+    margin-top: 40%;
+    margin-bottom: 40%;
     text-align: center;
+    font-size: 57px;
 }
-
-h2 {
-    font-size: 35px;
+h1, h2 {
     page-break-before: always;
 }
-
-h3 {
-    font-size: 30px;
+h1:first-child {
+    page-break-before: inherit;
 }
-
-h4 {
-    font-size: 25px;
+img {
+    page-break-inside: avoid;
+    display: block;
+    max-width: 100%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
 }
-
-h5 {
-    font-size: 20px;
-}
-
-h6 {
-    font-size: 20px;
-}
-
 p {
-    margin-bottom: 20px;
-    font-size: 18px;
     text-align: justify;
 }
-
-ul, ol {
-    margin-bottom: 20px;
+code, pre {
+    background: #f5f5f5;
+    font-size: 14px;
 }
-
-ul {
-    list-style-type: disc;
+.desktop-help-icon-image {
+    margin-left:1rem;
+    float:right;
+    max-width: 25%;
+    width: 192px;
 }
-
-/* DOESN'T WORK due to bug in iTextSharp! */
-pre, code {
-    margin-bottom: 28px;
-    font-family: monospace;
-    white-space: pre;
-    background-color: #fdfdfd;
-}
-

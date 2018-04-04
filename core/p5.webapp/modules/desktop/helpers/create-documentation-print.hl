@@ -28,7 +28,7 @@ eval-x:x:/+
   <head>
     <title>Foo</title>
     <link rel=""stylesheet"" type=""text/css"" href=""/modules/micro/media/micro.css"" />
-    <link rel=""stylesheet"" type=""text/css"" href=""/modules/desktop/media/help.css"" />
+    <link rel=""stylesheet"" type=""text/css"" href=""/modules/desktop/media/print-help.css"" />
   </head>
   <body>
     <div class=""container"">
@@ -153,40 +153,7 @@ for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https{0,1}:\\/\\/.+\\.[png|j
       img
         @src:x:/@_dp/#?value
         @alt:Image
-        @class:desktop-help-image
   set:x:/@_dp/#/./*/\#text
-
-
-
-
-
-/*
- * Making sure we transform all YouTube links, such that they're replaced by
- * a preview of the video.
- */
-for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https:\\/\\/www.youtube.com\\/watch/"""
-
-  /*
-   * Replacing entire paragraph with a preview of YouTube video.
-   */
-  split:x:/@_dp/#?value
-    =:?v=
-  split:x:/@split/0/-?name
-    =:&
-  eval-x:x:/+/**/\@src
-  insert-before:x:/@_dp/#/.
-    src
-      div
-        @class:desktop-help-youtube-outer-wrapper
-        div
-          @class:desktop-help-youtube-wrapper
-          iframe
-            @type:text/html
-            @class:desktop-help-youtube-embed
-            @allowfullscreen
-            @src:@"https://www.youtube.com/embed/{0}?modestbranding=1&autohide=1&showinfo=0"
-              :x:/@split/0?name
-  set:x:/@_dp/#/.
 
 
 
