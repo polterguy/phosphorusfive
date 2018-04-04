@@ -14,8 +14,12 @@ that it requires much more server resources, particularly memory, compared to a 
 This results in that it is extremely easy to create highly advanced web applications, while it is also difficult
 (but _not_ impossible) to create apps that scales very well. Hyperlambda does also have some overhead
 compared to a language that's closer to the hardware, such as C# or C++ - So it is not intended for creating
-CPU resource intensive algorithms in. If you need more power, you can create Active Events in C#, for then
-to consume these in Hyperlambda.
+CPU resource intensive algorithms in. If you need more power for your algorithms, you can create Active Events
+in for instance C#, for then to consume these in Hyperlambda. In addition, to prevent a single client from
+draining all resources from a server, we had to set a maximum limit on the number of simultaneous open
+webpages in Phosphorus Five. So Phosphorus Five apps in general, doesn't work very well, when a user has
+a bunch of different tabs open, towards the same installation. As a general rule, Phosphorus Five is
+a _"single page framework"_.
 
 In general, for the above reasons, you should not expect Phosphorus Five to scale _"into heaven"_, allowing
 for millions of consecutive users simultaneously accessing your server - Unless you bypass parts of the core,

@@ -230,9 +230,10 @@ h3
   innerValue:Print documentation
 
 p
-  innerValue:@"Below is a button that will automatically generate a PDF file for you, containing all Markdown files in the documentation system. Notice, this process might take some time, depending upon how much documentation you have for your installation.
-Also, please realise that the plugin I am using to actually perform my HTML to PDF conversion, which is called iTextSharp, unfortunately doesn't
-handle 'pre' HTML elements well - So there are no code examples in the PDF version of the documentation."
+  innerValue:@"Below is a button that will allow you to print out your documentation, containing all Markdown
+files in the documentation system. Notice, this process might take some time, depending upon how much documentation
+you have for your installation. This button will create a single HTML page, and open it in another tab, which you
+can use to print your own PDF file, and/or dead forrest distribution of the documentation, if you wish."
 
 div
   class:right
@@ -248,7 +249,7 @@ div
          */
         create-widgets
           micro.widgets.cover:desktop-help-print-cover
-            message:Please wait while I generate your PDF file ...
+            message:Please wait while I generate your documentation ...
 
         /*
          * Creating a timeout to make sure cover widget is displayed on client side.
@@ -258,12 +259,18 @@ div
           onfinish
 
             /*
-             * Creates our PDF file.
+             * Creates our documentation file.
              */
-            micro.evaluate.file:@DESKTOP/helpers/create-documentation-pdf.hl
+            try
+              micro.evaluate.file:@DESKTOP/helpers/create-documentation-pdf.hl
+            catch
+              micro.windows.info:x:/@message?value
+                class:micro-windows-info warning
 
             /*
              * Deleting cover widget, and downloading PDF.
              */
             delete-widget:desktop-help-print-cover
-            micro.download.file:x:/@micro.evaluate.file?value
+            p5.io.unroll-path:x:/@try/*/micro.evaluate.file?value
+            p5.web.send-javascript:@"window.open('{0}');"
+              :x:/@p5.io.unroll-path?value

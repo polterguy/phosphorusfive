@@ -30,7 +30,7 @@ mark as such.
 ### Who owns the copyright for Phosphorus Five?
 
 It is in its entirety owned by Thomas Hansen, in person, me that is, which is a
-conscious choice, since it gives me a higher amount of security and freedom.
+conscious choice, since it gives me a higher degree of security and freedom.
 
 ### Can I invest in Phosphorus Five?
 
@@ -81,7 +81,7 @@ even if my life depended upon it! I support _"nobody for President!"_
 
 ### What is your formal education?
 
-9 years of elementary school. I am autodidact, and I am proud about it. I consider
+9 years of elementary school. I am autodidact, and I am proud of it. I consider
 public schools to be the primary engine in societies brainwashing machine. Still
 I know more programming languages, and often times more math and physics too for
 that matter, than most PhDs and Professors I have met in my life. Believing
@@ -162,5 +162,5 @@ and services.
 
 Very beautiful ... ;)
 
-I guess you're just gonna have to download the system to find the answer to that
+I guess you're just gonna have to download the system to find out the answer to that
 question :D

@@ -12,8 +12,8 @@
  */
 if
   fetch:x:/0/0?value
-    file-exists:~/documents/private/Phosphorus Five Documentation.pdf
-  return:~/documents/private/Phosphorus Five Documentation.pdf
+    file-exists:~/documents/public/p5-dox.html
+  delete-file:~/documents/public/p5-dox.html
 
 
 
@@ -22,17 +22,20 @@ if
 /*
  * Buffer node for entire HTML, containing HTML for all Markdown files in system.
  */
-.html:"<html><head><title>Foo</title></head><body><h1>Phosphorus Five</h1>"
-
-
-
-
-
-/*
- * Lists all documentation files at root of help files.
- */
-list-files:@DESKTOP/help-files/
-  filter:.md
+desktop.version
+eval-x:x:/+
+.html:@"<html>
+  <head>
+    <title>Foo</title>
+    <link rel=""stylesheet"" type=""text/css"" href=""/modules/micro/media/micro.css"" />
+    <link rel=""stylesheet"" type=""text/css"" href=""/modules/desktop/media/help.css"" />
+  </head>
+  <body>
+    <div class=""container"">
+      <div class=""row"">
+        <div class=""col"">
+          <h1>Hyperlamb {0}</h1>"
+  :x:/@desktop.version?value
 
 
 
@@ -41,6 +44,8 @@ list-files:@DESKTOP/help-files/
 /*
  * Converts all main files to HTML, and appending into above [.html].
  */
+list-files:@DESKTOP/help-files/
+  filter:.md
 load-file:x:/@list-files/*?name
 for-each:x:/@load-file/*?value
   markdown2html:x:/@_dp?value
@@ -54,7 +59,7 @@ for-each:x:/@load-file/*?value
 
 
 /*
- * Converts all subsection files to HTML, and appending into above [.html].
+ * Converts all modules help files to HTML, and appending into above [.html].
  */
 .exe
   for-each:x:/../*/~desktop.help-files?value
@@ -62,7 +67,7 @@ for-each:x:/@load-file/*?value
       src:x:/@_dp?value
 vocabulary:~desktop.help-files.
 for-each:x:/@vocabulary/*?value
-  insert-before:x:/@.exe/0
+  insert-before:x:/@.exe/0/-
     src:x:/@_dp?value
 eval:x:/@.exe
 for-each:x:/@eval/*?name
@@ -81,10 +86,28 @@ for-each:x:/@eval/*?name
 
 
 /*
+ * Converts all sub section help files to HTML, and appending into above [.html].
+ */
+list-folders:@DESKTOP/help-files/
+list-files:x:/@list-folders/*?name
+  filter:.md
+load-file:x:/@list-files/*?name
+for-each:x:/@load-file/*?value
+  markdown2html:x:/@_dp?value
+  set:x:/@.html?value
+    src:{0}{1}
+      :x:/@.html?value
+      :x:/@markdown2html?value
+
+
+
+
+
+/*
  * Closing document.
  */
 set:x:/@.html?value
-  src:{0}</body></html>
+  src:{0}</div></div></div></body></html>
     :x:/@.html?value
 
 
@@ -101,20 +124,16 @@ html2lambda:x:/@.html?value
 
 
 /*
- * Massaging images, to make them float inline.
+ * Fixing all 'pre' elements.
  */
-for-each:x:/@html2lambda/**/img
-
-  /*
-   * Adding style attribute.
-   */
-  add:x:/+/*/*
-    src:x:/@_dp/#
-  insert-before:x:/@_dp/#
+for-each:x:/@html2lambda/**/pre/*/code
+  lambda2html:x:/@_dp/#/*(!/~@)
+  set:x:/@_dp/#/*(!/~@)
+  p5.html.html-encode:x:/@lambda2html?value
+  eval-x:x:/+/*/*
+  add:x:/@_dp/#
     src
-      p
-        @style:"text-align:center;"
-  set:x:/@_dp/#
+      #text:x:/@p5.html.html-encode?value
 
 
 
@@ -134,6 +153,7 @@ for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https{0,1}:\\/\\/.+\\.[png|j
       img
         @src:x:/@_dp/#?value
         @alt:Image
+        @class:desktop-help-image
   set:x:/@_dp/#/./*/\#text
 
 
@@ -141,14 +161,32 @@ for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https{0,1}:\\/\\/.+\\.[png|j
 
 
 /*
- * Entirely removing code examples.
+ * Making sure we transform all YouTube links, such that they're replaced by
+ * a preview of the video.
  */
-set:x:/@html2lambda/**/pre
-  src
-    p
-      strong
-        #text:Warning
-      #text:" - Due to a bug in iTextSharp, all code examples have been removed! Please refer to the dynamic documentation in the system itself to see the code examples."
+for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https:\\/\\/www.youtube.com\\/watch/"""
+
+  /*
+   * Replacing entire paragraph with a preview of YouTube video.
+   */
+  split:x:/@_dp/#?value
+    =:?v=
+  split:x:/@split/0/-?name
+    =:&
+  eval-x:x:/+/**/\@src
+  insert-before:x:/@_dp/#/.
+    src
+      div
+        @class:desktop-help-youtube-outer-wrapper
+        div
+          @class:desktop-help-youtube-wrapper
+          iframe
+            @type:text/html
+            @class:desktop-help-youtube-embed
+            @allowfullscreen
+            @src:@"https://www.youtube.com/embed/{0}?modestbranding=1&autohide=1&showinfo=0"
+              :x:/@split/0?name
+  set:x:/@_dp/#/.
 
 
 
@@ -158,8 +196,7 @@ set:x:/@html2lambda/**/pre
  * Transforming lambda back to HTML.
  */
 lambda2html:x:/@html2lambda/*
-html2pdf:~/documents/private/Phosphorus Five Documentation.pdf
-  css-file:@DESKTOP/media/print-help.css
+save-file:~/documents/private/p5-dox.html
   src:x:/@lambda2html?value
 
 
@@ -169,5 +206,5 @@ html2pdf:~/documents/private/Phosphorus Five Documentation.pdf
 /*
  * Returns path to file to caller.
  */
-return:~/documents/private/Phosphorus Five Documentation.pdf
+return:~/documents/private/p5-dox.html
 
