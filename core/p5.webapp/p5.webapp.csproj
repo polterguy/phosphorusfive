@@ -240,10 +240,6 @@
       <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
       <Name>p5.xml</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\extras\p5.pdf\p5.pdf.csproj">
-      <Project>{045D3D94-7730-445D-B578-1DE5A5BE5C9C}</Project>
-      <Name>p5.pdf</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
@@ -329,7 +325,6 @@
     <None Include="modules\desktop\help-files\Plugins\23 - p5.markdown.md" />
     <None Include="modules\desktop\help-files\Plugins\24 - p5.mime.md" />
     <None Include="modules\desktop\help-files\Plugins\25 - p5.mysql.md" />
-    <None Include="modules\desktop\help-files\Plugins\26 - p5.pdf.md" />
     <None Include="modules\desktop\help-files\Plugins\27 - p5.threading.md" />
     <None Include="modules\desktop\help-files\Plugins\28 - p5.xml.md" />
     <None Include="modules\desktop\help-files\Plugins\29 - p5.webapp.md" />
