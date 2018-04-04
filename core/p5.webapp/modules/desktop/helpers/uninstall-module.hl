@@ -101,7 +101,6 @@ Are you sure you want to continue?"
                                              */
                                             micro.windows.info:Your module was successfully uninstalled
                                               class:micro-windows-info success
-                                            micro.evaluate.file:@DESKTOP/helpers/uninstall-module.hl
 
                                         /*
                                          * Reloading location, now with an "evaluate on next pageload" lambda object.
