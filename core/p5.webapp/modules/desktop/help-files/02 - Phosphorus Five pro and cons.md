@@ -18,8 +18,8 @@ CPU resource intensive algorithms in. If you need more power for your algorithms
 in for instance C#, for then to consume these in Hyperlambda. In addition, to prevent a single client from
 draining all resources from a server, we had to set a maximum limit on the number of simultaneous open
 webpages in Phosphorus Five. So Phosphorus Five apps in general, doesn't work very well, when a user has
-a bunch of different tabs open, towards the same installation. As a general rule, Phosphorus Five is
-a _"single page framework"_.
+a bunch of different tabs open, towards the same Phosphorus Five installation. As a general rule, Phosphorus
+Five is a _"single page framework"_.
 
 In general, for the above reasons, you should not expect Phosphorus Five to scale _"into heaven"_, allowing
 for millions of consecutive users simultaneously accessing your server - Unless you bypass parts of the core,

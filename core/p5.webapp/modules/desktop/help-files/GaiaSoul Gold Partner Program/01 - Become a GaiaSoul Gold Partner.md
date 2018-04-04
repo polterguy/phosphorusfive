@@ -2,7 +2,7 @@
 
 <img class="desktop-help-icon-image" src="/modules/desktop/media/logo.svg" />
 
-Partners are allowed to resell the system, according to a 50/50 profit sharing key. This implies that
+GaiaSoul Gold Partners are allowed to resell the system, according to a 50/50 profit sharing key. This implies that
 a partner gets to keep 50% of the revenue from each license he or she sells to his customers.
 You apply for becoming a partner by sending an email to thomas@gaiasoul.com - At which point if you are accepted,
 you will be sent instructions on an email, showing you how to practically implement reselling the system.
@@ -27,11 +27,13 @@ work for me for free! ;)
 
 As a GaiaSoul Gold Partner you get exclusive access to additional modules and material, nobody else gets
 access to. This allows you to provide a lot of additional value, on top of the Free Software core, which
-makes your offer shine, and makes it easy for you to explain why people should pay you for a zip file.
-This comes in addition to any additional services you deliver yourself to sugar coat the pill, such
+makes your offer shine, and makes it easy for you to explain why people should _"pay you for a simple zip file"_.
+This comes in addition to any additional services and additional modules you deliver yourself, such
 as support, hosting, services, modules you build, etc. Also remember that you're not legally allowed to
-create anything but Open Source software without a proprietary license, and that evverybody with a
-proprietary license, can consume the free software modules created by others in their proprietary distributions.
+create anything but Open Source software without a proprietary license, and that everybody with a
+proprietary license, can consume the free software modules created by others in their proprietary
+distributions. Which allows you to create a unique distribution, largely based upon other people's work,
+and charge money for it, such that acknowledging your value proposition becomes easy for your customers!
 
 > Free as in Freedom, _not_ as in Free Beer!
 
@@ -87,7 +89,7 @@ both on feedback into the project, and number of licenses sold.
 A GaiaSoul Gold Partner will be taught in details how to in its entirety rebrand the system, and create a
 completely unique distribution, making the system appear such that it's almost an _"inhouse product"_. We
 will also teach you how to create your own customizations, such as plugins, distribute Hypereval snippets,
-Camphora apps, etc, etc, etc. Basically, it allows you to completely create your own unique system, according
+Camphora apps, etc, etc, etc. Basically, it allows you to create your own completely unique system, according
 to your customers' needs, and distribute this version of the system to your clients.
 
 ### Priority support
@@ -98,7 +100,7 @@ an absolute emergency. We also to some extent will help out with development of 
 offer you code reviews, help with your own code, etc.
 
 **Notice**, this require you to have at least some minimum volume on the amount of licenses you sell, or at
-least a well argued intention to sell some minimum volume of licenses.
+least a well argued intention to sell some minimum volume of licenses in the future.
 
 ### Additional tutoring material
 
