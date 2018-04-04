@@ -13,7 +13,7 @@
 if
   fetch:x:/0/0?value
     file-exists:~/documents/public/p5-dox.html
-  delete-file:~/documents/public/p5-dox.html
+  return:~/documents/public/p5-dox.html
 
 
 
@@ -163,7 +163,7 @@ for-each:x:@"/@html2lambda/**/p/*/#text/""=:regex:/^https{0,1}:\\/\\/.+\\.[png|j
  * Transforming lambda back to HTML.
  */
 lambda2html:x:/@html2lambda/*
-save-file:~/documents/private/p5-dox.html
+save-file:~/documents/public/p5-dox.html
   src:x:/@lambda2html?value
 
 
@@ -173,5 +173,5 @@ save-file:~/documents/private/p5-dox.html
 /*
  * Returns path to file to caller.
  */
-return:~/documents/private/p5-dox.html
+return:~/documents/public/p5-dox.html
 
