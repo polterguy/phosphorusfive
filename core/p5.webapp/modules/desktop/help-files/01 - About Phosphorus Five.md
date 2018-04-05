@@ -41,7 +41,7 @@ computer, and have it do what you want it to do, without a cast of _"gurus"_ act
 behalf - Or some shady people spying on your data and privacy in the process. My vision can be summed up with
 the following sentence.
 
-> Facilitate for a secure and distributed world wide web by simplifying the act of creating rich web applications
+> Facilitate for a distributed world wide web protecting your privacy by simplifying the act of creating rich web applications
 
 ### About the help system
 
@@ -78,13 +78,9 @@ you to have your company or business associated with the project, and be explici
 with some company pitch and a link to your website. If you don't have that kind of money, but simply feel
 for giving back, to support the project financially - You can donate money to me and the project below.
 
-**Notice**, I have in total spent more than a decade on the ideas that resulted in this project. If you
-believe that Phosphorus Five is valuable, and you enjoy the fact that I chose to release it as open source -
-I would seriously consider supporting the project, either by purchasing a proprietary license, or by
-supporting it fincancially some other way. Maintaining Phosphorus Five is my sole source of income.
 
-
-[Donate through PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4RL5XLLZYNBF2)
+* [Donate through PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4RL5XLLZYNBF2)
+* [Become a Patreon of the project](https://www.patreon.com/phosphorusfive)
 
 
 Kind regards,

@@ -22,8 +22,7 @@ Money is basically just coloured paper, right? The reasons why money holds value
 can do things with it, that you cannot do with coloured paper. The same is true for a proprietary
 license of Phosphorus Five. I have spent more than a decade researching the ideas that are implemented
 in Phosphorus Five. This implies tens of thousands of hours, making _your_ job easier. Is your work
-worth money? If your answer is no to the previous question, please let me hire you, such that you can
-work for me for free! ;)
+worth money? If I could make your job 90% easier, what value would that hold for you?
 
 As a GaiaSoul Gold Partner you get exclusive access to additional modules and material, nobody else gets
 access to. This allows you to provide a lot of additional value, on top of the Free Software core, which
@@ -52,10 +51,10 @@ get a return on your initial investment of a single machine license after having
 machine licenses of Phosphorus Five to your customer(s) - And in fact, from that
 point and onwards, make 50% profit from every single machine license you sell.
 
-In fact, if you simply have your own blog, and you're interested in learning Phosphorus Five, and earn money
-selling a beautiful web operating system - You have everything you need to become a partner, and make a 50% cut
-of every license you sell. Arguably, we encourage you to _"fork"_ the system, and sell licenses of it, making
-50% profit from each license you sell.
+In fact, if you simply have your own blog, or a large social media presence, and you're interested in learning
+Phosphorus Five, and earn money selling a beautiful web operating system - You have everything you need to
+become a partner, and make a 50% cut of every license you sell. Arguably, we encourage you to _"fork"_ the
+system, and sell licenses of it, making 50% profit from each license you sell.
 
 ### Profit sharing
 
@@ -80,7 +79,7 @@ or you'll need to purchase on behalf of your customer(s) using PayPal.
 A GaiaSoul Gold Partner will be listed in our marketing material, and we will help you acquire customers, by
 helping you both in your own marketing efforts - In addition to talking nicely about you, and send customers
 to you. If you create apps and modules on top of Phosphorus Five, and you are a partner, we will also list these
-modules in the _"community section"_ of our main distribution, hopefully resulting in more customers coming
+modules in the GaiaSoul Gold Partner section of our main distribution, hopefully resulting in more customers coming
 your way. **Notice**, this require that you are able to sustain at least some sort of minimum activity level,
 both on feedback into the project, and number of licenses sold.
 
@@ -146,9 +145,9 @@ customers as _yours_, and almost completely _"hide"_ us in the process, building
 
 A GaiaSoul Gold Partner is also expected to proactively market his distribution, and if possible setup a website
 marketing his distribution - Or at least mention his distribution on a sub section on an existing website -
-And/or actively communicate the system in the blogosphere and on social media. For partners that are particularly good at
-fulfilling their obligations, a special section in the core distribution will be rewarded, mentioning
-your products and distribution, with links to your website.
+And/or actively communicate the system in the blogosphere and in social media. For partners that are
+particularly good at fulfilling their obligations, a special section in the core distribution will be
+rewarded, mentioning your products and distribution, with links to your website.
 
 **Notice**, we also expect you to follow up on your customers, and make sure your customers obeys by the
 license rules of Phosphorus Five - Proactively!

@@ -9,7 +9,7 @@ h2
   oninit
     desktop.version
     set-widget-property:x:/../*/_event?value
-      innerValue:Phosphorus Five version {0}
+      innerValue:Phosphorus Five version Phoenix {0}
         :x:/@desktop.version?value
 
 img
@@ -24,8 +24,8 @@ p
   innerValue:@"These documentation files, are carefully created such that they should bring you up from
 the point where you can barely interact with a computer, to the point of where you're a <em>'guru software developer'</em>.
 If they don't, feel free to toss me an email at thomas@gaiasoul.com. If this is your first visit to Phosphorus Five,
-I suggest you start out with either Hyper IDE (if you're a software developer), or Camphora Five, if you have never
-created software before. If you want to dive into creating Phosphorus Five web apps yourself, you'd probably want to
+I suggest you start out with either Hyper IDE (if you're a software developer), or Camphora Five (if you have never
+created software before). If you want to dive into creating Phosphorus Five web apps yourself, you'd probably want to
 start with the <em>'Hyperlambda'</em> section."
 
 literal

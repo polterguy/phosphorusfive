@@ -1,4 +1,4 @@
-## GLx Mobile Technologies
+## GLx Mobile Technologies - A GaiaSoul Gold Partner
 
 <img class="desktop-help-icon-image" style="width:392px;max-width:50%;" src="https://phosphorusfive.files.wordpress.com/2018/04/glx-web-os.png" />
 

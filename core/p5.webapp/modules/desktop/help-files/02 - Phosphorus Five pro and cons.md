@@ -21,14 +21,14 @@ webpages in Phosphorus Five. So Phosphorus Five apps in general, doesn't work ve
 a bunch of different tabs open, towards the same Phosphorus Five installation. As a general rule, Phosphorus
 Five is a _"single page framework"_.
 
-In general, for the above reasons, you should not expect Phosphorus Five to scale _"into heaven"_, allowing
+For the above reasons, you should not expect Phosphorus Five to scale _"into heaven"_, allowing
 for millions of consecutive users simultaneously accessing your server - Unless you bypass parts of the core,
 and for instance use Hyper Core, instead of its Ajax Widgets.
 
 The above results in that Phosphorus Five is an extremely easy development model for enterprise applications,
 and apps that require no more than some few hundred, maybe some few thousands simultaneous users - While not
 necessarily perfect for social media websites, or websites that require scaling into hundreds of thousands of
-consecutive server requests, etc. Phosphorus Five was created to allow for easily creating rich, secure, and
+simultaneous server requests, etc. Phosphorus Five was created to allow for easily creating rich, secure, and
 interactive web apps - _Not_ social media hubs, stealing the hearts and minds of half the world.
 
 > Hardware is cheap, developers not!
