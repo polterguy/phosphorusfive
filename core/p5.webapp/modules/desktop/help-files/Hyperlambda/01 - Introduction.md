@@ -1,4 +1,4 @@
-## Introduction
+## An introduction to Hyperlambda
 
 Welcome to the _"The Guide"_ about Hyperlambda. This _"book"_ is created as an interactive course, allowing you to
 instantly play with the examples, by interacting with the documentation itself. I refer to this as

@@ -26,7 +26,7 @@ desktop.version
 eval-x:x:/+
 .html:@"<html>
   <head>
-    <title>Foo</title>
+    <title>Hyperlamb</title>
     <link rel=""stylesheet"" type=""text/css"" href=""/modules/micro/media/micro.css"" />
     <link rel=""stylesheet"" type=""text/css"" href=""/modules/desktop/media/print-help.css"" />
   </head>
@@ -34,7 +34,17 @@ eval-x:x:/+
     <div class=""container"">
       <div class=""row"">
         <div class=""col"">
-          <h1>Hyperlamb {0}</h1>"
+          <h1>Hyperlamb {0} - Phoenix</h1>
+          <h2>Content</h2>
+          <p>This file is intended to be printed as a PDF document, and consists of 5 major sections, listed in order of appearance below.</p>
+          <ol>
+            <li>Introduction to Phosphorus Five</li>
+            <li>Documentation of all modules in Phosphorus Five</li>
+            <li>Information about our GaiaSoul Gold Partner program</li>
+            <li>An introduction to Hyperlambda</li>
+            <li>The reference documentation for all plugin assemblies</li>
+          </ol>
+          <p>This file will teach you everything you need to know about Phosphorus Five, both as a user, and as a developer. If you are not a developer, you should focus on the <em>'modules'</em> section, and skip over the API parts.</p>"
   :x:/@desktop.version?value
 
 

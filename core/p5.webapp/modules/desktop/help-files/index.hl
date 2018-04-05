@@ -41,7 +41,7 @@ desktop.help.widgets.help-index
 
 literal
   element:h3
-  innerValue:Sub sections
+  innerValue:Modules
 
 
 /*
@@ -52,14 +52,22 @@ container
   oninit
 
     /*
-     * Retrieving all other folders in our main help folder.
+     * Then retrieving all "help plugin folders".
      */
-    list-folders:@DESKTOP/help-files/
+    .exe
+      for-each:x:/../*/~desktop.help-files?value
+        insert-before:x:/.
+          src:x:/@_dp?value
+    vocabulary:~desktop.help-files.
+    for-each:x:/@vocabulary/*?value
+      insert-before:x:/@.exe/0/-
+        src:x:/@_dp?value
+    eval:x:/@.exe
 
     /*
      * Looping through each folders in "/help-files/" folder.
      */
-    for-each:x:/@list-folders/*?name
+    for-each:x:/@eval/*?name
 
       /*
        * Figuring out filename, without extension, and removing numbering parts.
@@ -95,7 +103,7 @@ container
 
 literal
   element:h3
-  innerValue:Modules
+  innerValue:Sub sections
 
 
 /*
@@ -106,22 +114,14 @@ container
   oninit
 
     /*
-     * Then retrieving all "help plugin folders".
+     * Retrieving all other folders in our main help folder.
      */
-    .exe
-      for-each:x:/../*/~desktop.help-files?value
-        insert-before:x:/.
-          src:x:/@_dp?value
-    vocabulary:~desktop.help-files.
-    for-each:x:/@vocabulary/*?value
-      insert-before:x:/@.exe/0/-
-        src:x:/@_dp?value
-    eval:x:/@.exe
+    list-folders:@DESKTOP/help-files/
 
     /*
      * Looping through each folders in "/help-files/" folder.
      */
-    for-each:x:/@eval/*?name
+    for-each:x:/@list-folders/*?name
 
       /*
        * Figuring out filename, without extension, and removing numbering parts.
