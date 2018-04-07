@@ -46,7 +46,9 @@ in Visual Studio_.
 
 On average, you can expect a Phosphorus Five web app to perform at least 10x as fast, compared to literally anything else
 out there. Below is a YouTube video demonstrating the performance of Hyper IDE versus Visual Studio Community Edition on
-a Mac AirBook. To edit a simple CSS file in Visual Studio requires at least 3 times as much time, due to Visual Studio being slow.
+a MacBook Air. To edit a simple CSS file in Visual Studio requires at least 3 times as much time, due to Visual Studio being slow.
+In the video below, I start Hyper IDE up after having started Visual Studio, and I am done with my work in Hyper IDE, before Visual
+Studio have even loaded.
 
 
 <p align="center">
