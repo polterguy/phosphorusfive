@@ -42,6 +42,20 @@ _remove_ any existing websites you have configured for your Apache folder.
 **Notice - Source Code version on Windows** - If you use the source code version on Windows in Visual Studio, _make sure you turn off "browser sync"
 in Visual Studio_.
 
+## Performance
+
+On average, you can expect a Phosphorus Five web app to perform at least 10x as fast, compared to literally anything else
+out there. Below is a YouTube video demonstrating the performance of Hyper IDE versus Visual Studio Community Edition on
+a Mac AirBook. To edit a simple CSS file in Visual Studio requires at least 3 times as much time, due to Visual Studio being slow.
+
+
+<p align="center">
+<a href="https://www.youtube.com/watch?v=C97Tkg6DgOY">
+<img alt="A one minute performance demonstration of Hyper IDE versus Visual Studio" title="A one minute performance demonstration of Hyper IDE versus Visual Studio" src="https://phosphorusfive.files.wordpress.com/2018/04/hyper-ide-visual-studio-video.png" />
+</a>
+</p>
+
+
 ## MSDN Magazine articles about Phosphorus Five
 
 1. [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
