@@ -51,7 +51,7 @@ a Mac AirBook. To edit a simple CSS file in Visual Studio requires at least 3 ti
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=C97Tkg6DgOY">
-<img alt="A one minute performance demonstration of Hyper IDE versus Visual Studio" title="A one minute performance demonstration of Hyper IDE versus Visual Studio" src="https://phosphorusfive.files.wordpress.com/2018/04/hyper-ide-visual-studio-video.png" />
+<img alt="A one minute performance demonstration of Hyper IDE versus Visual Studio" title="A one minute performance demonstration of Hyper IDE versus Visual Studio" src="https://phosphorusfive.files.wordpress.com/2018/04/how-fast-is-hyper-ide-compared-to-visual-studio.png" />
 </a>
 </p>
 
