@@ -60,8 +60,7 @@ Studio have even loaded.
 
 Phosphorus Five is created around the axiom that you should become at least 10x more productive. For some tasks,
 your productivity will soar to unimaginable heights, such as I demonstrate in the video below, where I create
-a rich database CRUD app in 5 seconds using the integrated Camphora Five CRUD app generator - A task which
-you could easily spend weeks on if you created it entirely from scratch.
+a rich database CRUD app in 5 seconds using the integrated Camphora Five CRUD app generator.
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=GrORikxPDhE">
