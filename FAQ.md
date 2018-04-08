@@ -101,7 +101,7 @@ Sure, if you represent a company, and or some individual with a deep wallet, and
 you'd like to be represented as an _"official sponsor"_ to the project - Feel free
 to shoot me an email at thomas@gaiasoul.com. I am in the process of setting up
 a general sponsor thing, allowing for sponsors to be mentioned in the documentation
-for the system, with a small pitch about their produtcs and services, and a link
+for the system, with a small pitch about their products and services, and a link
 to their website. Which might (or might not) get you more customers to your products
 and services.
 

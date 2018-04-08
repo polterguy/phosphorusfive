@@ -80,8 +80,10 @@ a rich database CRUD app in 5 seconds using the integrated Camphora Five CRUD ap
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that a proprietary enabling license is available for a fee.
 
-* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)
-
 ## FAQ
 
 * [FAQ](FAQ.md) - With a little dash of humor ... ;)
+
+## Download
+
+* [Download and install Phosphorus Five here](https://github.com/polterguy/phosphorusfive/releases)
