@@ -2,7 +2,7 @@
 
 <img class="desktop-help-icon-image" style="width:392px;max-width:50%;" src="https://phosphorusfive.files.wordpress.com/2018/04/glx-web-os.png" />
 
-GlX Mobile Technologies is a South African software development company, providing hosting services, custom
+GLx Mobile Technologies is a South African software development company, providing hosting services, custom
 development, in addition to a complete set of services around Phosphorus Five.
 
 Their services includes development of custom software, mobile applications, data driven applications,
