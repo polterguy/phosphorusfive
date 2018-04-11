@@ -1,15 +1,16 @@
 ## Creating your own plugin in C#
 
-To create a plugin for Phosphorus Five, allowing you to invoke C#/CLR code from Hyperlambda, is very easy - Simply create an Active Event,
-and make sure you load up your assembly and register it as an Active Event handler. See the video below for a demonstration of how you can
-create your own plugins. The video is a little bit dated, and the API has changed slightly - But it gets the point through fairly well.
+To create a plugin for Phosphorus Five, allowing you to invoke C#/CLR code from Hyperlambda, is very easy -
+Simply create an Active Event, and make sure you load up your assembly and register it as an Active Event
+handler. See the video below for a demonstration.
 
-https://www.youtube.com/watch?v=sUeRdmzRwbs
+https://www.youtube.com/watch?v=_5N9bMjjZ0Y
 
-To consume your own plugin in Phosphorus Five, you'll need to make sure you put your assembly (your DLL) into the _"bin"_ folder of your Phosphorus
-Five installation, and add a reference to your plugin into the `phosphorus/assemblies` part of your web.config file. This will automatically load
-up your plugin, as your web server starts, and register it as an Active Event handler. See an example below of how to modify your web.config file
-to load up your plugin.
+To consume your own plugin in Phosphorus Five, you'll need to make sure you put your assembly (your DLL)
+into the _"bin"_ folder of your Phosphorus Five installation, and add a reference to your plugin into the
+`phosphorus/assemblies` part of your web.config file. This will automatically load up your plugin, as your
+web server starts, and register it as an Active Event handler. See an example below of how to modify your
+web.config file to load up your plugin.
 
 ```xml
 <assemblies>
@@ -21,10 +22,11 @@ to load up your plugin.
     <!-- ... rest of the file goes here ... -->
 ```
 
-The above will allow Phosphorus Five to automatically load up your plugin, as your web server starts. To create a plugin, you'll need to reference
-the _"p5.core"_ project, and create a method which is marked as an `ActiveEvent`. Normally, you'd declare your method as static, at which case your
-Active Event will automatically be available from Hyperlambda as you start your web server. You can see an example of how to create an Active Event
-in C# that is named **[foo.bar]** below.
+The above will allow Phosphorus Five to automatically load up your plugin, as your web server starts.
+To create a plugin, you'll need to reference the _"p5.core"_ project, and create a method which is marked
+as an `ActiveEvent`. Normally, you'd declare your method as static, at which case your Active Event will
+automatically be available from Hyperlambda as you start your web server. You can see an example of how
+to create an Active Event in C# that is named **[foo.bar]** below.
 
 ```clike
 using p5.core;
@@ -52,15 +54,17 @@ You can invoke your Active Event from Hyperlambda, using something like the foll
 foo.bar
 ```
 
-After you evaluate the above Hyperlambda, assuming you created the above C# Active Event, your lambda structure will resemble the following.
+After you evaluate the above Hyperlambda, assuming you created the above C# Active Event, your lambda
+structure will resemble the following.
 
 ```hyperlambda
 foo.bar:int:42
 ```
 
-From within your C# code, you have complete access to the entire Node structure (lambda/graph object) through `e.Args`, which is actually a tree structure -
-And you can reference and/or return new nodes, using the API of the `Node` class. To for instance reference two arguments, and return the product of these back
-to the caller, you could do something resembling the following.
+From within your C# code, you have complete access to the entire Node structure (lambda/graph object) through
+`e.Args`, which is actually a tree structure - And you can reference and/or return new nodes, using the API
+of the `Node` class. To for instance reference two arguments, and return the product of these back to the
+caller, you could do something resembling the following.
 
 ```clike
 using p5.core;
@@ -85,8 +89,9 @@ namespace YourNamespace
 }
 ```
 
-The above of course, expects the caller to supply two integer arguments; **[no1]** and **[no2]** - And will return the results of adding those two integers 
-together as **[result]**. Invoking it as follows from Hyperlambda.
+The above of course, expects the caller to supply two integer arguments; **[no1]** and **[no2]** - And will
+return the results of adding those two integers together as **[result]**. Invoking it as follows from
+Hyperlambda.
 
 ```hyperlambda
 fancy.add
@@ -103,8 +108,11 @@ fancy.add
   result:int:4
 ```
 
-If you wish to use expressions to reference values passed into your Active Events, you'll need to reference the _"p5.exp"_ project, and use the `p5.exp` namespace -
-At which point you'll get access to several extension methods on the Node class, allowing you to reference expression values from your arguments. Below is an example.
+If you wish to use expressions to reference values passed into your Active Events, you'll need to reference
+the _"p5.exp"_ project, and use the `p5.exp` namespace - At which point you'll get access to several extension
+methods on the Node class, allowing you to reference expression values from your arguments. Below is an example.
+The video at the top of this document, also illustrates how to reference lambda expressions from within your C#
+event handlers.
 
 ```clike
 using p5.exp;
@@ -147,18 +155,20 @@ fancy.add2
   no2:x:/@_no2?value
 ```
 
-The above Hyperlambda, assuming you created the C# event, will still return `4` as the **[result]** after invocation. Notice, you can
-still pass in static values to the above **[fancy.add2]** event. The `GetExChildValue` method will even automatically convert its input
-to an integer type, if you pass in a string for instance. This makes it much more _"convenient"_ to work with types in P5, since for the
-most parts, they're irrelevant from Hyperlambda.
+The above Hyperlambda, assuming you created the C# event, will still return `4` as the **[result]** after
+invocation. Notice, you can still pass in static values to the above **[fancy.add2]** event. The
+`GetExChildValue` method will even automatically convert its input to an integer type, if you pass in a
+string for instance. This makes it much more _"convenient"_ to work with types in P5, since for the most
+parts, they're irrelevant from Hyperlambda.
 
-The p5.exp project also contains other helper methods, to handle expressions, and do other things from your Active Events. If
-you for instance want to support expressions leading to a node collection, you might want to have a look at the `XUtil.Iterate` method.
-You can also of course use the existing plugins in Phosphorus Five as example code to understand how this works.
+The p5.exp project also contains other helper methods, to handle expressions, and do other things from your
+Active Events. If you for instance want to support expressions leading to a node collection, you might
+want to have a look at the `XUtil.Iterate` method. You can also of course use the existing plugins in
+Phosphorus Five as example code to understand how this works.
 
 ### Non-static Active Events
 
-You can also create instance Active Events. However, if you do, you'll need to explicitly create an instance of your class wrapping your Active
-Event, and register your object as an _"instance listener"_. The _"samples"_ folder in the source code for Phosphorus Five, has some code that
-demonstrates how to do this.
+You can also create instance Active Events. However, if you do, you'll need to explicitly create an instance
+of your class wrapping your Active Event, and register your object as an _"instance listener"_. The
+_"samples"_ folder in the source code for Phosphorus Five, has some code that demonstrates how to do this.
 
