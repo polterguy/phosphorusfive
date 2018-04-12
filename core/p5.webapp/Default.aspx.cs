@@ -58,11 +58,11 @@ namespace p5.webapp
             // Making sure our form gets the correct action attribute.
             Form.Action = HttpContext.Current.Request.RawUrl;
 
-            // Mapping up our Page_Load event for initial loading of web page.
-            Load += delegate {
+            // Checking if page is not postback.
+            if (!IsPostBack) {
 
-                // Checking if page is not postback.
-                if (!IsPostBack) {
+                // Mapping up our Page_Load event for initial loading of web page.
+                Load += delegate {
 
                     /*
                      * Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
@@ -102,8 +102,8 @@ namespace p5.webapp
                     var baseCtrl = new LiteralControl ();
                     baseCtrl.Text = string.Format (@"<base href= ""{0}""/>", baseUrl);
                     Page.Header.Controls.Add (baseCtrl);
-                }
-            };
+                };
+            }
 
             base.OnInit (e);
         }
