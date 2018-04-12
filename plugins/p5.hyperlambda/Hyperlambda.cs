@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.IO;
 using System.Text;
 using p5.exp;
 using p5.core;
@@ -41,24 +42,48 @@ namespace p5.hyperlambda
         [ActiveEvent (Name = "hyper2lambda")]
         public static void hyper2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Concatenating all Hyperlambda submitted, injecting CR/LF between each component
-                var builder = new StringBuilder ();
-                foreach (var idxHyperlisp in XUtil.Iterate<string> (context, e.Args)) {
+                // Using a MemoryStream as our buffer for entire Hyperlambda section.
+                using (var stream = new MemoryStream ()) {
 
-                    // Making sure we put in a carriage return between each Hyperlambda entity
-                    if (builder.Length > 0)
-                        builder.Append ("\r\n");
+                    // Associating a StringWriter with it for simplicity.
+                    StreamWriter writer = new StreamWriter (stream, Encoding.UTF8);
 
-                    // Appending currently iterated Hyperlambda into StringBuilder
-                    builder.Append (idxHyperlisp);
+                    // Concatenating all Hyperlambda submitted, injecting CR/LF between each Hyperlambda snippet.
+                    foreach (var idxHyperlisp in XUtil.Iterate<string> (context, e.Args)) {
+
+                        // Making sure we put in a carriage return between each Hyperlambda snippet.
+                        if (stream.Length > 0)
+                            writer.Write ("\r\n");
+
+                        // Appending currently iterated Hyperlambda into StringBuilder.
+                        writer.Write (idxHyperlisp);
+                    }
+                    writer.Flush ();
+
+                    // Making sure we set position of underlaying stream to the beginning.
+                    stream.Position = 0;
+
+                    // Creating our parser, and parsing the entire Hyperlambda, returning its results back to caller.
+                    new HyperlambdaParser (context).Parse (new StreamReader (stream), e.Args);
                 }
-
-                // Utilizing NodeBuilder to create our p5 lambda return value
-                e.Args.AddRange (new NodeBuilder (context, builder.ToString ()).Nodes);
             }
+        }
+
+        /// <summary>
+        ///     Tranforms the given value stream's content to a lambda graph object.
+        /// 
+        ///     Does not take ownership over the stream!
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = ".stream2lambda")]
+        public static void _stream2lambda (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Creating our parser, and parsing the entire Hyperlambda, returning its results back to caller.
+            new HyperlambdaParser (context).Parse (new StreamReader (e.Args.Value as Stream), e.Args);
         }
 
         /// <summary>
