@@ -145,28 +145,43 @@ namespace p5.io.file
             string fullpath,
             string fileName)
         {
-            using (TextReader reader = File.OpenText (fullpath)) {
 
-                // Reading file content.
-                string fileContent = reader.ReadToEnd ();
+            // Checking if we should automatically convert file content to lambda.
+            if (fileName.EndsWithEx (".hl") && args.GetExChildValue ("convert", context, true)) {
 
-                // Checking if we should automatically convert file content to lambda.
-                if (fileName.EndsWithEx (".hl") && args.GetExChildValue ("convert", context, true)) {
+                // Automatically converting to lambda before returning, making sure we 
+                // parse the lambda directly from the stream.
+                using (Stream stream = File.OpenRead (fullpath)) {
 
-                    // Automatically converting to lambda before returning.
-                    args.Add (fileName, null, Utilities.Convert<Node> (context, fileContent).Children);
+                    // Invoking our "stream to lambda" event.
+                    var fileNode = args.Add (fileName, stream).LastChild;
+                    try {
+                        context.RaiseEvent (".stream2lambda", fileNode);
+                    } finally {
+                        fileNode.Value = null;
+                    }
+                }
 
-                } else if (fileName.EndsWithEx (".csv") && args.GetExChildValue ("convert", context, true)) {
+            } else {
 
-                    // Automatically converting to lambda before returning.
-                    var csvLambda = new Node ("", fileContent);
-                    context.RaiseEvent ("p5.csv.csv2lambda", csvLambda);
-                    args.Add (fileName, null, csvLambda ["result"].Children);
+                // Using a TextReader to read file's content.
+                using (TextReader reader = File.OpenText (fullpath)) {
 
-                } else {
+                    // Reading file content.
+                    string fileContent = reader.ReadToEnd ();
 
-                    // Adding file content as string.
-                    args.Add (fileName, fileContent);
+                    if (fileName.EndsWithEx (".csv") && args.GetExChildValue ("convert", context, true)) {
+
+                        // Automatically converting to lambda before returning.
+                        var csvLambda = new Node ("", fileContent);
+                        context.RaiseEvent ("p5.csv.csv2lambda", csvLambda);
+                        args.Add (fileName, null, csvLambda ["result"].Children);
+
+                    } else {
+
+                        // Adding file content as string.
+                        args.Add (fileName, fileContent);
+                    }
                 }
             }
         }
