@@ -12,3 +12,8 @@ which allows for creating an _"iOS type of checkbox"_.
 
 Improved documentation, in addition to some of the embedded videos, focusing
 on making them shorter and more explicit in the way the system is being documented.
+
+### Improved Hyperlambda parser
+
+More fault tolerant Hyperlambda parser, which allows for parsing Hyperlambda
+directly from a stream, as a hidden override Active Event.
