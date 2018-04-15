@@ -117,7 +117,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Retrieves the next token from stream.
          */
-        string GetNextToken (StreamReader reader, out int spaces, out bool eol, bool returnNull = false)
+        string GetNextToken (StreamReader reader, out int spaces, out bool eol, bool lookingForTypeOrValue = false)
         {
             string token = null;
             spaces = 0;
@@ -134,7 +134,7 @@ namespace p5.hyperlambda.helpers
                     // Adding to spaces.
                     spaces += 1;
 
-                } else if (token == null && curChar == '/' && reader.Peek () == '*') {
+                } else if (lookingForTypeOrValue == false && token == null && curChar == '/' && reader.Peek () == '*') {
 
                     // Multiline comment, simply ignoring until end of comment.
                     reader.Read (); // Skipping opening '*'.
@@ -142,7 +142,7 @@ namespace p5.hyperlambda.helpers
                     EatLine (reader);
                     spaces = 0;
 
-                } else if (token == null && curChar == '/' && reader.Peek () == '/') {
+                } else if (lookingForTypeOrValue == false && token == null && curChar == '/' && reader.Peek () == '/') {
 
                     // Single line comment, simply ignoring the rest of our line.
                     EatLine (reader);
@@ -156,7 +156,7 @@ namespace p5.hyperlambda.helpers
 
                     if (token == null) {
 
-                        if (returnNull) {
+                        if (lookingForTypeOrValue) {
                             eol = true;
                             return null;
                         }
