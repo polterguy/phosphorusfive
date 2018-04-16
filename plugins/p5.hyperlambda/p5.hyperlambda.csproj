@@ -37,8 +37,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Hyperlambda.cs" />
     <Compile Include="helpers\HyperlambdaBuilder.cs" />
-    <Compile Include="helpers\Token.cs" />
-    <Compile Include="helpers\Tokenizer.cs" />
     <Compile Include="helpers\HyperlambdaParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
