@@ -193,8 +193,8 @@ core/p5.webapp/db
 #auth file
 core/p5.webapp/auth.hl
 
-# Excluding System42
-core/p5.webapp/modules/system42/**
+# Excluding Unit Tests
+core/p5.webapp/modules/phosphorus-unit-tests/**
 
 # Excluding license
 core/p5.webapp/modules/license/**
