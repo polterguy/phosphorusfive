@@ -112,7 +112,7 @@ namespace p5.hyperlambda.helpers
                             // Conversion is necessary.
                             curNode.Value = _context.RaiseEvent (
                                 ".p5.hyperlambda.get-object-value." + (valueOrType == "node" ? "abs.node" : valueOrType),
-                                new Node ("", value ?? "", new Node [] { new Node ("decode", true) })).Value;
+                                new Node ("", value ?? "", new Node [] { new Node ("decode", true) })).Value ?? new Node ();
                         }
                     }
                 }
