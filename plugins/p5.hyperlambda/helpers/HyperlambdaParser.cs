@@ -41,7 +41,7 @@ namespace p5.hyperlambda.helpers
             _context = context;
         }
 
-        internal void Parse (StreamReader reader, Node curRoot)
+        internal void Parse (StreamReader reader, Node curRoot, bool keepComments = false)
         {
             var level = 0;
             Node curNode = curRoot;
@@ -50,9 +50,16 @@ namespace p5.hyperlambda.helpers
                 // Retrieving next token.
                 bool eol;
                 int spaces;
-                string token = GetNameToken (reader, out spaces, out eol);
+                bool isComment;
+                string token = GetNameToken (reader, out spaces, out eol, keepComments, out isComment);
                 if (token == null)
                     break; // We're done!
+
+                // Checking if this is a comment.
+                if (isComment) {
+                    curNode.Add ("..comment", token);
+                    continue;
+                }
 
                 if (spaces % 2 != 0) {
 
@@ -122,10 +129,11 @@ namespace p5.hyperlambda.helpers
         /*
          * Retrieves the next name token from stream.
          */
-        string GetNameToken (StreamReader reader, out int spaces, out bool eol)
+        string GetNameToken (StreamReader reader, out int spaces, out bool eol, bool keepComments, out bool isComment)
         {
             var token = new StringBuilder ();
             spaces = 0;
+            isComment = false;
             while (!reader.EndOfStream) {
                 var curChar = reader.Read ();
                 if (token.Length == 0 && curChar == '@' && reader.Peek () == '"') {
@@ -147,17 +155,42 @@ namespace p5.hyperlambda.helpers
 
                 } else if (token.Length == 0 && curChar == '/' && reader.Peek () == '*') {
 
-                    // Multiline comment, simply ignoring until end of comment.
+                    // Multiline commen.
                     reader.Read (); // Skipping opening '*'.
-                    EatMultilineComment (reader);
-                    EatWhite (reader);
-                    spaces = 0;
+                    if (keepComments) {
+
+                        // Caller wants to return comments.
+                        eol = true;
+                        var retVal = GetMultilineComment (reader);
+                        EatWhite (reader);
+                        isComment = true;
+                        return retVal;
+
+                    } else {
+
+                        // Caller don't care about comments.
+                        EatMultilineComment (reader);
+                        EatWhite (reader);
+                        spaces = 0;
+                    }
 
                 } else if (token.Length == 0 && curChar == '/' && reader.Peek () == '/') {
 
-                    // Single line comment, simply ignoring the rest of our line.
-                    EatLine (reader);
-                    spaces = 0;
+                    // Single line comment.
+                    if (keepComments) {
+
+                        // Caller wants to keep comments.
+                        eol = true;
+                        isComment = true;
+                        reader.Read ();
+                        return GetLine (reader);
+
+                    } else {
+
+                        // Caller don't care about comments.
+                        EatLine (reader);
+                        spaces = 0;
+                    }
 
                 } else if (token.Length == 0 && curChar == ' ') {
 
@@ -270,6 +303,20 @@ namespace p5.hyperlambda.helpers
         }
 
         /*
+         * Returns the rest of the line.
+         */
+        private string GetLine (StreamReader reader)
+        {
+            var retVal = new StringBuilder ();
+            while (reader.Peek () != '\n' && reader.Peek () != '\r' && !reader.EndOfStream) {
+                retVal.Append ((char)reader.Read ());
+            }
+            if (!reader.EndOfStream && reader.Peek () == '\n')
+                reader.Read ();
+            return retVal.ToString ().Trim ();
+        }
+
+        /*
          * Eats the rest of the line, and discards it, assuming it contains whitespaces.
          */
         private void EatWhite (StreamReader reader)
@@ -299,6 +346,34 @@ namespace p5.hyperlambda.helpers
                 }
                 curChar = reader.Read ();
             }
+        }
+
+        /*
+         * Eats and discards a multiline comment.
+         */
+        private string GetMultilineComment (StreamReader reader)
+        {
+            // Eating comment, and returning it, with basic sanity check.
+            var retVal = new StringBuilder ();
+            var curChar = reader.Read ();
+            while (true) {
+                if (reader.EndOfStream)
+                    throw new Exception ("Multiline comment not closed");
+                if (curChar == '*' && reader.Peek () == '/') {
+                    reader.Read ();
+                    break;
+                }
+                retVal.Append ((char)curChar);
+                curChar = reader.Read ();
+            }
+            var lines = retVal.ToString ().Trim ().Split (new char [] {'\n'});
+            retVal.Clear ();
+            foreach (var idxLine in lines) {
+                if (retVal.Length != 0)
+                    retVal.Append ("\r\n");
+                retVal.Append (idxLine.Trim ('\r').Trim ().TrimStart ('*').Trim ());
+            }
+            return retVal.ToString ();
         }
 
         /*

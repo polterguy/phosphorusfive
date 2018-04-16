@@ -66,8 +66,12 @@ namespace p5.hyperlambda
                     // Making sure we set position of underlaying stream to the beginning.
                     stream.Position = 0;
 
+                    // Checking if caller wants to keep comments.
+                    var keepComments = e.Args.GetExChildValue ("keep-comments", context, false);
+                    e.Args ["keep-comments"]?.UnTie ();
+
                     // Creating our parser, and parsing the entire Hyperlambda, returning its results back to caller.
-                    new HyperlambdaParser (context).Parse (new StreamReader (stream), e.Args);
+                    new HyperlambdaParser (context).Parse (new StreamReader (stream), e.Args, keepComments);
                 }
             }
         }
