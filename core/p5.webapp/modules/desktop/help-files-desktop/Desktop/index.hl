@@ -28,10 +28,6 @@ desktop.help.widgets.help-index
   folder:@DESKTOP/help-files-desktop/Desktop/
 
 
-h3
-  innerValue:Files meta information
-
-
 /*
  * Meta information for all files in module.
  */
