@@ -1,5 +1,5 @@
 /*
- * Creates the extension widget that displays a folder as a bulleted list
+ * Creates the extension widget that displays a folder as a bulleted list.
  */
 create-event:desktop.help.widgets.help-index
 

@@ -224,6 +224,34 @@ div:modules-meta-info
                   onclick
                     get-widget-property:x:/../*/_event?value
                       innerValue
+                    load-file:x:/@get-widget-property/*/*?value
+                      convert:false
+                    hyper2lambda:x:/@load-file/*?value
+                      keep-comments:true
+
+                    /*
+                     * Checking if file has a comment describing its content
+                     * at the top.
+                     */
+                    if:x:/@hyper2lambda/0?name
+                      =:..comment
+
+                      /*
+                       * Displaying content of initial comment in file, inside a modal widget.
+                       */
+                      markdown2html:x:/@hyper2lambda/*/\..comment/[0,1]?value
+                      eval-x:x:/+/*/*/*/div/*/innerValue
+                      create-widgets
+                        micro.widgets.modal:view-file-comments
+                          widgets
+                            h3
+                              innerValue:File proclamation
+                            div
+                              innerValue:x:/@markdown2html?value
+
+                    /*
+                     * Opening file in Hyper IDE.
+                     */
                     hyper-ide.folder-explorer.select-path:x:/@get-widget-property/*/*?value
       else
         apply:x:/../*/create-widget/*/widgets/=files

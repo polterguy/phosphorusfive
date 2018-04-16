@@ -337,6 +337,7 @@
     <None Include="media\browserconfig.xml" />
     <None Include="media\site.webmanifest" />
     <None Include="modules\desktop\helpers\create-documentation-print.hl" />
+    <None Include="modules\desktop\startup\widgets\desktop.help.widgets.file-meta.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

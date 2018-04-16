@@ -1,0 +1,116 @@
+/*
+ * Creates the extension widget that displays meta information for all files
+ * recursively beneath some specified **[folder]** argument.
+ */
+create-event:desktop.help.widgets.file-meta
+
+  /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.min:x:/..
+    folder:string
+
+  /*
+   * Returns widget to caller.
+   */
+  eval-x:x:/+/**/.folder
+  return
+    ol
+      events
+
+        /*
+         * Returns all Hyperlambda files recursively from the given folder.
+         */
+        desktop._list-files
+          add:x:/../*/return
+            list-files:x:/../*/_arg?value
+              filter:.hl
+          list-folders:x:/../*/_arg?value
+          for-each:x:/-/*?name
+            add:x:/../*/return
+              desktop._list-files:x:/@_dp?value
+          return
+
+      oninit
+
+        /*
+         * Forward evaluated above.
+         */
+        .folder:x:/../*/folder?value
+
+        /*
+         * Retrieving all Hyperlambda files recursively inside of folder.
+         */
+        p5.io.unroll-path:x:/@.folder?value
+        desktop._list-files:x:/@p5.io.unroll-path?value
+
+        /*
+         * Creating one "li" element for each file, with its description, if existing.
+         */
+        for-each:x:/@desktop._list-files/*?name
+          load-file:x:/@_dp?value
+            convert:false
+          hyper2lambda:x:/@load-file/*?value
+            keep-comments:true
+
+          /*
+           * Checking if file contains a descriptive comment, and if so, creating one "li" element containing its
+           * description.
+           */
+          if
+            hyper-ide.is-open
+
+            /*
+             * Hyper IDE is running, making sure allow for clicking file path to edit file.
+             */
+            insert-before:x:/../**/create-widget/*/widgets/0
+              src
+                a
+                  href:#
+                  innerValue:x:/@_dp?value
+                  style:"display:inline-block;margin-bottom:1rem;"
+                  onclick
+                    get-widget-property:x:/../*/_event?value
+                      innerValue
+                    hyper-ide.folder-explorer.select-path:x:/-/*/*?value
+
+          else
+
+            /*
+             * Hyper IDE is not running, simply adding a label widget to "li" widget.
+             */
+            insert-before:x:/../**/create-widget/*/widgets/0
+              src
+                label
+                  innerValue:x:/@_dp?value
+
+          if:x:/@hyper2lambda/0?name
+            =:..comment
+
+            /*
+             * File contains an initial comment.
+             */
+            markdown2html:x:/@hyper2lambda/0?value
+            eval-x:x:/+/*/*/*/innerValue
+            create-widget
+              parent:x:/../*/_event?value
+              element:li
+              widgets
+                div
+                  class:air-inner rounded success
+                  innerValue:x:/@markdown2html?value
+
+          else
+
+            /*
+             * No initial comment in file.
+             */
+            create-widget
+              parent:x:/../*/_event?value
+              element:li
+              widgets
+                div
+                  class:air-inner rounded warning
+                  innerValue:<p>File does not contain information about what it does!</p>
+
+      widgets

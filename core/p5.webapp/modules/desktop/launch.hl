@@ -1,7 +1,11 @@
 /*
- * Creates our "desktop", which basically just allows the user to select which application he wants to start.
+ * Creates our _"desktop"_, which basically just allows
+ * the user to select which application he wants to start.
+ * This file will create what is normally being displayed
+ * at your server's root URL, e.g. `/`.
  *
- * By default, there's only one application (or module) in P5, which is the Bazar.
+ * If you have overridden your default application in your
+ * web.config, you can display this file's content in `/desktop`.
  */
 
 
