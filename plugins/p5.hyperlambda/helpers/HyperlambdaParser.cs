@@ -50,8 +50,8 @@ namespace p5.hyperlambda.helpers
                 // Retrieving next token.
                 bool eol;
                 int spaces;
-                string token = GetNextToken (reader, out spaces, out eol);
-                if (token == null && reader.EndOfStream)
+                string token = GetNameToken (reader, out spaces, out eol);
+                if (token == null)
                     break; // We're done!
 
                 if (spaces % 2 != 0) {
@@ -84,19 +84,24 @@ namespace p5.hyperlambda.helpers
                     curNode = curRoot.Add (token ?? "").LastChild;
                 }
 
+                // Checking if we're at EOF.
+                if (reader.EndOfStream)
+                    break;
+
+                // Checking if name token was not followed by CR/LF, at which point we have a value/type token following it.
                 if (!eol) {
 
-                    // Value, and possibly type declaration.
-                    var valueOrType = GetNextToken (reader, out spaces, out eol, true) ?? "";
+                    // Value or a possibly type declaration.
+                    var valueOrType = GetValueTypeToken (reader, out eol) ?? "";
                     if (eol) {
 
-                        // Simple value
+                        // Simple value.
                         curNode.Value = valueOrType;
 
                     } else {
 
                         // Type declaration, conversion necessary.
-                        var value = GetNextToken (reader, out spaces, out eol, true) ?? "";
+                        var value = GetValueTypeToken (reader, out eol) ?? "";
                         if (string.IsNullOrEmpty (valueOrType) || valueOrType == "string") {
 
                             // No need to convert value.
@@ -107,7 +112,7 @@ namespace p5.hyperlambda.helpers
                             // Conversion is necessary.
                             curNode.Value = _context.RaiseEvent (
                                 ".p5.hyperlambda.get-object-value." + (valueOrType == "node" ? "abs.node" : valueOrType),
-                                new Node ("", value, new Node [] { new Node ("decode", true) })).Value;
+                                new Node ("", value ?? "", new Node [] { new Node ("decode", true) })).Value;
                         }
                     }
                 }
@@ -115,51 +120,63 @@ namespace p5.hyperlambda.helpers
         }
 
         /*
-         * Retrieves the next token from stream.
+         * Retrieves the next name token from stream.
          */
-        string GetNextToken (StreamReader reader, out int spaces, out bool eol, bool lookingForTypeOrValue = false)
+        string GetNameToken (StreamReader reader, out int spaces, out bool eol)
         {
-            string token = null;
+            var token = new StringBuilder ();
             spaces = 0;
             while (!reader.EndOfStream) {
                 var curChar = reader.Read ();
-                if (curChar == ':') {
+                if (token.Length == 0 && curChar == '@' && reader.Peek () == '"') {
 
-                    // Done fetching token, returning to caller, signaling we're not at end of line.
-                    eol = false;
-                    return token;
+                    // Multiline string token.
+                    reader.Read (); // Skipping '"'.
+                    eol = true;
+                    var retVal =  ReadMultiLineString (reader);
+                    EatWhite (reader);
+                    return retVal;
 
-                } else if (token == null && curChar == ' ') {
+                } else if (token.Length == 0 && curChar == '"') {
 
-                    // Adding to spaces.
-                    spaces += 1;
+                    // Singleline line token.
+                    eol = true;
+                    var retVal = ReadQuotedString (reader);
+                    EatWhite (reader);
+                    return retVal;
 
-                } else if (lookingForTypeOrValue == false && token == null && curChar == '/' && reader.Peek () == '*') {
+                } else if (token.Length == 0 && curChar == '/' && reader.Peek () == '*') {
 
                     // Multiline comment, simply ignoring until end of comment.
                     reader.Read (); // Skipping opening '*'.
                     EatMultilineComment (reader);
-                    EatLine (reader);
+                    EatWhite (reader);
                     spaces = 0;
 
-                } else if (lookingForTypeOrValue == false && token == null && curChar == '/' && reader.Peek () == '/') {
+                } else if (token.Length == 0 && curChar == '/' && reader.Peek () == '/') {
 
                     // Single line comment, simply ignoring the rest of our line.
                     EatLine (reader);
                     spaces = 0;
 
+                } else if (token.Length == 0 && curChar == ' ') {
+
+                    // Adding to spaces.
+                    spaces += 1;
+
+                } else if (curChar == ':') {
+
+                    // Done fetching token, returning to caller, signaling we're not at end of line.
+                    eol = false;
+                    return token.ToString ().TrimEnd ();
+
                 } else if (curChar == '\n' || curChar == '\r') {
 
                     // Carriage return, either we have found a token, or an empty line.
                     if (curChar == '\r')
-                        EatLine (reader);
+                        reader.Read (); // Ignoring '\n'.
 
-                    if (token == null) {
-
-                        if (lookingForTypeOrValue) {
-                            eol = true;
-                            return null;
-                        }
+                    if (token.Length == 0) {
 
                         // Empty line.
                         spaces = 0;
@@ -169,34 +186,75 @@ namespace p5.hyperlambda.helpers
 
                         // Done with reading token, and line.
                         eol = true;
-                        return token;
+                        return token.ToString ().TrimEnd ();
                     }
-
-                } else if (token == null && curChar == '@' && reader.Peek () == '"') {
-
-                    // Multiline string token.
-                    reader.Read (); // Skipping '"'.
-                    eol = true;
-                    var retVal =  ReadMultiLineString (reader);
-                    EatLine (reader);
-                    return retVal;
-
-                } else if (token == null && curChar == '"') {
-
-                    // Singleline line token.
-                    eol = true;
-                    var retVal = ReadQuotedString (reader);
-                    EatLine (reader);
-                    return retVal;
 
                 } else {
 
                     // Sanity checking level.
-                    token += (char)curChar;
+                    token.Append ((char)curChar);
                 }
             }
             eol = true;
-            return token;
+            if (token.Length == 0)
+                return null;
+            return token.ToString ().TrimEnd ();
+        }
+
+        /*
+         * Retrieves the next type or value token from stream.
+         */
+        string GetValueTypeToken (StreamReader reader, out bool eol)
+        {
+            var token = new StringBuilder ();
+            while (!reader.EndOfStream) {
+                var curChar = reader.Read ();
+                if (token.Length == 0 && curChar == '@' && reader.Peek () == '"') {
+
+                    // Multiline string token.
+                    reader.Read (); // Skipping '"'.
+                    eol = true;
+                    var retVal = ReadMultiLineString (reader);
+                    EatWhite (reader);
+                    return retVal;
+
+                } else if (token.Length == 0 && curChar == '"') {
+
+                    // Singleline line token.
+                    eol = true;
+                    var retVal = ReadQuotedString (reader);
+                    EatWhite (reader);
+                    return retVal;
+
+                } else if (token.Length == 0 && curChar == ' ') {
+
+                    // Ignoring initial whitespaces.
+                    continue;
+
+                } else if (curChar == ':') {
+
+                    // Done fetching token, returning to caller, signaling we're not at end of line.
+                    eol = false;
+                    return token.ToString ().TrimEnd ();
+
+                } else if (curChar == '\n' || curChar == '\r') {
+
+                    // Carriage return, either we have found a token, or an empty line.
+                    if (curChar == '\r')
+                        reader.Read (); // Ignoring '\n'.
+
+                    // Done with reading token, and line.
+                    eol = true;
+                    return token.ToString ().TrimEnd ();
+
+                } else {
+
+                    // Sanity checking level.
+                    token.Append ((char)curChar);
+                }
+            }
+            eol = true;
+            return token.ToString ().TrimEnd ();
         }
 
         /*
@@ -206,6 +264,20 @@ namespace p5.hyperlambda.helpers
         {
             while (reader.Peek () != '\n' && !reader.EndOfStream) {
                 reader.Read ();
+            }
+            if (!reader.EndOfStream && reader.Peek () == '\n')
+                reader.Read ();
+        }
+
+        /*
+         * Eats the rest of the line, and discards it, assuming it contains whitespaces.
+         */
+        private void EatWhite (StreamReader reader)
+        {
+            while (reader.Peek () != '\n' && !reader.EndOfStream) {
+                var cur = reader.Read ();
+                if (cur != ' ' && cur != '\t' && cur != '\r' && cur != '\n')
+                    throw new Exception ("Syntax error at end of line in Hyperlambda");
             }
             if (!reader.EndOfStream && reader.Peek () == '\n')
                 reader.Read ();
