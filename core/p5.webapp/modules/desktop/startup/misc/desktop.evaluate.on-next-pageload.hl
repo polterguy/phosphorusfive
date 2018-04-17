@@ -1,7 +1,7 @@
-
 /*
- * Creates the event that allows the caller to store a lambda object,
- * which is evaluated on the next pageload.
+ * Creates the __[desktop.evaluate.on-next-pageload]__ Active Event, that allows
+ * the caller to store a lambda object, which is evaluated on the next pageload.
+ * Pass in __[lambda]__ as the lambda object to evaluate on the next pageload.
  */
 create-event:desktop.evaluate.on-next-pageload
 

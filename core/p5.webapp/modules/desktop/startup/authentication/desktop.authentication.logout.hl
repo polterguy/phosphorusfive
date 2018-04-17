@@ -1,8 +1,8 @@
-﻿
 
 /*
- * File responsible for creating our [desktop.authentication.login] event, which simply deletes all of user's temp file, destroys
- * the context ticket for the client, and reloads the current location.
+ * Creates the __[desktop.authentication.logout]__ Active Event, that deletes all
+ * of user's temp file, destroys the context ticket for the client, and reloads
+ * the current location - Resulting in that the client becomes logged out of Phosphorus Five.
  */
 create-event:desktop.authentication.logout
 

@@ -1,8 +1,12 @@
 /*
- * Creates the event that checks if the license is valid, and if not, 
- * displays a "purchase modal widget".
+ * Creates the __[desktop.license.check]__ Active event, that checks if the license
+ * is valid, and if not,  displays a _"purchase license modal widget"_, allowing to
+ * user to obtain a proprietary license for Phosphorus Five.
  *
- * Optionally supply a [force] argument, and set its value to "true" to
+ * This event will only display the _"purchase license widget"_ once during each session
+ * by default.
+ *
+ * Optionally supply a __[force]__ argument, and set its value to boolean _"true"_ to
  * force the creation of this window, even though it has been previously
  * shown during the current session of the user.
  */

@@ -1,7 +1,8 @@
 /*
- * This is our main "landing page" for the help system in Hyper IDE.
+ * This is our main _"landing page"_ for the help system in Hyper IDE, that is loaded
+ * if no default help page is loaded.
  *
- * This file displays the general "index", and such serves as a starting ground
+ * This file displays the main _"index"_ help page, and such serves as a starting ground
  * for other files in the help system.
  */
 h2

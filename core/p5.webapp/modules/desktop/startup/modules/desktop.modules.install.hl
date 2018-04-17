@@ -1,9 +1,8 @@
-
 /*
- * Creates the Active Event that's responsible for installing an app from a zip file.
+ * Creates the __[desktop.modules.install]__ Active Event that's responsible for installing an app from a zip file.
  *
- * Optionally expects [local-url] being the local folder name for app after installation, in addition to [_arg] pointing
- * to the zip file containing the app.
+ * Optionally expects __[local-url]__ being the local folder name for app after installation,
+ * in addition to __[\_arg]__ pointing to the zip file containing your module.
  */
 create-event:desktop.modules.install
 

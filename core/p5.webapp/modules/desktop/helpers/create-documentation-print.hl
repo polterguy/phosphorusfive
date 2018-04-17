@@ -1,5 +1,7 @@
 /*
- * Creates a PDF file containing all Markdown files from the documentation.
+ * Creates a single HTML file containing all Markdown files from the documentation,
+ * converted into HTML. Useful for printing the documentation, or converting it to a PDF
+ * somehow.
  */
 
 

@@ -1,5 +1,6 @@
 /*
- * Creates the extension widget that displays a folder as a bulleted list.
+ * Creates the __[desktop.help.widgets.help-index]__ extension widget that displays a
+ * folder's files as a bulleted list for your own help files.
  */
 create-event:desktop.help.widgets.help-index
 

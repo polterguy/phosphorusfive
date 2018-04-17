@@ -1,7 +1,5 @@
-
 /*
- * Allows the user to install a new module, either from a URL, or
- * by browsing to a zip file on his disc.
+ * Allows the user to install a new module, by browsing to a zip file on his disc.
  */
 create-widgets
   micro.widgets.modal:desktop-install-new-module-modal

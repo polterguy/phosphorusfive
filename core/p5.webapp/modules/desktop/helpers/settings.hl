@@ -1,5 +1,6 @@
 /*
- * Displays settings in a modal widget.
+ * Displays the settings for the Desktop in a modal widget, allowing
+ * the user to modify his or her settings.
  */
 create-widgets
   micro.widgets.modal:desktop-settings

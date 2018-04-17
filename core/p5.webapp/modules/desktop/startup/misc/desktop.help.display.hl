@@ -1,10 +1,10 @@
-
 /*
- * Creates the event that launches the help system.
+ * Creates the __[desktop.help.display]__ Active Event that launches the help system.
  *
- * Optionally pass in [file] to display a specific file, instead of loading the
- * default file. If no default [file] is given, this event will raise [desktop.help.get-context] to determine
- * if we should instead of loading the default help file, load a specific help file by default.
+ * Optionally pass in __[file]__ to display a specific file, instead of loading the
+ * default file. If no default __[file]__ is given, this event will raise __[desktop.help.get-context]__
+ * Active Event, to determine if we should instead of loading the default help file, load a
+ * specific help file by default.
  */
 create-event:desktop.help.display
 

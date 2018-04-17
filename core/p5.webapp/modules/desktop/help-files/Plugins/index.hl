@@ -1,5 +1,6 @@
 /*
- * This is our main "landing page" for our Plugins help files.
+ * This is our main _"landing page"_ for our Plugins help files, that
+ * documents all Active Event assemblies in the system.
  */
 h2
   innerValue:Plugins

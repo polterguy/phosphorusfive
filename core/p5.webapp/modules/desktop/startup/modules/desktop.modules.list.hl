@@ -1,5 +1,6 @@
 /*
- * Creates the Active Event returns all installed modules in the system.
+ * Creates the __[desktop.modules.list]__ Active Event that returns all installed modules in the system,
+ * and their description from their associated README.md files, if such a file exists.
  */
 create-event:desktop.modules.list
 

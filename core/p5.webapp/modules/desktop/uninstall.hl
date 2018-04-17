@@ -1,9 +1,9 @@
 /*
- * Uninstall file.
+ * Uninstalls the Desktop module.
  *
- * Notice, we don't allow the user to simply uninstall this module,
- * since it would highly likely break the entire installation.
- *
+ * __Notice__ - We don't allow the user to simply uninstall this module,
+ * since it would highly likely break the entire installation - Hence, this
+ * file will simply throw an exception, to avoid uninstallation.
  * The module can still be uninstalled, by either physically editing this
  * file, or removing the module manually.
  */

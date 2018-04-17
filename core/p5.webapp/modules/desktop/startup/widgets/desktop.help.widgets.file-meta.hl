@@ -1,6 +1,11 @@
 /*
- * Creates the extension widget that displays meta information for all files
- * recursively beneath some specified **[folder]** argument.
+ * Creates the __[desktop.help.widgets.file-meta]__ extension widget that displays meta information for all files
+ * recursively beneath some specified **[folder]** argument. This is the widget
+ * that renders the information you're currently reading. Made public to make it easy to
+ * create meta information traversel for your own modules.
+ *
+ * Among other things, it will retrieve the first comment from your files, and display
+ * it as Markdown.
  */
 create-event:desktop.help.widgets.file-meta
 
@@ -16,11 +21,26 @@ create-event:desktop.help.widgets.file-meta
   eval-x:x:/+/**/.folder|/+/*/*/*/button/*/innerValue
   return
     container
+      style:"clear:both;"
       widgets
         button
           innerValue:Retrieve meta information for {0}
             :x:/../*/folder?value
           onclick
+
+            /*
+             * Creating a cover widget, returning to client, and invoking actual implementation.
+             */
+            create-widgets
+              micro.widgets.cover:desktop-waiting-for-meta
+            eval-x:x:/+/**/p5.web.widgets.ajax-events.raise
+            micro.lambda.create-timeout
+              milliseconds:1
+              onfinish
+                p5.web.widgets.ajax-events.raise:x:/../*/_event?value
+                  .onclick
+
+          .onclick
 
             /*
              * Retrieving parent widget's first 'ol' child, and setting it to visible.
@@ -56,9 +76,10 @@ create-event:desktop.help.widgets.file-meta
                 :x:/@hyper2lambda/**/\..comment?count
 
             /*
-             * Deleting button.
+             * Deleting button and cover widget.
              */
             delete-widget:x:/../*/_event?value
+            delete-widget:desktop-waiting-for-meta
 
         ol
           visible:false
@@ -103,6 +124,11 @@ create-event:desktop.help.widgets.file-meta
                * Checking if file contains a descriptive comment, and if so, creating one "li" element containing its
                * description.
                */
+              .filename
+              set:x:/@.filename?value
+                replace:x:/@_dp?value
+                  src:x:/@p5.io.unroll-path?value
+                  dest:../
               if
                 hyper-ide.is-open
 
@@ -113,11 +139,12 @@ create-event:desktop.help.widgets.file-meta
                   src
                     a
                       href:#
-                      innerValue:x:/@_dp?value
+                      .filepath:x:/@_dp?value
+                      innerValue:x:/@.filename?value
                       style:"display:inline-block;margin-bottom:1rem;"
                       onclick
                         get-widget-property:x:/../*/_event?value
-                          innerValue
+                          .filepath
                         hyper-ide.folder-explorer.select-path:x:/-/*/*?value
 
               else
@@ -128,7 +155,7 @@ create-event:desktop.help.widgets.file-meta
                 insert-before:x:/../**/create-widget/*/widgets/0
                   src
                     label
-                      innerValue:x:/@_dp?value
+                      innerValue:x:/@.filename?value
 
               if:x:/@hyper2lambda/0?name
                 =:..comment

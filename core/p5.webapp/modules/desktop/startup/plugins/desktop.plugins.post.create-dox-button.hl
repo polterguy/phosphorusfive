@@ -1,5 +1,7 @@
 /*
- * Creates our plugin Active Event, that creates a "View Documentation" button on all modules with a toolbar.
+ * Creates the __[desktop.plugins.post.create-dox-button]__ plugin Active Event,
+ * that creates a _"View Help Files"_ button on all modules with a widget containing the
+ * CSS class of _"toolbar"_.
  */
 create-event:desktop.plugins.post.create-dox-button
 

@@ -1,5 +1,6 @@
 /*
- * Allows the user to uninstall a module.
+ * Displays a modal widget which allows the user to select a module,
+ * and uninstall it.
  */
 
 

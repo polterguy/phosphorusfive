@@ -1,5 +1,5 @@
 /*
- * Help file Active Event sink.
+ * Help file Active Event sink, that returns the path to the Desktop's main help files.
  */
 create-event:desktop.help-files.01-desktop
 

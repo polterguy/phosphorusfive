@@ -1,7 +1,7 @@
-﻿
-
 /*
- * Creates our LambdaException handler event.
+ * Creates the __[p5.error.Exception]__ Active Event. This event is
+ * invoked every time any exception occurs in the system, unless some other
+ * event has explicitly overridden it, for a particular type of exception.
  */
 create-event:p5.error.Exception
 

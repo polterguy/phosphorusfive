@@ -1,5 +1,5 @@
 /*
- * Creates our version Active Event.
+ * Creates our version Active Event for the Desktop module.
  */
 create-event:desktop.version
 

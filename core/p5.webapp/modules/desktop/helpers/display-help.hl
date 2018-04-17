@@ -1,9 +1,9 @@
 /*
- * File responsible for displaying help module.
+ * Displays help module for Phosphorus Five.
  *
- * Invoked by [desktop.help.display]
- * Optionally pass in [file] to display a specific file.
- * If no [file] argument is suppled, it will by default display "@DESKTOP/help-files/index.hl"
+ * This file is invoked by __[desktop.help.display]__.
+ * Optionally pass in __[file]__ to display a specific file.
+ * If no __[file]__ argument is suppled, it will by default display `@DESKTOP/help-files/index.hl`.
  */
 
 
