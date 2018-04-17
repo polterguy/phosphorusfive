@@ -38,6 +38,7 @@ namespace p5.io.file.file_state
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.io.file.get-last-access-time")]
+        [ActiveEvent (Name = "p5.io.folder.get-last-access-time")]
         public static void p5_io_file_get_last_access_time (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {

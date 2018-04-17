@@ -62,18 +62,72 @@ create-event:desktop.help.widgets.file-meta
               convert:false
             hyper2lambda:x:/@load-file/*?value
               keep-comments:true
+            p5.io.unroll-path:x:/@.folder?value
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
               position:1
-              element:h4
-              innerValue:Folder's total node count {0}
-                :x:/@hyper2lambda/**?count
+              element:h2
+              innerValue:Module meta information
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
               position:2
+              element:p
+              innerValue:Below are all Hyperlambda files inside of the folder.
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:hr
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
               element:h4
-              innerValue:Folder's total comment count {0}
+              innerValue:Path; <em>'{0}'</em>
+                :x:/@p5.io.unroll-path?value
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:h4
+              innerValue:Folder's total Hyperlambda file count; {0}
+                :x:/@desktop._list-files/*?count
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:h4
+              innerValue:Folder's total node count; {0}
+                :x:/@hyper2lambda/**?count
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:h4
+              innerValue:Folder's total comment count; {0}
                 :x:/@hyper2lambda/**/\..comment?count
+            p5.io.folder.get-length:x:/@.folder?value
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:h4
+              innerValue:Folder's size in bytes; {0}
+                :x:/@p5.io.folder.get-length/*?value
+            p5.io.folder.get-creation-time:x:/@.folder?value
+            p5.types.date.format:x:/-/*?value
+              format:"ddd dd. MMM yyyy - HH:mm"
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:h4
+              innerValue:Folder was created; {0}
+                :x:/@p5.types.date.format?value
+
+            /*
+             * Looping through each [create-event] invocation in files in folder, and
+             * creating a widget for each.
+             */
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:h3
+              innerValue:Events created by module
+            create-container-widget:desktop-help-events-for-folder
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              element:ol
+            for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)?value
+              create-widget
+                parent:desktop-help-events-for-folder
+                element:li
+                innerValue:<strong>[{0}]</strong>
+                  :x:/@_dp?value
 
             /*
              * Deleting button and cover widget.

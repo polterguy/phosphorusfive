@@ -44,5 +44,37 @@ namespace p5.io.file.file_state
                 e.Args.Add (filename, new FileInfo (fullpath).Length);
             });
         }
+
+        /// <summary>
+        ///     Returns the size of the specified file(s).
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.io.folder.get-length")]
+        public static void p5_io_folder_get_length (ApplicationContext context, ActiveEventArgs e)
+        {
+            ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
+                e.Args.Add (filename, FolderSize (new DirectoryInfo (fullpath)));
+            });
+        }
+
+        /*
+         * Private helper for above.
+         */
+        private static long FolderSize (DirectoryInfo d)
+        {
+            long retVal = 0;
+            FileInfo [] files = d.GetFiles ();
+            foreach (FileInfo idx in files) {
+                retVal += idx.Length;
+            }
+
+            // Recursively calling self.
+            DirectoryInfo [] folders = d.GetDirectories ();
+            foreach (DirectoryInfo idx in folders) {
+                retVal += FolderSize (idx);
+            }
+            return retVal;
+        }
     }
 }
