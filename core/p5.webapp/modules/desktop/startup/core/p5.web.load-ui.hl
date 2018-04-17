@@ -34,6 +34,12 @@
 create-event:p5.web.load-ui
 
   /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.min:x:/..
+    url:string
+
+  /*
    * First we must check if server has been setup, with a root password, 
    * and a server salt - And if not, we do so.
    */

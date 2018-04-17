@@ -7,6 +7,12 @@
 create-event:desktop.authentication.login
 
   /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.optional:x:/..
+    message:string
+
+  /*
    * Displays a modal window allowing the user to login.
    */
   create-widgets

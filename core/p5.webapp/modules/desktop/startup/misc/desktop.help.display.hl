@@ -14,6 +14,12 @@ create-event:desktop.help.display
   .signal
 
   /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.optional:x:/..
+    _arg:string
+
+  /*
    * Making sure we include main CSS file for Hyper IDE.
    */
   desktop.version
