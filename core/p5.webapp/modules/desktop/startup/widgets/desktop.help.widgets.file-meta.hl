@@ -126,8 +126,23 @@ create-event:desktop.help.widgets.file-meta
               create-widget
                 parent:desktop-help-events-for-folder
                 element:li
-                innerValue:<strong>[{0}]</strong>
-                  :x:/@_dp?value
+                widgets
+                  a
+                    href:#
+                    innerValue:<strong>[{0}]</strong>
+                      :x:/@_dp?value
+                    .event:x:/@_dp?value
+                    onclick
+                      get-widget-property:x:/../*/_event?value
+                        .event
+                      micro.lambda.contract.get:x:/-/*/*?value
+                      create-widgets
+                        micro.widgets.modal
+                          widgets
+                            h3
+                              innerValue:Lambda contract
+                            pre
+                              innerValue:x:/@micro.lambda.contract.get/0
 
             /*
              * Deleting button and cover widget.
