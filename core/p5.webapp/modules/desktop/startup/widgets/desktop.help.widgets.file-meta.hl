@@ -24,7 +24,7 @@ create-event:desktop.help.widgets.file-meta
       style:"clear:both;"
       widgets
         button
-          innerValue:Retrieve meta information for {0}
+          innerValue:Meta information for {0}
             :x:/../*/folder?value
           onclick
 
@@ -33,6 +33,7 @@ create-event:desktop.help.widgets.file-meta
              */
             create-widgets
               micro.widgets.cover:desktop-waiting-for-meta
+                message:Please wait while I retrieve meta information from your module ...
             eval-x:x:/+/**/p5.web.widgets.ajax-events.raise
             micro.lambda.create-timeout
               milliseconds:1
@@ -46,15 +47,13 @@ create-event:desktop.help.widgets.file-meta
              * Retrieving parent widget's first 'ol' child, and setting it to visible.
              */
             p5.web.widgets.get-parent:x:/../*/_event?value
-            set-widget-property:x:/-/*/*?value
-              class:air-inner rounded success
-            p5.web.widgets.find:x:/-2/*/*?value
+            p5.web.widgets.find:x:/-/*/*?value
               element:ol
             set-widget-property:x:/-/*/*?value
               visible:true
 
             /*
-             * Figuring out total node count for entire folder, and displaying to user.
+             * Figuring out meta information for module.
              */
             .folder:x:/../*/folder?value
             desktop._list-files:x:/-?value
@@ -66,50 +65,52 @@ create-event:desktop.help.widgets.file-meta
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
               position:1
-              element:h2
+              element:h3
               innerValue:Module meta information
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:2
-              element:p
-              innerValue:Below are all Hyperlambda files inside of the folder.
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:hr
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:h4
-              innerValue:Path; <em>'{0}'</em>
-                :x:/@p5.io.unroll-path?value
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:h4
-              innerValue:Folder's total Hyperlambda file count; {0}
-                :x:/@desktop._list-files/*?count
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:h4
-              innerValue:Folder's total node count; {0}
-                :x:/@hyper2lambda/**?count
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:h4
-              innerValue:Folder's total comment count; {0}
-                :x:/@hyper2lambda/**/\..comment?count
             p5.io.folder.get-length:x:/@.folder?value
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:h4
-              innerValue:Folder's size in bytes; {0}
-                :x:/@p5.io.folder.get-length/*?value
+            set:x:/-/*?value
+              /:x:/./-/*?value.decimal
+                _:decimal:1024
             p5.io.folder.get-creation-time:x:/@.folder?value
             p5.types.date.format:x:/-/*?value
               format:"ddd dd. MMM yyyy - HH:mm"
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              element:h4
-              innerValue:Folder was created; {0}
-                :x:/@p5.types.date.format?value
+            if
+              fetch:x:/0/0?value
+                file-exists:{0}startup/version.hl
+                  :x:/@p5.io.unroll-path?value
+              load-file:{0}startup/version.hl
+                :x:/@p5.io.unroll-path?value
+              set:x:/../*/create-widgets/**/Name/=Version/./*/Value?value
+                src:x:/@load-file/*/*/*/return?value
+            eval-x:x:/+/**/Value
+            create-widgets
+              micro.widgets.grid
+                class:striped hover
+                parent:x:/@p5.web.widgets.get-parent/*/*?value
+                position:2
+                rows
+                  item
+                    Name:Path
+                    Value:x:/@p5.io.unroll-path?value
+                  item
+                    Name:Hyperlambda files
+                    Value:x:/@desktop._list-files/*?count
+                  item
+                    Name:Node count
+                    Value:x:/@hyper2lambda/**?count
+                  item
+                    Name:Comment count
+                    Value:x:/@hyper2lambda/**/\..comment?count
+                  item
+                    Name:Size of folder
+                    Value:"{0:#.#} KB"
+                      :x:/@p5.io.folder.get-length/*?value
+                  item
+                    Name:Installation date
+                    Value:x:/@p5.types.date.format?value
+                  item
+                    Name:Version
+                    Value:?
 
             /*
              * Looping through each [create-event] invocation in files in folder, and
@@ -117,20 +118,22 @@ create-event:desktop.help.widgets.file-meta
              */
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
+              position:3
               element:h3
-              innerValue:Events created by module
+              innerValue:Active Events created by module
             create-container-widget:desktop-help-events-for-folder
               parent:x:/@p5.web.widgets.get-parent/*/*?value
+              position:4
               element:ol
             for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)?value
               create-widget
                 parent:desktop-help-events-for-folder
                 element:li
                 widgets
+                  text:<strong>[
                   a
                     href:#
-                    innerValue:<strong>[{0}]</strong>
-                      :x:/@_dp?value
+                    innerValue:x:/@_dp?value
                     .event:x:/@_dp?value
                     onclick
                       get-widget-property:x:/../*/_event?value
@@ -143,6 +146,12 @@ create-event:desktop.help.widgets.file-meta
                               innerValue:Lambda contract
                             pre
                               innerValue:x:/@micro.lambda.contract.get/0
+                  text:</strong>]
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              position:5
+              element:h3
+              innerValue:Hyperlambda file information
 
             /*
              * Deleting button and cover widget.
