@@ -1,7 +1,7 @@
 Changes
 ===============
 
-## Version 8.1
+## Version 8.1 - Not yet released
 
 ### Slider checkbox in Micro
 
@@ -41,3 +41,14 @@ it easier to evaluate the unit tests, verifying the integrity of the system's
 core functionality. This is one of the last remaining pieces from System42 that
 has relevance for the project, and hence System42 will probably soon be completely
 removed.
+
+### More meta information in documentation
+
+There is now additional meta information capabilities in the documentation parts
+of the Desktop module, allowing you to see information about the module, much more
+detailed.
+
+### Graph widgets
+
+Created graph widgets, more specificall **[micro.widgets.graph.pie]**, to display
+pie charts.
