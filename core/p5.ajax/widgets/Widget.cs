@@ -369,10 +369,6 @@ namespace p5.ajax.widgets
             // Making sure Element is not empty string "".
             if (elementName == "")
                 throw new ArgumentException ("Sorry, but you must provide either an actual value, or 'null', as the Element name for your widget", nameof (Element));
-
-            // Making sure Element does not contain other non-legal characters.
-            if (elementName.Any (ix => !"abcdefghijklmnopqrstuvwxyz123456".Contains (ix)))
-                throw new ArgumentException ("Sorry, but p5.ajax doesn't like these types of characters for its Element names", nameof (Element));
         }
 
         #endregion
