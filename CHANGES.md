@@ -52,3 +52,7 @@ detailed.
 
 Created graph widgets, more specificall **[micro.widgets.graph.pie]**, to display
 pie charts.
+
+### Allowing for capital letters in widget tagName
+
+Necessary to allow for things such as __[foreignObject]__ widgets, inside of SVG widgets.
