@@ -65,7 +65,7 @@ create-event:desktop.help.widgets.file-meta
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
               position:1
-              element:h3
+              element:h2
               innerValue:Module meta information
             p5.io.folder.get-length:x:/@.folder?value
             set:x:/-/*?value
@@ -128,7 +128,7 @@ create-event:desktop.help.widgets.file-meta
               micro.widgets.chart.pie
                 parent:x:/@p5.web.widgets.get-parent/*/*?value
                 position:4
-                style:"width:50%;"
+                style:"width: 50%;"
                 data
 
             /*
