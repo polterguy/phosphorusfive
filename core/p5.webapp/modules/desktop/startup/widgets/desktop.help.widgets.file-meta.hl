@@ -113,17 +113,36 @@ create-event:desktop.help.widgets.file-meta
                     Value:?
 
             /*
+             * Adding a code to comment ration pie chart.
+             */
+            eval-x:x:/+/*/*
+            add:x:/+/**/data
+              src
+                Code:x:/@hyper2lambda/**?count
+                Comments:x:/@hyper2lambda/**/\..comment?count
+            create-widgets
+              h3
+                innerValue:Code to comment ratio
+                parent:x:/@p5.web.widgets.get-parent/*/*?value
+                position:3
+              micro.widgets.chart.pie
+                parent:x:/@p5.web.widgets.get-parent/*/*?value
+                position:4
+                style:"width:50%;"
+                data
+
+            /*
              * Looping through each [create-event] invocation in files in folder, and
              * creating a widget for each.
              */
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:3
+              position:5
               element:h3
               innerValue:Active Events created by module
             create-container-widget:desktop-help-events-for-folder
               parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:4
+              position:6
               element:ol
             for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)?value
               create-widget
@@ -149,7 +168,7 @@ create-event:desktop.help.widgets.file-meta
                   text:</strong>]
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:5
+              position:7
               element:h3
               innerValue:Hyperlambda file information
 
