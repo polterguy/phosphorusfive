@@ -56,3 +56,7 @@ pie charts.
 ### Allowing for capital letters in widget tagName
 
 Necessary to allow for things such as __[foreignObject]__ widgets, inside of SVG widgets.
+
+### Fixed bugs in documentation
+
+- Fixed a bug that wouldn't render the documentation for the p5.mime plugins correctly.

@@ -21,6 +21,17 @@ accept patches to it. Sorry. If you can accurately describe your problem though,
 preferably with a simple to use reproducible, I would love to help you out.
 I also deeply appreciate suggestions.
 
+### Where do I find the changes document?
+
+[Here](CHANGES.md). Notice, this document is appended to as I implement the changes,
+and there might be items in it, which has not yet been released. However, this allows
+you to see what is coming up in the next release, and also which changes you can expect
+to see, if you clone the repository instead of downloading the latest zip file.
+
+**Warning** - Some of these changes have not yet been stabilized, and the raw Git repository
+should not be considered _"stable"_. Have this in mind if you choose to clone the
+repository, instead of downloading the latest release.
+
 ### Who create Phosphorus Five?
 
 Every single line of code was created by me (Thomas Hansen), except where I use
@@ -42,29 +53,13 @@ Go buy BitCoin or something ...
 Sure, I do this all the time, depending upon my schedule. Shoot me an email at
 thomas@gaiasoul.com, and I'll check my schedule, and try to squeeze you in.
 It'll cost you though, and I expect you to pay all my expenses, in addition
-to my fee. For reasons I don't intend to explain here though, I don't travel
-to the USA, and I highly unlikely ever will either. If you live in the USA, and
-you want me to hold a course for you and your developers, could I suggest getting
-a passport? And maybe go see some more of this beautiful world we live in? The French
-Riviera, Italy and Greece are among some of my favourites. But the world is
-spectacularly beautiful, especially _outside_ of the USA. And yes, I have lived
-3 years in the California, so I know what I'm talking about - 3 years was enough for
-me (say no more) ... ;)
-
-Believe it or not, but the world (outside of the USA) is actually _not_ filled
-with terrorists, and, quote _"people who hate your freedoms"_.
-
-### Were you that guy I saw on a white Harley in LA, with a Cuban cigar, and a small black dog in your saddle bag?
-
-Probably yes ...
+to my usual fee. For reasons I don't intend to explain here though, I don't travel
+to the USA.
 
 ### Are you the guy playing Saxophone, Harmonica, Guitar, Singing on your videos?
 
 Yup! My main hobbies, besides traveling, includes creation of music, and I almost plays equally
-many instruments, as I know programming languages. Sometimes you'll see me playing on
-the streets, of some weird city, where few of you have ever been. I once hitchhiked
-through California, making a living as a street musician, sleeping outside. What
-can I say, I probably have som _"Gypsy blood"_ in me ...
+many instruments, as I know programming languages.
 
 ### How on Earth did you do this? (Create Phosphorus Five)
 
@@ -80,16 +75,10 @@ Phosphorus Five comes out in the other end ...
 
 I am the Gaia Lactical Overlord, and Ajax Uber Uhuru Guru, Il Duce, Der Fuhrer,
 and Kim Jong Il the 3rd when it comes to the final decisions in regards to the future development
-of Phosphorus Five. 100% dictator, the resurrected Kublai Khan, sole emperor over Phosphorus Five.
+of Phosphorus Five. 100% dictator, the resurrected Kublai Khan, and sole emperor over Phosphorus Five.
 
-I do however love suggestions and feedback from others, and I do consider myself quite polite, and I am
+I do however take suggestions and feedback from others, and I do consider myself quite polite, and I am
 famous for changing my mind, once my existing mind no longer compiles.
-
-### What's your sense of humor?
-
-Besides from my own jokes, which normally I am the only one who understands,
-I consider [this](https://www.youtube.com/watch?v=so8NQficzZg)  to be the Mona
-Lisa of Humor.
 
 ### What's your email address?
 
