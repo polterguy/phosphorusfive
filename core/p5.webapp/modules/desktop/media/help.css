@@ -92,3 +92,10 @@
     position: relative;
     margin-right: .5rem;
 }
+
+.desktop-help-meta-file-list li {
+    background-color: rgba(0,0,0,.1);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: .5rem;
+}

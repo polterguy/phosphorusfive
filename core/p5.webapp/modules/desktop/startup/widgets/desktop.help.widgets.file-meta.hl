@@ -180,6 +180,7 @@ create-event:desktop.help.widgets.file-meta
 
         ol
           visible:false
+          class:desktop-help-meta-file-list
           events
 
             /*
