@@ -1,0 +1,42 @@
+/*
+ * Modules Meta Information help page.
+ *
+ * Simply displays some statistics about installed modules.
+ */
+h2
+  innerValue:Modules Meta Information
+
+img
+  class:desktop-help-icon-image
+  src:/modules/desktop/media/logo.svg
+
+p
+  innerValue:@"Below you can see the size of each of your installed modules in KB."
+
+container
+  class:col-60
+  oninit
+
+    /*
+     * Listing folders and retrieving each folder's size in KB.
+     */
+    list-folders:/modules/
+    for-each:x:/-/*?name
+      p5.io.folder.get-length:x:/@_dp?value
+      /:x:/-/*?value
+        _:1024
+      eval-x:x:/+/*/*
+      split:x:/@_dp?value
+        =:/
+      add:x:/../*/create-widgets/*/*/data
+        src:"{0}:{1}"
+          :x:/@split/0/-?name
+          :x:/..for-each/*/\/?value
+
+    /*
+     * Creating a bar chart displaying each module folder's size.
+     */
+    create-widgets
+      micro.widgets.chart.bar
+        parent:x:/../*/_event?value
+        data
