@@ -60,3 +60,13 @@ Necessary to allow for things such as __[foreignObject]__ widgets, inside of SVG
 ### Fixed bugs in documentation
 
 - Fixed a bug that wouldn't render the documentation for the p5.mime plugins correctly.
+
+### Parameters to [micro.widgets.file] widget
+
+The **[files]** and **[folder]** arguments to the **[micro.widgets.file]** widget
+can now be perametrized.
+
+### Significantly improved the documentation for each file in all modules, and/or
+submodules of Phosphorus Five. Which was necessary to make the meta information
+capabilities of the Desktop module's help features function adequately.
+
