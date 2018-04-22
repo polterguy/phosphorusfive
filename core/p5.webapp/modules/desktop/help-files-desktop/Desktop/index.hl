@@ -7,7 +7,7 @@ h2
 
 img
   class:desktop-help-icon-image
-  src:"https://phosphorusfive.files.wordpress.com/2018/03/rocket-desktop.png"
+  src:/modules/desktop/media/logo.svg
 
 p
   innerValue:@"The Desktop module is the GUI interface for Phosphorus Five, and responsible for loading up your modules, and
