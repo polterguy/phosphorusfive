@@ -50,8 +50,8 @@ detailed.
 
 ### Graph widgets
 
-Created graph widgets, more specificall **[micro.widgets.graph.pie]**, to display
-pie charts.
+Created graph widgets, more specificall **[micro.widgets.chart.pie]** to display
+pie charts - In addition to **[micro.widgets.chart.bar]** to display bar charts.
 
 ### Allowing for capital letters in widget tagName
 
