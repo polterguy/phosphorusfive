@@ -93,9 +93,19 @@
     margin-right: .5rem;
 }
 
-.desktop-help-meta-file-list li {
+.desktop-help-meta-file-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.desktop-help-meta-file-list>li {
     background-color: rgba(0,0,0,.1);
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: .5rem;
+}
+
+.desktop-help-meta-file-list>li a:first-child,
+.desktop-help-meta-file-list>li label:first-child {
+    font-size: 1.2rem;
 }

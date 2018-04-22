@@ -48,7 +48,7 @@ create-event:desktop.help.widgets.file-meta
              */
             p5.web.widgets.get-parent:x:/../*/_event?value
             p5.web.widgets.find:x:/-/*/*?value
-              element:ol
+              element:ul
             set-widget-property:x:/-/*/*?value
               visible:true
 
@@ -82,6 +82,17 @@ create-event:desktop.help.widgets.file-meta
                 :x:/@p5.io.unroll-path?value
               set:x:/../*/create-widgets/**/Name/=Version/./*/Value?value
                 src:x:/@load-file/*/*/*/return?value
+            if
+              hyper-ide.is-open
+              eval-x:x:/+/**/.folder-x
+              add:x:/../*/create-widgets/*/micro.widgets.grid/**/rows/*/item/[0,1]/*/Value/*/*
+                src
+                  href:#
+                  onclick
+                    .folder-x:x:/@p5.io.unroll-path?value
+                    hyper-ide.folder-explorer.select-path:x:/-?value
+              set:x:/../*/create-widgets/*/micro.widgets.grid/**/rows/*/item/[0,1]/*/Value/*/*?name
+                value:a
             eval-x:x:/+/**/Value
             create-widgets
               micro.widgets.grid
@@ -91,13 +102,16 @@ create-event:desktop.help.widgets.file-meta
                 rows
                   item
                     Name:Path
-                    Value:x:/@p5.io.unroll-path?value
+                    Value
+                      widgets
+                        span
+                          innerValue:x:/@p5.io.unroll-path?value
                   item
                     Name:Hyperlambda files
                     Value:x:/@desktop._list-files/*?count
                   item
                     Name:Node count
-                    Value:x:/@hyper2lambda/**?count
+                    Value:x:/@hyper2lambda/**(!/\..comment)?count
                   item
                     Name:Comment count
                     Value:x:/@hyper2lambda/**/\..comment?count
@@ -118,11 +132,11 @@ create-event:desktop.help.widgets.file-meta
             eval-x:x:/+/*/*
             add:x:/+/**/data
               src
-                Code:x:/@hyper2lambda/**?count
+                Code:x:/@hyper2lambda/**(!/\..comment)?count
                 Comments:x:/@hyper2lambda/**/\..comment?count
             create-widgets
               h3
-                innerValue:Code to comment ratio
+                innerValue:Code to comments ratio
                 parent:x:/@p5.web.widgets.get-parent/*/*?value
                 position:3
               micro.widgets.chart.pie
@@ -165,7 +179,7 @@ create-event:desktop.help.widgets.file-meta
                               innerValue:Lambda contract
                             pre
                               innerValue:x:/@micro.lambda.contract.get/0
-                  text:</strong>]
+                  text:]</strong>
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
               position:7
@@ -178,7 +192,7 @@ create-event:desktop.help.widgets.file-meta
             delete-widget:x:/../*/_event?value
             delete-widget:desktop-waiting-for-meta
 
-        ol
+        ul
           visible:false
           class:desktop-help-meta-file-list
           events
