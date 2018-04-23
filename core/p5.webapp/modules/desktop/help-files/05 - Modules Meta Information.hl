@@ -37,6 +37,6 @@ container
      * Creating a bar chart displaying each module folder's size.
      */
     create-widgets
-      micro.widgets.chart.bar
+      micro.widgets.chart.column
         parent:x:/../*/_event?value
         data
