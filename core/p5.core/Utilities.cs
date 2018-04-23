@@ -136,7 +136,7 @@ namespace p5.core
                 return value is IConvertible ? (T)System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture) : defaultValue;
 
             // This is a native Phosphorus Five type, attempting to convert it to the specified type.
-            var retVal = context.RaiseEvent (".p5.hyperlambda.get-object-value." + typeName, new Node ("", value)).Value;
+            var retVal = context.RaiseEvent (".p5.hyperlambda.get-object-value." + typeName, new Node ("", value)).Value ?? (typeName == "node" ? new Node () : null);
 
             // If above invocation was not successful, we try IConvertible for object.
             if (retVal == null || retVal.Equals (default (T)))
