@@ -11,7 +11,7 @@ img
   src:/modules/desktop/media/logo.svg
 
 p
-  innerValue:@"Below you can see the size of each of your installed modules in KB."
+  innerValue:@"Below you can see the relative size of each of your installed modules in KB."
 
 container
   class:col-60
