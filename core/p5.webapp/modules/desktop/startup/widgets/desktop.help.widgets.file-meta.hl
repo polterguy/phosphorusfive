@@ -130,33 +130,77 @@ create-event:desktop.help.widgets.file-meta
              * Adding a code to comment ration pie chart.
              */
             eval-x:x:/+/*/*
-            add:x:/+/**/data
+            add:x:/+2/**/micro.widgets.chart.pie/*/data
               src
                 Code:x:/@hyper2lambda/**(!/\..comment)?count
                 Comments:x:/@hyper2lambda/**/\..comment?count
-            create-widgets
-              h3
-                innerValue:Code to comments ratio
-                parent:x:/@p5.web.widgets.get-parent/*/*?value
-                position:3
-              micro.widgets.chart.pie
-                parent:x:/@p5.web.widgets.get-parent/*/*?value
-                position:4
-                style:"width: 50%;"
-                data
+            eval-x:x:/+/**/.module-name
+            create-widget
+              parent:x:/@p5.web.widgets.get-parent/*/*?value
+              position:3
+              class:row
+              widgets
+                div
+                  class:col
+                  widgets
+                    h3
+                      innerValue:Code to comments ratio
+                    micro.widgets.chart.pie
+                      data
+                div
+                  class:col
+                  widgets
+                    h3
+                      innerValue:Module's relative size in KB
+                    container
+                      oninit
 
+                        /*
+                         * Forward evaluated above.
+                         */
+                        .module-name:x:/../*/p5.io.unroll-path?value
+                        split:x:/-?value
+                          =:/
+
+                        /*
+                         * Listing folders and retrieving each folder's size in KB.
+                         */
+                        list-folders:/modules/
+                        for-each:x:/@list-folders/*?name
+                          p5.io.folder.get-length:x:/@_dp?value
+                          /:x:/-/*?value
+                            _:1024
+                          eval-x:x:/+/*/*
+                          split:x:/@_dp?value
+                            =:/
+                          add:x:/../*/create-widgets/*/*/data
+                            src:"{0}:{1}"
+                              :x:/@split/0/-?name
+                              :x:/..for-each/*/\/?value
+
+                        /*
+                         * Creating a bar chart displaying each module folder's size.
+                         */
+                        add:x:/+/*/*/data/*/{0}
+                          :x:/@split/0/-?name
+                          src
+                            color:LightGreen
+                        create-widgets
+                          micro.widgets.chart.column
+                            parent:x:/../*/_event?value
+                            data
             /*
              * Looping through each [create-event] invocation in files in folder, and
              * creating a widget for each.
              */
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:5
+              position:4
               element:h3
               innerValue:Active Events created by module
             create-container-widget:desktop-help-events-for-folder
               parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:6
+              position:5
               element:ol
             for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)?value
               create-widget
@@ -182,7 +226,7 @@ create-event:desktop.help.widgets.file-meta
                   text:]</strong>
             create-widget
               parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:7
+              position:6
               element:h3
               innerValue:Hyperlambda file information
 
