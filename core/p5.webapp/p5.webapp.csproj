@@ -276,7 +276,6 @@
     <None Include="modules\desktop\help-files\02 - Phosphorus Five pro and cons.md" />
     <None Include="modules\desktop\help-files\index.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
-    <None Include="modules\desktop\startup\core\p5.error.LambdaException.hl" />
     <None Include="modules\desktop\startup\core\p5.web.load-ui.hl" />
     <None Include="modules\desktop\startup\misc\.DS_Store" />
     <None Include="modules\desktop\startup\misc\desktop.evaluate.on-next-pageload.hl" />
@@ -338,6 +337,7 @@
     <None Include="media\site.webmanifest" />
     <None Include="modules\desktop\helpers\create-documentation-print.hl" />
     <None Include="modules\desktop\startup\widgets\desktop.help.widgets.file-meta.hl" />
+    <None Include="modules\desktop\startup\core\p5.error.Exception.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
