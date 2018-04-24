@@ -101,10 +101,13 @@ namespace p5.hyperlambda
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args)) {
 
+                // Figuring out what to do with comments.
+                var comments = e.Args.Value is Expression ? (e.Args.GetExChildValue ("comments", context, "keep")) : "keep";
+
                 // Using HyperlispBuilder to create Hyperlambda from p5 lambda
                 e.Args.Value = new HyperlambdaBuilder (
                     context,
-                    XUtil.Iterate<Node> (context, e.Args))
+                    XUtil.Iterate<Node> (context, e.Args), comments)
                     .Hyperlambda;
             }
         }

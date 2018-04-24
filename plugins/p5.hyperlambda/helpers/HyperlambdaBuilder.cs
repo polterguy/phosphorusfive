@@ -34,16 +34,18 @@ namespace p5.hyperlambda.helpers
     {
         readonly ApplicationContext _context;
         readonly IEnumerable<Node> _nodes;
+        string _comments;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="HyperlambdaBuilder" /> class
         /// </summary>
         /// <param name="context">Application context object</param>
         /// <param name="nodes">Nodes to convert into Hyperlambda</param>
-        public HyperlambdaBuilder (ApplicationContext context, IEnumerable<Node> nodes)
+        public HyperlambdaBuilder (ApplicationContext context, IEnumerable<Node> nodes, string comments)
         {
             _context = context;
             _nodes = nodes;
+            _comments = comments;
         }
 
         /// <summary>
@@ -65,30 +67,81 @@ namespace p5.hyperlambda.helpers
         {
             foreach (var idxNode in nodes) {
                 var idxLevel = level;
-                while (idxLevel-- > 0) {
-                    builder.Append ("  ");
+                if (AppendName (builder, idxNode, level)) {
+                    AppendType (builder, idxNode);
+                    AppendValue (builder, idxNode);
+                    builder.Append ("\r\n");
+                    Nodes2Hyperlisp (builder, idxNode.Children, level + 1);
                 }
-                AppendName (builder, idxNode);
-                AppendType (builder, idxNode);
-                AppendValue (builder, idxNode);
-                builder.Append ("\r\n");
-                Nodes2Hyperlisp (builder, idxNode.Children, level + 1);
             }
         }
 
         /*
          * Appends node's name to Hyperlambda StringBuilder output
          */
-        void AppendName (StringBuilder builder, Node node)
+        bool AppendName (StringBuilder builder, Node node, int level)
         {
-            if (node.Name.Contains ("\n")) {
+            if (node.Name == "..comment") {
+
+                // This is a comment.
+                if (_comments == "keep") {
+                    builder.Append (node.Name);
+                    return true;
+                } else if (_comments == "delete") {
+                    return false;
+                } else if (_comments == "unroll") {
+                    builder.Append ("\r\n");
+                    var commentValue = node.Get (_context, "");
+                    if (commentValue.Contains ("\n")) {
+                        var lines = commentValue.Split ('\n');
+                        builder.Append ("/*\r\n");
+                        foreach (var idxLine in lines) {
+                            for (var idxSp = 0; idxSp < level * 2 + 1; idxSp ++) {
+                                builder.Append (" ");
+                            }
+                            if (idxLine.Trim () == "") {
+                                builder.Append ("*\r\n");
+                            } else {
+                                builder.Append ("* ");
+                                builder.Append (idxLine.Trim ());
+                                builder.Append ("\r\n");
+                            }
+                        }
+                        for (var idxSp = 0; idxSp < level * 2 + 1; idxSp++) {
+                            builder.Append (" ");
+                        }
+                        builder.Append ("*/");
+                    } else {
+                        for (var idxSp = 0; idxSp < level * 2; idxSp++) {
+                            builder.Append (" ");
+                        }
+                        builder.Append ("// ");
+                        builder.Append (commentValue);
+                    }
+                    builder.Append ("\r\n");
+                    Nodes2Hyperlisp (builder, node.Children, level);
+                    return false;
+                }
+                return false;
+
+            } else if (node.Name.Contains ("\n")) {
+                for (var idxSp = 0; idxSp < level * 2; idxSp++) {
+                    builder.Append (" ");
+                }
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
             } else if ((node.Name == "" && node.Value == null) ||
                        node.Name.Contains (":") || node.Name.Trim () != node.Name) {
+                for (var idxSp = 0; idxSp < level * 2; idxSp++) {
+                    builder.Append (" ");
+                }
                 builder.Append (string.Format (@"""{0}""", node.Name.Replace (@"""", @"\""")));
             } else {
+                for (var idxSp = 0; idxSp < level * 2; idxSp++) {
+                    builder.Append (" ");
+                }
                 builder.Append (string.Format ("{0}", node.Name));
             }
+            return true;
         }
 
         /*

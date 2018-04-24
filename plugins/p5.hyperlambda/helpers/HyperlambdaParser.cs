@@ -55,18 +55,18 @@ namespace p5.hyperlambda.helpers
                 if (token == null)
                     break; // We're done!
 
-                // Checking if this is a comment.
-                if (isComment) {
-                    curNode.Add ("..comment", token);
-                    continue;
-                }
-
                 if (spaces % 2 != 0) {
 
                     // Oops, severe syntax error.
                     throw new Exception ("Syntax error in Hyperlambda, even spacing close to '" + token + "'.");
 
                 } else if (spaces == level) {
+
+                    // Checking if this is a comment.
+                    if (isComment) {
+                        curNode = curRoot.Add ("..comment", token).LastChild;
+                        continue;
+                    }
 
                     // Adding child node.
                     curNode = curRoot.Add (token ?? "").LastChild;
@@ -75,8 +75,14 @@ namespace p5.hyperlambda.helpers
 
                     // New scope.
                     curRoot = curNode;
-                    curNode = curRoot.Add (token ?? "").LastChild;
                     level = spaces;
+
+                    // Checking if this is a comment.
+                    if (isComment) {
+                        curNode = curRoot.Add ("..comment", token).LastChild;
+                        continue;
+                    }
+                    curNode = curRoot.Add (token ?? "").LastChild;
 
                 } else {
 
@@ -87,6 +93,12 @@ namespace p5.hyperlambda.helpers
                     while (level > spaces) {
                         level -= 2;
                         curRoot = curRoot.Parent;
+                    }
+
+                    // Checking if this is a comment.
+                    if (isComment) {
+                        curNode = curRoot.Add ("..comment", token).LastChild;
+                        continue;
                     }
                     curNode = curRoot.Add (token ?? "").LastChild;
                 }
