@@ -1,6 +1,10 @@
+
 /*
- * Creates the __[desktop.authentication.login]__ Active Event, that displays a modal widget,
- * allowing the user to login to system.
+ * Creates the __[desktop.authentication.login]__ Active Event.
+ */
+
+/*
+ * This event displays a modal widget, allowing the user to login to system.
  *
  * Optionally pass in __[message]__ to give the user a clue about why he has to log in.
  */

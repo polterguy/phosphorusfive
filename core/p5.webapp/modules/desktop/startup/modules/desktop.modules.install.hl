@@ -1,8 +1,24 @@
 /*
- * Creates the __[desktop.modules.install]__ Active Event that's responsible for installing an app from a zip file.
+ * Creates the __[desktop.modules.install]__ Active Event.
+ */
+
+/*
+ * This event will install a module from a zip file. Pass in __[\_arg]__ as the path
+ * to the zip file containing your module.
  *
- * Optionally expects __[local-url]__ being the local folder name for app after installation,
- * in addition to __[\_arg]__ pointing to the zip file containing your module.
+ * Optionally pass in __[local-url]__ being the local folder name for your module
+ * after installation. This event will uninstall any previously installed versions
+ * of the same module, before installing your new module.
+ *
+ * **Notice**, Phosphorus Five does not support having the same
+ * module installed multiple times, regardless of whether or not the versions
+ * are different - And the uninstallation process will uninstall any previous modules
+ * with the same __[local-url]__. So if you override the local-url, make sure you
+ * override it with the same name the next time you upgrade your module. In fact,
+ * as a general rule of thumb, you should never mess with the local-url argument,
+ * unless you're very certain of the consequences, since not all modules can handle
+ * being installed in a different folder than the one they expect to be installed
+ * within by default.
  */
 create-event:desktop.modules.install
 

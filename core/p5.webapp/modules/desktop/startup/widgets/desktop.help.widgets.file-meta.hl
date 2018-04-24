@@ -1,11 +1,16 @@
 /*
- * Creates the __[desktop.help.widgets.file-meta]__ extension widget that displays meta information for all files
+ * Creates the __[desktop.help.widgets.file-meta]__ extension widget.
+ */
+
+/*
+ * This widget displays meta information for all files
  * recursively beneath some specified **[folder]** argument. This is the widget
- * that renders the information you're currently reading. Made public to make it easy to
- * create meta information traversel for your own modules.
+ * that (probably) renders the information you're currently reading. The event is made public
+ * to make it easy to create meta information traversel for your own modules in
+ * your module's help files.
  *
- * Among other things, it will retrieve the first comment from your files, and display
- * it as Markdown.
+ * The widget will render a simple button, which once clicked, actually traverses your
+ * specified **[folder]** for its meta information.
  */
 create-event:desktop.help.widgets.file-meta
 

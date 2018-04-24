@@ -1,9 +1,24 @@
+
 /*
- * Creates the __[p5.error.Exception]__ Active Event. This event is
- * invoked every time any exception occurs in the system, unless some other
+ * Creates the __[p5.error.Exception]__ Active Event.
+ */
+
+/*
+ * This event is invoked every time any exception occurs in the system, unless some other
  * event has explicitly overridden it, for a particular type of exception.
+ *
+ * To override this logic for specific exception types, create an event having the typename
+ * of your exception, instead of the _"Exception"_ name of this event.
  */
 create-event:p5.error.Exception
+
+  /*
+   * Sanity checking invocation.
+   */
+  micro.lambda.contract.min:x:/..
+    message:string
+    trace:string
+    type:string
 
   /*
    * Making sure we correctly return exception to client.

@@ -1,5 +1,10 @@
+
 /*
- * Creates the __[desktop.modules.uninstall]__ Active Event that's responsible for uninstalling an app.
+ * Creates the __[desktop.modules.uninstall]__ Active Event.
+ */
+
+/*
+ * This event will uninstall the specified __[\_arg]__ module.
  *
  * Expects __[\_arg]__ being the local folder's name, from within your _"/modules/"_ folder. If
  * uninstallation is successful, the event will return boolean _"true"_ - Otherwise it will return

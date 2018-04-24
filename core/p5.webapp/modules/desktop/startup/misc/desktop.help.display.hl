@@ -1,10 +1,16 @@
+
 /*
- * Creates the __[desktop.help.display]__ Active Event that launches the help system.
- *
+ * Creates the __[desktop.help.display]__ Active Event.
+ */
+
+/*
+ * This file displays the help file widget for Phosphorus Five.
  * Optionally pass in __[file]__ to display a specific file, instead of loading the
- * default file. If no default __[file]__ is given, this event will raise __[desktop.help.get-context]__
- * Active Event, to determine if we should instead of loading the default help file, load a
- * specific help file by default.
+ * default file. If no default __[file]__ is given, this event will raise __[desktop.help.get-context]__,
+ * to determine if we should instead of loading the default help file, load a specific help file by default.
+ *
+ * The latter feature is useful for creating _"context sensitive help"_, launching a specific help file,
+ * depending upon where the user is in his usage of the system.
  */
 create-event:desktop.help.display
 

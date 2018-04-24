@@ -1,5 +1,10 @@
+
 /*
  * Creates our version Active Event for the Desktop module.
+ */
+
+/*
+ * This event returns the version number of the Desktop module.
  */
 create-event:desktop.version
 

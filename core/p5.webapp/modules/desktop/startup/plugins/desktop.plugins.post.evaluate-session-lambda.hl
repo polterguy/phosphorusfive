@@ -1,7 +1,12 @@
+
 /*
- * Creates the __[desktop.plugins.post.evaluate-session-lambda]__ plugin Active Event,
- * that checks to see if session contains a lambda callback added through __[desktop.evaluate.on-next-pageload]__,
- * which was created on the previously page request, for then to evaluate that lambda object.
+ * Creates the __[desktop.plugins.post.evaluate-session-lambda]__ plugin Active Event.
+ */
+
+/*
+ * This event checks to see if the session contains a lambda callback added through 
+ * for instance invoking the __[desktop.evaluate.on-next-pageload]__ Active Event,
+ * and if it exists, it evaluates that lambda object.
  */
 create-event:desktop.plugins.post.evaluate-session-lambda
 

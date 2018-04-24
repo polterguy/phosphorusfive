@@ -1,5 +1,11 @@
+
 /*
- * Help file Active Event sink, that returns the path to the Desktop's main help files.
+ * Creates the __[desktop.help-files.01-desktop]__ Active Event.
+ */
+
+/*
+ * This event serves as an Active Event sink, that returns the path to the
+ * Desktop's main help files. It is consumed by the Desktop's help file logic.
  */
 create-event:desktop.help-files.01-desktop
 

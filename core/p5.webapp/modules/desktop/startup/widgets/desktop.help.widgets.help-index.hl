@@ -1,6 +1,14 @@
 /*
- * Creates the __[desktop.help.widgets.help-index]__ extension widget that displays a
- * folder's files as a bulleted list for your own help files.
+ * Creates the __[desktop.help.widgets.help-index]__ extension widget.
+ */
+
+/*
+ * This widget displays a folder's Hyperlambda and Markdown files as a bulleted
+ * list for your own help files, allowing the user to click any of the hyperlinks
+ * in the list to open a specific help file.
+ *
+ * This widget is useful for creating an _"index"_ type of Hyperlambda help
+ * file for your own modules.
  */
 create-event:desktop.help.widgets.help-index
 

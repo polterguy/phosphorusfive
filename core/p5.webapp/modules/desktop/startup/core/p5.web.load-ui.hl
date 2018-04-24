@@ -1,35 +1,20 @@
+
 /*
- * Creates the __[p5.web.load-ui]__ Active Event. This event is the main URL resolver
- * for Phosphorus Five, and will according to the URL the client requests, load some
- * module, and pass on control to the request to that module.
+ * Creates the __[p5.web.load-ui]__ Active Event.
+ */
+
+/*
+ * This event is the main URL resolver for Phosphorus Five, and will according to the
+ * URL the client requests, load some module, and pass on control of the request to that module's
+ * _"launch.hl"_ file.
  *
  * __Notice__ - This event will invoke all Active Events named __[desktop.plugins.pre.xxx]__
  * before loading any modules, and all Active Events named __[desktop.plugins.post.xxx]__ after
  * having loaded any module. This allows you to create global plugins, which are invoked on
- * every single pageload, on every single module. This event will also let the user initialise
- * the server, if the server has not already been initialised, by asking him for a root password,
- * and optionally supply a manual server salt.
- */
-
-
-
-
-
-/*
- * Creating the default [p5.web.load-ui] URL resolver and Active Event.
+ * every single pageload, on every single module.
  *
- * If you wish to entirely bypass the default "web operating system", with its desktop, and its Bazar, feel free
- * to create your own module, which overrides the default [p5.web.load-ui] event.
- *
- * Just remember to somehow make sure you're able to setup the server salt, and have the user supply a root password.
- *
- * Hint; You can make sure your users are setting up a server salt and root password, by invoking the 
- * "@DESKTOP/initialize/initialize-server.hl" file, which will do nothing, if the server salt and root password has 
- * already been setup, and return "false" if it is safe to proceed to your own app, and the server salt and root 
- * password has already been setup.
- *
- * Or, you can see the logic this event provides for checking if the server salt and root pasword has already been setup.
- * The latter would probably be slightly more efficient, and require less resources.
+ * This event will also force the user to initialise the server, if the server has not already
+ * been initialised, by asking him for a root password, and optionally supply a manual server salt.
  */
 create-event:p5.web.load-ui
 
