@@ -26,6 +26,15 @@ and add these as a **[..comment]** node, allowing you to keep them, and see thei
 contents - Yet still creating a lambda object out of your Hyperlambda. This allows
 you to semantically retrieve comments from a Hyperlambda snippet if you wish.
 
+### Support for [comments] argument in [lambda2hyper]
+
+If you pass in **[comments]**, you can override how the Hyperlambda is generated.
+Legal values are as follows.
+
+* _"unroll"_ - Will transform all __[..comment]__ nodes to its actual comment
+* _"delete"_ - Will ignore all __[..comment]__ nodes
+* _"keep"_ - Will treat __[..comment]__ nodes in any special ways, but keep them as they are in your lambda. This is the default value.
+
 ### [micro.windows.confirm] convenience wrapper
 
 Created a convenience wrapper for confirmation types of [modal.widgets.modal]
@@ -44,9 +53,12 @@ removed.
 
 ### More meta information in documentation
 
-There is now additional meta information capabilities in the documentation parts
-of the Desktop module, allowing you to see information about the module, much more
-detailed.
+There is now significantly improved meta information capabilities in the documentation parts
+of your modules, allowing you to see information about the module, much more
+detailed. Among other things, you can see a graph displaying comments to nodes ratio,
+the module's relative size compared to other modules, displaying all Active Events
+created by the module, display all Hyperlambda files in your module, with Markdown
+comment support, etc, etc, etc.
 
 ### Graph widgets
 
@@ -60,6 +72,12 @@ Necessary to allow for things such as __[foreignObject]__ widgets, inside of SVG
 ### Fixed bugs in documentation
 
 - Fixed a bug that wouldn't render the documentation for the p5.mime plugins correctly.
+
+### Improved the quality of most comments
+
+Significantly improved the quality of most comments in the system, to take advantage
+of the new serialization logic for comments, and meta information features of
+the documentation, among other things.
 
 ### Parameters to [micro.widgets.file] widget
 
