@@ -18,227 +18,42 @@ create-event:desktop.help.widgets.file-meta
   /*
    * Returns widget to caller.
    */
-  eval-x:x:/+/**/.folder|/+/*/*/*/button/*/innerValue
+  eval-x:x:/+/**/.folder
   return
     container
       style:"clear:both;"
       widgets
         button
-          innerValue:Meta information for {0}
-            :x:/../*/folder?value
+          innerValue:View meta information ...
           onclick
 
             /*
-             * Creating a cover widget, returning to client, and invoking actual implementation.
+             * Creating a cover widget, and a timeout, returning to client,
+             * and invoking actual implementation.
              */
             create-widgets
               micro.widgets.cover:desktop-waiting-for-meta
                 message:Please wait while I retrieve meta information from your module ...
+
+            /*
+             * Creating a timeout that is immediately invoked after returning
+             * to client, from inside of we do our actual heavy lifting.
+             */
             eval-x:x:/+/**/p5.web.widgets.ajax-events.raise
             micro.lambda.create-timeout
               milliseconds:1
               onfinish
-                p5.web.widgets.ajax-events.raise:x:/../*/_event?value
-                  .onclick
 
-          .onclick
+                /*
+                 * Wrapping our view meta information invocation inside of
+                 * a try/finally to make sure we can successfully delete our
+                 * cover widget, even if an exception occurs.
+                 */
+                try
+                  desktop.help.view-meta-information
+                finally
+                  delete-widget:desktop-waiting-for-meta
 
-            /*
-             * Retrieving parent widget's first 'ol' child, and setting it to visible.
-             */
-            p5.web.widgets.get-parent:x:/../*/_event?value
-            p5.web.widgets.find:x:/-/*/*?value
-              element:ul
-            set-widget-property:x:/-/*/*?value
-              visible:true
-
-            /*
-             * Figuring out meta information for module.
-             */
-            .folder:x:/../*/folder?value
-            desktop._list-files:x:/-?value
-            load-file:x:/-/*?name
-              convert:false
-            hyper2lambda:x:/@load-file/*?value
-              keep-comments:true
-            p5.io.unroll-path:x:/@.folder?value
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:1
-              element:h2
-              innerValue:Module meta information
-            p5.io.folder.get-length:x:/@.folder?value
-            set:x:/-/*?value
-              /:x:/./-/*?value.decimal
-                _:decimal:1024
-            p5.io.folder.get-creation-time:x:/@.folder?value
-            p5.types.date.format:x:/-/*?value
-              format:"ddd dd. MMM yyyy - HH:mm"
-            if
-              fetch:x:/0/0?value
-                file-exists:{0}startup/version.hl
-                  :x:/@p5.io.unroll-path?value
-              load-file:{0}startup/version.hl
-                :x:/@p5.io.unroll-path?value
-              set:x:/../*/create-widgets/**/Name/=Version/./*/Value?value
-                src:x:/@load-file/*/*/*/return?value
-            if
-              hyper-ide.is-open
-              eval-x:x:/+/**/.folder-x
-              add:x:/../*/create-widgets/*/micro.widgets.grid/**/rows/*/item/[0,1]/*/Value/*/*
-                src
-                  href:#
-                  onclick
-                    .folder-x:x:/@p5.io.unroll-path?value
-                    hyper-ide.folder-explorer.select-path:x:/-?value
-              set:x:/../*/create-widgets/*/micro.widgets.grid/**/rows/*/item/[0,1]/*/Value/*/*?name
-                value:a
-            eval-x:x:/+/**/Value
-            create-widgets
-              micro.widgets.grid
-                class:striped hover
-                parent:x:/@p5.web.widgets.get-parent/*/*?value
-                position:2
-                rows
-                  item
-                    Name:Path
-                    Value
-                      widgets
-                        span
-                          innerValue:x:/@p5.io.unroll-path?value
-                  item
-                    Name:Hyperlambda files
-                    Value:x:/@desktop._list-files/*?count
-                  item
-                    Name:Node count
-                    Value:x:/@hyper2lambda/**(!/\..comment)?count
-                  item
-                    Name:Comment count
-                    Value:x:/@hyper2lambda/**/\..comment?count
-                  item
-                    Name:Size of folder
-                    Value:"{0:#.#} KB"
-                      :x:/@p5.io.folder.get-length/*?value
-                  item
-                    Name:Installation date
-                    Value:x:/@p5.types.date.format?value
-                  item
-                    Name:Version
-                    Value:?
-
-            /*
-             * Adding a code to comment ration pie chart.
-             */
-            eval-x:x:/+/*/*
-            add:x:/+2/**/micro.widgets.chart.pie/*/data
-              src
-                Code:x:/@hyper2lambda/**(!/\..comment)?count
-                Comments:x:/@hyper2lambda/**/\..comment?count
-            eval-x:x:/+/**/.module-name
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:3
-              class:row
-              widgets
-                div
-                  class:col
-                  widgets
-                    h3
-                      innerValue:Code to comments ratio
-                    micro.widgets.chart.pie
-                      data
-                div
-                  class:col
-                  widgets
-                    h3
-                      innerValue:Module's relative size in KB
-                    container
-                      oninit
-
-                        /*
-                         * Forward evaluated above.
-                         */
-                        .module-name:x:/../*/p5.io.unroll-path?value
-                        split:x:/-?value
-                          =:/
-
-                        /*
-                         * Listing folders and retrieving each folder's size in KB.
-                         */
-                        list-folders:/modules/
-                        for-each:x:/@list-folders/*?name
-                          p5.io.folder.get-length:x:/@_dp?value
-                          /:x:/-/*?value
-                            _:1024
-                          eval-x:x:/+/*/*
-                          split:x:/@_dp?value
-                            =:/
-                          add:x:/../*/create-widgets/*/*/data
-                            src:"{0}:{1}"
-                              :x:/@split/0/-?name
-                              :x:/..for-each/*/\/?value
-
-                        /*
-                         * Creating a bar chart displaying each module folder's size.
-                         */
-                        add:x:/+/*/*/data/*/{0}
-                          :x:/@split/0/-?name
-                          src
-                            color:LightGreen
-                        create-widgets
-                          micro.widgets.chart.column
-                            parent:x:/../*/_event?value
-                            data
-            /*
-             * Looping through each [create-event] invocation in files in folder, and
-             * creating a widget for each.
-             */
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:4
-              element:h3
-              innerValue:Active Events created by module
-            create-container-widget:desktop-help-events-for-folder
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:5
-              element:ol
-            for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)?value
-              create-widget
-                parent:desktop-help-events-for-folder
-                element:li
-                widgets
-                  text:<strong>[
-                  a
-                    href:#
-                    innerValue:x:/@_dp?value
-                    .event:x:/@_dp?value
-                    onclick
-                      get-widget-property:x:/../*/_event?value
-                        .event
-                      micro.lambda.contract.get:x:/-/*/*?value
-                      create-widgets
-                        micro.widgets.modal
-                          widgets
-                            h3
-                              innerValue:Lambda contract
-                            pre
-                              innerValue:x:/@micro.lambda.contract.get/0
-                  text:]</strong>
-            create-widget
-              parent:x:/@p5.web.widgets.get-parent/*/*?value
-              position:6
-              element:h3
-              innerValue:Hyperlambda file information
-
-            /*
-             * Deleting button and cover widget.
-             */
-            delete-widget:x:/../*/_event?value
-            delete-widget:desktop-waiting-for-meta
-
-        ul
-          visible:false
-          class:desktop-help-meta-file-list
           events
 
             /*
@@ -254,91 +69,401 @@ create-event:desktop.help.widgets.file-meta
                   desktop._list-files:x:/@_dp?value
               return
 
-          oninit
-
             /*
-             * Forward evaluated above.
+             * Extracts meta information from forward evaluated [.folder],
+             * and displays as a widget hierarchy.
              */
-            .folder:x:/../*/folder?value
+            desktop.help.view-meta-information
 
-            /*
-             * Retrieving all Hyperlambda files recursively inside of folder.
-             */
-            p5.io.unroll-path:x:/@.folder?value
-            desktop._list-files:x:/@p5.io.unroll-path?value
+              /*
+               * Forward evaluated above.
+               */
+              .folder:x:/../*/folder?value
 
-            /*
-             * Creating one "li" element for each file, with its description, if existing.
-             */
-            for-each:x:/@desktop._list-files/*?name
-              load-file:x:/@_dp?value
+              /*
+               * Unrolling path since we need its unrolled version later down the road.
+               */
+              p5.io.unroll-path:x:/@.folder?value
+
+              /*
+               * Retrieving all files from folder recursively.
+               */
+              desktop._list-files:x:/@.folder?value
+
+              /*
+               * Loading all files and transforming them to lambda,
+               * making sure we preserve files' comments.
+               */
+              load-file:x:/@desktop._list-files/*?name
                 convert:false
               hyper2lambda:x:/@load-file/*?value
                 keep-comments:true
 
               /*
-               * Checking if file contains a descriptive comment, and if so, creating one "li" element containing its
-               * description.
+               * Figuring out parent widget of button, to use as container
+               * for our meta information widget.
                */
-              .filename
-              set:x:/@.filename?value
-                replace:x:/@_dp?value
-                  src:x:/@p5.io.unroll-path?value
-                  dest:../
+              p5.web.widgets.get-parent:x:/../*/_event?value
+
+              /*
+               * Deleting our button, to avoid user clicks it again.
+               */
+              delete-widget:x:/../*/_event?value
+
+              /*
+               * Figuring our length of folder in KB.
+               */
+              .folder-length
+              p5.io.folder.get-length:x:/@.folder?value
+              set:x:/@.folder-length?value
+                /:x:/@p5.io.folder.get-length/*?value
+                  _:1024
+
+              /*
+               * Figuring out creation time of module's folder, which serves
+               * as the installation time for module, and formatting it to a human
+               * readable date string.
+               */
+              p5.io.folder.get-creation-time:x:/@.folder?value
+              p5.types.date.format:x:/-/*?value
+                format:"ddd dd. MMM yyyy - HH:mm"
+
+              /*
+               * Figuring out module's version number, if it is specified.
+               */
+              .version:?
               if
-                hyper-ide.is-open
+                fetch:x:/0/0?value
+                  file-exists:{0}startup/version.hl
+                    :x:/@.folder?value
+                load-file:{0}startup/version.hl
+                  :x:/@.folder?value
+                set:x:/@.version?value
+                  src:x:/@load-file/*/*/*/return?value
 
-                /*
-                 * Hyper IDE is running, making sure allow for clicking file path to edit file.
-                 */
-                insert-before:x:/../**/create-widget/*/widgets/0
+              /*
+               * Checking if Hyper IDE is open, at which point we transform all folders and
+               * file widgets into Hyperlinks widgets.
+               */
+              hyper-ide.is-open
+
+              /*
+               * Checking if Hyper IDE is open, at which point we make folder widget "clickable".
+               */
+              if:x:/@hyper-ide.is-open?value
+                =:bool:true
+                eval-x:x:/+/**/.folder-x
+                add:x:/../*/create-widget/[0,1]/*/widgets/*/micro.widgets.grid/[0,1]/**/rows/*/item/[0,1]/*/Value/*/*
                   src
-                    a
-                      href:#
-                      .filepath:x:/@_dp?value
-                      innerValue:x:/@.filename?value
-                      style:"display:inline-block;margin-bottom:1rem;"
-                      onclick
-                        get-widget-property:x:/../*/_event?value
-                          .filepath
-                        hyper-ide.folder-explorer.select-path:x:/-/*/*?value
+                    href:#
+                    onclick
+                      .folder-x:x:/@p5.io.unroll-path?value
+                      hyper-ide.folder-explorer.select-path:x:/-?value
+                set:x:/../*/create-widget/[0,1]/*/widgets/*/micro.widgets.grid/[0,1]/**/rows/*/item/[0,1]/*/Value/*/*?name
+                  value:a
 
-              else
+              /*
+               * Adding Active Events created by module.
+               */
+              for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)
 
                 /*
-                 * Hyper IDE is not running, simply adding a label widget to "li" widget.
+                 * Adding an "li" item for currently iterated [create-event] node, containing
+                 * a hyperlink button, allowing the user to click the button, to view more meta
+                 * information about event.
                  */
-                insert-before:x:/../**/create-widget/*/widgets/0
+                eval-x:x:/+/*/*/*/*/*(/innerValue|/onclick/*(/.event|/.comment))
+                add:x:/../*/create-widget/**/container/=active-events-for-module/*/widgets
                   src
-                    label
-                      innerValue:x:/@.filename?value
+                    li
+                      widgets
+                        text:<strong>[
+                        a
+                          href:#
+                          innerValue:x:/@_dp/#?value
+                          onclick
 
-              if:x:/@hyper2lambda/0?name
-                =:..comment
+                            /*
+                             * Forward evaluated above.
+                             */
+                            .event:x:/@_dp/#?value
+                            .comment:x:/@_dp/#/@..comment?value
+
+                            /*
+                             * Tranforming comment to HTML.
+                             */
+                            markdown2html:x:/@.comment?value
+
+                            /*
+                             * Retrieving lambda contract for event.
+                             */
+                            micro.lambda.contract.get:x:/@.event?value
+
+                            /*
+                             * Checking that event has a lambda contract, at which point we
+                             * add it up in our modal window.
+                             */
+                            if:x:/@micro.lambda.contract.get/*/*
+
+                              /*
+                               * Used as temporary buffer to hold lambda contract, such that
+                               * we can display it as an event invocation.
+                               */
+                              .contract
+
+                              /*
+                               * Transforming lambda contract into an event invocation example.
+                               */
+                              add:x:/@.contract
+                                src
+                                  ..comment:@"Example invocation for the event.
+
+Exchange the mandatory and optional arguments with real values."
+                              add:x:/@.contract
+                                src:x:/@micro.lambda.contract.get/*?name
+                              if:x:/@micro.lambda.contract.get/0/*/min
+                                add:x:/@.contract/1
+                                  src
+                                    ..comment:Mandatory argument(s)
+                                add:x:/@.contract/1
+                                  src:x:/@micro.lambda.contract.get/0/*/min/*
+                              if:x:/@micro.lambda.contract.get/0/*/optional
+                                add:x:/@.contract/1
+                                  src
+                                    ..comment:Optional argument(s)
+                                add:x:/@.contract/1
+                                  src:x:/@micro.lambda.contract.get/0/*/optional/*
+
+                              /*
+                               * Transforming lambda contract to Hyperlambda.
+                               */
+                              lambda2hyper:x:/@.contract/*
+                                comments:unroll
+
+                              /*
+                               * Adding widgets to modal window, to display lambda contract.
+                               */
+                              eval-x:x:/+/*/*/*/value
+                              insert-before:x:/../*/create-widgets/*/*/0/-
+                                src
+                                  micro.widgets.codemirror
+                                    height:auto
+                                    value:x:/@lambda2hyper?value
+                                    mode:hyperlambda
+
+                            /*
+                             * Creating a modal window displaying meta information about event.
+                             */
+                            eval-x:x:/+/**
+                            create-widgets
+                              micro.widgets.modal:active-event-meta-modal
+                                widgets
+                                  h3
+                                    innerValue:[{0}]
+                                      :x:/@.event?value
+                                  div
+                                    innerValue:x:/@markdown2html?value
+                                  div
+                                    class:right
+                                    widgets
+                                      button
+                                        innerValue:Close
+                                        onclick
+                                          delete-widget:active-event-meta-modal
+                        text:]</strong>
+
+              /*
+               * Creating one "li" element for each Hyperlambda file in module's folder,
+               * with its file descriptive comment, if existing.
+               */
+              for-each:x:/@load-file/*
 
                 /*
-                 * File contains an initial comment.
+                 * Retrieving filename.
                  */
-                markdown2html:x:/@hyper2lambda/0?value
-                eval-x:x:/+/*/*/*/innerValue
-                create-widget
-                  parent:x:/../*/_event?value
-                  element:li
-                  widgets
-                    div
-                      innerValue:x:/@markdown2html?value
-
-              else
+                .filename
+                set:x:/@.filename?value
+                  replace:x:/@_dp/#?name
+                    src:x:/@p5.io.unroll-path?value
+                    dest:../
 
                 /*
-                 * No initial comment in file.
+                 * Loading file (again) to check if it contains a descriptive comment.
                  */
-                create-widget
-                  parent:x:/../*/_event?value
-                  element:li
-                  widgets
-                    div
-                      class:air-inner rounded warning
-                      innerValue:<p>File does not contain information about what it does!</p>
+                hyper2lambda:x:/@_dp/#?value
+                  keep-comments:true
 
-          widgets
+                /*
+                 * Checking if Hyper IDE is open, and if so, making sure we add filename
+                 * as a hyperlink, to allow for editing file directly in Hyper IDE, by
+                 * clicking the filename.
+                 */
+                if:x:/@hyper-ide.is-open?value
+
+                  /*
+                   * Hyper IDE is running, making sure allow for clicking file path to edit file.
+                   */
+                  eval-x:x:/+/*/*/*/*/*(/.filepath|/innerValue)
+                  add:x:/../*/create-widget/**/ul/=desktop-module-meta-files/*/widgets
+                    src
+                      li
+                        widgets
+                          a
+                            href:#
+                            .filepath:x:/@_dp/#?name
+                            innerValue:x:/@.filename?value
+                            style:"display:inline-block;margin-bottom:1rem;"
+                            onclick
+
+                              /*
+                               * Opening file in Hyper IDE.
+                               */
+                              get-widget-property:x:/../*/_event?value
+                                .filepath
+                              hyper-ide.folder-explorer.select-path:x:/-/*/*?value
+
+                else
+
+                  /*
+                   * Hyper IDE is not running, simply adding a label widget to "li" widget.
+                   */
+                  eval-x:x:/+/*/*/*/*/*
+                  add:x:/../*/create-widget/**/ul/=desktop-module-meta-files/*/widgets
+                    src
+                      li
+                        widgets
+                          label
+                            innerValue:x:/@.filename?value
+
+                /*
+                 * Checking if file has an initial comment, at which point we transform the comment's
+                 * content to HTML, assuming it's Markdown, and add its comment to currently iterated "li"
+                 * element.
+                 */
+                if:x:/@hyper2lambda/0?name
+                  =:..comment
+
+                  /*
+                   * File contains an initial comment.
+                   */
+                  markdown2html:x:/@hyper2lambda/0?value
+                  eval-x:x:/+/*/*/*/innerValue
+                  add:x:/../*/create-widget/**/ul/=desktop-module-meta-files/*/widgets/0/-/*/widgets
+                    src
+                      div
+                        innerValue:x:/@markdown2html?value
+
+                else
+
+                  /*
+                   * No initial comment in file.
+                   */
+                  add:x:/../*/create-widget/**/ul/=desktop-module-meta-files/*/widgets/0/-/*/widgets
+                    src
+                      div
+                        class:air-inner rounded warning
+                        innerValue:<p>File does not contain a descriptive comment!</p>
+
+              /*
+               * Creating our meta information wrapper widget.
+               */
+              eval-x:x:/+2/*/widgets/*/micro.widgets.grid/[0,1](/*/*/*/Value|/*/*/*/Name/=Path/./*/Value/*/*/*)
+              eval-x:x:/+/**/micro.widgets.chart.pie/*/*
+              create-widget
+                parent:x:/@p5.web.widgets.get-parent/*/*?value
+                widgets
+                  h2
+                    innerValue:Module meta information
+                  micro.widgets.grid
+                    class:striped hover
+                    rows
+                      item
+                        Name:Path
+                        Value
+                          widgets
+                            span
+                              innerValue:x:/@p5.io.unroll-path?value
+                      item
+                        Name:Hyperlambda files
+                        Value:x:/@desktop._list-files/*?count
+                      item
+                        Name:Node count
+                        Value:x:/@hyper2lambda/**(!/\..comment)?count
+                      item
+                        Name:Comment count
+                        Value:x:/@hyper2lambda/**/\..comment?count
+                      item
+                        Name:Size of folder
+                        Value:"{0:#.#} KB"
+                          :x:/@.folder-length?value
+                      item
+                        Name:Installation date
+                        Value:x:/@p5.types.date.format?value
+                      item
+                        Name:Version
+                        Value:x:/@.version?value
+                  div
+                    class:row
+                    widgets
+                      div
+                        class:col
+                        widgets
+                          h3
+                            innerValue:Code to comments ration
+                          micro.widgets.chart.pie
+                            data
+                              Code:x:/@hyper2lambda/**(!/\..comment)?count
+                              Comments:x:/@hyper2lambda/**/\..comment?count
+                      div
+                        class:col
+                        oninit
+
+                          /*
+                           * Forward evaluated above.
+                           */
+                          .folder:x:/../*/folder?value
+                          p5.io.unroll-path:x:/-?value
+                          split:x:/-?value
+                            =:/
+
+                          /*
+                           * Listing folders and retrieving each folder's size in KB.
+                           */
+                          list-folders:/modules/
+                          for-each:x:/@list-folders/*?name
+                            p5.io.folder.get-length:x:/@_dp?value
+                            /:x:/-/*?value
+                              _:1024
+                            eval-x:x:/+/*/*
+                            split:x:/@_dp?value
+                              =:/
+                            add:x:/../*/create-widgets/*/*/data
+                              src:"{0}:{1}"
+                                :x:/@split/0/-?name
+                                :x:/..for-each/*/\/?value
+
+                          /*
+                           * Creating a bar chart displaying each module folder's size.
+                           */
+                          add:x:/+/*/*/data/*/{0}
+                            :x:/@split/0/-?name
+                            src
+                              color:LightGreen
+                          create-widgets
+                            micro.widgets.chart.column
+                              parent:x:/../*/_event?value
+                              data
+
+                        widgets
+                          h3
+                            innerValue:Module's relative size in KB
+                  h3
+                    innerValue:Active Events created by module
+                  container:active-events-for-module
+                    element:ul
+                    widgets
+                  h3
+                    innerValue:Hyperlambda file information
+                  ul:desktop-module-meta-files
+                    class:desktop-help-meta-file-list
+                    widgets
