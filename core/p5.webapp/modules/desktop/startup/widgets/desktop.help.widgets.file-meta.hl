@@ -173,6 +173,13 @@ create-event:desktop.help.widgets.file-meta
               for-each:x:/@hyper2lambda/**(/create-event|/p5.events.create)
 
                 /*
+                 * Checking if event is "hidden".
+                 */
+                if:x:/@_dp/#?value
+                  ~:._
+                  continue
+
+                /*
                  * Adding an "li" item for currently iterated [create-event] node, containing
                  * a hyperlink button, allowing the user to click the button, to view more meta
                  * information about event.
