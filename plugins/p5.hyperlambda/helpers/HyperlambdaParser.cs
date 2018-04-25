@@ -383,7 +383,10 @@ namespace p5.hyperlambda.helpers
             foreach (var idxLine in lines) {
                 if (retVal.Length != 0)
                     retVal.Append ("\r\n");
-                retVal.Append (idxLine.Trim ('\r').Trim ().TrimStart ('*').Trim ());
+                var val = idxLine.Trim ('\r').Trim ().TrimStart ('*');
+                if (val.StartsWith (" ", StringComparison.InvariantCulture))
+                    val = val.Substring (1).TrimEnd ();
+                retVal.Append (val);
             }
             return retVal.ToString ();
         }
