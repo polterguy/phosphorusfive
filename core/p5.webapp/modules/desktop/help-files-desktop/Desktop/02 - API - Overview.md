@@ -12,6 +12,11 @@ Hyperlambda that lists all your installed modules.
 desktop.modules.list
 
 /*
+ * Removing [description] to not flood our window.
+ */
+set:x:/@desktop.modules.list/*/*/description
+
+/*
  * Creates a modal widget with the results
  * from above invocation.
  */
@@ -28,7 +33,9 @@ The Desktop module contains a helper Active Event, that allows you to store some
 memory, and evaluate this Hyperlambda on the next pageload. This is useful in a lot of scenarios, such as
 for instance if you need to reload the location, and provide feedback to the user after having reloaded
 the location. This event is called **[desktop.evaluate.on-next-pageload]**, and it expects you to supply
-a **[lambda]** lambda callback. Below is an example of usage. Notice, this snippet will reload your location!
+a **[lambda]** lambda callback. Below is an example of usage.
+
+**Warning** - This snippet will reload your location!
 
 ```hyperlambda-snippet
 /*
