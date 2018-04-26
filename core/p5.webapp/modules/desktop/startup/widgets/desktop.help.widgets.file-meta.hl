@@ -27,9 +27,143 @@ create-event:desktop.help.widgets.file-meta
   return
     container
       style:"clear:both;"
+      events
+
+        /*
+         * Creates meta information for specified [event], with [comment] and
+         * adds into [parent] widget.
+         */
+        desktop.help.view-meta-for-event
+
+          /*
+           * Sanity checking invocation.
+           */
+          micro.lambda.contract.min:x:/..
+            event:string
+            comment:string
+            parent:string
+            file:string
+
+          /*
+           * Checking if meta information is already visible, at which point we
+           * delete the widget, instead of creating it - Which makes it possible
+           * to "toggle" meta information for Active Events.
+           */
+          p5.web.widgets.find-first-like:x:/../*/parent?value
+            class:desktop-help-meta-active-event
+          if:x:/@p5.web.widgets.find-first-like/*/*?value
+            delete-widget:x:/@p5.web.widgets.find-first-like/*/*?value
+            return
+
+          /*
+           * Tranforming comment to HTML.
+           */
+          markdown2html:x:/../*/comment?value
+
+          /*
+           * Retrieving lambda contract for event.
+           */
+          micro.lambda.contract.get:x:/../*/event?value
+
+          /*
+           * Checking that event has a lambda contract, at which point we
+           * add it up in our modal window.
+           */
+          if:x:/@micro.lambda.contract.get/*/*
+
+            /*
+             * Used as temporary buffer to hold lambda contract, such that
+             * we can display it as an event invocation.
+             */
+            .contract
+
+            /*
+             * Transforming lambda contract into an event invocation example.
+             */
+            add:x:/@.contract
+              src
+                ..comment:@"Example invocation for the event.
+
+Exchange the mandatory and optional arguments with real values."
+            add:x:/@.contract
+              src:x:/@micro.lambda.contract.get/*?name
+            if:x:/@micro.lambda.contract.get/0/*/min
+              add:x:/@.contract/1
+                src
+                  ..comment:Mandatory argument(s)
+              add:x:/@.contract/1
+                src:x:/@micro.lambda.contract.get/0/*/min/*
+            if:x:/@micro.lambda.contract.get/0/*/optional
+              add:x:/@.contract/1
+                src
+                  ..comment:Optional argument(s)
+              add:x:/@.contract/1
+                src:x:/@micro.lambda.contract.get/0/*/optional/*
+
+            /*
+             * Transforming lambda contract to Hyperlambda.
+             */
+            lambda2hyper:x:/@.contract/*
+              comments:unroll
+
+            /*
+             * Adding widgets to modal window, to display lambda contract.
+             */
+            eval-x:x:/+/*/*/*/value
+            add:x:/../*/create-widget/*/widgets
+              src
+                micro.widgets.codemirror
+                  height:auto
+                  value:x:/@lambda2hyper?value
+                  mode:hyperlambda
+
+          /*
+           * Checking if Hyper IDE is open, at which point we allow for editing
+           * file where event is declared.
+           */
+          if
+            hyper-ide.is-open
+            and:x:/../*/file?value
+              !=:
+
+            /*
+             * Hyper IDE is open, injecting an "edit file" button.
+             */
+            eval-x:x:/+/*/*/*/*/*/onclick/*/.file
+            add:x:/../*/create-widget/*/widgets
+              src
+                div
+                  class:right
+                  widgets
+                    button
+                      class:large
+                      title:Edit file where event is declared
+                      innerValue:@"<span class=""icon-pencil""></span>"
+                      onclick
+
+                        /*
+                         * Editing file for Active Event in Hyper IDE.
+                         */
+                        .file:x:/../*/file?value
+                        hyper-ide.folder-explorer.select-path:x:/-?value
+
+          /*
+           * Creating a modal window displaying meta information about event.
+           */
+          eval-x:x:/+/**
+          create-widget
+            parent:x:/../*/parent?value
+            class:desktop-help-meta-active-event
+            widgets
+              div
+                class:desktop-help-event-meta-markdown
+                innerValue:x:/@markdown2html?value
+
       widgets
         button
-          innerValue:View meta information ...
+          innerValue:@"<span class=""icon-eye""></span>"
+          title:View meta information (might take some time)
+          class:large
           onclick
 
             /*
@@ -180,11 +314,25 @@ create-event:desktop.help.widgets.file-meta
                   continue
 
                 /*
+                 * Figuring out what file event is declared within.
+                 */
+                .event-file
+                for-each:x:/@load-file/*
+                  if:x:/@_dp/#?value
+                    ~:"create-event:{0}"
+                      :x:/..for-each/..for-each/*/_dp/#?value
+                    or:x:/@_dp/#?value
+                      ~:"p5.events.create:{0}"
+                        :x:/..for-each/..for-each/*/_dp/#?value
+                    set:x:/@.event-file?value
+                      src:x:/@_dp/#?name
+
+                /*
                  * Adding an "li" item for currently iterated [create-event] node, containing
                  * a hyperlink button, allowing the user to click the button, to view more meta
                  * information about event.
                  */
-                eval-x:x:/+/*/*/*/*/*(/innerValue|/onclick/*(/.event|/.comment))
+                eval-x:x:/+/*/*/*/*/*(/innerValue|/onclick/*(/.event|/.comment|/.event-file))
                 add:x:/../*/create-widget/**/container/=active-events-for-module/*/widgets
                   src
                     li
@@ -200,88 +348,23 @@ create-event:desktop.help.widgets.file-meta
                              */
                             .event:x:/@_dp/#?value
                             .comment:x:/@_dp/#/@..comment?value
+                            .event-file:x:/@.event-file?value
 
                             /*
-                             * Tranforming comment to HTML.
+                             * Retrieving parent node for link button.
                              */
-                            markdown2html:x:/@.comment?value
+                            p5.web.widgets.get-parent:x:/../*/_event?value
 
                             /*
-                             * Retrieving lambda contract for event.
+                             * Invoking event responsible for creating our meta information
+                             * for Active Event.
                              */
-                            micro.lambda.contract.get:x:/@.event?value
-
-                            /*
-                             * Checking that event has a lambda contract, at which point we
-                             * add it up in our modal window.
-                             */
-                            if:x:/@micro.lambda.contract.get/*/*
-
-                              /*
-                               * Used as temporary buffer to hold lambda contract, such that
-                               * we can display it as an event invocation.
-                               */
-                              .contract
-
-                              /*
-                               * Transforming lambda contract into an event invocation example.
-                               */
-                              add:x:/@.contract
-                                src
-                                  ..comment:@"Example invocation for the event.
-
-Exchange the mandatory and optional arguments with real values."
-                              add:x:/@.contract
-                                src:x:/@micro.lambda.contract.get/*?name
-                              if:x:/@micro.lambda.contract.get/0/*/min
-                                add:x:/@.contract/1
-                                  src
-                                    ..comment:Mandatory argument(s)
-                                add:x:/@.contract/1
-                                  src:x:/@micro.lambda.contract.get/0/*/min/*
-                              if:x:/@micro.lambda.contract.get/0/*/optional
-                                add:x:/@.contract/1
-                                  src
-                                    ..comment:Optional argument(s)
-                                add:x:/@.contract/1
-                                  src:x:/@micro.lambda.contract.get/0/*/optional/*
-
-                              /*
-                               * Transforming lambda contract to Hyperlambda.
-                               */
-                              lambda2hyper:x:/@.contract/*
-                                comments:unroll
-
-                              /*
-                               * Adding widgets to modal window, to display lambda contract.
-                               */
-                              eval-x:x:/+/*/*/*/value
-                              insert-before:x:/../*/create-widgets/*/*/0/-
-                                src
-                                  micro.widgets.codemirror
-                                    height:auto
-                                    value:x:/@lambda2hyper?value
-                                    mode:hyperlambda
-
-                            /*
-                             * Creating a modal window displaying meta information about event.
-                             */
-                            eval-x:x:/+/**
-                            create-widgets
-                              micro.widgets.modal:active-event-meta-modal
-                                widgets
-                                  h3
-                                    innerValue:[{0}]
-                                      :x:/@.event?value
-                                  div
-                                    innerValue:x:/@markdown2html?value
-                                  div
-                                    class:right
-                                    widgets
-                                      button
-                                        innerValue:Close
-                                        onclick
-                                          delete-widget:active-event-meta-modal
+                            eval-x:x:/+/*
+                            desktop.help.view-meta-for-event
+                              event:x:/@.event?value
+                              comment:x:/@.comment?value
+                              parent:x:/@p5.web.widgets.get-parent/*/*?value
+                              file:x:/@.event-file?value
                         text:]</strong>
 
               /*
@@ -421,7 +504,7 @@ Exchange the mandatory and optional arguments with real values."
                         class:col
                         widgets
                           h3
-                            innerValue:Code to comments ration
+                            innerValue:Code to comments ratio
                           micro.widgets.chart.pie
                             data
                               Code:x:/@hyper2lambda/**(!/\..comment)?count
@@ -469,8 +552,9 @@ Exchange the mandatory and optional arguments with real values."
                         widgets
                           h3
                             innerValue:Module's relative size in KB
+                            title:Current module is light green
                   h3
-                    innerValue:Active Events created by module
+                    innerValue:Public Active Events created by module
                   container:active-events-for-module
                     element:ul
                     widgets

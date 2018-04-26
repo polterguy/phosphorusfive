@@ -109,3 +109,25 @@
 .desktop-help-meta-file-list>li label:first-child {
     font-size: 1.2rem;
 }
+#active-events-for-module {
+    list-style: none;
+    padding-left: 0;
+}
+.desktop-help-meta-active-event {
+    background-color: rgba(0,0,0,.1);
+    padding: 1rem 1rem 0 1rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    border-radius: .5rem;
+}
+.desktop-help-event-meta-markdown {
+    overflow: auto;
+}
+.desktop-help-meta-active-event .micro-codemirror-wrapper {
+    height: auto;
+    margin-bottom: 0;
+    overflow: auto;
+}
+.desktop-help-meta-active-event .micro-codemirror-wrapper .CodeMirror {
+    margin: 0 0 1rem 0;
+}
