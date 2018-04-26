@@ -90,3 +90,7 @@ The **[files]** and **[folder]** arguments to the **[micro.widgets.file]** widge
 can now be parametrized. See the documentation of these events for how to use
 this feature.
 
+### Changes in Aztec skin
+
+Making _"pre"_ and _"code"_ elements slightly lighter.
+
