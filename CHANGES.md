@@ -12,6 +12,9 @@ which allows for creating an _"iOS type of checkbox"_.
 
 Improved documentation, in addition to some of the embedded videos, focusing
 on making them shorter and more explicit in the way the system is being documented.
+The documentation is now also arguably _"literate"_, implying that you can use
+the documentation system to extract meta information about modules, significantly
+improving its quality.
 
 ### Improved Hyperlambda parser
 
@@ -35,6 +38,9 @@ Legal values are as follows.
 * _"delete"_ - Will ignore all __[..comment]__ nodes
 * _"keep"_ - Will treat __[..comment]__ nodes in any special ways, but keep them as they are in your lambda. This is the default value.
 
+**Notice**, this feature only works if you supply an expression to your **[lambda2hyper]**
+invocation.
+
 ### [micro.windows.confirm] convenience wrapper
 
 Created a convenience wrapper for confirmation types of [modal.widgets.modal]
@@ -51,40 +57,36 @@ core functionality. This is one of the last remaining pieces from System42 that
 has relevance for the project, and hence System42 will probably soon be completely
 removed.
 
-### More meta information in documentation
+### Meta information in documentation
 
 There is now significantly improved meta information capabilities in the documentation parts
-of your modules, allowing you to see information about the module, much more
+of your modules, allowing you to see information about your modules much more
 detailed. Among other things, you can see a graph displaying comments to nodes ratio,
-the module's relative size compared to other modules, displaying all Active Events
-created by the module, display all Hyperlambda files in your module, with Markdown
-comment support, etc, etc, etc.
+the module's relative size compared to other modules, see all Active Events
+created by the module, and their comments and lambda contracts, display all
+Hyperlambda files in your module, with Markdown comment support, etc, etc, etc.
+
+In fact, improved documentation in general, has been the main focal point of this
+release.
 
 ### Graph widgets
 
 Created graph widgets, more specificall **[micro.widgets.chart.pie]** to display
 pie charts - In addition to **[micro.widgets.chart.bar]** to display bar charts.
+See the documentation for Phosphorus Five to understand how to use these widget.
 
 ### Allowing for capital letters in widget tagName
 
-Necessary to allow for things such as __[foreignObject]__ widgets, inside of SVG widgets.
+Supporting capital letter in p5.ajax project. This was necessary to allow for
+things such as __[foreignObject]__ widgets, inside of for instance SVG widgets.
 
-### Fixed bugs in documentation
+### Fixed bugs in p5.mime documentation
 
-- Fixed a bug that wouldn't render the documentation for the p5.mime plugins correctly.
+Fixed a bug that wouldn't render the documentation for the p5.mime plugins correctly.
 
-### Improved the quality of most comments
-
-Significantly improved the quality of most comments in the system, to take advantage
-of the new serialization logic for comments, and meta information features of
-the documentation, among other things.
-
-### Parameters to [micro.widgets.file] widget
+### Parameter support to the [micro.widgets.file] widget
 
 The **[files]** and **[folder]** arguments to the **[micro.widgets.file]** widget
-can now be perametrized.
-
-### Significantly improved the documentation for each file in all modules, and/or
-submodules of Phosphorus Five. Which was necessary to make the meta information
-capabilities of the Desktop module's help features function adequately.
+can now be parametrized. See the documentation of these events for how to use
+this feature.
 
