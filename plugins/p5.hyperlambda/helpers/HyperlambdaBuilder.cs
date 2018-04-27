@@ -85,6 +85,9 @@ namespace p5.hyperlambda.helpers
 
                 // This is a comment.
                 if (_comments == "keep") {
+                    for (var idxSp = 0; idxSp < level * 2; idxSp++) {
+                        builder.Append (" ");
+                    }
                     builder.Append (node.Name);
                     return true;
                 } else if (_comments == "delete") {
@@ -93,6 +96,10 @@ namespace p5.hyperlambda.helpers
                     builder.Append ("\r\n");
                     var commentValue = node.Get (_context, "");
                     if (commentValue.Contains ("\n")) {
+                        builder.Append ("\r\n");
+                        for (var idxSp = 0; idxSp < level * 2; idxSp++) {
+                            builder.Append (" ");
+                        }
                         var lines = commentValue.Split ('\n');
                         builder.Append ("/*\r\n");
                         foreach (var idxLine in lines) {
