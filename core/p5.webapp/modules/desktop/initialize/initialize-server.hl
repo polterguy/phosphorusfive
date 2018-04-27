@@ -1,9 +1,10 @@
-
 /*
  * Initialises the Phosphorus Five installation, by allowing the user to
  * set his root root password, and optionally supply a manual server salt.
  *
  * If the server needs to be setup, this file will return boolean _"true"_.
+ * This file is evaluated from the __[p5.web.load-ui]__ event from the Desktop
+ * module.
  */
 
 

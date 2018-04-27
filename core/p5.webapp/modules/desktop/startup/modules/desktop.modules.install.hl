@@ -11,13 +11,14 @@
  * of the same module, before installing your new module.
  *
  * **Notice**, Phosphorus Five does not support having the same
- * module installed multiple times, regardless of whether or not the versions
+ * module installed multiple times, regardless of whether or not the versions/paths
  * are different - And the uninstallation process will uninstall any previous modules
  * with the same __[local-url]__. So if you override the local-url, make sure you
  * override it with the same name the next time you upgrade your module. In fact,
- * as a general rule of thumb, you should never mess with the local-url argument,
- * unless you're very certain of the consequences, since not all modules can handle
- * being installed in a different folder than the one they expect to be installed
+ * as a general rule of thumb, you should rarely mess with the __[local-url]__ argument,
+ * unless you're very certain of the consequences, or you need to change it to remove
+ * version information from your zip file - Since not all modules can handle
+ * being installed in a different folder than the folder they expect to be installed
  * within by default.
  */
 create-event:desktop.modules.install

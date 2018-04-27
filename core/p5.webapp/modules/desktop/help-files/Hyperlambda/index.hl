@@ -1,6 +1,7 @@
 /*
- * This is our main _"landing page"_ for our Hyperlambda help files, which is the book
- * about Hyperlambda.
+ * This is our main _"landing page"_ for our Hyperlambda help files, which
+ * is a tutorial style _"book"_, teaching you Hyperlambda, from a beginner's
+ * perspective.
  */
 
 h2

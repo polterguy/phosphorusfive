@@ -1,4 +1,3 @@
-
 /*
  * Creates the __[desktop.modules.list]__ Active Event.
  */
@@ -6,7 +5,8 @@
 /*
  * This event will return all installed modules in your system,
  * and their description from their associated README.md files,
- * if such a file exists.
+ * if such a file exists - In addition to that it will return
+ * any version number found for your module.
  */
 create-event:desktop.modules.list
 

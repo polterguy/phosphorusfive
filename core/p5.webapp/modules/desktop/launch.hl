@@ -1,5 +1,5 @@
 /*
- * Creates our _"desktop"_, which basically just allows
+ * Creates our _"desktop"_, which basically allows
  * the user to select which application he wants to start.
  * This file will create what is normally being displayed
  * at your server's root URL, e.g. `/`.

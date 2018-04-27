@@ -1,6 +1,7 @@
 /*
  * Displays the settings for the Desktop in a modal widget, allowing
- * the user to modify his or her settings.
+ * the user to modify his or her settings. This normally includes changing
+ * the default skin, etc.
  */
 create-widgets
   micro.widgets.modal:desktop-settings

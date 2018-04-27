@@ -1,7 +1,12 @@
 /*
  * Creates a single HTML file containing all Markdown files from the documentation,
- * converted into HTML. Useful for printing the documentation, or converting it to a PDF
- * somehow.
+ * converted into HTML. This file is useful for printing the documentation, or
+ * converting the documentation to a PDF somehow.
+ *
+ * **Notice**, not all of the documentation is included in this single page HTML page,
+ * such as e.g. Hyperlambda help files, or the meta information - But it still
+ * provides _"the ghist"_ of your help files, in an easy to print HTML document,
+ * which for the record is normally several hundreds of pages long!
  */
 
 

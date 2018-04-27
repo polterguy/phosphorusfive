@@ -4,7 +4,7 @@
 
 
 /*
- * Creates our _"path"_ Active Event for module.
+ * This is our _"path"_ Active Event for module.
  */
 micro.path.get-folder:x:/..?name
 trim-right:x:/@micro.path.get-folder?value

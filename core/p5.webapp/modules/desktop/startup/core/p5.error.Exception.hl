@@ -1,4 +1,3 @@
-
 /*
  * Creates the __[p5.error.Exception]__ Active Event.
  */
@@ -8,7 +7,8 @@
  * event has explicitly overridden it, for a particular type of exception.
  *
  * To override this logic for specific exception types, create an event having the typename
- * of your exception, instead of the _"Exception"_ name of this event.
+ * of your exception, instead of the _"Exception"_ name of this event. To handle e.g.
+ * _"ArgumentException"_ the name of your custom event would become __[p5.error.ArgumentException]__.
  */
 create-event:p5.error.Exception
 

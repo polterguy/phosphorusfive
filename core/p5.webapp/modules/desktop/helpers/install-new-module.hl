@@ -1,5 +1,11 @@
 /*
- * Allows the user to install a new module, by browsing to a zip file on his disc.
+ * This file allows the user to install a new module, by displaying a modal
+ * widget, that allows the user to browse to a zip file on his disc - Which
+ * will be uploaded, and installed into the system.
+ *
+ * The modal widget allows the user to override the __[local-url]__ argument,
+ * however it does its best to try to intelligently figure out the local URL
+ * by itself, automatically.
  */
 create-widgets
   micro.widgets.modal:desktop-install-new-module-modal

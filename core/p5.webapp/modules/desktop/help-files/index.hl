@@ -1,9 +1,13 @@
 /*
- * This is our main _"landing page"_ for the help system in Hyper IDE, that is loaded
- * if no default help page is loaded.
+ * This is our main _"landing page"_ for the help system in Phosphorus Five,
+ * that is loaded if no default help page is explicitly requested somehow.
  *
  * This file displays the main _"index"_ help page, and such serves as a starting ground
- * for other files in the help system.
+ * for other files in the help system. The file will invoke all Active Events starting
+ * with __[desktop.help-files.]__ in their names, and assume that these events are
+ * returning a folder for a _"Sub section"_ of help files - This allows you to
+ * _"plugin"_ your own help files section into the main core help file logic for
+ * the main help file for Phosphorus Five.
  */
 h2
   innerValue:
