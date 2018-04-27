@@ -298,9 +298,6 @@
     <None Include="modules\desktop\startup\authentication\desktop.authentication.logout.hl" />
     <None Include="modules\desktop\startup\misc\desktop.license.check.hl" />
     <None Include="users\root\documents\private\README.md" />
-    <None Include="modules\desktop\help-files\03 - Modules meta information.hl" />
-    <None Include="modules\desktop\help-files\04 - License terms.md" />
-    <None Include="modules\desktop\help-files\05 - Credits and copyright information.md" />
     <None Include="modules\desktop\help-files\Plugins\03 - p5.data.md" />
     <None Include="modules\desktop\help-files\Plugins\04 - p5.events.md" />
     <None Include="modules\desktop\help-files\Plugins\05 - p5.hyperlambda.md" />
@@ -338,6 +335,8 @@
     <None Include="modules\desktop\helpers\create-documentation-print.hl" />
     <None Include="modules\desktop\startup\widgets\desktop.help.widgets.file-meta.hl" />
     <None Include="modules\desktop\startup\core\p5.error.Exception.hl" />
+    <None Include="modules\desktop\help-files\03 - License terms.md" />
+    <None Include="modules\desktop\help-files\04 - Credits and copyright information.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>
