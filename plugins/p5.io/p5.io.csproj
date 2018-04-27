@@ -55,6 +55,10 @@
     <Compile Include="file\Exist.cs" />
     <Compile Include="folder\Exists.cs" />
     <Compile Include="file\file-state\LastWriteTime.cs" />
+    <Compile Include="folder\folder-state\CreationTime.cs" />
+    <Compile Include="folder\folder-state\LastAccessTime.cs" />
+    <Compile Include="folder\folder-state\LastWriteTime.cs" />
+    <Compile Include="folder\folder-state\Length.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

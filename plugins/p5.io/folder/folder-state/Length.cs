@@ -25,7 +25,7 @@ using System.IO;
 using p5.core;
 using p5.io.common;
 
-namespace p5.io.file.file_state
+namespace p5.io.folder.folder_state
 {
     /// <summary>
     ///     Class to help check the size of one or more file(s).
@@ -37,12 +37,31 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.get-length")]
-        public static void p5_io_file_get_length (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.get-length")]
+        public static void p5_io_folder_get_length (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                e.Args.Add (filename, new FileInfo (fullpath).Length);
+                e.Args.Add (filename, FolderSize (new DirectoryInfo (fullpath)));
             });
+        }
+
+        /*
+         * Private helper for above.
+         */
+        private static long FolderSize (DirectoryInfo d)
+        {
+            long retVal = 0;
+            FileInfo [] files = d.GetFiles ();
+            foreach (FileInfo idx in files) {
+                retVal += idx.Length;
+            }
+
+            // Recursively calling self.
+            DirectoryInfo [] folders = d.GetDirectories ();
+            foreach (DirectoryInfo idx in folders) {
+                retVal += FolderSize (idx);
+            }
+            return retVal;
         }
     }
 }

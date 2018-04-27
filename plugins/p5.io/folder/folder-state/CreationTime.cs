@@ -25,23 +25,23 @@ using System.IO;
 using p5.core;
 using p5.io.common;
 
-namespace p5.io.file.file_state
+namespace p5.io.folder.folder_state
 {
     /// <summary>
-    ///     Class to help check the size of one or more file(s).
+    ///     Class to help check the creation date of one or more folder(s).
     /// </summary>
-    public static class Length
+    public static class CreationTime
     {
         /// <summary>
-        ///     Returns the size of the specified file(s).
+        ///     Returns the creation time of the specified file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.get-length")]
-        public static void p5_io_file_get_length (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.get-creation-time")]
+        public static void p5_io_folder_get_creation_time (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                e.Args.Add (filename, new FileInfo (fullpath).Length);
+                e.Args.Add (filename, new DirectoryInfo (fullpath).CreationTime);
             });
         }
     }

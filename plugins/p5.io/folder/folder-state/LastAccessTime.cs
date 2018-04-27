@@ -25,23 +25,23 @@ using System.IO;
 using p5.core;
 using p5.io.common;
 
-namespace p5.io.file.file_state
+namespace p5.io.folder.folder_state
 {
     /// <summary>
-    ///     Class to help check the size of one or more file(s).
+    ///     Class to help check the access time of one or more file(s).
     /// </summary>
-    public static class Length
+    public static class LastAccessTime
     {
         /// <summary>
-        ///     Returns the size of the specified file(s).
+        ///     Returns the last access date of the specified file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.get-length")]
-        public static void p5_io_file_get_length (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.get-last-access-time")]
+        public static void p5_io_folder_get_last_access_time (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                e.Args.Add (filename, new FileInfo (fullpath).Length);
+                e.Args.Add (filename, new DirectoryInfo (fullpath).LastAccessTime);
             });
         }
     }
