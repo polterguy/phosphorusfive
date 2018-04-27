@@ -90,13 +90,13 @@ Exchange the mandatory and optional arguments with real values."
             if:x:/@micro.lambda.contract.get/0/*/min
               add:x:/@.contract/1
                 src
-                  ..comment:Mandatory argument(s)
+                  ..comment:Mandatory argument(s).
               add:x:/@.contract/1
                 src:x:/@micro.lambda.contract.get/0/*/min/*
             if:x:/@micro.lambda.contract.get/0/*/optional
               add:x:/@.contract/1
                 src
-                  ..comment:Optional argument(s)
+                  ..comment:Optional argument(s).
               add:x:/@.contract/1
                 src:x:/@micro.lambda.contract.get/0/*/optional/*
 
@@ -372,6 +372,13 @@ Exchange the mandatory and optional arguments with real values."
                * with its file descriptive comment, if existing.
                */
               for-each:x:/@load-file/*
+
+                /*
+                 * Checking if this is a "hidden" file.
+                 */
+                if:x:/@_dp/#?name
+                  ~:._
+                  continue
 
                 /*
                  * Retrieving filename.
