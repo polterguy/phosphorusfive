@@ -67,7 +67,9 @@ which allows for creating an _"iOS type of checkbox"_.
 #### Deletion of [micro.lambda.create-timeout] lambda objects
 
 Support for explicitly naming a timer lambda, which allows for deleting it
-by deleting its associated widget.
+by deleting its associated widget. This event also now optionally takes
+a __[parent]__ argument, allowing for _"auto destruction"_ of the timer,
+as its container widget is deleted.
 
 #### [micro.windows.confirm] convenience wrapper
 
