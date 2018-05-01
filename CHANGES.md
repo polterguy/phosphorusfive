@@ -30,6 +30,18 @@ Legal values are as follows.
 **Notice**, this feature only works if you supply an expression to your **[lambda2hyper]**
 invocation.
 
+#### New Active Events in p5.io
+
+Created a set of new events in p5.io, which can be found below.
+
+- __[p5.io.folder.get-creation-time]__
+- __[p5.io.folder.get-last-access-time]__
+- __[p5.io.folder.get-last-write-time]__
+- __[p5.io.folder.get-length]__
+
+These functions similarly to their _"file"_ counterparts, and their documentation
+can be found in the documentation for p5.io.
+
 #### Allowing for capital letters in widget tagName
 
 Supporting capital letter in p5.ajax project. This was necessary to allow for
@@ -41,6 +53,9 @@ Improved documentation, in addition to some of the embedded videos, focusing
 on making them shorter and more explicit in the way the system is being documented.
 The documentation is now also arguably _"literate"_, implying that you can use
 the documentation system to extract meta information about modules.
+
+Also fixed several _"bugs"_ in different parts of the documentation, such as
+the documentation for p5.mime, which had an error in it.
 
 ### Micro changes
 
