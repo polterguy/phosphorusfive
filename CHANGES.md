@@ -99,6 +99,28 @@ this feature.
 
 Fixed lots of minor design artifacts in several of the skins.
 
+### Camphora Five changes
+
+#### Completely refactored
+
+Camphora Five is now completely refactored, and has tons of new features.
+Among other things, a Camphora Five app can now be instantiated as an extension
+widget, allowing you to inject a Camphora "app" into your own modules, by simply
+instantiating a Camphora app as an extension widget. See the documentation for
+Camphora Five for more details.
+
+Camphora Five also now takes advantage of the __[micro.widgets.mysql.datagrid]__
+extension widget, significantly simplyfying it. In addition, a Camphora Five app
+is now literally _"generated"_, and not relying upon the _"app-manifest.hl"_
+file anymore, making it much easier to modify a Camphora app after having generated
+it, to customise it as you see fit.
+
+#### Rich API for Camphora Five
+
+Camphora Five now has a very rich API, allowing you to directly interact with
+your app, using widget lambda events, allowing you to implement your own
+support for paging, filtering, etc.
+
 ### Misc.
 
 #### Pulled in unit tests from System42
