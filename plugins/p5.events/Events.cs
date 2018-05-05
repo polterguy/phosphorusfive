@@ -235,6 +235,8 @@ namespace p5.events
             // Sanity check.
             if (!args.Name.StartsWithEx (".") && (name.StartsWithEx ("_") || name.StartsWithEx (".") || name == ""))
                 throw new LambdaException ("Tried to create a 'protected' event", args, context);
+            if (name == null)
+                throw new LambdaException ("No event name supplied to [create-event]/[delete-event]", args, context);
 
             // Cannot create an event which is already a native event.
             if (context.ActiveEvents.Any (ix => ix == name))
@@ -255,6 +257,8 @@ namespace p5.events
             // Sanity check.
             if (!args.Name.StartsWithEx (".") && (name.StartsWithEx ("_") || name.StartsWithEx (".")))
                 throw new LambdaException ("Tried to delete a 'protected event'", args, context);
+            if (name == null)
+                throw new LambdaException ("No event name supplied to [create-event]/[delete-event]", args, context);
 
             // Removing event, if it exists.
             if (_events.ContainsKey (name)) {
