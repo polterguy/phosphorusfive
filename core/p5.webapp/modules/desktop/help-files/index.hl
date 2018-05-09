@@ -208,28 +208,29 @@ point than a single machine license."
         a
           href:#
           class:jumbo-button
+          onclick
+
+            /*
+             * Creating a lambda object for being evaluated on next pageload,
+             * before we reload the page.
+             */
+            desktop.evaluate.on-next-pageload
+              lambda
+                desktop.help.display:@DESKTOP/help-files/index.hl
+                desktop.license.check
+                  force:bool:true
+
+            /*
+             * Reloading location.
+             */
+            p5.web.reload-location
+
           widgets
             span
               innerValue:Purchase license
             literal
               element:span
               class:icon-paypal
-              onclick
-
-                /*
-                 * Creating a lambda object for being evaluated on next pageload,
-                 * before we reload the page.
-                 */
-                desktop.evaluate.on-next-pageload
-                  lambda
-                    desktop.help.display:@DESKTOP/help-files/index.hl
-                    desktop.license.check
-                      force:bool:true
-
-                /*
-                 * Reloading location.
-                 */
-                p5.web.reload-location
 
 h3
   innerValue:Print documentation

@@ -103,7 +103,8 @@ license will cost you 498€, and is valid for a single machine. If you purchase
 extended support, and you will gain access to a backup/build-system module called Hyperbuild."
           p
             class:justify
-            innerValue:@"All purchases comes with a 30 days money back guarantee. No questions asked!"
+            innerValue:@"All purchases comes with a 30 days money back guarantee. No questions asked! Click
+the button below to purchase a commercial license."
 
           /*
            * Our actual PayPal button, allowing the user to purchase a license.
