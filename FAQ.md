@@ -45,7 +45,8 @@ folder - Depending upon which native operating system you are on.
 * __OS X__ - `curl -Lsfo build.sh https://cakebuild.net/download/bootstrapper/osx`
 
 Then make sure your _"build.sh"_ script becomes an executable (Linux + OS X only)
-by evaluating the following terminal command.
+by executing the following terminal command. This makes your build script become
+an executable. This only applies for Linux and Windows.
 
 ```
 chmod +x build.sh
