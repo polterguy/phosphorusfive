@@ -134,6 +134,15 @@ Camphora Five apps now have rich APIs automatically generated, allowing you to
 directly interact with your app, using widget lambda events, allowing you to
 implement your own support for paging, filtering, etc.
 
+### Micro changes
+
+#### Fixed visual artifacts
+
+Fixed two bugs which the first one made the file toolbar disappear when you
+renamed a file. The second bug that was fixed was when deleting a folder,
+and you had one or more files open from that folder in an editor, at which
+point the secondary toolbar would be disabled.
+
 ### Misc.
 
 #### Pulled in unit tests from System42
