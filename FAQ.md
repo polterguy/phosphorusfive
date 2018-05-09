@@ -58,6 +58,12 @@ root folder of your Phosphorus Five Source Code folder).
 ./build.sh
 ```
 
+Or if on Windows ...
+
+```
+./build.ps1
+```
+
 The above will create a _"phosphorusfive-major-minor.zip"_ file for you, being
 a source code release of the entire system, including its documentation, and
 the build script itself.
