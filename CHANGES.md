@@ -99,13 +99,17 @@ this feature.
 
 Fixed lots of minor design artifacts in several of the skins.
 
+Changed the way skins are automatically created in Hyper IDE,
+allowing for minifying your _"micro.css"_ file directly, without
+this having any consequences for you during the _"create new skin wizard"_.
+
 ### Camphora Five changes
 
 #### Completely refactored
 
 Camphora Five is now completely refactored, and has tons of new features.
 Among other things, a Camphora Five app can now be instantiated as an extension
-widget, allowing you to inject a Camphora "app" into your own modules, by simply
+widget, allowing you to inject a Camphora app into your own modules, by simply
 instantiating a Camphora app as an extension widget. See the documentation for
 Camphora Five for more details.
 
@@ -115,11 +119,20 @@ is now literally _"generated"_, and not relying upon the _"app-manifest.hl"_
 file anymore, making it much easier to modify a Camphora app after having generated
 it, to customise it as you see fit.
 
+#### Create (complex) views without coding
+
+Camphora Five now also have the ability to create _"views"_ by following a
+_"wizard"_, almost completely eliminating the need to create code yourself.
+In general, Camphora is now a fully fledged _"Code Builder"_.
+
+There are several views now in Camphora, solving all sorts of needs, ranging
+from displaying statistical data, to creating _"micro blogs"_.ß
+
 #### Rich API for Camphora Five
 
-Camphora Five now has a very rich API, allowing you to directly interact with
-your app, using widget lambda events, allowing you to implement your own
-support for paging, filtering, etc.
+Camphora Five apps now have rich APIs automatically generated, allowing you to
+directly interact with your app, using widget lambda events, allowing you to
+implement your own support for paging, filtering, etc.
 
 ### Misc.
 
@@ -131,3 +144,8 @@ it easier to evaluate the unit tests, verifying the integrity of the system's
 core functionality. This is one of the last remaining pieces from System42 that
 has relevance for the project, and hence System42 will probably soon be completely
 removed.
+
+#### Source code build script
+
+There is now a _"Cake build"_ script for Phosphorus Five, allowing you to (reproduce)
+a source code release, by executing a simple script. This file is called _"build.cake"_.

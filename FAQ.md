@@ -32,7 +32,37 @@ to see, if you clone the repository instead of downloading the latest zip file.
 should not be considered _"stable"_. Have this in mind if you choose to clone the
 repository, instead of downloading the latest release.
 
-### Who create Phosphorus Five?
+### How do I create a source code build?
+
+By installing _"Cake build"_, which can be done by executing one of the following
+commands in a terminal window, from the root of your (Source Code) Phosphorus Five
+folder - Depending upon which native operating system you are on.
+
+* __Windows__ - `Invoke-WebRequest https://cakebuild.net/download/bootstrapper/windows -OutFile build.ps1`
+
+* __Linux__ - `curl -Lsfo build.sh https://cakebuild.net/download/bootstrapper/linux`
+
+* __OS X__ - `curl -Lsfo build.sh https://cakebuild.net/download/bootstrapper/osx`
+
+Then make sure your _"build.sh"_ script becomes an executable (Linux + OS X only)
+by evaluating the following terminal command.
+
+```
+chmod +x build.sh
+```
+
+Then execute the following command from a terminal window (yet again from the
+root folder of your Phosphorus Five Source Code folder).
+
+```
+./build.sh
+```
+
+The above will create a _"phosphorusfive-major-minor.zip"_ file for you, being
+a source code release of the entire system, including its documentation, and
+the build script itself.
+
+### Who created Phosphorus Five?
 
 Every single line of code was created by me (Thomas Hansen), except where I use
 libraries, and/or other external free software resources, which I explicitly
