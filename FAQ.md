@@ -71,8 +71,8 @@ the build script itself.
 
 ### How do I deploy a release build into my production server?
 
-By purchasing a proprietary license, and using _"Hyperbuild"_, which allows
-you to _"clone"_ your existing installation.
+The easiest way is to purchase a proprietary license, and using _"Hyperbuild"_,
+which allows you to _"clone"_ your existing installation.
 
 **Notice**, make sure you use the _"Release"_ build configuration from Visual
 Studio/Xamarin/MonoDevelop when you start your debugger, since otherwise
