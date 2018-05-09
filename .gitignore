@@ -211,8 +211,11 @@ core/p5.webapp/common/documents/public/*
 !core/p5.webapp/common/documents/private/README.md
 !core/p5.webapp/common/documents/private/web.config
 
-# Excluding Cake build’s “tools” folder
+# Excluding Cake build’s “tools” folder and its build scipt
+# In addition to its ZIP file
 tools
+build.sh
+Source-Complete-With-Submodules.zip
 
 # Excluding common/temp folder
 core/p5.webapp/common/temp/*
