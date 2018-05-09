@@ -134,7 +134,7 @@ Camphora Five apps now have rich APIs automatically generated, allowing you to
 directly interact with your app, using widget lambda events, allowing you to
 implement your own support for paging, filtering, etc.
 
-### Micro changes
+### Hyper IDE
 
 #### Fixed visual artifacts
 
