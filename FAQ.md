@@ -32,7 +32,7 @@ to see, if you clone the repository instead of downloading the latest zip file.
 should not be considered _"stable"_. Have this in mind if you choose to clone the
 repository, instead of downloading the latest release.
 
-### How do I create a source code build?
+### How do I create a source code release myself?
 
 By installing _"Cake build"_, which can be done by executing one of the following
 commands in a terminal window, from the root of your (Source Code) Phosphorus Five
