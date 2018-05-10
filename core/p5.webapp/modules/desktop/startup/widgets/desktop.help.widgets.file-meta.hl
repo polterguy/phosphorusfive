@@ -318,6 +318,16 @@ Exchange the mandatory and optional arguments with real values."
                  */
                 .event-file
                 for-each:x:/@load-file/*
+
+                  /*
+                   * Notice, we do a "like" comparison here, but since we [break]
+                   * upon our first match, this should work just fine, since the
+                   * ordering of files are such that they're listed in alphabetical
+                   * order, making sure that [foo.bar] comes before [foo.bar.xxx].
+                   *
+                   * Resulting in that the first match is the file where the event
+                   * is created, and not some other (supporting) event.
+                   */
                   if:x:/@_dp/#?value
                     ~:"create-event:{0}"
                       :x:/..for-each/..for-each/*/_dp/#?value
@@ -326,6 +336,7 @@ Exchange the mandatory and optional arguments with real values."
                         :x:/..for-each/..for-each/*/_dp/#?value
                     set:x:/@.event-file?value
                       src:x:/@_dp/#?name
+                    break
 
                 /*
                  * Adding an "li" item for currently iterated [create-event] node, containing
