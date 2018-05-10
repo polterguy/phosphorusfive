@@ -42,7 +42,6 @@
     <EmbeddedResource Include="javascript\manager.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bundleconfig.json" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
