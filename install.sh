@@ -130,9 +130,6 @@ rm -f -r p5
 # Editing web.config file, making sure we get the password correctly.
 sudo sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
-# "localhost" doesn't always work, so we replace it with 127.0.0.1, to make sure MySQL connections works correctly.
-sudo sed -i 's/server=localhost;/server=127.0.0.1;/g' /var/www/html/web.config
-
 # Making GnuPG folder for Apache process.
 sudo mkdir /var/www/.gnupg    
 
