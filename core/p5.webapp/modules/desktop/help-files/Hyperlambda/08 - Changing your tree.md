@@ -144,10 +144,6 @@ resulting in that once we execute this lambda, it will have a value, that we dyn
 before we evaluated it. You can of course also create execution instructions too, with similar constructs,
 by dynamically changing the name of some _"future node"_ this way.
 
-Still confused? Watch the following video.
-
-https://www.youtube.com/watch?v=f4ZUwlbIdaE
-
 ## [add]ing things to your tree
 
 The **[add]** event, allows you to append new children into other nodes. However, let's start out with an example.
@@ -371,10 +367,7 @@ an _"empty name"_. A node's value can be null though.
 You should now have a basic understanding of all four _"CRUD operations"_ for lambda objects. You can now
 dynamically create and change lambda objects as you see fit. However, as we started out this chapter with,
 no other programming languages contains any similar constructs. Hence, the largest problem you're now faced
-with, is creating a mental model for understanding this unique idea. This is an old video, but illustrates
-the concepts we have covered in this chapter fairly well.
-
-https://www.youtube.com/watch?v=w7A4TcWHolk
+with, is creating a mental model for understanding this unique idea.
 
 Seriously, these two chapters are the by far most difficult concepts to understand. If it doesn't make sense,
 then simply move onwards, and come back to these chapters as you have had a more _"hands on approach"_ to
