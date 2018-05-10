@@ -1,4 +1,3 @@
-
 /*
  * Creates our version Active Event for the Desktop module.
  */
@@ -8,4 +7,4 @@
  */
 create-event:desktop.version
 
-  return:decimal:8.0
+  return:decimal:8.1
