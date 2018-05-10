@@ -105,6 +105,24 @@ https://www.youtube.com/watch?v=9nAVSaVJZgU
 
 Saxophone played by yours truly ...
 
+#### The help system's meta capabilities
+
+The help system will actually automatically generate a lot if its reference documentation, by semantically
+parse your comments - Both for your files, and for your Active Events. This allows you to have the help
+system simply automatically create your _"reference documentation"_, leaving you with only having to
+create _"tutorial style documentation"_.
+
+The only thing you'll have to do to implement this feature in your own help files, is to include the
+__[desktop.help.widgets.file-meta]__ extension button widget in your own _"index.hl"_ files, which
+will inject a button into your index page, which once clicked will traverse all files and Active Events
+inside of your own modules. This extension widget requires that you pass in a __[folder]__ argument,
+which is expected to be the root folder for your module.
+
+If you wish to see this in action, simply click the _"home"_ button, and choose the documentation
+for any of the modules in Phosphorus Five, for then to click the _"eye"_ button. This feature
+will even transform your comments into HTML, assuming Markdown syntax, allowing you to do all
+sorts of nifty things in your own reference documentation.
+
 #### Advanced - Controlling the positioning of the help system
 
 If you want the help system to be loaded in a specific widget, or its **[create-widget]** invocation
