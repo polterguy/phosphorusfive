@@ -4,16 +4,34 @@
  * will later be zipped, after copying of all files is done.
  */
 CreateDirectory("./phosphorusfive-8-1");
+CreateDirectory("./phosphorusfive-8-1/core");
+CreateDirectory("./phosphorusfive-8-1/packages");
+CreateDirectory("./phosphorusfive-8-1/plugins");
+CreateDirectory("./phosphorusfive-8-1/resources");
+CreateDirectory("./phosphorusfive-8-1/samples");
 
 /*
  * Copying all source code file.
  *
  * We copy Hyperlambda files, C# files, and all (relevant) ASP.NET files.
  */
-var files = GetFiles ("./**/*.cs$|*.hl$|*.md$|*.aspx$|*.ascx$|*.sh$|*.cake$|*.sln$|*.csproj$|*.asax$|*.ico$||*.css$|*.js$|*.png$|*.jpg$|*.jpeg$|*.gif$|*.svg$|LICENSE$|*.nupkg$|*.config$|*.targets$|*.txt$");
-CopyFiles (files, "phosphorusfive-8-1", true);
-files = GetFiles ("./packages/**/*");
-CopyFiles (files, "phosphorusfive-8-1/packages/", true);
+var files = GetFiles ("./*.cake$|*.md$|install.sh$|LICENSE$|*.sln$|README.md$");
+CopyFiles (files, "./phosphorusfive-8-1/", true);
+
+files = GetFiles ("./core/**/*.cs$|*.hl$|*.md$|*.aspx$|*.sh$|*.sln$|*.csproj$|*.asax$|*.ico$|*.css$|*.js$|*.png$|*.jpg$|*.jpeg$|*.gif$|*.svg$|*.config$|*.webmanifest$|*.xml$");
+CopyFiles (files, "./phosphorusfive-8-1/core/", true);
+
+files = GetFiles ("./packages/**/*.nupkg$|/*.dll$|/*.config$");
+CopyFiles (files, "./phosphorusfive-8-1/packages/", true);
+
+files = GetFiles ("./plugins/**/*.cs$|*.md$|*.csproj$|*.config$|*.xml$");
+CopyFiles (files, "./phosphorusfive-8-1/plugins/", true);
+
+files = GetFiles ("./resources/**/*.svg$|*.png$|*.xsd$");
+CopyFiles (files, "./phosphorusfive-8-1/resources/", true);
+
+files = GetFiles ("samples/**/*.cs$|*.aspx$|*.sln$|*.csproj$|*.asax$|*.css$|*.js$|*.png$|*.jpg$|*.jpeg$|*.gif$|*.svg$|*.master$|*.config$|*.md$");
+CopyFiles (files, "phosphorusfive-8-1/samples/", true);
 
 /*
  * Deleting "auth.hl" file.
