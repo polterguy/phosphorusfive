@@ -58,7 +58,6 @@
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="common\documents\private\web.config" />
     <Content Include="modules\desktop\media\help.css" />
     <Content Include="users\README.md" />
     <Content Include="modules\desktop\media\print-help.css" />
