@@ -65,9 +65,12 @@ Or if on Windows ...
 ./build.ps1
 ```
 
-The above will create a _"phosphorusfive-major-minor.zip"_ file for you, being
-a source code release of the entire system, including its documentation, and
-the build script itself.
+The above will create a _"Source-Complete-With-Submodules.zip"_ file for you,
+being a source code release of the entire system, including its documentation, and
+the build script itself. This process will create a Source Code _only_ release
+of your Phosphorus Five system.
+
+**Notice**, this process will take some time. Please let it finish.
 
 ### How do I deploy a release build into my production server?
 
