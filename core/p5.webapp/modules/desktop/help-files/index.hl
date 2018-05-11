@@ -75,6 +75,16 @@ container
     for-each:x:/@eval/*?name
 
       /*
+       * Verifying user has access to path.
+       */
+      if
+        p5.auth.has-access-to-path
+          path:x:/@_dp?value
+          filter:p5.module
+        =:bool:false
+        continue
+
+      /*
        * Figuring out filename, without extension, and removing numbering parts.
        */
       split:x:/@_dp?value
@@ -109,6 +119,11 @@ container
 literal
   element:h3
   innerValue:Sub sections
+  oninit
+    whoami
+    if:x:/-/*/role?value
+      !=:root
+      delete-widget:x:/../*/_event?value
 
 
 /*
@@ -120,45 +135,54 @@ container
 
     /*
      * Retrieving all other folders in our main help folder.
+     *
+     * However, before we do this, we verify that user is "root".
      */
-    list-folders:@DESKTOP/help-files/
-
-    /*
-     * Looping through each folders in "/help-files/" folder.
-     */
-    for-each:x:/@list-folders/*?name
+    whoami
+    if:x:/-/*/role?value
+      =:root
 
       /*
-       * Figuring out filename, without extension, and removing numbering parts.
+       * This is a root account, so we display sub sections.
        */
-      split:x:/@_dp?value
-        =:/
-      replace:x:/@split/0/-?name
-        src:regex:/[0-9]+ - /
+      list-folders:@DESKTOP/help-files/
 
       /*
-       * Creating a list item, containing a hyperlink button, which once clicked,
-       * loads and displays the specified help file.
+       * Looping through each folders in "/help-files/" folder.
        */
-      create-widget
-        parent:x:/../*/_event?value
-        element:li
-        widgets
-          a
-            href:#
-            role:button
-            innerValue:x:/@replace?value
-            .folder:x:/@_dp?value
-            onclick
+      for-each:x:/@list-folders/*?name
 
-              /*
-               * Retrieving file name, loading and displaying file, by invoking common
-               * widget lambda event, which does the heavy lifting for us.
-               */
-              get-widget-property:x:/../*/_event?value
-                .folder
-              desktop.help.display-file:{0}index.hl
-                :x:/@get-widget-property/*/*?value
+        /*
+         * Figuring out filename, without extension, and removing numbering parts.
+         */
+        split:x:/@_dp?value
+          =:/
+        replace:x:/@split/0/-?name
+          src:regex:/[0-9]+ - /
+
+        /*
+         * Creating a list item, containing a hyperlink button, which once clicked,
+         * loads and displays the specified help file.
+         */
+        create-widget
+          parent:x:/../*/_event?value
+          element:li
+          widgets
+            a
+              href:#
+              role:button
+              innerValue:x:/@replace?value
+              .folder:x:/@_dp?value
+              onclick
+
+                /*
+                 * Retrieving file name, loading and displaying file, by invoking common
+                 * widget lambda event, which does the heavy lifting for us.
+                 */
+                get-widget-property:x:/../*/_event?value
+                  .folder
+                desktop.help.display-file:{0}index.hl
+                  :x:/@get-widget-property/*/*?value
 
 h3
   innerValue:Supplying a patch
