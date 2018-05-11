@@ -78,6 +78,11 @@ widgets, which simply takes an **[onok]** lambda callback, in addition to (optio
 a **[header]** and a **[body]**. If user clicks its _"Yes"_ button, only then
 its associated **[onok]** lambda callback is evaluated.
 
+#### Automatic cover widget for [micro.widgets.upload-button]
+
+Implemented a __[micro.widgets.cover]__ widget while uploading files to the server,
+since this is an operation that highly likely will require some time.
+
 #### Graph widgets
 
 Created graph widgets, more specificall **[micro.widgets.chart.pie]** to display
