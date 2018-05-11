@@ -97,7 +97,7 @@ create-event:desktop.license.check
 allow you to create proprietary (closed source) software, <em>unless</em> you have bought a proprietary license from me."
           p
             class:justify
-            innerValue:@"If you want to create closed source software, and you want to remove the <em>'promotional link'</em>
+            innerValue:@"If you want to create closed source software, and you want to remove the <em>'information link'</em>
 that is injected on your modules - You have to purchase a proprietary license from me below. A proprietary
 license will cost you 498€, and is valid for a single machine. If you purchase a license, you will also be entitled to
 extended support, and you will gain access to a backup/build-system module called Hyperbuild."
@@ -187,68 +187,65 @@ somewhere, in case you need to re-install your server, or go back to an earlier 
     /*
      * This is not a root account, injecting GPL information on page.
      */
-    create-widget
-      element:div
+    create-widget:desktop-license-fs-info
+      element:button
       class:license-info
-      title:This is free software, and you can contact the administrator of this server to request a copy of his source code
-      widgets
-        a
-          href:#
-          role:button
-          innerValue:This is Free Software
-          onclick
+      innerValue:This is Free Software
+      onclick
 
-            /*
-             * Displaying a modal widget explaining user's rights.
-             */
-            create-widgets
-              micro.widgets.modal:desktop-license-info-modal-information
-                widgets
-                  h3
-                    innerValue:This software is distributed under the term of the GPL
-                  p
-                    innerValue:@"Which among other things implies that <em>anyone</em>, including you,
-can ask the server administrator of this server for a copy of all the source code that this installation
-of Phosphorus Five is running. Read more about Phosphorus Five, and its license terms
+        /*
+         * Displaying a modal widget explaining user's rights.
+         * Making sure we delete linkbutton first.
+         */
+        delete-widget:desktop-license-fs-info
+        create-widgets
+          micro.widgets.modal:desktop-license-info-modal-information
+            widgets
+              h3
+                innerValue:This software is distributed under the term of the GPL
+              p
+                innerValue:@"Which among other things implies that <em>anyone</em>, including you,
+can ask the server administrator of this server for a copy of all the source code that this server
+is running. Read more about Phosphorus Five, and its license terms
 <a target=""_blank"" href=""https://github.com/polterguy/phosphorusfive"">here</a>."
-                  p
-                    innerValue:@"If you are the owner of this server, and you want to distribute
+              p
+                innerValue:@"If you are the owner of this server, and you want to distribute
 proprietary software created on top of Phosphorus Five, you can click the button below to purchase
-a license that enables proprietary software development. One such server license will cost you €498.
+a license that enables proprietary software development. One such server license will cost you 498€.
 If you obtain a proprietary license, all references to <em>'Free Software'</em>, including this
 message will automatically vanish."
-                  div
-                    class:center
+              div
+                class:center
+                widgets
+                  a
+                    href:#
+                    class:jumbo-button
+                    onclick
+
+                      /*
+                       * Creating a lambda object for being evaluated on next pageload,
+                       * before we reload the page.
+                       */
+                      desktop.evaluate.on-next-pageload
+                        lambda
+                          desktop.license.check
+                            force:bool:true
+
+                      /*
+                       * Reloading location.
+                       */
+                      p5.web.reload-location
+
                     widgets
-                      a
-                        href:#
-                        class:jumbo-button
-                        onclick
-
-                          /*
-                           * Creating a lambda object for being evaluated on next pageload,
-                           * before we reload the page.
-                           */
-                          desktop.evaluate.on-next-pageload
-                            lambda
-                              desktop.license.check
-                                force:bool:true
-
-                          /*
-                           * Reloading location.
-                           */
-                          p5.web.reload-location
-
-                        widgets
-                          span
-                            innerValue:Purchase license
-                          literal
-                            element:span
-                            class:icon-paypal
-                  div
-                    class:right
-                    widgets
-                      button
-                        innerValue:I get it!
-                        onclick
-                          delete-widget:desktop-license-info-modal-information
+                      span
+                        innerValue:Purchase license
+                      literal
+                        element:span
+                        class:icon-paypal
+              div
+                class:right
+                widgets
+                  button
+                    innerValue:Later ...
+                    onclick
+                      delete-widget:desktop-license-info-modal-information
