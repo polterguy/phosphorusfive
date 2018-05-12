@@ -131,7 +131,7 @@ _"wizard"_, almost completely eliminating the need to create code yourself.
 In general, Camphora is now a fully fledged _"Code Builder"_.
 
 There are several views now in Camphora, solving all sorts of needs, ranging
-from displaying statistical data, to creating _"micro blogs"_.ß
+from displaying statistical data, to creating _"micro blogs"_.
 
 #### Rich API for Camphora Five
 
