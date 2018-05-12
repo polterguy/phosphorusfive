@@ -1,7 +1,7 @@
 Changes
 ===============
 
-## Version 8.1 - Not yet released, due to be released in May 2018
+## Version 8.1 - Released 11th of May 2018
 
 ### Core changes
 

@@ -82,7 +82,7 @@ of the Gnu Public License, version 3, in addition to that a proprietary enabling
 
 ## FAQ
 
-* [FAQ](FAQ.md) - With a little dash of humor ... ;)
+* [FAQ](FAQ.md)
 
 ## Download
 

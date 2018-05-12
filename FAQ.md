@@ -75,7 +75,7 @@ of your Phosphorus Five system.
 ### How do I deploy a release build into my production server?
 
 The easiest way is to purchase a proprietary license, and using _"Hyperbuild"_,
-which allows you to _"clone"_ your existing installation.
+which allows you to _"clone"_ (parts of) your existing installation.
 
 **Notice**, make sure you use the _"Release"_ build configuration from Visual
 Studio/Xamarin/MonoDevelop when you start your debugger, since otherwise
