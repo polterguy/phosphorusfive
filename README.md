@@ -63,7 +63,7 @@ your productivity will soar to unimaginable heights, such as I demonstrate in th
 a rich database CRUD app in 5 seconds using the integrated Camphora Five CRUD app generator.
 
 <p align="center">
-<a href="https://www.youtube.com/watch?v=GrORikxPDhE">
+<a href="https://www.youtube.com/watch?v=kMs-Tltf_Og">
 <img alt="In this video I am creating an address book type of web app in 5 seconds" title="In this video I am creating an address book type of web app in 5 seconds" src="https://phosphorusfive.files.wordpress.com/2018/04/camphora-five-address-book-youtube-video.png" />
 </a>
 </p>
