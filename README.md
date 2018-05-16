@@ -1,9 +1,9 @@
 Phosphorus Five - A RAD Web App Framework
 ===============
 
-Phosphorus Five is a .Net based Web Operating System and a rapid Web Application Development Framework, for consuming and
-creating rich and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_,
-which allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks.
+Phosphorus Five is a .Net based RAD Web Application Development Framework, for creating rich and
+secure Ajax web apps. It allows you to orchestrate your apps together, almost as if they were made
+out of LEGO bricks.
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=BLll2Wx0yFo">
