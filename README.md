@@ -1,4 +1,4 @@
-Phosphorus Five - A RAD web app framework
+Phosphorus Five - A RAD Web App Framework
 ===============
 
 Phosphorus Five is a .Net based Web Operating System and a rapid Web Application Development Framework, for consuming and
