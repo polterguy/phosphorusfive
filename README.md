@@ -15,7 +15,7 @@ Out of the box, Phosphorus Five contains the following components.
 
 * __Hyper IDE__ - A web based IDE, with support for 100+ programming languages
 * __Camphora Five__ - A CRUD app generator allowing you to create rich CRUD apps in seconds
-* __Hypereval__ - A Hyperlambda _"termnial evaluator"_ and a snippets database
+* __Hypereval__ - A Hyperlambda _"terminal evaluator"_ and a snippets database
 
 ... plus more!
 
@@ -59,7 +59,7 @@ Studio have even loaded.
 ## Productivity
 
 Phosphorus Five is created around the axiom that you should become at least 10x more productive. For some tasks,
-your productivity will soar to unimaginable heights, such as I demonstrate in the video below, where I create
+your productivity will soar to extreme heights, such as I demonstrate in the video below, where I create
 a rich database CRUD app in 2 minutes using the integrated Camphora Five CRUD app generator.
 
 <p align="center">
