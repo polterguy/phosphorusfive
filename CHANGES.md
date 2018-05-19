@@ -1,6 +1,32 @@
 Changes
 ===============
 
+## Version 8.1.1 - Released 19th of May 2018
+
+### Core
+
+#### Fixed severe access control bug
+
+Fixed severe bug in access control logic of URL resolver for Desktop module,
+that would allows access to any URL, as long as you have access to the root
+module's URL.
+
+#### Changed default connection string
+
+Changed the default connection string in web.config, to make it work
+automatically in source code version with the latest release of MySQL.
+
+#### Fixed build script
+
+The build script wouldn't include the font files for Micro. This should now
+be fixed.
+
+### Documentation
+
+#### Documentation improvements
+
+Removed references to deleted YouTube videos.
+
 ## Version 8.1 - Released 11th of May 2018
 
 ### Core changes

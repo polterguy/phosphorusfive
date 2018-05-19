@@ -70,14 +70,14 @@ create-event:p5.web.load-ui
       =:int:0
 
       /*
-       * Root URL was requested, loading the main desktop, but first checking if system has been configured with
-       * a "default app".
+       * Root URL was requested, loading the default app configured
+       * in web.config.
        */
       p5.config.get:p5.core.default-app
       if:x:/@p5.config.get/*?value
         micro.evaluate.file:x:/@p5.config.get/*?value
       else
-        throw:No default app configured in your web.config, feel free to add up e.g. '<add key="p5.core.default-app" value="/modules/desktop/launch.hl" />' to make sure your desktop starts initially, in your <appSettings> section.
+        throw:No default 'p5.core.default-app' section found in your web.config file.
 
     else
 
@@ -120,7 +120,7 @@ create-event:p5.web.load-ui
         p5.auth.has-access-to-path:bool:false
           filter:p5.module
           path:/modules/{0}/
-            :x:/@micro.url.get-entities/0?name
+            :x:/@trim?value
         not
 
         /*
