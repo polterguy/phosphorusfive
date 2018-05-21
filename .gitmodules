@@ -19,3 +19,6 @@
 [submodule "core/p5.webapp/modules/peeples"]
 	path = core/p5.webapp/modules/peeples
 	url = https://github.com/polterguy/peeples
+[submodule "core/p5.webapp/modules/hyper-sql"]
+	path = core/p5.webapp/modules/hyper-sql
+	url = https://github.com/polterguy/hyper-sql
