@@ -49,12 +49,22 @@ namespace p5.mysql
                 if (connection == null)
                     throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 
+                // Checking if caller provided explicit [limit] and [offset] arguments, defaulting to -1 (implying no-limit/no-offset).
+                var limit = e.Args.GetExChildValue ("limit", context, -1);
+                var offset = e.Args.GetExChildValue ("offset", context, -1);
+
                 // Creating command object.
                 using (var cmd = e.Args.GetSqlCommand (context, connection)) {
 
                     // Creating reader, and iterating as long as we have resulting rows.
                     using (var reader = cmd.ExecuteReader ()) {
                         while (reader.Read ()) {
+
+                            // Verifying we're within explicitly declared [offset] and [limit].
+                            if (offset != -1 && --offset != 0)
+                                continue;
+                            if (limit != -1 && --limit == -1)
+                                break;
 
                             // Adding row.
                             var current = e.Args.Add ("row").LastChild;
