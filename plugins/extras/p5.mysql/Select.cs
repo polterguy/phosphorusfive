@@ -61,7 +61,7 @@ namespace p5.mysql
                         while (reader.Read ()) {
 
                             // Verifying we're within explicitly declared [offset] and [limit].
-                            if (offset != -1 && --offset != 0)
+                            if (offset != -1 && --offset != -1)
                                 continue;
                             if (limit != -1 && --limit == -1)
                                 break;
