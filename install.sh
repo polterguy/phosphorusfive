@@ -10,7 +10,7 @@ clear
 #   1. Upgrade your Linux distro, and install all updates
 #   2. Install "uncomplicated firewall", and shut down all ports except 22 (SSH), 80 (HTTP) and 443 (HTTPS)
 #   3. Install Apache
-#   4. Install MySQL, without network drivers, and the password of "SomeRandomPassword" (consider changing this if you like).
+#   4. Install MySQL, without network drivers, and the password of "ThisIsNotANicePassword" (consider changing this if you like).
 #      Although this is technically not important, since no network drivers are enabled in MySQL anyways, and all networks
 #      ports are anyways closed by "ufw".
 #   5. Install Mono
@@ -91,8 +91,8 @@ wget https://github.com/polterguy/phosphorusfive/releases/download/v8.2/binaries
 # Installing MySQL server.
 # Notice, by default MySQL is setup without networking, hence unless user explicitly opens it.
 # up later, this should be perfectly safe.
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password ThisIsNotANicePassword'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password ThisIsNotANicePassword'
 sudo apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip ufw
 
 # Disabling mod_mono_auto to make sure we create an "advanced" configuration for mod_mono.
@@ -126,9 +126,6 @@ sudo cp -R p5/* /var/www/html
 # Removing both zip file, and temp folder created during above process.
 rm -f binaries.zip
 rm -f -r p5
-
-# Editing web.config file, making sure we get the password correctly.
-sudo sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
 # Making GnuPG folder for Apache process.
 sudo mkdir /var/www/.gnupg    
