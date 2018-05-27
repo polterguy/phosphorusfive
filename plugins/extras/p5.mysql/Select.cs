@@ -105,7 +105,6 @@ namespace p5.mysql
                 var limit = e.Args.GetExChildValue ("limit", context, -1);
                 var offset = e.Args.GetExChildValue ("offset", context, -1);
                 var outfile = e.Args.GetExChildValue<string> ("outfile", context, null);
-                var format = e.Args.GetExChildValue ("format", context, "csv");
                 if (string.IsNullOrEmpty (outfile))
                     throw new LambdaException ("No [outfile] supplied to [p5.mysql.select-into],", e.Args, context);
 

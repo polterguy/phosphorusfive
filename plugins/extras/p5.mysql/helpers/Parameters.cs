@@ -39,7 +39,7 @@ namespace p5.mysql
          */
         internal static MySqlCommand GetSqlCommand (this Node node, ApplicationContext context, MySqlConnection connection)
         {
-            MySqlCommand retVal = new MySqlCommand (node.GetExValue<string> (context, ""), connection);
+            var retVal = new MySqlCommand (node.GetExValue<string> (context, ""), connection);
 
             // Parametrizing SQL Command with all parameters (children nodes, not having "empty names".
             foreach (var idx in node.Children.Where (ix => ix.Name != "")) {
