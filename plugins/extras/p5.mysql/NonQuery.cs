@@ -124,37 +124,12 @@ namespace p5.mysql
                         // Reading the headers.
                         var headers = csv.Read ();
 
-                        // Creating our reused insert SQL command text.
-                        var insertSql = string.Format ("insert into `{0}` (", table);
-                        var first = true;
-                        foreach (var idxHeader in headers) {
-
-                            // Skipping TIMESTAMP columns.
-                            if (types [idxHeader] == MySqlDbType.Timestamp)
-                                continue;
-                            if (first)
-                                first = false;
-                            else
-                                insertSql += ",";
-                            insertSql += "`" + idxHeader + "`";
-                        }
-                        insertSql += ") values (";
-                        first = true;
-                        for (var idx = 0; idx < headers.Length; idx++) {
-                            
-                            // Skipping TIMESTAMP columns.
-                            if (types [headers [idx]] == MySqlDbType.Timestamp)
-                                continue;
-                            if (first)
-                                first = false;
-                            else
-                                insertSql += ",";
-                            insertSql += "@val" + idx;
-                        }
-                        insertSql += ")";
+                        // Creating our insert SQL, which is reused, only with different parameters.
+                        string insertSql = CreateInsertSQL (table, types, headers);
 
                         // Iterating through each record in file.
                         var record = csv.Read ();
+                        long no = 0;
                         while (record != null) {
 
                             // Creating our SQL command.
@@ -173,12 +148,52 @@ namespace p5.mysql
 
                             // Reading our next record.
                             record = csv.Read ();
+
+                            // Incrementing counter.
+                            no += 1;
                         }
+                        e.Args.Value = no;
                     }
                 }
             }
         }
-        
+
+        /*
+         * Helper for above.
+         */
+        private static string CreateInsertSQL (string table, Dictionary<string, MySqlDbType> types, string [] headers)
+        {
+            // Creating our reused insert SQL command text.
+            var insertSql = string.Format ("insert into `{0}` (", table);
+            var first = true;
+            foreach (var idxHeader in headers) {
+
+                // Skipping TIMESTAMP columns.
+                if (types [idxHeader] == MySqlDbType.Timestamp)
+                    continue;
+                if (first)
+                    first = false;
+                else
+                    insertSql += ",";
+                insertSql += "`" + idxHeader + "`";
+            }
+            insertSql += ") values (";
+            first = true;
+            for (var idx = 0; idx < headers.Length; idx++) {
+
+                // Skipping TIMESTAMP columns.
+                if (types [headers [idx]] == MySqlDbType.Timestamp)
+                    continue;
+                if (first)
+                    first = false;
+                else
+                    insertSql += ",";
+                insertSql += "@val" + idx;
+            }
+            insertSql += ")";
+            return insertSql;
+        }
+
         private static object Convert (string val, Dictionary<string, MySqlDbType> types, string colName)
         {
             switch (types [colName]) {
