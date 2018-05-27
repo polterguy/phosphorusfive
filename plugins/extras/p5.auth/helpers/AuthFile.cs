@@ -139,7 +139,7 @@ namespace p5.auth.helpers
          */
         static string GetAuthFilePath (ApplicationContext context)
         {
-            // Getting filepath to pwd file
+            // Getting filepath to pwd file.
             string rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
             // The logic below makes it possible to store auth file OUTSIDE of main web application folder!

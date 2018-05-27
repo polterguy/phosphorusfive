@@ -82,8 +82,8 @@ namespace p5.io.zip.helpers
 
             // Figuring out folder of file and file, and separating these two
             fileFolderName = fileFolderName.TrimEnd ('/');
-            var rootFolder = fileFolderName.Substring (0, fileFolderName.LastIndexOf ("/") + 1);
-            fileFolderName = fileFolderName.Substring (fileFolderName.LastIndexOf ("/") + 1);
+            var rootFolder = fileFolderName.Substring (0, fileFolderName.LastIndexOf ("/", StringComparison.InvariantCulture) + 1);
+            fileFolderName = fileFolderName.Substring (fileFolderName.LastIndexOf ("/", StringComparison.InvariantCulture) + 1);
 
             // Now we have separated folder and file name, and can call internal implementation
             AddToArchive (fileFolderName, rootFolder, args, asFileName);
@@ -104,7 +104,8 @@ namespace p5.io.zip.helpers
                     var idxFile = idxOSFileName.Replace ("\\", "/").Substring (rootFolder.Length);
 
                     // Verifying file-/folder name is not a Linux backup or hidden file
-                    if (!Path.GetFileName (idxFile).StartsWith (".") && !Path.GetFileName (idxFile).EndsWith ("~")) {
+                    if (!Path.GetFileName (idxFile).StartsWith (".", StringComparison.InvariantCulture) && 
+                        !Path.GetFileName (idxFile).EndsWith ("~", StringComparison.InvariantCulture)) {
 
                         // Puts the currently iterated file to the archive
                         PutFileToArchive (
@@ -122,7 +123,7 @@ namespace p5.io.zip.helpers
                     var idxFolder = idxOSFolderName.Replace ("\\", "/").Substring (rootFolder.Length);
 
                     // Verifying file-/folder name is not Linux backup file/folder or hidden file/folder
-                    if (!idxFolder.Contains ("/.") && !idxFolder.EndsWith ("~"))
+                    if (!idxFolder.Contains ("/.") && !idxFolder.EndsWith ("~", StringComparison.InvariantCulture))
                         AddToArchive (idxFolder, rootFolder, args, asFileName);
                 }
             } else {
