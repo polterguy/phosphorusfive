@@ -202,7 +202,7 @@ namespace p5.mime
             seed.AddRange (new ThreadedSeedGenerator ().GenerateSeed (128, false));
 
             // Then we retrieve the server password salt.
-            seed.AddRange (Encoding.UTF8.GetBytes (context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context)));
+            seed.AddRange (Encoding.UTF8.GetBytes (context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context, "in-case-server-hasn't-been-salted!!")));
 
             // Then we retrieve the ticks of server.
             seed.AddRange (Encoding.UTF8.GetBytes (DateTime.Now.Ticks.ToString ()));

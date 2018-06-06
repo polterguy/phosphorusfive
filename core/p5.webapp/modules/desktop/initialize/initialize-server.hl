@@ -44,7 +44,7 @@ if
       div
         class:row air-top
         widgets
-          div
+          div:init-form
             class:col-50 offset-25
             widgets
 
@@ -52,10 +52,14 @@ if
                * First some description.
                */
               h1
-                innerValue:Provide root password
+                innerValue:Initialize server
               p:root-description
-                innerValue:@"Make sure you remember your password, since it's impossible to retrieve it later.
-This process will setup your <em>'root'</em> account, which you can use to administrate your system. Its username is <code>root</code>."
+                innerValue:@"Before you start using Phosphorus Five, you'll need to provide a root password, and
+PGP encryption details, such that we can encrypt your password file. Make sure you remember your password, since it's impossible to retrieve it later.
+This process will setup your <em>'root'</em> account, which you can use to administrate your system. Its username is <code>root</code>.
+If you have an existing GnuPG PGP keypair, you can use this instead of creating a new key. If you want to use an existing PGP key, you must
+make sure the <code>gpg-server-keypair-password</code> setting in your web.config contains its GnuPG password, such that we're able to release
+it and decrypt the key from GnuPG."
 
               /*
                * Then our textarea, which actually allows the user to type in a salt.
@@ -77,6 +81,95 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                     value:x:/@p5.crypto.create-random?value
 
               /*
+               * Select widget in case user has an existing PGP keypair in his GnuPG database.
+               */
+              select:gnu-pg-key
+                class:fill
+                onchange
+
+                  /*
+                   * Checking value of option selected, and if it's "_default", it's a "no selection".
+                   */
+                  get-widget-property:gnu-pg-key
+                    value
+                  if:x:/-/*/*?value
+                    !=:_default
+
+                    /*
+                     * Enabling textboxes that allows user to create new key.
+                     */
+                    delete-widget-property:full-name
+                      disabled
+                    delete-widget-property:email-address
+                      disabled
+                    p5.crypto.get-key-details:x:/@get-widget-property/*/*?value
+                    split:x:/-/*/*/user-ids/0?value
+                      =:<
+                      =:>
+                    set-widget-property:full-name
+                      disabled
+                      value:x:/@split/0?name
+                    set-widget-property:email-address
+                      disabled
+                      value:x:/@split/1?name
+
+                  else
+
+                    /*
+                     * Disabling textboxes that allows user to create new key.
+                     */
+                    delete-widget-property:full-name
+                      disabled
+                      value:
+                    delete-widget-property:email-address
+                      disabled
+                      value:
+
+                oninit
+
+                  /*
+                   * Listing allprivate keys and creating one option element foreach.
+                   */
+                  p5.crypto.list-private-keys
+                  p5.crypto.get-key-details:x:/-/*?name
+                  for-each:x:/-/*
+                    p5.html.html-encode:x:/@_dp/#/*/user-ids/0?value
+                    create-widget
+                      parent:x:/../*/_event?value
+                      element:option
+                      innerValue:x:/@p5.html.html-encode?value
+                      value:x:/@_dp/#?name
+
+                widgets
+                  option
+                    innerValue:Use existing PGP keypair ...
+                    value:_default
+
+              /*
+               * Then user's name, which is needed to have an "identity" to create a PGP keypair.
+               */
+              input:full-name
+                type:text
+                class:fill
+                placeholder:Your name ...
+                onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
+                oninit
+
+                  /*
+                   * Setting initial focus to textbox.
+                   */
+                  micro.page.set-focus:x:/../*/_event?value
+
+              /*
+               * Then user's email address, which is needed to have an "identity" to create a PGP keypair.
+               */
+              input:email-address
+                type:text
+                class:fill
+                placeholder:Your email address ...
+                onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
+
+              /*
                * Then our textbox widgets, asking user to provide a root password for his system.
                */
               input:root-password
@@ -85,12 +178,6 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                 autocomplete:new-password
                 class:fill
                 onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
-                oninit
-
-                  /*
-                   * Setting initial focus to textbox.
-                   */
-                  micro.page.set-focus:x:/../*/_event?value
 
               input:root-password-repeat
                 type:password
@@ -168,7 +255,7 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                              */
                             micro.css.add:server-salt
                               class:hide
-                            micro.page.set-focus:root-password
+                            micro.page.set-focus:full-name
 
                             /*
                              * Checking if value of server salt is empty, at which time we create a new
@@ -194,6 +281,21 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                     onclick
 
                       /*
+                       * Creating a cover widget and invoking worker event.
+                       */
+                      create-widgets
+                        micro.widgets.cover:init-cover
+                          message:Please wait while we initialize your server ...
+                      p5.web.send-javascript:@"p5.$('setup-save-btn').raise('.onclick')"
+
+                    .onclick
+
+                      /*
+                       * Deleting cover widget.
+                       */
+                      delete-widget:init-cover
+
+                      /*
                        * Retrieving server salt, and setting it.
                        */
                       get-widget-property:server-salt
@@ -204,7 +306,7 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                         /*
                          * No salt, cannot proceed ...
                          */
-                        micro.windows.info:Please provide a server salt!!
+                        micro.windows.info:Please provide a server salt
                           class:micro-windows-info warning
                         return
 
@@ -223,6 +325,7 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                          */
                         micro.windows.info:Please provide a password twice
                           class:micro-windows-info warning
+                        micro.page.set-focus:root-password
                         return
 
                       if:x:/../*/get-widget-property/*/root-password/*?value
@@ -236,8 +339,47 @@ This process will setup your <em>'root'</em> account, which you can use to admin
                         return
 
                       /*
+                       * Verifying that either select GnuPG key has an actual value, or that user
+                       * has given us an email address, and/or some sort of identity to create a new
+                       * PGP keypair.
+                       */
+                      get-widget-property:gnu-pg-key
+                        value
+                      if:x:/-/*/*?value
+                        =:_default
+
+                        /*
+                         * User has not selected an existing keypair he wants to use.
+                         *
+                         * Creating a new keypair, and associating the PGP key with our server.
+                         *
+                         * Notice, this might take some time.
+                         */
+                        get-widget-property:full-name
+                          value
+                        get-widget-property:email-address
+                          value
+                        p5.config.get:gpg-server-keypair-password
+                        p5.crypto.create-pgp-keypair
+                          password:x:/@p5.config.get/*?value
+                          identity:{0} <{1}>
+                            :x:/..if/*/get-widget-property/[0,1]/*/*?value
+                            :x:/..if/*/get-widget-property/[1,2]/*/*?value
+                        set:x:/@if/@get-widget-property/*/*?value
+                          src:x:/@p5.crypto.create-pgp-keypair/*/fingerprint?value
+
+                      /*
+                       * Setting server's GnuPG key's fingerprint.
+                       */
+                      if
+                        p5.auth._has-gnupg-keypair
+                        not
+                        p5.auth._set-gnupg-keypair:x:/../*/get-widget-property/*/gnu-pg-key/*?value
+
+                      /*
                        * Setting salt.
-                       * Notice, in case an exception occurs when we setthe password, the server salt will
+                       *
+                       * Notice, in case an exception occurs when we set the password, the server salt will
                        * already have been set.
                        */
                       if

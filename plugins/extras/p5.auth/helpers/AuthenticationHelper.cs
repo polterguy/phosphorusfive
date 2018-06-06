@@ -210,7 +210,7 @@ namespace p5.auth.helpers
                 args.Add (idxUserNode.Name, idxUserNode ["role"].Value);
             }
         }
-
+        
         /*
          * Returns server-salt for application.
          */
@@ -220,9 +220,19 @@ namespace p5.auth.helpers
             var authFile = AuthFile.GetAuthFile (context);
             return authFile.GetChildValue<string> ("server-salt", context);
         }
-
+        
         /*
-         * Sets the server salt for application
+         * Returns server-salt for application.
+         */
+        public static string GnuPGKeypair (ApplicationContext context)
+        {
+            // Retrieving "auth" file in node format.
+            var authFile = AuthFile.GetAuthFile (context);
+            return authFile.GetChildValue<string> ("gnupg-keypair", context);
+        }
+        
+        /*
+         * Sets the server salt for server.
          */
         public static void SetServerSalt (ApplicationContext context, Node args, string salt)
         {
@@ -232,9 +242,21 @@ namespace p5.auth.helpers
                 node.FindOrInsert ("server-salt").Value = salt;
             });
         }
+        
+        /*
+         * Sets the GnuPG keypair for server.
+         */
+        public static void SetGnuPGKeypair (ApplicationContext context, Node args, string fingerprint)
+        {
+            AuthFile.ModifyAuthFile (context, delegate (Node node) {
+                if (node.Children.Any (ix => ix.Name == "gnupg-keypair"))
+                    throw new LambdaSecurityException ("Tried to change GnuPG keypair after initial creation", args, context);
+                node.FindOrInsert ("gnupg-keypair").Value = fingerprint;
+            });
+        }
 
         /*
-         * Creates a new user
+         * Creates a new user.
          */
         public static void CreateUser (ApplicationContext context, Node args)
         {

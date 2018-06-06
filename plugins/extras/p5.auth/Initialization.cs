@@ -67,7 +67,30 @@ namespace p5.auth
         {
             e.Args.Value = AuthenticationHelper.ServerSalt (context);
         }
+        
+        /// <summary>
+        ///     Returns true if a server has been initialized with a GnuPGP fingerprint.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.auth._has-gnupg-keypair")]
+        static void p5_auth__has_gnupg_keypair (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.GnuPGKeypair (context));
+        }
 
+        /// <summary>
+        ///     Sets the server salt for the server.
+        ///     Invoked once initially during server setup.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.auth._set-gnupg-keypair")]
+        static void p5_auth__set_server_gnupg_keypair (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.SetGnuPGKeypair (context, e.Args, e.Args.GetExValue<string> (context));
+        }
+        
         /// <summary>
         ///     Returns true if a server salt is already created.
         ///     Notice, a server salt, can only be created initially during setup of server. Any attempts at trying to change it afterwards, will

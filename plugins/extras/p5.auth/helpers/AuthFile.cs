@@ -110,9 +110,24 @@ namespace p5.auth.helpers
             // Reading up passwords file
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
 
-                // Retrieving content of file
+                // Retrieving fingerprint for PGP key to use to decrypt file.
+                var fingerprintLine = reader.ReadLine ();
+                var fingerprint = fingerprintLine.Split (':') [1];
+
+                // Retrieving content of file.
                 var fileContent = reader.ReadToEnd ();
-                _authFileContent = Utilities.Convert<Node> (context, fileContent);
+
+                // Decrypting file's content.
+                var node = new Node ("", fileContent);
+                var fingerNode = node.Add ("decrypt").LastChild;
+                var pwdNode = fingerNode.Add ("fingerprint", fingerprint).LastChild;
+                var confNode = new Node ("p5.config.get", "gpg-server-keypair-password");
+                pwdNode.Add ("password", context.RaiseEvent ("p5.config.get", confNode).FirstChild.Get<string> (context));
+                context.RaiseEvent ("p5.mime.parse", node);
+
+                // Converting actual Hyperlambda content of file to a node, and returning it to caller.
+                _authFileContent = Utilities.Convert<Node> (context, node.FirstChild ["text"] ["content"].Value);
+                _authFileContent.Add ("gnupg-keypair", fingerprint);
                 return _authFileContent;
             }
         }
@@ -122,15 +137,23 @@ namespace p5.auth.helpers
          */
         static void SaveAuthFileInternal (ApplicationContext context, Node authFileNode)
         {
-            // Updating cached version
+            // Updating cached version.
             _authFileContent = authFileNode.Clone ();
 
-            // Getting path
+            // Getting path.
             string pwdFilePath = GetAuthFilePath (context);
 
-            // Saving file
+            // Saving file.
             using (TextWriter writer = new StreamWriter (File.Create (pwdFilePath))) {
-                writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
+                var fingerprint = authFileNode ["gnupg-keypair"].UnTie ().Get<string> (context);
+                writer.WriteLine (string.Format ("gnupg-keypair:{0}", fingerprint));
+                var node = new Node ();
+                var txtPart = node.Add ("text", "plain").LastChild;
+                txtPart.Add ("content", Utilities.Convert<string> (context, authFileNode.Children));
+                var enc = txtPart.Add ("encrypt").LastChild;
+                var fingerNode = enc.Add ("fingerprint", fingerprint);
+                context.RaiseEvent ("p5.mime.create", node);
+                writer.Write (node ["result"].Get<string> (context));
             }
         }
 
