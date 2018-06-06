@@ -167,6 +167,12 @@ namespace p5.mysql
             var insertSql = string.Format ("insert into `{0}` (", table);
             var first = true;
             foreach (var idxHeader in headers) {
+                
+                // Sanity checking column name
+                foreach (var idxChar in idxHeader) {
+                    if ("0123456789_-abcdefghijklmnopqrstuvwxyz".IndexOf (idxChar.ToString ().ToLower (CultureInfo.InvariantCulture), StringComparison.InvariantCulture) == -1)
+                        throw new System.Security.SecurityException ("Unsupported and insecure column name found in your CSV file.");
+                }
 
                 // Skipping TIMESTAMP columns.
                 if (types [idxHeader] == MySqlDbType.Timestamp)
