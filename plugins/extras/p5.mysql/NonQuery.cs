@@ -163,7 +163,15 @@ namespace p5.mysql
          */
         private static string CreateInsertSQL (string table, Dictionary<string, MySqlDbType> types, string [] headers)
         {
-            // Creating our reused insert SQL command text.
+            /* Creating our reused insert SQL command text.
+             * Notice, since the only use case I currently see for this method, is to be able to restore a backup
+             * of a database, and I assume the administrator of his own web server, is able to somehow supply
+             * a table name, without "accidentally" injecting a malicious SQL in his own code - I see no reasons
+             * to "sanity checking" the table name.
+             * 
+             * If you feel otherwise, and/or can provide me with a a use case that proves me wrong, feel free to
+             * enlighten me at thomas@gaiasoul.com.
+             */
             var insertSql = string.Format ("insert into `{0}` (", table);
             var first = true;
             foreach (var idxHeader in headers) {
