@@ -24,6 +24,7 @@
 using System.Web;
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 using p5.auth.helpers;
 
 namespace p5.auth
@@ -90,7 +91,7 @@ namespace p5.auth
         {
             AuthenticationHelper.SetGnuPGKeypair (context, e.Args, e.Args.GetExValue<string> (context));
         }
-        
+
         /// <summary>
         ///     Returns true if a server salt is already created.
         ///     Notice, a server salt, can only be created initially during setup of server. Any attempts at trying to change it afterwards, will
@@ -104,7 +105,7 @@ namespace p5.auth
         {
             e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.ServerSalt (context));
         }
-
+        
         /// <summary>
         ///     Sets the server salt for the server.
         ///     Invoked once initially during server setup.
@@ -115,6 +116,37 @@ namespace p5.auth
         static void p5_auth__set_server_salt (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
+        }
+        
+        /// <summary>
+        ///     Returns true if root password is not previously set.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="e"></param>
+        [ActiveEvent (Name = "p5.auth._root-password-is-null")]
+        public static void p5_auth__root_password_is_null (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AuthenticationHelper.NoExistingRootAccount (context);
+        }
+
+        /// <summary>
+        ///     Invoked only once, during setup of system.
+        ///     If root password is set previously, this event will throw an exception.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="e"></param>
+        [ActiveEvent (Name = "p5.auth._set-root-password")]
+        public static void p5_auth_set_root_password (ApplicationContext context, ActiveEventArgs e)
+        {
+            /*
+             * If root account's password is not null, and this Active Event is 
+             * invoked, it is a major security concern! This Active Event is only
+             * supposed to be raised during installation of system!
+             */
+            if (!AuthenticationHelper.NoExistingRootAccount (context))
+                throw new LambdaSecurityException ("[p5.auth._set-root-password] was invoked for root account while root account's password was not null!", e.Args, context);
+
+            AuthenticationHelper.SetRootPassword (context, e.Args);
         }
     }
 }

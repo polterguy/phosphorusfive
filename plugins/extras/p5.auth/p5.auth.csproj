@@ -38,7 +38,6 @@
     <Compile Include="Authenticate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="helpers\AuthenticationHelper.cs" />
-    <Compile Include="Root.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Roles.cs" />
     <Compile Include="helpers\AuthFile.cs" />

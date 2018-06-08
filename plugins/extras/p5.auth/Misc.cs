@@ -60,21 +60,5 @@ namespace p5.auth
                 AuthenticationHelper.ChangePassword (context, e.Args);
             }
         }
-
-        /// <summary>
-        ///     Deletes the currently logged in user.
-        ///     Notice, this action cannot be undone, since it possibly results in the deletion of a bunch of files in the system, among other things.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.misc.delete-my-user")]
-        public static void p5_auth_misc_delete_my_user (ApplicationContext context, ActiveEventArgs e)
-        {
-            if (context.Ticket.Role == "root")
-                throw new LambdaException ("You can't delete a root account, without making it a non-root account first", e.Args, context);
-            using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.DeleteMyUser (context, e.Args);
-            }
-        }
     }
 }
