@@ -21,6 +21,10 @@ accept patches to it. If you can accurately describe your problem, preferably
 with a simple to use reproducible, I would love to help you out. I also deeply
 appreciate suggestions.
 
+You are of course free to create plugins and modules, and if they're good quality,
+I might promote them here on my own project, and encourage my users to try out
+your modules.
+
 ### Where do I find the changes document?
 
 [Here](CHANGES.md). Notice, this document is appended to as I implement the changes,
@@ -78,57 +82,44 @@ The easiest way is to purchase a proprietary license, and using _"Hyperbuild"_,
 which allows you to _"clone"_ (parts of) your existing installation.
 
 **Notice**, make sure you use the _"Release"_ build configuration from Visual
-Studio/Xamarin/MonoDevelop when you start your debugger, since otherwise
+Studio/Xamarin/MonoDevelop when you start Phosphorus Five, since otherwise
 you'll end up deploying a debug version of your system, which is probably not
-optimal!
+optimal.
 
 ### Who created Phosphorus Five?
 
 Every single line of code was created by me (Thomas Hansen), except where I use
 libraries, and/or other external free software resources, which I explicitly
-mark as such.
+mark as such. You can contact me at thomas@gaiasoul.com.
 
 ### Who owns the copyright for Phosphorus Five?
 
 It is in its entirety owned by Thomas Hansen, in person, me that is, which is a
 conscious choice, since it gives me a higher degree of security and freedom.
 
-### Can I invest in Phosphorus Five?
-
-__NO!__ Go away, I don't want to talk to you, and I don't intend to explain why either.
-Go buy BitCoin or something ...
-
 ### Can I ask you to hold a course for me and my developers?
 
 Sure, I do this all the time, depending upon my schedule. Shoot me an email at
 thomas@gaiasoul.com, and I'll check my schedule, and try to squeeze you in.
 It'll cost you though, and I expect you to pay all my expenses, in addition
-to my usual fee. For reasons I don't intend to explain here though, I don't travel
-to the USA.
+to my usual fee.
 
 ### Are you the guy playing Saxophone, Harmonica, Guitar, Singing on your videos?
 
-Yup! My main hobbies, besides traveling, includes creation of music, and I almost plays equally
-many instruments, as I know programming languages.
-
-### How on Earth did you do this? (Create Phosphorus Five)
-
-I spent 13 years researching the same idea, and I followed Winston Churchill's advice,
-which goes like this ...
-
-> Never, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever, ever give up!
-
-Then mix in a little bit of brilliance, and a little bit of madness - And __VOILA!__
-Phosphorus Five comes out in the other end ...
+Yup! My main hobbies, besides traveling, includes creation of music, and I almost
+plays equally many instruments, as I know programming languages. I am not that
+good on my Saxophone though, but I try.
 
 ### Who controls the development of Phosphorus Five?
 
 I am the Gaia Lactical Overlord, and Ajax Uber Uhuru Guru, Il Duce, Der Fuhrer,
-and Kim Jong Il the 3rd when it comes to the final decisions in regards to the future development
-of Phosphorus Five. 100% dictator, the resurrected Kublai Khan, and sole emperor over Phosphorus Five.
+and Kim Jong Il the 3rd when it comes to the final decisions in regards to the
+future development of Phosphorus Five. 100% dictator, the resurrected Kublai Khan,
+and sole emperor over Phosphorus Five.
 
-I do however take suggestions and feedback from others, and I do consider myself quite polite, and I am
-famous for changing my mind, once my existing mind no longer compiles.
+I do however take suggestions and feedback from others, and I do consider myself
+quite polite, towards those who are polite with me - And I am famous for changing
+my mind, once my existing mind no longer compiles.
 
 ### What's your email address?
 
