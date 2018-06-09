@@ -15,9 +15,9 @@ Out of the box, Phosphorus Five contains the following components.
 
 * __Hyper IDE__ - A web based IDE, with support for 100+ programming languages
 * __Camphora Five__ - A CRUD app generator allowing you to create rich CRUD apps in seconds
-* __Hypereval__ - A Hyperlambda _"terminal evaluator"_ and a snippets database
+* __Hypereval__ - A Hyperlambda web based _"PowerShell executor"_ and a snippets database
 
-... plus more!
+... plus more.
 
 ## Installation
 
