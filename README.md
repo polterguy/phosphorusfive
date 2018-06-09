@@ -75,6 +75,14 @@ a rich database CRUD app in 2 minutes using the integrated Camphora Five CRUD ap
 2. [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
 3. [Could Managed AJAX Put Your Web Apps in the Fast Lane](https://msdn.microsoft.com/en-us/magazine/mt826343)
 
+## Other articles about Phosphorus Five
+
+1. [Creating an operating system with 5 lines of code](https://dzone.com/articles/creating-an-operating-system-with-5-lines-of-code)
+2. [Creating a lambda web service](https://dzone.com/articles/creating-a-lambda-web-service)
+3. [Creating an Ajax MySQL DataGrid with 7 lines of code](https://dzone.com/articles/creating-an-ajax-mysql-datagrid-with-7-lines-of-co)
+4. [3 days coding challenge, creating MySQL Admin for ASP.NET](https://dzone.com/articles/3-days-coding-challenge-creating-mysql-admin-for-a)
+5. [Creating Documentation for your Software in Zero seconds](https://dzone.com/articles/creating-documentation-for-your-software-in-zero-s)
+
 ## License
 
 Phosphorus Five is free and open source software, and distributed under the terms
