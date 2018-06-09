@@ -17,9 +17,9 @@
 You don't. For legal reasons I cannot accept patches to Phosphorus Five. You can
 fork it, submit a bug report, tap into its plugin architecture, and probably
 change any aspect of it without rendering your code incompatible - But I cannot
-accept patches to it. Sorry. If you can accurately describe your problem though,
-preferably with a simple to use reproducible, I would love to help you out.
-I also deeply appreciate suggestions.
+accept patches to it. If you can accurately describe your problem, preferably
+with a simple to use reproducible, I would love to help you out. I also deeply
+appreciate suggestions.
 
 ### Where do I find the changes document?
 

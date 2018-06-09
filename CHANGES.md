@@ -1,6 +1,24 @@
 Changes
 ===============
 
+## Version 8.3 - Realeased the 6th of June 2018
+
+### Security
+
+Security has been significantly tightened for this release, making sure the
+password file (_"auth.hl"_ file) is being encrypted among other things. In
+addition one potential SQL injection hole has been fixed in the core. In addition
+the system has been changed such that it no longer communicates that it is an
+ASP.NET webapp. This is done to give a potential adversary less to work with
+when attempting to crack the system.
+
+## Version 8.2 - Released the 26th of May 2018
+
+### Hyper SQL
+
+Hyper SQL was added in this release. Hyper SQL is a small MySQL admin type of
+application, allowing you to administrate your MySQL databases.
+
 ## Version 8.1.1 - Released 19th of May 2018
 
 ### Core
