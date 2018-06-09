@@ -75,7 +75,7 @@ a rich database CRUD app in 2 minutes using the integrated Camphora Five CRUD ap
 2. [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
 3. [Could Managed AJAX Put Your Web Apps in the Fast Lane](https://msdn.microsoft.com/en-us/magazine/mt826343)
 
-## Other articles about Phosphorus Five
+## DZone articles about Phosphorus Five
 
 1. [Creating an operating system with 5 lines of code](https://dzone.com/articles/creating-an-operating-system-with-5-lines-of-code)
 2. [Creating a lambda web service](https://dzone.com/articles/creating-a-lambda-web-service)
