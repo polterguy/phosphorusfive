@@ -144,7 +144,9 @@ namespace p5.auth.helpers
 
                 // Retrieving fingerprint from auth file, and removing the fingerprint node, since
                 // it's not supposed to be save inside of the ecnrypted MIME part of our auth file's content.
-                var fingerprint = _authFileContent ["gnupg-keypair"].UnTie ().Get<string> (context);
+                var fingerprint = _authFileContent ["gnupg-keypair"]?.UnTie ().Get<string> (context) ?? "";
+                if (string.IsNullOrEmpty (fingerprint))
+                    return; // Fingerprint has not (yet) been set, hence we don't save file.
 
                 try {
 

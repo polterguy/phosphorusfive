@@ -339,6 +339,14 @@ it and decrypt the key from GnuPG."
                         return
 
                       /*
+                       * Setting salt.
+                       */
+                      if
+                        p5.auth._has-salt
+                        not
+                        p5.auth._set-server-salt:x:/../*/get-widget-property/*/server-salt/*?value
+
+                      /*
                        * Verifying that either select GnuPG key has an actual value, or that user
                        * has given us an email address, and/or some sort of identity to create a new
                        * PGP keypair.
@@ -375,17 +383,6 @@ it and decrypt the key from GnuPG."
                         p5.auth._has-gnupg-keypair
                         not
                         p5.auth._set-gnupg-keypair:x:/../*/get-widget-property/*/gnu-pg-key/*?value
-
-                      /*
-                       * Setting salt.
-                       *
-                       * Notice, in case an exception occurs when we set the password, the server salt will
-                       * already have been set.
-                       */
-                      if
-                        p5.auth._has-salt
-                        not
-                        p5.auth._set-server-salt:x:/../*/get-widget-property/*/server-salt/*?value
 
                       /*
                        * Setting password, making sure we wrap it in a try/catch block to provide friendly feedback
