@@ -1,7 +1,21 @@
 Changes
 ===============
 
-## Version 8.3 - Realeased the 6th of June 2018
+## Version 8.4 - Not yet released
+
+### Password entropy
+
+Changed the default password regime to require at least 25 characters, ancouraging
+the users to create entire sentences instead of using simply characters.
+This can be overridden though by easily changing the password rules in the web.config,
+if you're determined to use a weaker type of password entropy regime.
+
+### Refactoring and cleaning up p5.auth
+
+Cleaned up p5.auth, and refactored it, making its code more easily understood,
+and cleaner. Removed several issues in the process, that might create problems.
+
+## Version 8.3 - Released the 6th of June 2018
 
 ### Security
 

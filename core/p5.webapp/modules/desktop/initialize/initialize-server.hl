@@ -225,6 +225,11 @@ it and decrypt the key from GnuPG."
                             set-widget-property:root-password-repeat
                               type:password
 
+                          /*
+                           * Setting focus to name textbox.
+                           */
+                          micro.page.set-focus:full-name
+
                   label
                     widgets
                       span
@@ -274,6 +279,54 @@ it and decrypt the key from GnuPG."
                                 hex:true
                               set-widget-property:server-salt
                                 value:x:/@p5.crypto.create-random?value
+
+                  button
+                    innerValue:Help
+                    title:Displays a help window
+                    onclick
+
+                      /*
+                       * Creating a modal window displaying information to the user.
+                       */
+                      create-widgets
+                        micro.widgets.modal:modal-help
+                          widgets
+                            h3
+                              innerValue:Help
+                            p
+                              innerValue:@"The most important thing for you here, is to create a <strong>unique password</strong>.
+Contrary to other services that makes you create your passwords as 8 random characters often, Phosphorus Five requires you to by default
+use at least 25 different characters. This however allows you to use entire sentences as passwords. As you do, you should strive for coming
+up with a sentence that is unique to you, that you can easily remember, and that you <strong>have never ever written on the internet any other
+places in your life!</strong> Examples of good passwords can be found below, however do not use any of these, they are merely examples."
+                            ul
+                              widgets
+                                li
+                                  innerValue:Rubbadub doodie woodie, this da man, the King of Reaggie
+                                li
+                                  innerValue:Howdy mate, this is la8pv calling from Down Town Central LA
+                                li
+                                  innerValue:I don't know 'bout u guys, but I'm in for some $$$
+                            p
+                              innerValue:@"The point is to create a sentence that has never been constructed before, preferably with some dialect
+words, that are unique for you - Yet still making it easy for you to remember! For then to use this as your password. This results in a much
+stronger password than 8 random characters, while still making your password extremely easily remembered. Try to add some words in your dialect and/or
+native tongue, preferably the entire sentence if you can. However, the idea is that you create something so easily remember by you, that you don't
+need to write it down, yet still are able to remember it. If you are interested in the theory behind this, you can 
+<a target=""_blank"" href=""https://gaiasoul.com/2018/06/10/password-entropy/"">read more about it here</a>."
+                            p
+                              innerValue:@"In addition, this process will also create a PGP keypair, and use that to encrypt your password file,
+further eliminating an adversary's ability to compromise your system. This is why we'll need your email address and your name, since we use this
+information as the <em>'identity'</em> while creating that PGP key. If you're super paranoid, you can also provide a manual <em>'salt'</em>,
+which will be used when creating your PGP key, and doing other things in Phosphorus Five, that requires randomness, and/or salted hashed values.
+This further eliminates an adversary's ability to break into your system by performing computational based <em>'predictions'</em> of your system."
+                            div
+                              class:right
+                              widgets
+                                button
+                                  innerValue:I get it!
+                                  onclick
+                                    delete-widget:modal-help
 
                   button:setup-save-btn
                     innerValue:Save
@@ -382,13 +435,33 @@ it and decrypt the key from GnuPG."
                           value
                         get-widget-property:email-address
                           value
+
+                        /*
+                         * Sanity checking idenity for PGP key.
+                         */
+                        if:x:/./*/get-widget-property/*/full-name/*?value
+                          =:
+                          or:x:/././*/get-widget-property/*/email-address/*?value
+                            =:
+
+                          /*
+                           * Missing identity information for our PGP key.
+                           */
+                          micro.windows.info:Type in a valid email address and name please.
+                            class:micro-windows-info warning
+                          micro.page.set-focus:full-name
+                          return
+
+                        /*
+                         * Creating our PGP key, using AES password from web.config.
+                         */
                         p5.config.get:gpg-server-keypair-password
                         p5.crypto.create-pgp-keypair
                           password:x:/@p5.config.get/*?value
                           identity:{0} <{1}>
                             :x:/..if/*/get-widget-property/[0,1]/*/*?value
                             :x:/..if/*/get-widget-property/[1,2]/*/*?value
-                        set:x:/@if/@get-widget-property/*/*?value
+                        set:x:/@if/@if/@get-widget-property/*/*?value
                           src:x:/@p5.crypto.create-pgp-keypair/*/fingerprint?value
 
                       /*
