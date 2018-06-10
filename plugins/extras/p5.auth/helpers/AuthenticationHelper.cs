@@ -41,18 +41,20 @@ namespace p5.auth.helpers
     {
         // Name of credential cookie, used to store username and hashsalted password
         const string _credentialCookieName = "_p5_user";
+        const string _credentialsNotAcceptedException = "Credentials not accepted";
+        const string _contextTicketSessionName = ".p5.auth.context-ticket";
 
         /*
          * Returns user Context Ticket (Context "user")
          */
         public static ContextTicket GetTicket (ApplicationContext context)
         {
-            if (HttpContext.Current.Session [".p5.auth.context-ticket"] == null) {
+            if (HttpContext.Current.Session [_contextTicketSessionName] == null) {
 
                 // No user is logged in, using default impersonated user
-                HttpContext.Current.Session [".p5.auth.context-ticket"] = CreateDefaultTicket (context);
+                HttpContext.Current.Session [_contextTicketSessionName] = CreateDefaultTicket (context);
             }
-            return HttpContext.Current.Session [".p5.auth.context-ticket"] as ContextTicket;
+            return HttpContext.Current.Session [_contextTicketSessionName] as ContextTicket;
         }
 
         /*
@@ -60,7 +62,7 @@ namespace p5.auth.helpers
          */
         public static bool ContextTicketIsSet {
             get {
-                return HttpContext.Current.Session != null && HttpContext.Current.Session [".p5.auth.context-ticket"] != null;
+                return HttpContext.Current.Session != null && HttpContext.Current.Session [_contextTicketSessionName] != null;
             }
         }
 
@@ -83,74 +85,91 @@ namespace p5.auth.helpers
              * configured timespan for each successive login attempt per user, has not passed.
              * 
              * This should be able to defend us from a "brute force password attack".
+             * 
+             * Notice, we also use the web cache, to avoid having an adversary able to 
+             * flood the memory of the server, by providing multiple different passwords,
+             * which if we used the application object would flood it with new entries
+             * until the server's memory was exhausted.
              */
             var bruteConf = new Node (".p5.config.get", ".p5.auth.cooldown-period");
             var cooldown = context.RaiseEvent (".p5.config.get", bruteConf) [0]?.Get (context, -1) ?? -1;
             if (cooldown != -1) {
 
                 // User has configured the system to have a "cooldown period" for successive login attempts.
-                var bruteForceLastAttempt = new Node (".p5.web.application.get", ".p5.io.last-login-attempt-for-" + username);
-                var lastAttemptNode = context.RaiseEvent (".p5.web.application.get", bruteForceLastAttempt);
+                var bruteForceLastAttempt = new Node (".p5.web.cache.get", ".p5.io.last-login-attempt-for-" + username);
+                var lastAttemptNode = context.RaiseEvent (".p5.web.cache.get", bruteForceLastAttempt);
                 if (lastAttemptNode.Count > 0) {
 
                     // Previous attempt has been attempted.
                     var date = lastAttemptNode [0].Get<DateTime> (context, DateTime.MinValue);
-                    int timeSpanSeconds = System.Convert.ToInt32 ((DateTime.Now - date).TotalSeconds);
+                    int timeSpanSeconds = Convert.ToInt32 ((DateTime.Now - date).TotalSeconds);
                     if (timeSpanSeconds < cooldown) {
                         throw new LambdaException ("You need to wait " + (cooldown - timeSpanSeconds) + " seconds before you can try again", args, context);
                     }
                 }
             }
+            
+            // Getting system salt.
+            var serverSalt = ServerSalt (context);
 
-            // Getting password file in Node format, but locking file access as we retrieve it
-            Node pwdFile = AuthFile.GetAuthFile (context);
-
-            // Checking for match on specified username
-            Node userNode = pwdFile ["users"] [username];
-            if (userNode == null)
-                throw new LambdaSecurityException ("Credentials not accepted", args, context);
-
-            // Getting system salt
-            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
-
-            // Then creating system fingerprint from given password
+            // Then creating system fingerprint from given password.
             var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
-            // Checking for match on password
+            // Retrieving password file as a Node.
+            Node pwdFile = AuthFile.GetAuthFile (context);
+
+            /*
+             * Checking for match on specified username.
+             * 
+             * Notice, we do this after we have retrieved server salt and created our hash, to make it more
+             * difficult for an adversary to "guess" usernames in the system by brute force, trying multiple
+             * different usernames, and record the time it took for a failed attempt to return to client.
+             * 
+             * We also throw the exact same exception if the username doesn't exist, as we do if the passwords
+             * don't match. This might be paranoia level of 12 out of 10, but allows the application developer
+             * to avoid communicating anything out about the system, if he needs that kind of security.
+             */
+            Node userNode = pwdFile ["users"] [username];
+            if (userNode == null)
+                throw new LambdaSecurityException (_credentialsNotAcceptedException, args, context);
+
+            // Checking for match on password.
             if (userNode ["password"].Get<string> (context) != hashedPassword) {
 
                 // Making sure we guard against brute force password attacks.
-                var bruteForceLastAttempt = new Node (".p5.web.application.set", ".p5.io.last-login-attempt-for-" + username);
+                var bruteForceLastAttempt = new Node (".p5.web.cache.set", ".p5.io.last-login-attempt-for-" + username);
                 bruteForceLastAttempt.Add ("src", DateTime.Now);
-                context.RaiseEvent (".p5.web.application.set", bruteForceLastAttempt);
-                throw new LambdaSecurityException ("Credentials not accepted", args, context);
+                context.RaiseEvent (".p5.web.cache.set", bruteForceLastAttempt);
+                throw new LambdaSecurityException (_credentialsNotAcceptedException, args, context);
             }
 
-            // Success, creating our ticket
+            // Success, creating our ticket.
             string role = userNode ["role"].Get<string> (context);
             SetTicket (new ContextTicket (username, role, false));
             args.Value = true;
 
-            // Removing last login attempt, to reset brute force login cool off seconds for user's IP address
-            LastLoginAttemptForIP = DateTime.MinValue;
-
-            // Associating newly created Ticket with Application Context, since user now possibly have extended rights
+            // Associating newly created Ticket with Application Context, since user now possibly have extended rights.
             context.UpdateTicket (GetTicket (context));
 
-            // Checking if we should create persistent cookie on disc to remember username for given client
+            // Checking if we should create persistent cookie on disc to remember username for given client.
             if (persist) {
 
-                // Caller wants to create persistent cookie to remember username/password
+                // Caller wants to create persistent cookie to remember username/password.
                 var cookie = new HttpCookie (_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays (context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", "p5.auth.credential-cookie-valid")) [0].Get<int> (context));
-                cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
+                cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie.
 
-                // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file
-                // The "system salted fingerprint" hence never leaves the server
-                // If this was not the case, then the system fingerprint would effectively BE the password, allowing anyone
-                // who somehow gets access to "auth" file also to log in by creating false cookies
+                /*
+                 * The value of our cookie is in "username hashed-password" format.
+                 *
+                 * This is an entropy of roughly 1.1579e+77, making a brute force attack
+                 * impossible, at least without a Rainbow/Dictionary attack, which should
+                 * be effectively prevented, by having a single static server salt,
+                 * which again is cryptographically secured and persisted to disc
+                 * in the "auth" file, and hence normally inaccessible for an adversary.
+                 */
                 cookie.Value = username + " " + hashedPassword;
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
@@ -165,7 +184,7 @@ namespace p5.auth.helpers
         }
 
         /*
-         * Logs out user
+         * Logs out user.
          */
         public static void Logout (ApplicationContext context)
         {
@@ -177,37 +196,37 @@ namespace p5.auth.helpers
                 context.RaiseEvent ("eval", lambda);
             }
 
-            // By destroying Ticket, default user will be used for current session, until user logs in again
+            // By destroying Ticket, default user will be used for current session, until user logs in again.
             SetTicket (null);
 
-            // Destroying persistent credentials cookie, if there is one
+            // Destroying persistent credentials cookie, if there is one.
             HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
             if (cookie != null) {
 
-                // Making sure cookie is destroyed on the client side by setting its expiration date to "today - 1 day"
+                // Making sure cookie is destroyed on the client side by setting its expiration date to "today - 1 day".
                 cookie.Expires = DateTime.Now.AddDays (-1);
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
         }
 
         /*
-         * Lists all users in system
+         * Lists all users in system.
          */
         public static void ListUsers (ApplicationContext context, Node args)
         {
-            // Retrieving "auth" file in node format
+            // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile (context);
             
             // Retrieving guest account name, to make sure we exclude it as a user, since it's not a "real user" per se.
             var guestAccountName = context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context);
 
-            // Looping through each user in [users] node of "auth" file
+            // Looping through each user in [users] node of "auth" file.
             foreach (var idxUserNode in authFile ["users"].Children) {
 
                 if (idxUserNode.Name == guestAccountName)
                     continue;
 
-                // Returning user's name, and role he belongs to
+                // Returning user's name, and role he belongs to.
                 args.Add (idxUserNode.Name, idxUserNode ["role"].Value);
             }
         }
@@ -219,11 +238,11 @@ namespace p5.auth.helpers
         {
             // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile (context);
-            return authFile.GetChildValue<string> ("server-salt", context, "ThisIsNotANiceSalt!!");
+            return authFile.GetChildValue<string> ("server-salt", context);
         }
         
         /*
-         * Returns server-salt for application.
+         * Returns PGP key's fingerprint.
          */
         public static string GnuPGKeypair (ApplicationContext context)
         {
@@ -257,6 +276,27 @@ namespace p5.auth.helpers
         }
 
         /*
+         * Checks if password is good and in accordance to password regime.
+         */
+        public static bool IsGoodPassword (ApplicationContext context, string password)
+        {
+            // Retrieving password rules from web.config, if any.
+            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+            if (!string.IsNullOrEmpty (pwdRule)) {
+
+                // Verifying that specified password obeys by rules from web.config.
+                Regex regex = new Regex (pwdRule);
+                if (!regex.IsMatch (password)) {
+
+                    // New password was not accepted, returning false.
+                    return false;
+                }
+            }
+            return true;
+        }
+            
+        /*
          * Creates a new user.
          */
         public static void CreateUser (ApplicationContext context, Node args)
@@ -274,25 +314,19 @@ namespace p5.auth.helpers
             if (username == context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context))
                 throw new LambdaException ("Sorry, but that's the name of our guest account.", args, context);
 
-            // Making sure [password] never leaves method.
+            // Making sure [password] never leaves method in case of an exception.
             args.FindOrInsert ("password").Value = "xxx";
             
             // Retrieving password rules from web.config, if any.
-            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
-            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
-            if (!string.IsNullOrEmpty (pwdRule)) {
+            if (!IsGoodPassword (context, password)) {
 
-                // Verifying that specified password obeys by rules from web.config.
-                Regex regex = new Regex (pwdRule);
-                if (!regex.IsMatch (password)) {
-
-                    // New password was not accepted, throwing an exception.
-                    args.FindOrInsert ("password").Value = "xxx";
-                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
-                }
+                // New password was not accepted, throwing an exception.
+                var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
+                var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+                throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
             }
 
-            // Basic sanity check.
+            // Basic sanity check new user's data.
             if (string.IsNullOrEmpty (username) || string.IsNullOrEmpty (password) || string.IsNullOrEmpty (role))
                 throw new LambdaException (
                     "User must have username as value, [password] and [role] at the very least",
@@ -303,7 +337,7 @@ namespace p5.auth.helpers
             VerifyUsernameValid (username);
 
             // Retrieving system salt before we enter write lock.
-            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+            var serverSalt = ServerSalt (context);
 
             // Then salting user's password.
             var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
@@ -339,18 +373,18 @@ namespace p5.auth.helpers
                 });
 
             // Creating newly created user's directory structure.
-            CreateUserDirectory (context.RaiseEvent (".p5.core.application-folder").Get<string> (context), username);
+            CreateUserDirectory (context, username);
         }
 
         /*
-         * Retrieves a specific user from system
+         * Retrieves a specific user from the system.
          */
         public static void GetUser (ApplicationContext context, Node args)
         {
-            // Retrieving "auth" file in node format
+            // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile (context);
 
-            // Iterating all users requested by caller
+            // Iterating all users requested by caller.
             foreach (var idxUsername in XUtil.Iterate<string> (context, args)) {
 
                 // Checking if user exist
@@ -434,7 +468,7 @@ namespace p5.auth.helpers
             }
 
             // Retrieving system salt before we enter write lock. (important, since otherwise we'd have a deadlock condition here).
-            var serverSalt = newPassword == null ? null : context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+            var serverSalt = newPassword == null ? null : ServerSalt (context);
 
             // Locking access to password file as we edit user object.
             AuthFile.ModifyAuthFile (
@@ -590,7 +624,7 @@ namespace p5.auth.helpers
             string username = context.Ticket.Username;
 
             // Retrieving system salt before we enter write lock.
-            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+            var serverSalt = ServerSalt (context);
 
             // Locking access to password file as we edit user object
             AuthFile.ModifyAuthFile (
@@ -1028,7 +1062,7 @@ namespace p5.auth.helpers
          */
         static void SetTicket (ContextTicket ticket)
         {
-            HttpContext.Current.Session [".p5.auth.context-ticket"] = ticket;
+            HttpContext.Current.Session [_contextTicketSessionName] = ticket;
         }
 
         /*
@@ -1045,8 +1079,11 @@ namespace p5.auth.helpers
         /*
          * Creates folder structure for user
          */
-        static void CreateUserDirectory (string rootFolder, string username)
+        static void CreateUserDirectory (ApplicationContext context, string username)
         {
+            // Retrieving root folder of system.
+            var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
+
             // Creating folders for user, and making sure private directory stays private ...
             if (!Directory.Exists (rootFolder + "/users/" + username))
                 Directory.CreateDirectory (rootFolder + "/users/" + username);
@@ -1092,7 +1129,6 @@ namespace p5.auth.helpers
                     userNode.Name,
                     userNode ["role"].Get<string> (context),
                     false));
-                LastLoginAttemptForIP = DateTime.MinValue;
             }
         }
 
@@ -1105,35 +1141,6 @@ namespace p5.auth.helpers
                 context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context),
                 context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context),
                 true);
-        }
-
-        /*
-         * Helper to store "last login attempt" for a specific IP address
-         */
-        static DateTime LastLoginAttemptForIP {
-            get {
-
-                // Retrieving Client's IP address, to use as lookup for last login attempt
-                string clientIP = HttpContext.Current.Request.UserHostAddress;
-
-                // Checking application object if we have a previous login attempt for given IP
-                if (HttpContext.Current.Application ["_last-login-attempt-" + clientIP] != null)
-                    return (DateTime)HttpContext.Current.Application ["_last-login-attempt-" + clientIP];
-
-                // No previous login attempt on record, returning DateTime.MinValue
-                return DateTime.MinValue;
-            }
-            set {
-
-                // Retrieving Client's IP address, to use as lookup for last login attempt
-                string clientIP = HttpContext.Current.Request.UserHostAddress;
-
-                // Checking if this is a "reset login attempts"
-                if (value == DateTime.MinValue)
-                    HttpContext.Current.Application.Remove ("_last-login-attempt-" + clientIP);
-                else
-                    HttpContext.Current.Application ["_last-login-attempt-" + clientIP] = value;
-            }
         }
 
         #endregion

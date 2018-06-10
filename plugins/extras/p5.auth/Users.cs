@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using p5.auth.helpers;
 using p5.exp.exceptions;
@@ -32,6 +33,28 @@ namespace p5.auth
     /// </summary>
     static class Users
     {
+        /// <summary>
+        ///     Returns boolean true if password is accepted, otherwise the friendly description for the password regime.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.auth.is-good-password")]
+        public static void p5_auth_is_good_password (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (AuthenticationHelper.IsGoodPassword (context, e.Args.GetExValue<string> (context, ""))) {
+
+                // Password was accepted.
+                e.Args.Value = true;
+
+            } else {
+
+                // Password wasnot accepted.
+                var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules-info");
+                var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+                e.Args.Value = pwdRule;
+            }
+        }
+
         /// <summary>
         ///     Creates a new user.
         ///     Can only be invoked by a logged in root account.

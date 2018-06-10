@@ -339,6 +339,21 @@ it and decrypt the key from GnuPG."
                         return
 
                       /*
+                       * Verifying password meets password regime's restrictions.
+                       */
+                      p5.auth.is-good-password:x:/../*/get-widget-property/*/root-password/*?value
+                      if:x:/@p5.auth.is-good-password?value
+                        !=:bool:true
+
+                        /*
+                         * Not an accepted password.
+                         */
+                        micro.windows.info:Password not accepted, rules are '{0}'
+                          :x:/@p5.auth.is-good-password?value
+                          class:micro-windows-info warning
+                        return
+
+                      /*
                        * Setting salt.
                        */
                       if
@@ -395,7 +410,7 @@ it and decrypt the key from GnuPG."
 
                         /*
                          * Retrieving friendly information string, hopefully giving user some feedback about the passwords
-                         * rules of P5.
+                         * rules his installation.
                          */
                         p5.config.get:p5.auth.password-rules-info
                         eval-x:x:/+/*/*/*/p/*/innerValue
