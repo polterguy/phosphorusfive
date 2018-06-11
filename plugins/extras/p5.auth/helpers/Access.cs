@@ -67,23 +67,26 @@ namespace p5.auth.helpers
             // Looping through each user object in password file, retrieving all roles.
             foreach (var idxUserNode in pwdFile ["access"].Children) {
 
-                // Adding currently iterated access to return args.
+                // Checking what types of access object(s) are relevant to caller.
                 if (roles == null) {
 
-                    // Adding everything.
+                    // Caller wants everything.
                     args.Add (idxUserNode.Clone ());
 
                 } else {
 
-                    // Adding only access objects requested by caller.
-                    if (idxUserNode.Name == "*" || idxUserNode.Name == roles)
+                    // Checking if currently iterated access object is relevant to caller.
+                    if (idxUserNode.Name == "*" || idxUserNode.Name == roles) {
+
+                        // Adding currently iterated access object.
                         args.Add (idxUserNode.Clone ());
+                    }
                 }
             }
         }
         
         /*
-         * Returns all access objects for system.
+         * Adds a new access object to the system.
          */
         public static void AddAccess (ApplicationContext context, Node args)
         {
@@ -127,7 +130,7 @@ namespace p5.auth.helpers
         }
         
         /*
-         * Returns all access objects for system.
+         * Sets all access objects for system.
          */
         public static void SetAccess (ApplicationContext context, Node args)
         {
@@ -176,7 +179,7 @@ namespace p5.auth.helpers
         }
 
         /*
-         * Returns all access objects for system.
+         * Returns true if currently logged in user has access to some "path".
          */
         public static void HasAccessToPath (ApplicationContext context, Node args)
         {
@@ -213,90 +216,99 @@ namespace p5.auth.helpers
                 // Getting children as list, such that we can more easily modify it.
                 var access = node.Children.ToList ();
 
-                // Removing all access right objects not relevant to current user, current path, and current operation type.
+                // Removing all access right objects not relevant to current user, and current operation type.
                 access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
                 access.RemoveAll (ix => ix [filter + ".allow"] == null && ix [filter + ".deny"] == null);
 
-                // Notice, to support pats such as "~/xxx" and "@FOO/", we explicitly unroll paths in our access object(s), before doing a comparison for a match.
-                access.RemoveAll (ix => !path.StartsWithEx (context.RaiseEvent (".p5.io.unroll-path", new Node ("", ix [0].Get<string> (context))).Get<string> (context)));
+                /*
+                 * Making sure we remove all access objects that are not relevant for the specified [path] supplied by caller.
+                 * This implies that we only keep access objects that can be found in the start of the [path] supplied by caller.
+                 * 
+                 * This allows access objects to "cascade", implying checking for access to "/foo/bar/" will yield false if user
+                 * does not have access to "/foo/", etc.
+                 * 
+                 * Notice, to support pats such as "~/xxx" and "@FOO/" in our access objects, we explicitly unroll our access object(s), 
+                 * before doing a comparison for a match.
+                 */
+                access.RemoveAll (ix => !path.StartsWithEx (
+                    context.RaiseEvent (
+                        ".p5.io.unroll-path", 
+                        new Node ("", ix [0].Get<string> (context))).Get<string> (context)));
 
                 // Checking if we still have some access right object(s).
                 if (access.Count > 0) {
 
-                    // Sorting remaining access rights on their path value.
+                    // Making sure we return to caller that access was 'explicitly' granted or denied.
+                    args.Add ("explicit", true);
+
+                    /*
+                     * Sorting remaining access rights on their path value.
+                     * 
+                     * This makes sure an access object with a path of "/foo/bar/" will 'override' and access object with the path of "/foo/".
+                     */
                     access.Sort (delegate (Node lhs, Node rhs) {
 
                         // First doing a path comparison.
                         var retVal = string.Compare (lhs [0].Get<string> (context), rhs [0].Get<string> (context), true, CultureInfo.InvariantCulture);
 
                         /*
-                         * If the paths were similar, we make sure all asterix (*) roles are sorted before any special role overrides.
-                         * We do this such that a specifically mentioned role can override the value for an asterix (*) role declaration.
+                         * If the paths were equal, we make sure all asterix (*) roles are sorted before any explicitly named role overrides,
+                         * for then to make sure any "deny" access objects overrides "allow" objects.
+                         * 
+                         * We do this such that an explicitly mentioned role can override the value for an asterix (*) role declaration,
+                         * while still allowing any "deny" roles to override any "allow" roles.
                          */
                         if (retVal == 0) {
                             if (lhs.Name == "*" && rhs.Name != "*")
                                 retVal = -1;
                             else if (lhs.Name != "*" && rhs.Name == "*")
                                 retVal = 1;
+                            else if (lhs.FirstChild.Name.EndsWithEx (".deny") && rhs.FirstChild.Name.EndsWithEx (".allow"))
+                                retVal = 1;
+                            else if (lhs.FirstChild.Name.EndsWithEx (".allow") && rhs.FirstChild.Name.EndsWithEx (".deny"))
+                                retVal = -1;
                         }
                         return retVal;
                     });
 
                     /*
                      * Looping through any remaining access rights, to see if that modifies our return value.
-                     * Making sure we return to caller whether or not anything was found at all.
                      */
-                    if (access.Count > 0)
-                        args.Add ("explicit", true);
                     foreach (var idxAccess in access) {
-                        if (idxAccess [0].Name == filter + ".allow") {
+                        
+                        // Checking if this is a "simple" access object, without file/folder parameters.
+                        if (idxAccess [0].Count == 0) {
 
-                            // Then we must verify that the file's type is correct, if there is an explicit [file-type] argument in this access object.
-                            // Or allow access, if this is a folder request (ending eith "/") and the access object is a "folder type of access object".
-                            var file_types = idxAccess [0].GetChildValue ("file-type", context, "").Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (file_types.Length > 0) {
+                            /*
+                             * Simple access object without parameters.
+                             * 
+                             * Access granted or denied, depending upon access object's name.
+                             */
+                            has_access = idxAccess [0].Name == filter + ".allow";
 
-                                // File type declaration, making sure it matches specified path.
-                                if (file_types.Any (ix => path.EndsWithEx ("." + ix))) {
-                                    has_access = true;
-                                } else {
-                                    has_access = false;
+                        } else {
+
+                            /*
+                             * This might be a [file] or [folder] type of access object.
+                             */
+                            if (idxAccess [0].FirstChild.Name == "folder") {
+
+                                // Folder access object.
+                                if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
+
+                                    // Access granted or denied, depending upon access object's name.
+                                    has_access = idxAccess [0].Name == filter + ".allow";
                                 }
+                            } else if (idxAccess [0].FirstChild.Name == "file-type") {
 
-                            } else if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
-
-                                // Folder access.
-                                has_access = true;
-
-                            } else {
-
-                                // No type declaration for access object.
-                                has_access = true;
-                            }
-
-                        } else if (idxAccess [0].Name == filter + ".deny") {
-
-                            // Then we must verify that the file's type is correct, if there is an explicit [file-type] argument in this access object.
-                            // Or allow access, if this is a folder request (ending eith "/") and the access object is a "folder type of access object".
-                            var file_types = idxAccess [0].GetChildValue ("file-type", context, "").Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (file_types.Length > 0) {
-
-                                // File type declaration, making sure it matches specified path.
+                                // File type of access object.
+                                var file_types = idxAccess [0].GetChildValue ("file-type", context, "")
+                                                              .Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                                 if (file_types.Any (ix => path.EndsWithEx ("." + ix))) {
-                                    has_access = true;
-                                } else {
-                                    has_access = false;
+
+                                    // Access granted or denied, depending upon access object's name.
+                                    has_access = idxAccess [0].Name == filter + ".allow";
                                 }
-
-                            } else if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
-
-                                // Folder access.
-                                has_access = false;
-
-                            } else {
-
-                                // No type declaration for access object.
-                                has_access = false;
                             }
                         }
                     }

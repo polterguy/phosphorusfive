@@ -265,6 +265,10 @@ namespace p5.auth.helpers
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket
                 SetTicket (context, new ContextTicket (userNode.Name, userNode ["role"].Get<string> (context), false));
+            } else {
+
+                // Catched above, which destroys cookie, and associates the default context with user.
+                throw new Exception ();
             }
         }
 

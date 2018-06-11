@@ -15,6 +15,23 @@ if you're determined to use a weaker type of password entropy regime.
 Cleaned up p5.auth, and refactored it, making its code more easily understood,
 and cleaner. Removed several issues in the process, that might create problems.
 
+### Precedence of access objects in p5.auth
+
+There were some flaws in how p5.auth determined precedence of access object,
+which is now fixed.
+
+### Cleaning up some event names in p5.auth - *BREAKING CHANGE*
+
+Changing some of the p5.auth related Active Event names. Notice, this unfortunately
+does provide some backward compatibility problems in case you happen to be using
+these events. Make sure you test your existing code for backward compatibility
+problems, and refer to the documentation for p5.auth for these events new names.
+
+Hoperfully I'll get to keep these types of changes to a minimum in the future,
+though I figured the existing user base wasn't too large for this to pose a
+problem at the time being, while also feeling it's justified to create more intuitive
+event names.
+
 ## Version 8.3 - Released the 6th of June 2018
 
 ### Security

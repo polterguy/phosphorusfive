@@ -31,7 +31,7 @@ using p5.exp.exceptions;
 namespace p5.auth.helpers
 {
     /// <summary>
-    ///     Class wrapping settings features of Phosphorus Five
+    ///     Class wrapping settings features of Phosphorus Five.
     /// </summary>
     static class Settings
     {

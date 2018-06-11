@@ -29,7 +29,7 @@ using p5.exp.exceptions;
 namespace p5.auth.helpers
 {
     /// <summary>
-    ///     Class wrapping authentication helper features of Phosphorus Five
+    ///     Class wrapping password features of Phosphorus Five
     /// </summary>
     static class Passwords
     {
