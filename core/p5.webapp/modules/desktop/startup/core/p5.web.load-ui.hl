@@ -27,7 +27,7 @@ create-event:p5.web.load-ui
    * and a server salt - And if not, we do so.
    */
   if
-    p5.auth._has-salt
+    p5.auth._has-server-salt
     not
     or
       p5.auth._root-password-is-null
@@ -117,7 +117,7 @@ create-event:p5.web.load-ui
       trim:x:/@p5.web.get-relative-location-url?value
         chars:/
       if
-        p5.auth.has-access-to-path:bool:false
+        p5.auth.has-access:bool:false
           filter:p5.module
           path:/modules/{0}/
             :x:/@trim?value

@@ -28,9 +28,9 @@ using p5.auth.helpers;
 namespace p5.auth
 {
     /// <summary>
-    ///     Class wrapping access associated Active Events.
+    ///     Class wrapping access objects Active Events.
     /// </summary>
-    static class Access
+    static class AccessEvents
     {
         /// <summary>
         ///     Returns all access rights in system.
@@ -40,23 +40,27 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.access.list")]
         public static void p5_auth_access_list (ApplicationContext context, ActiveEventArgs e)
         {
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.ListAccess (context, e.Args);
+                Access.ListAccess (context, e.Args);
             }
         }
         
         /// <summary>
-        ///     Returns all access rights in system.
+        ///     Adds an access right object to the system.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.access.add")]
         public static void p5_auth_access_add (ApplicationContext context, ActiveEventArgs e)
         {
+            // Making sure only root account can invoke event.
             if (context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to execute a protected operation", e.Args, context);
+
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.AddAccess (context, e.Args);
+                Access.AddAccess (context, e.Args);
             }
         }
         
@@ -68,39 +72,45 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.access.delete")]
         public static void p5_auth_access_delete (ApplicationContext context, ActiveEventArgs e)
         {
+            // Making sure only root account can invoke event.
             if (context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to execute a protected operation", e.Args, context);
+
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.DeleteAccess (context, e.Args);
+                Access.DeleteAccess (context, e.Args);
             }
         }
         
         /// <summary>
-        ///     Deletes specified access rights in system.
+        ///     Sets all access right objects for the system.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.access.set-all")]
-        public static void p5_auth_access_set_all (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.access.set")]
+        public static void p5_auth_access_set (ApplicationContext context, ActiveEventArgs e)
         {
+            // Making sure only root account can invoke event.
             if (context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to execute a protected operation", e.Args, context);
+            
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.SetAccess (context, e.Args);
+                Access.SetAccess (context, e.Args);
             }
         }
         
         /// <summary>
-        ///     Verifies that user has access to some sort of path.
+        ///     Verifies that user has access to some sort of "path".
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.has-access-to-path")]
-        public static void p5_auth_has_access_to_path (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.has-access")]
+        public static void p5_auth_has_access (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
             using (new ArgsRemover (e.Args, false)) {
-                AuthenticationHelper.HasAccessToPath (context, e.Args);
+                Access.HasAccessToPath (context, e.Args);
             }
         }
     }

@@ -20,7 +20,7 @@ create-event:desktop.plugins.post.create-dox-button
      * Verifying user has access to help.
      */
     if
-      p5.auth.has-access-to-path:bool:false
+      p5.auth.has-access:bool:false
         filter:p5.module
         path:/modules/desktop/help/
       not

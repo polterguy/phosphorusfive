@@ -61,7 +61,7 @@ namespace p5.lambda.keywords.extras
                     var node = new Node ("", false);
                     node.Add ("filter", "p5.system.platform.execute-file");
                     node.Add ("path", file);
-                    var access = context.RaiseEvent ("p5.auth.has-access-to-path", node).Get<bool> (context);
+                    var access = context.RaiseEvent ("p5.auth.has-access", node).Get<bool> (context);
                     if (!access)
                         throw new LambdaException (string.Format ("You don't have access to execute file '{0}'", file), e.Args, context);
 

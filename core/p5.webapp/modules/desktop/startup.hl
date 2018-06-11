@@ -4,6 +4,15 @@
 
 
 /*
+ * Sanity checking context, to make sure non-root accounts cannot evaluate this file.
+ */
+whoami
+if:x:/-/*/role?value
+  !=:root
+  throw:Non-root account tried to initialize server.
+
+
+/*
  * This is our _"path"_ Active Event for module.
  */
 micro.path.get-folder:x:/..?name

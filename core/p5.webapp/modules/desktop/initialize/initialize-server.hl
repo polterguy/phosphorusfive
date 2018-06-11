@@ -25,7 +25,7 @@ create-container-widget:desktop-main-container
  * Checking if we should create server salt, or ask for root password.
  */
 if
-  p5.auth._has-salt
+  p5.auth._has-server-salt
   not
   or
     p5.auth._root-password-is-null
@@ -410,7 +410,7 @@ This further eliminates an adversary's ability to break into your system by perf
                        * Setting salt.
                        */
                       if
-                        p5.auth._has-salt
+                        p5.auth._has-server-salt
                         not
                         p5.auth._set-server-salt:x:/../*/get-widget-property/*/server-salt/*?value
 
@@ -468,9 +468,9 @@ This further eliminates an adversary's ability to break into your system by perf
                        * Setting server's GnuPG key's fingerprint.
                        */
                       if
-                        p5.auth._has-gnupg-keypair
+                        p5.auth._has-server-pgp-key
                         not
-                        p5.auth._set-gnupg-keypair:x:/../*/get-widget-property/*/gnu-pg-key/*?value
+                        p5.auth._set-server-pgp-key:x:/../*/get-widget-property/*/gnu-pg-key/*?value
 
                       /*
                        * Setting password, making sure we wrap it in a try/catch block to provide friendly feedback

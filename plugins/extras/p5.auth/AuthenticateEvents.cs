@@ -27,19 +27,18 @@ using p5.auth.helpers;
 namespace p5.auth
 {
     /// <summary>
-    ///     Class wrapping authentication.
+    ///     Class wrapping authentication Active Events.
     /// </summary>
-    static class Authenticate
+    static class AuthenticateEvents
     {
         /// <summary>
-        ///     Returns the currently logged in user object.
-        ///     Will not return the password, neither in hashed form, nor in plain text form.
+        ///     Returns the currently logged in user and its role.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "whoami")]
         [ActiveEvent (Name = "p5.auth.whoami")]
-        public static void p5_auth_misc_whoami (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_auth_whoami (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("username", Authentication.Ticket.Username);
             e.Args.Add ("role", Authentication.Ticket.Role);
@@ -47,7 +46,8 @@ namespace p5.auth
         }
 
         /// <summary>
-        ///     Logs in a user to be associated with the current ApplicationContext, and any future ApplicationContext objects created within the same session.
+        ///     Logs in a user to be associated with the current ApplicationContext, 
+        ///     and any future ApplicationContext objects created within the same session.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -59,7 +59,7 @@ namespace p5.auth
         }
 
         /// <summary>
-        ///     Logs out a user from the ApplicationContext, and make sure no user is associated with the current session.
+        ///     Logs out a user from the ApplicationContext.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>

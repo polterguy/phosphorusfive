@@ -21,39 +21,49 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using p5.auth.helpers;
 
 namespace p5.auth
 {
     /// <summary>
-    ///     Class wrapping user settings related Active Events.
+    ///     Class wrapping password related Active Events.
     /// </summary>
-    static class Settings
+    static class PasswordEvents
     {
         /// <summary>
-        ///     Returns the settings for the currently logged in user.
+        ///     Returns boolean true if password is accepted, otherwise the friendly description for the password regime.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.my-settings.get")]
-        public static void p5_auth_my_settings_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.is-good-password")]
+        public static void p5_auth_is_good_password (ApplicationContext context, ActiveEventArgs e)
         {
-            using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.GetSettings (context, e.Args);
+            if (Passwords.IsGoodPassword (context, e.Args.GetExValue<string> (context, ""))) {
+
+                // Password was accepted.
+                e.Args.Value = true;
+
+            } else {
+
+                // Password was not accepted.
+                var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules-info");
+                var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+                e.Args.Value = pwdRule;
             }
         }
 
         /// <summary>
-        ///     Updates the settings for the currently logged in user.
+        ///     Changes the password for the currently logged in user.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.my-settings.set")]
-        public static void p5_auth_my_settings_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.misc.change-my-password")]
+        public static void p5_auth_misc_change_my_password (ApplicationContext context, ActiveEventArgs e)
         {
             using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.ChangeSettings (context, e.Args);
+                Passwords.ChangePassword (context, e.Args);
             }
         }
     }

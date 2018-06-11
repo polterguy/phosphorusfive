@@ -43,12 +43,22 @@ namespace p5.auth.helpers
         const string _bruteForceCacheName = ".p5.io.last-login-attempt-for-";
         const string _guestAccountActiveEventName = ".p5.auth.get-default-context-username";
         const string _guestAccountActiveEventRole = ".p5.auth.get-default-context-role";
+        static readonly ContextTicket _rootAccountStartupTicket = new ContextTicket ("root", "root", false);
 
         /*
          * Returns user Context Ticket to caller.
          */
         public static ContextTicket Ticket {
             get {
+                if (HttpContext.Current.Session == null) {
+
+                    /*
+                     * Since we have no session object yet, we impersonate the root account, to
+                     * make sure initialization and startup of server happens within the context
+                     * of the default root account.
+                     */
+                    return _rootAccountStartupTicket;
+                }
                 return HttpContext.Current.Session [_contextTicketSessionName] as ContextTicket;
             }
             private set {
@@ -111,7 +121,7 @@ namespace p5.auth.helpers
             }
             
             // Getting system salt.
-            var serverSalt = AuthenticationHelper.ServerSalt (context);
+            var serverSalt = ServerSalt.GetServerSalt (context);
 
             // Then creating system fingerprint from given password.
             var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
@@ -177,7 +187,7 @@ namespace p5.auth.helpers
 
             // Making sure we invoke an [.onlogin] lambda callbacks for user.
             var onLogin = new Node ();
-            AuthenticationHelper.GetSettings (context, onLogin);
+            Settings.GetSettings (context, onLogin);
             if (onLogin [".onlogin"] != null) {
                 var lambda = onLogin [".onlogin"].Clone ();
                 context.RaiseEvent ("eval", lambda);
@@ -193,7 +203,7 @@ namespace p5.auth.helpers
 
                 // Making sure we do NOT try to login from persistent cookie if root password is null, at which
                 // case the system has not been initialized yet, and cookie (obviously) is not valid.
-                if (AuthenticationHelper.NoExistingRootAccount (context)) {
+                if (Root.NoExistingRootAccount (context)) {
 
                     /*
                      * Making sure we delete cookie, since (obviously) it is no longer valid.
@@ -216,7 +226,7 @@ namespace p5.auth.helpers
 
             } catch {
 
-                // Making sure we delete cookie, by setting Expires to yesterday.
+                // Making sure we delete cookie if it exists, by setting Expires to yesterday.
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
                 if (cookie != null) {
 
@@ -265,7 +275,7 @@ namespace p5.auth.helpers
         {
             // Making sure we invoke an [.onlogin] lambda callbacks for user.
             var onLogout = new Node ();
-            AuthenticationHelper.GetSettings (context, onLogout);
+            Settings.GetSettings (context, onLogout);
             if (onLogout [".onlogout"] != null) {
                 var lambda = onLogout [".onlogout"].Clone ();
                 context.RaiseEvent ("eval", lambda);

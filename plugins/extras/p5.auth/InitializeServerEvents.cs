@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Web;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -30,72 +29,42 @@ using p5.auth.helpers;
 namespace p5.auth
 {
     /// <summary>
-    ///     Class wrapping initialization of authentication.
+    ///     Class wrapping initialization of server Active Events.
+    ///     This implies events that are for some reasons necessary to setup your Phosphorus Five server.
     /// </summary>
-    static class Initialization
+    static class InitializeServerEvents
     {
         /// <summary>
-        ///     Associates an ApplicationContext with a ContextTicket, meaning an authenticated user.
-        ///     Invoked by the core whenever a new ApplicationContext is created.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = ".p5.core.initialize-application-context")]
-        static void _p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Checking if session is null, which it might be, during for instance [p5.core.application-start].
-            // At which point we (obviously) don't try to login user from persistent cookie, since there is no user yet.
-            if (HttpContext.Current.Session != null) {
-
-                // Checking if ContextTicket is already set, and if not, we try to login user from persistent cookie.
-                if (!Authentication.ContextTicketIsSet) {
-
-                    // No Context Ticket exists in session, trying to login user from persistent cookie.
-                    Authentication.TryLoginFromPersistentCookie (context);
-
-                } else {
-
-                    // Associating current context with ticket from session.
-                    context.UpdateTicket (Authentication.Ticket);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Returns the server salt, used among other things, when serializing passwords and such to persistent medium.
+        ///     Returns the server salt.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.auth.get-server-salt")]
         static void _p5_auth_get_server_salt (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = AuthenticationHelper.ServerSalt (context);
+            e.Args.Value = ServerSalt.GetServerSalt (context);
         }
         
         /// <summary>
-        ///     Returns true if a server salt is already created.
-        ///     Notice, a server salt, can only be created initially during setup of server. Any attempts at trying to change it afterwards, will
-        ///     result in an exception, since this would make it impossible to login to the system, sine the login process is dependent upon the same
-        ///     server salt, as when initially creating the passwords for the user(s).
+        ///     Returns true if a server salt has already been created.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.auth._has-salt")]
-        static void p5_auth__has_salt (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth._has-server-salt")]
+        static void p5_auth__has_server_salt (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.ServerSalt (context));
+            e.Args.Value = !string.IsNullOrEmpty (ServerSalt.GetServerSalt (context));
         }
         
         /// <summary>
         ///     Sets the server salt for the server.
-        ///     Invoked once initially during server setup.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.auth._set-server-salt")]
         static void p5_auth__set_server_salt (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
+            ServerSalt.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
         }
         
         /// <summary>
@@ -103,22 +72,21 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.auth._has-gnupg-keypair")]
-        static void p5_auth__has_gnupg_keypair (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth._has-server-pgp-key")]
+        static void p5_auth__has_server_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.GnuPGKeypair (context));
+            e.Args.Value = !string.IsNullOrEmpty (PGPKey.GetFingerprint (context));
         }
 
         /// <summary>
-        ///     Sets the server salt for the server.
-        ///     Invoked once initially during server setup.
+        ///     Sets the server PGP key's fingerprint.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.auth._set-gnupg-keypair")]
-        static void p5_auth__set_server_gnupg_keypair (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth._set-server-pgp-key")]
+        static void p5_auth__set_server_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.SetGnuPGKeypair (context, e.Args, e.Args.GetExValue<string> (context));
+            PGPKey.SetFingerprint (context, e.Args, e.Args.GetExValue<string> (context));
         }
         
         /// <summary>
@@ -129,12 +97,11 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth._root-password-is-null")]
         public static void p5_auth__root_password_is_null (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = AuthenticationHelper.NoExistingRootAccount (context);
+            e.Args.Value = Root.NoExistingRootAccount (context);
         }
 
         /// <summary>
-        ///     Invoked only once, during setup of system.
-        ///     If root password is set previously, this event will throw an exception.
+        ///     Sets the root password of the server.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
@@ -146,10 +113,10 @@ namespace p5.auth
              * invoked, it is a major security concern! This Active Event is only
              * supposed to be raised during installation of system!
              */
-            if (!AuthenticationHelper.NoExistingRootAccount (context))
+            if (!Root.NoExistingRootAccount (context))
                 throw new LambdaSecurityException ("[p5.auth._set-root-password] was invoked for root account while root account's password was not null!", e.Args, context);
 
-            AuthenticationHelper.SetRootPassword (context, e.Args);
+            Root.SetRootPassword (context, e.Args);
         }
     }
 }

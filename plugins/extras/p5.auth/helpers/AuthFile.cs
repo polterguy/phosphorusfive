@@ -126,7 +126,7 @@ namespace p5.auth.helpers
                 // Converting Hyperlambda content of file to a node, caching it, and returning it to caller.
                 // Making sure we explicitly add the [gnupg-keypair] to the "auth" node first.
                 _authFileContent = Utilities.Convert<Node> (context, node.FirstChild ["text"] ["content"].Value);
-                _authFileContent.Add ("gnupg-keypair", fingerprint);
+                _authFileContent.Add (PGPKey.GnuPgpFingerprintNodeName, fingerprint);
                 return _authFileContent;
             }
         }
@@ -144,7 +144,7 @@ namespace p5.auth.helpers
 
                 // Retrieving fingerprint from auth file, and removing the fingerprint node, since
                 // it's not supposed to be save inside of the ecnrypted MIME part of our auth file's content.
-                var fingerprint = _authFileContent ["gnupg-keypair"]?.UnTie ().Get<string> (context) ?? "";
+                var fingerprint = _authFileContent [PGPKey.GnuPgpFingerprintNodeName]?.UnTie ().Get<string> (context) ?? "";
                 if (string.IsNullOrEmpty (fingerprint))
                     return; // Fingerprint has not (yet) been set, hence we don't save file.
 
@@ -167,7 +167,7 @@ namespace p5.auth.helpers
                 } finally {
 
                     // Adding back fingerprint to cached auth file.
-                    _authFileContent.Insert (0, new Node ("gnupg-keypair", fingerprint));
+                    _authFileContent.Insert (0, new Node (PGPKey.GnuPgpFingerprintNodeName, fingerprint));
                 }
             }
         }

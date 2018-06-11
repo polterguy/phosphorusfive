@@ -78,7 +78,7 @@ container
        * Verifying user has access to path.
        */
       if
-        p5.auth.has-access-to-path
+        p5.auth.has-access
           path:x:/@_dp?value
           filter:p5.module
         =:bool:false

@@ -186,7 +186,7 @@ namespace p5.io.authorization.helpers
             args.Add ("filter", "p5.io." + operation + "-file");
 
             // Returns access to caller.
-            var access = context.RaiseEvent ("p5.auth.has-access-to-path", args).Get<bool> (context);
+            var access = context.RaiseEvent ("p5.auth.has-access", args).Get<bool> (context);
             explicitAccess = args.GetChildValue ("explicit", context, false);
             return access;
         }

@@ -34,17 +34,24 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Misc.cs" />
-    <Compile Include="Authenticate.cs" />
+    <Compile Include="PasswordEvents.cs" />
+    <Compile Include="AuthenticateEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="helpers\AuthenticationHelper.cs" />
-    <Compile Include="Users.cs" />
-    <Compile Include="Roles.cs" />
+    <Compile Include="helpers\Root.cs" />
+    <Compile Include="UsersEvents.cs" />
+    <Compile Include="RolesEvents.cs" />
     <Compile Include="helpers\AuthFile.cs" />
-    <Compile Include="Initialization.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Access.cs" />
+    <Compile Include="InitializeServerEvents.cs" />
+    <Compile Include="SettingsEvents.cs" />
+    <Compile Include="AccessEvents.cs" />
     <Compile Include="helpers\Authentication.cs" />
+    <Compile Include="InitializeContextEvents.cs" />
+    <Compile Include="helpers\ServerSalt.cs" />
+    <Compile Include="helpers\PGPKey.cs" />
+    <Compile Include="helpers\Users.cs" />
+    <Compile Include="helpers\Passwords.cs" />
+    <Compile Include="helpers\Settings.cs" />
+    <Compile Include="helpers\Access.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

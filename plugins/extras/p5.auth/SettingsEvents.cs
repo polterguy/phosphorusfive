@@ -22,28 +22,40 @@
  */
 
 using p5.core;
-using p5.exp.exceptions;
 using p5.auth.helpers;
 
 namespace p5.auth
 {
     /// <summary>
-    ///     Class wrapping role associated Active Events.
+    ///     Class wrapping settings related Active Events.
     /// </summary>
-    static class Roles
+    static class SettingsEvents
     {
         /// <summary>
-        ///     Returns all roles in system.
+        ///     Returns the settings for the currently logged in user.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.roles.list")]
-        public static void p5_auth_roles_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.my-settings.get")]
+        public static void p5_auth_my_settings_get (ApplicationContext context, ActiveEventArgs e)
         {
-            if (context.Ticket.Role != "root")
-                throw new LambdaSecurityException ("Non-root user tried to list all roles in system", e.Args, context);
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.GetRoles (context, e.Args);
+                Settings.GetSettings (context, e.Args);
+            }
+        }
+
+        /// <summary>
+        ///     Updates the settings for the currently logged in user.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.auth.my-settings.set")]
+        public static void p5_auth_my_settings_set (ApplicationContext context, ActiveEventArgs e)
+        {
+            // House cleaning.
+            using (new ArgsRemover (e.Args, true)) {
+                Settings.ChangeSettings (context, e.Args);
             }
         }
     }
