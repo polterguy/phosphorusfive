@@ -48,7 +48,7 @@ namespace p5.auth
 
             } else {
 
-                // Password wasnot accepted.
+                // Password was not accepted.
                 var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules-info");
                 var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
                 e.Args.Value = pwdRule;

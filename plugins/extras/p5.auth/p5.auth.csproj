@@ -44,6 +44,7 @@
     <Compile Include="Initialization.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Access.cs" />
+    <Compile Include="helpers\Authentication.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

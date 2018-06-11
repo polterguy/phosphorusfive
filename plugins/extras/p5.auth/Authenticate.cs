@@ -32,6 +32,21 @@ namespace p5.auth
     static class Authenticate
     {
         /// <summary>
+        ///     Returns the currently logged in user object.
+        ///     Will not return the password, neither in hashed form, nor in plain text form.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "whoami")]
+        [ActiveEvent (Name = "p5.auth.whoami")]
+        public static void p5_auth_misc_whoami (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add ("username", Authentication.Ticket.Username);
+            e.Args.Add ("role", Authentication.Ticket.Role);
+            e.Args.Add ("default", Authentication.Ticket.IsDefault);
+        }
+
+        /// <summary>
         ///     Logs in a user to be associated with the current ApplicationContext, and any future ApplicationContext objects created within the same session.
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -40,7 +55,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.login")]
         public static void p5_auth_login (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.Login (context, e.Args);
+            Authentication.Login (context, e.Args);
         }
 
         /// <summary>
@@ -52,7 +67,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.logout")]
         public static void p5_auth_logout (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.Logout (context);
+            Authentication.Logout (context);
         }
     }
 }

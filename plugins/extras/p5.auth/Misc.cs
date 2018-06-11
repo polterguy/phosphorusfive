@@ -34,21 +34,6 @@ namespace p5.auth
     static class Misc
     {
         /// <summary>
-        ///     Returns the currently logged in user object.
-        ///     Will not return the password, neither in hashed form, nor in plain text form.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "whoami")]
-        [ActiveEvent (Name = "p5.auth.misc.whoami")]
-        public static void p5_auth_misc_whoami (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Add ("username", AuthenticationHelper.GetTicket (context).Username);
-            e.Args.Add ("role", AuthenticationHelper.GetTicket (context).Role);
-            e.Args.Add ("default", AuthenticationHelper.GetTicket (context).IsDefault);
-        }
-
-        /// <summary>
         ///     Changes the password for currently logged in user.
         /// </summary>
         /// <param name="context">Application Context</param>
