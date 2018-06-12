@@ -45,8 +45,7 @@ namespace p5.auth.helpers
         public static string GetServerSalt (ApplicationContext context)
         {
             // Retrieving "auth" file in node format.
-            var authFile = AuthFile.GetAuthFile (context);
-            return authFile.GetChildValue<string> ("server-salt", context);
+            return AuthFile.GetAuthFile (context).GetChildValue<string> ("server-salt", context);
         }
 
         /*
@@ -57,7 +56,7 @@ namespace p5.auth.helpers
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
                 if (node.Children.Any (ix => ix.Name == "server-salt"))
                     throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
-                node.FindOrInsert ("server-salt").Value = salt;
+                node.Add ("server-salt", salt);
             });
         }
     }

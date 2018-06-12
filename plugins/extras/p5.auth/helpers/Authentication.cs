@@ -71,7 +71,7 @@ namespace p5.auth.helpers
          */
         public static bool ContextTicketIsSet {
             get {
-                return HttpContext.Current.Session != null && Ticket != null;
+                return Ticket != null;
             }
         }
 
@@ -89,19 +89,36 @@ namespace p5.auth.helpers
             args.FindOrInsert ("password").Value = "xxx"; // In case an exception occurs.
             var persist = args.GetExChildValue ("persist", context, false);
 
+            // Then creating system fingerprint from given password.
+            var hashedPassword = Passwords.SaltAndHashPassword (context, password);
+
+            // Retrieving password file as a Node.
+            var pwdFile = AuthFile.GetAuthFile (context);
+
+            /*
+             * Checking for match on specified username.
+             */
+            var userNode = pwdFile ["users"] [username];
+            if (userNode == null) {
+
+                // Username doesn't exist.
+                throw new LambdaSecurityException (_credentialsNotAcceptedException, args, context);
+            }
+            
             /*
              * Checking if current username has attempted to login just recently, and the
              * configured timespan for each successive login attempt per user, has not passed.
              * 
-             * This should be able to defend us from a "brute force password attack".
+             * This should be able to provide some rudimentary defense from a "brute force password attack".
              * 
-             * Notice, we also use the web cache, to avoid having an adversary able to 
-             * flood the memory of the server, by providing multiple different passwords,
-             * which if we used the application object would flood it with new entries
-             * until the server's memory was exhausted.
+             * Notice, we do this after we have checked if the username exists, to avoid having an adversary
+             * flood the server's cache with bogus usernames associated with DateTime objects.
+             * We also us the web cache, which (of course) means the object will only exists for some
+             * time, defaulting to the settings of the web cache for your system.
              */
-            var bruteConf = new Node (".p5.config.get", _cooldownPeriodConfigName);
-            var cooldown = context.RaiseEvent (".p5.config.get", bruteConf) [0]?.Get (context, -1) ?? -1;
+            var cooldown = context.RaiseEvent (
+                ".p5.config.get",
+                new Node (".p5.config.get", _cooldownPeriodConfigName)) [0]?.Get (context, -1) ?? -1;
             if (cooldown != -1) {
 
                 // User has configured the system to have a "cooldown period" for successive login attempts.
@@ -120,34 +137,15 @@ namespace p5.auth.helpers
                 }
             }
 
-            // Then creating system fingerprint from given password.
-            var hashedPassword = Passwords.SaltAndHashPassword (context, password);
-
-            // Retrieving password file as a Node.
-            var pwdFile = AuthFile.GetAuthFile (context);
-
-            /*
-             * Checking for match on specified username.
-             * 
-             * Notice, we do this after we have retrieved server salt and created our hash, to make it more
-             * difficult for an adversary to "guess" usernames in the system by brute force, trying multiple
-             * different usernames, and record the time it took for a failed attempt to return to client.
-             * 
-             * We also throw the exact same exception if the username doesn't exist, as we do if the passwords
-             * don't match. This might be paranoia level of 12 out of 10, but allows the application developer
-             * to avoid communicating anything out about the system, if he needs that kind of security.
-             */
-            var userNode = pwdFile ["users"] [username];
-            if (userNode == null) {
-
-                // Username doesn't exist.
-                throw new LambdaSecurityException (_credentialsNotAcceptedException, args, context);
-            }
-
             // Checking for match on password.
             if (userNode ["password"].Get<string> (context) != hashedPassword) {
 
-                // Making sure we guard against brute force password attacks, before we throw security exception.
+                /*
+                 * Making sure we guard against brute force password attacks, before we throw security exception.
+                 * 
+                 * Notice, this prevents the same username from attempting to login more than once every n seconds,
+                 * which is configurable in the config file of the app.
+                 */
                 var bruteForceLastAttempt = new Node (".p5.web.cache.set", _bruteForceCacheName + username);
                 bruteForceLastAttempt.Add ("src", DateTime.Now);
                 context.RaiseEvent (".p5.web.cache.set", bruteForceLastAttempt);
@@ -157,9 +155,11 @@ namespace p5.auth.helpers
             // Success, creating our context ticket.
             var role = userNode ["role"].Get<string> (context);
             SetTicket (context, new ContextTicket (username, role, false));
+
+            // Signaling success to caller.
             args.Value = true;
 
-            // Checking if we should create persistent cookie on disc to remember username for given client.
+            // Checking if we should create persistent cookie on disc to remember username/password for given client.
             if (persist) {
 
                 // Caller wants to create persistent cookie to remember username/password.
@@ -167,7 +167,9 @@ namespace p5.auth.helpers
                 cookie.Expires = DateTime.Now.AddDays (context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", "p5.auth.credential-cookie-valid")) [0].Get<int> (context));
-                cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie.
+
+                // To avoid JavaScript access to credential cookie.
+                cookie.HttpOnly = true;
 
                 /*
                  * The value of our cookie is in "username hashed-password" format.
@@ -182,15 +184,10 @@ namespace p5.auth.helpers
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
 
-            // Making sure we invoke any [.onlogin] lambda callbacks for user.
-            var onLogin = new Node ();
-            Settings.GetSettings (context, onLogin);
-            if (onLogin [".onlogin"] != null) {
-                var lambda = onLogin [".onlogin"].Clone ();
-                context.RaiseEvent ("eval", lambda);
-            }
+            // Evaluates user's [.onlogin] section, if it exists.
+            EvaluateOnLoginIfExisting (context);
         }
-        
+
         /*
          * Will try to login from persistent cookie.
          */
@@ -200,7 +197,7 @@ namespace p5.auth.helpers
 
                 // Making sure we do NOT try to login from persistent cookie if root password is null, at which
                 // case the system has not been initialized yet, and cookie (obviously) is not valid.
-                if (Root.NoExistingRootAccount (context)) {
+                if (!Root.HasRootAccount (context)) {
 
                     /*
                      * Making sure we delete cookie, since (obviously) it is no longer valid.
@@ -238,6 +235,22 @@ namespace p5.auth.helpers
         }
         
         /*
+         * Evaluates currently logged in user's [.onlogin] lambda if it exists.
+         */
+        private static void EvaluateOnLoginIfExisting (ApplicationContext context)
+        {
+
+            // Making sure we invoke any [.onlogin] lambda callbacks for user.
+            var onLogin = new Node ();
+            Settings.GetSettings (context, onLogin);
+            if (onLogin [".onlogin"] != null) {
+
+                // User has [.onlogin] section.
+                context.RaiseEvent ("eval", onLogin [".onlogin"].Clone ());
+            }
+        }
+        
+        /*
          * Tries to login with the given cookie as credentials
          */
         static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
@@ -247,21 +260,26 @@ namespace p5.auth.helpers
             if (cookieSplits.Length != 2)
                 throw new SecurityException ("Cookie not accepted");
 
+            // Retrieving username and (hashed/salted) password from cookie.
             var cookieUsername = cookieSplits [0];
             var hashedPassword = cookieSplits [1];
+
+            // Retrieving password file in Node format.
             var pwdFile = AuthFile.GetAuthFile (context);
 
-            // Checking if user exist
+            // Checking if user exist.
             var userNode = pwdFile ["users"] [cookieUsername];
             if (userNode == null)
                 throw new SecurityException ("Cookie not accepted");
 
-            // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
-            // to throw out other clients that are currently persistently logged into system under his account
+            // Checking if user's password is a match.
             if (hashedPassword == userNode ["password"].Get<string> (context)) {
 
-                // MATCH, discarding previous Context Ticket and creating a new Ticket
+                // MATCH, discarding previous Context Ticket and creating a new Ticket.
                 SetTicket (context, new ContextTicket (userNode.Name, userNode ["role"].Get<string> (context), false));
+                
+                // Evaluates user's [.onlogin] section, if it exists.
+                EvaluateOnLoginIfExisting (context);
 
             } else {
 
@@ -279,8 +297,9 @@ namespace p5.auth.helpers
             var onLogout = new Node ();
             Settings.GetSettings (context, onLogout);
             if (onLogout [".onlogout"] != null) {
-                var lambda = onLogout [".onlogout"].Clone ();
-                context.RaiseEvent ("eval", lambda);
+
+                // Evaluating [.onlogout] section for user.
+                context.RaiseEvent ("eval", onLogout [".onlogout"].Clone ());
             }
 
             // By destroying Ticket, default context ticket will be used for current session, until user logs in again.
@@ -318,7 +337,10 @@ namespace p5.auth.helpers
          */
         static void DestroyTicket (ApplicationContext context)
         {
+            // Making sure context uses default "guest" ticket.
             context.UpdateTicket (CreateDefaultTicket (context));
+
+            // Setting session ticket ro context ticket (which is now guest ticket).
             Ticket = context.Ticket;
         }
 

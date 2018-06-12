@@ -39,8 +39,9 @@ namespace p5.auth.helpers
         public static bool IsGoodPassword (ApplicationContext context, string password)
         {
             // Retrieving password rules from web.config, if any.
-            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
-            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
+            var pwdRule = context.RaiseEvent (
+                ".p5.config.get", 
+                new Node (".p5.config.get", "p5.auth.password-rules")) [0]?.Get (context, "");
             if (!string.IsNullOrEmpty (pwdRule)) {
 
                 // Verifying that specified password obeys by rules from web.config.
@@ -59,8 +60,10 @@ namespace p5.auth.helpers
          */
         internal static string PasswordRuleDescription (ApplicationContext context)
         {
-            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
-            return context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get<string> (context) ?? "No description of your password rules exists.";
+            return context.RaiseEvent (
+                ".p5.config.get",
+                new Node (".p5.config.get", "p5.auth.password-rules-info")) [0]?.Get<string> (context)
+                          ?? "No description of your password rules exists.";
         }
 
         /*
@@ -76,17 +79,24 @@ namespace p5.auth.helpers
 
                 // New password was not accepted, throwing an exception.
                 args.FindOrInsert ("password").Value = "xxx";
-                var description = PasswordRuleDescription (context);
-                throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + description, args, context);
+                throw new LambdaSecurityException (
+                    "Password didn't obey by your configuration settings, which are as follows; " +
+                    PasswordRuleDescription (context),
+                    args,
+                    context);
             }
 
             // Figuring out username of current context.
             var username = context.Ticket.Username;
 
-            // Salting and hashing password.
+            /*
+             * Salting and hashing password.
+             * 
+             * Notice, this has to be done before we enter write lock.
+             */
             password = SaltAndHashPassword (context, password);
 
-            // Locking access to password file as we edit user object
+            // Locking access to password file as we edit user object.
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
@@ -101,9 +111,9 @@ namespace p5.auth.helpers
          */
         public static string SaltAndHashPassword (ApplicationContext context, string password)
         {
-            var salt = ServerSalt.GetServerSalt (context);
-            var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", salt + password)).Get<string> (context);
-            return hashedPassword;
+            return context.RaiseEvent (
+                "p5.crypto.hash.create-sha256",
+                new Node ("", ServerSalt.GetServerSalt (context) + password)).Get<string> (context);
         }
     }
 }

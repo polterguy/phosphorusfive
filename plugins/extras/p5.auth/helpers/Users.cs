@@ -53,6 +53,7 @@ namespace p5.auth.helpers
             // Looping through each user in [users] node of "auth" file.
             foreach (var idxUserNode in authFile ["users"].Children) {
 
+                // Ignoring "guest" account.
                 if (idxUserNode.Name == guestAccountName)
                     continue;
 
@@ -86,8 +87,11 @@ namespace p5.auth.helpers
             if (!Passwords.IsGoodPassword (context, password)) {
 
                 // New password was not accepted, throwing an exception.
-                var pwdRule = Passwords.PasswordRuleDescription (context);
-                throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                throw new LambdaSecurityException (
+                    "Password didn't obey by your configuration settings, which are as follows; " +
+                    Passwords.PasswordRuleDescription (context),
+                    args,
+                    context);
             }
 
             // Basic sanity check new user's data.
@@ -116,21 +120,16 @@ namespace p5.auth.helpers
                             context);
 
                     // Adding user.
-                    authFile ["users"].Add (username);
+                    var userNode = authFile ["users"].Add (username).LastChild;
 
                     // Creates a salt and password for user.
-                    authFile ["users"].LastChild.Add ("password", password);
+                    userNode.Add ("password", password);
 
                     // Adding user to specified role.
-                    authFile ["users"].LastChild.Add ("role", role);
+                    userNode.Add ("role", role);
 
                     // Adding all other specified objects to user.
-                    foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
-
-                        // Only adding nodes with some sort of actual value.
-                        if (idxNode.Value != null || idxNode.Count > 0)
-                            authFile ["users"].LastChild.Add (idxNode.Clone ());
-                    }
+                    userNode.AddRange (args.Children.Where (ix => ix.Name != "password" && ix.Name != "role").Select (ix => ix.Clone ()));
                 });
 
             // Creating newly created user's directory structure.
@@ -216,8 +215,8 @@ namespace p5.auth.helpers
 
                     // New password was not accepted, throwing an exception.
                     args.FindOrInsert ("password").Value = "xxx";
-                    var pwdRule = Passwords.PasswordRuleDescription (context);
-                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
+                    var description = Passwords.PasswordRuleDescription (context);
+                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + description, args, context);
                 }
             }
 

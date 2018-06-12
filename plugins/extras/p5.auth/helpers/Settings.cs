@@ -36,11 +36,11 @@ namespace p5.auth.helpers
     static class Settings
     {
         /*
-         * Retrieves settings for currently logged in user
+         * Retrieves settings for currently logged in user.
          */
         public static void GetSettings (ApplicationContext context, Node args)
         {
-            // Retrieving "auth" file in node format
+            // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile (context);
 
             // Checking if user exist
@@ -50,17 +50,20 @@ namespace p5.auth.helpers
                     args,
                     context);
 
+            // Retrieving user node.
+            var userNode = authFile ["users"] [context.Ticket.Username];
+
             // Checking if caller is retieving a single section.
             var section = args.GetExValue (context, "");
             if (string.IsNullOrEmpty (section)) {
                 
                 // All settings invocation.
-                args.AddRange (authFile ["users"] [context.Ticket.Username].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "role"));
+                args.AddRange (userNode.Children.Where (ix => ix.Name != "password" && ix.Name != "role").Select (ix => ix.Clone ()));
 
             } else if (section != "password" && section != "role") {
 
                 // Single section invocation.
-                var sectionNode = authFile ["users"] [context.Ticket.Username] [section]?.Clone ();
+                var sectionNode = userNode [section]?.Clone ();
                 if (sectionNode != null)
                     args.Add (sectionNode);
 
@@ -72,7 +75,7 @@ namespace p5.auth.helpers
         }
 
         /*
-         * Changes the settings for currently logged in user
+         * Changes the settings for currently logged in user.
          */
         public static void ChangeSettings (ApplicationContext context, Node args)
         {
@@ -87,30 +90,29 @@ namespace p5.auth.helpers
             if (args ["password"] != null || args ["role"] != null)
                 throw new LambdaSecurityException ("You cannot change your password or role with this Active Event", args, context);
 
-            // Locking access to password file as we edit user object
+            // Locking access to password file as we edit user object.
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
 
                     // Checking if invocation is for a single section, or if it's for everything.
                     var section = args.GetExValue (context, "");
+                    var userNode = authFile ["users"] [username];
                     if (string.IsNullOrEmpty (section)) {
 
-                        // Removing old settings
-                        authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+                        // Removing old settings.
+                        userNode.RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
-                        // Changing all settings for user
-                        foreach (var idxNode in args.Children) {
-                            authFile ["users"] [username].Add (idxNode.Clone ());
-                        }
+                        // Changing all settings for user.
+                        userNode.AddRange (args.Children.Select (ix => ix.Clone ()));
 
                     } else if (args.Count == 1) {
 
-                        // Removing old settings
-                        authFile ["users"] [username] [section]?.UnTie (); 
+                        // Removing old settings for specified section.
+                        userNode [section]?.UnTie (); 
 
-                        // Changing all settings for user.
-                        authFile ["users"] [username].Add (args.FirstChild.Clone ());
+                        // Adding new settings as section.
+                        userNode.Add (args.FirstChild.Clone ());
 
                     } else {
 

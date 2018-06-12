@@ -39,9 +39,8 @@ namespace p5.auth.helpers
          */
         public static string GetFingerprint (ApplicationContext context)
         {
-            // Retrieving "auth" file in node format.
-            var authFile = AuthFile.GetAuthFile (context);
-            return authFile.GetChildValue<string> (GnuPgpFingerprintNodeName, context);
+            // Retrieving "auth" file in node format, for then to return fingerprint back to caller.
+            return AuthFile.GetAuthFile (context).GetChildValue<string> (GnuPgpFingerprintNodeName, context);
         }
         
         /*
@@ -50,9 +49,9 @@ namespace p5.auth.helpers
         public static void SetFingerprint (ApplicationContext context, Node args, string fingerprint)
         {
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
-                if (node.Children.Any (ix => ix.Name == GnuPgpFingerprintNodeName))
+                if (node [GnuPgpFingerprintNodeName] != null)
                     throw new LambdaSecurityException ("Tried to change GnuPG keypair after initial creation", args, context);
-                node.FindOrInsert (GnuPgpFingerprintNodeName).Value = fingerprint;
+                node.Add (GnuPgpFingerprintNodeName, fingerprint);
             });
         }
     }

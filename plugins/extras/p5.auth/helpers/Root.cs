@@ -35,15 +35,12 @@ namespace p5.auth.helpers
     {
 
         /*
-         * Returns true if root account's password is null, which means that server is not setup yet.
+         * Returns true if root account exists, which implies that server has been setup.
          */
-        public static bool NoExistingRootAccount (ApplicationContext context)
+        public static bool HasRootAccount (ApplicationContext context)
         {
-            // Retrieving password file, and making sure we lock access to file as we do
-            var rootPwdNode = AuthFile.GetAuthFile (context) ["users"] ["root"];
-
-            // Returning true if root account does not exist
-            return rootPwdNode == null;
+            // Retrieving password file, and returning true if root user exists.
+            return AuthFile.GetAuthFile (context) ["users"] ["root"] != null;
         }
         
         /*
@@ -60,8 +57,11 @@ namespace p5.auth.helpers
 
                 // Password was not accepted, throwing an exception.
                 args.FindOrInsert ("password").Value = "xxx";
-                var description = Passwords.PasswordRuleDescription (context);
-                throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + description, args, context);
+                throw new LambdaSecurityException (
+                    "Password didn't obey by your configuration settings, which are as follows; " +
+                    Passwords.PasswordRuleDescription (context),
+                    args,
+                    context);
             }
 
             // Creating root account.

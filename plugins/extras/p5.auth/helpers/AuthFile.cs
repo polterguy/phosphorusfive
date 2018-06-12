@@ -110,8 +110,9 @@ namespace p5.auth.helpers
                 var fingerprint = fingerprintLine.Split (':') [1];
 
                 // Retrieving GnuPG key's password from web.config.
-                var confNode = new Node ("", "gpg-server-keypair-password");
-                var gnuPgPassword = context.RaiseEvent ("p5.config.get", confNode).FirstChild.Get<string> (context);
+                var gnuPgPassword = context.RaiseEvent (
+                    "p5.config.get", 
+                    new Node ("", "gpg-server-keypair-password")).FirstChild.Get<string> (context);
                 
                 // Retrieving the rest of the content of file.
                 var fileContent = reader.ReadToEnd ();

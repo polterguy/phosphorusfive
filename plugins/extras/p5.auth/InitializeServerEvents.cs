@@ -97,7 +97,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth._root-password-is-null")]
         public static void p5_auth__root_password_is_null (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Root.NoExistingRootAccount (context);
+            e.Args.Value = !Root.HasRootAccount (context);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace p5.auth
              * invoked, it is a major security concern! This Active Event is only
              * supposed to be raised during installation of system!
              */
-            if (!Root.NoExistingRootAccount (context))
+            if (Root.HasRootAccount (context))
                 throw new LambdaSecurityException ("[p5.auth._set-root-password] was invoked for root account while root account's password was not null!", e.Args, context);
 
             Root.SetRootPassword (context, e.Args);
