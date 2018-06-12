@@ -29,7 +29,7 @@ using p5.exp.exceptions;
 namespace p5.auth.helpers
 {
     /// <summary>
-    ///     Class wrapping password features of Phosphorus Five
+    ///     Class wrapping password features of Phosphorus Five.
     /// </summary>
     static class Passwords
     {
@@ -44,7 +44,7 @@ namespace p5.auth.helpers
             if (!string.IsNullOrEmpty (pwdRule)) {
 
                 // Verifying that specified password obeys by rules from web.config.
-                Regex regex = new Regex (pwdRule);
+                var regex = new Regex (pwdRule);
                 if (!regex.IsMatch (password)) {
 
                     // New password was not accepted, returning false.
@@ -57,53 +57,53 @@ namespace p5.auth.helpers
         /*
          * Returns the friendly description of the password rules for the installation.
          */
-        internal static string PasswordRule (ApplicationContext context)
+        internal static string PasswordRuleDescription (ApplicationContext context)
         {
             var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
             return context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get<string> (context) ?? "No description of your password rules exists.";
         }
 
         /*
-         * Changes the password for currently logged in user
+         * Changes the password for currently logged in user.
          */
-        public static void ChangePassword (ApplicationContext context, Node args)
+        public static void ChangeMyPassword (ApplicationContext context, Node args)
         {
-            // Retrieving new password, and doing some basic sanity check.
-            string password = args.GetExValue (context, "");
-            if (string.IsNullOrEmpty (password))
-                throw new LambdaException ("No password supplied", args, context);
+            // Retrieving new password.
+            var password = args.GetExValue (context, "");
             
-            // Retrieving password rules from web.config, if any.
-            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
-            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
-            if (!string.IsNullOrEmpty (pwdRule)) {
+            // Verifying new password is good.
+            if (!IsGoodPassword (context, password)) {
 
-                // Verifying that specified password obeys by rules from web.config.
-                Regex regex = new Regex (pwdRule);
-                if (!regex.IsMatch (password)) {
-
-                    // New password was not accepted, throwing an exception.
-                    args.FindOrInsert ("password").Value = "xxx";
-                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
-                }
+                // New password was not accepted, throwing an exception.
+                args.FindOrInsert ("password").Value = "xxx";
+                var description = PasswordRuleDescription (context);
+                throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + description, args, context);
             }
 
             // Figuring out username of current context.
-            string username = context.Ticket.Username;
+            var username = context.Ticket.Username;
 
-            // Retrieving system salt before we enter write lock.
-            var serverSalt = ServerSalt.GetServerSalt (context);
+            // Salting and hashing password.
+            password = SaltAndHashPassword (context, password);
 
             // Locking access to password file as we edit user object
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
 
-                    // Changing user's password
-                    // Then salting password with user salt and system, before salting it with system salt
-                    var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
-                    authFile ["users"] [username] ["password"].Value = userPasswordFingerprint;
+                    // Changing user's password by first salting it, and then hashing it.
+                    authFile ["users"] [username] ["password"].Value = password;
                 });
+        }
+
+        /*
+         * Salts and hashes password and returns results back to caller.
+         */
+        public static string SaltAndHashPassword (ApplicationContext context, string password)
+        {
+            var salt = ServerSalt.GetServerSalt (context);
+            var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", salt + password)).Get<string> (context);
+            return hashedPassword;
         }
     }
 }

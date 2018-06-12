@@ -84,10 +84,10 @@ namespace p5.auth.helpers
             args.Value = false;
 
             // Retrieving supplied credentials
-            string username = args.GetExChildValue<string> ("username", context);
-            string password = args.GetExChildValue<string> ("password", context);
+            var username = args.GetExChildValue<string> ("username", context);
+            var password = args.GetExChildValue<string> ("password", context);
             args.FindOrInsert ("password").Value = "xxx"; // In case an exception occurs.
-            bool persist = args.GetExChildValue ("persist", context, false);
+            var persist = args.GetExChildValue ("persist", context, false);
 
             /*
              * Checking if current username has attempted to login just recently, and the
@@ -109,9 +109,9 @@ namespace p5.auth.helpers
                 var lastAttemptNode = context.RaiseEvent (".p5.web.cache.get", bruteForceLastAttempt);
                 if (lastAttemptNode.Count > 0) {
 
-                    // Previous attempt has been attempted.
+                    // Previous attempt has been attempted recently.
                     var date = lastAttemptNode [0].Get<DateTime> (context, DateTime.MinValue);
-                    int timeSpanSeconds = Convert.ToInt32 ((DateTime.Now - date).TotalSeconds);
+                    var timeSpanSeconds = Convert.ToInt32 ((DateTime.Now - date).TotalSeconds);
                     if (timeSpanSeconds < cooldown) {
 
                         // Cooldown period has not passed.
@@ -119,15 +119,12 @@ namespace p5.auth.helpers
                     }
                 }
             }
-            
-            // Getting system salt.
-            var serverSalt = ServerSalt.GetServerSalt (context);
 
             // Then creating system fingerprint from given password.
-            var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+            var hashedPassword = Passwords.SaltAndHashPassword (context, password);
 
             // Retrieving password file as a Node.
-            Node pwdFile = AuthFile.GetAuthFile (context);
+            var pwdFile = AuthFile.GetAuthFile (context);
 
             /*
              * Checking for match on specified username.
@@ -140,7 +137,7 @@ namespace p5.auth.helpers
              * don't match. This might be paranoia level of 12 out of 10, but allows the application developer
              * to avoid communicating anything out about the system, if he needs that kind of security.
              */
-            Node userNode = pwdFile ["users"] [username];
+            var userNode = pwdFile ["users"] [username];
             if (userNode == null) {
 
                 // Username doesn't exist.
@@ -158,7 +155,7 @@ namespace p5.auth.helpers
             }
 
             // Success, creating our context ticket.
-            string role = userNode ["role"].Get<string> (context);
+            var role = userNode ["role"].Get<string> (context);
             SetTicket (context, new ContextTicket (username, role, false));
             args.Value = true;
 
@@ -185,7 +182,7 @@ namespace p5.auth.helpers
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
 
-            // Making sure we invoke an [.onlogin] lambda callbacks for user.
+            // Making sure we invoke any [.onlogin] lambda callbacks for user.
             var onLogin = new Node ();
             Settings.GetSettings (context, onLogin);
             if (onLogin [".onlogin"] != null) {
@@ -217,7 +214,7 @@ namespace p5.auth.helpers
                 }
 
                 // Checking if client has persistent cookie.
-                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
+                var cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
                 if (cookie != null) {
 
                     // We have a cookie, try to use it as credentials.
@@ -227,7 +224,7 @@ namespace p5.auth.helpers
             } catch {
 
                 // Making sure we delete cookie if it exists, by setting Expires to yesterday.
-                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
+                var cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
                 if (cookie != null) {
 
                     // Deleting cookie.
@@ -250,12 +247,12 @@ namespace p5.auth.helpers
             if (cookieSplits.Length != 2)
                 throw new SecurityException ("Cookie not accepted");
 
-            string cookieUsername = cookieSplits [0];
-            string hashedPassword = cookieSplits [1];
-            Node pwdFile = AuthFile.GetAuthFile (context);
+            var cookieUsername = cookieSplits [0];
+            var hashedPassword = cookieSplits [1];
+            var pwdFile = AuthFile.GetAuthFile (context);
 
             // Checking if user exist
-            Node userNode = pwdFile ["users"] [cookieUsername];
+            var userNode = pwdFile ["users"] [cookieUsername];
             if (userNode == null)
                 throw new SecurityException ("Cookie not accepted");
 
@@ -265,6 +262,7 @@ namespace p5.auth.helpers
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket
                 SetTicket (context, new ContextTicket (userNode.Name, userNode ["role"].Get<string> (context), false));
+
             } else {
 
                 // Catched above, which destroys cookie, and associates the default context with user.
@@ -289,7 +287,7 @@ namespace p5.auth.helpers
             DestroyTicket (context);
 
             // Destroying persistent credentials cookie, if there is one.
-            HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
+            var cookie = HttpContext.Current.Request.Cookies.Get (_credentialCookieName);
             if (cookie != null) {
 
                 // Making sure cookie is destroyed on the client side by setting its expiration date to "today - 1 day".

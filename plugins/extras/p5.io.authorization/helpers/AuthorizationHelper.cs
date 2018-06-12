@@ -129,6 +129,162 @@ namespace p5.io.authorization.helpers
                         context);
             }
         }
+        
+        /*
+         * Verifies non-root user has access to reading file.
+         * The default is "true".
+         */
+        internal static bool UserHasReadAccessToFile (ApplicationContext context, string path)
+        {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
+            // Checking if this is an attempt at accessing a user's private/public files.
+            if (path.StartsWithEx ("/users/") && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
+
+                // Checking if user tries to read from a publicly available file from another user.
+                var entities = path.Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
+                if (entities.Length >= 4 && entities [2] == "documents" && entities [3] == "public") {
+
+                    // Publicly shared file from another user.
+                    return true;
+                }
+
+                // Private file.
+                return false;
+            }
+
+            // Verify all database files are safe.
+            var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
+            if (path.StartsWithEx (dbPath))
+                return false;
+
+            // Verify web.config and app.config is safe.
+            if (path == "/web.config")
+                return false;
+            if (path == "/app.config")
+                return false;
+
+            // Verifying "auth" file is safe.
+            if (path == GetAuthFile (context).ToLower ())
+                return false;
+
+            // Defaulting access to true.
+            return true;
+        }
+        
+        /*
+         * Verifies non-root user has access to reading folder.
+         */
+        internal static bool UserHasReadAccessToFolder (ApplicationContext context, string path)
+        {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
+            // Shielding other user's folders here.
+            if (path.StartsWithEx ("/users/") && path != "/users/" && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
+
+                // Checking if user tries to read from a publicly available file from another user.
+                var entities = path.Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
+                if (entities.Length == 2 || (entities.Length == 3 && entities [2] == "documents") || (entities.Length >= 4 && entities [2] == "documents" && entities [3] == "public")) {
+
+                    // Publicly shared folder from another user.
+                    return true;
+                }
+
+                // Private file.
+                return false;
+            }
+
+            // Verify all database folders are safe.
+            var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
+            if (path.StartsWithEx (dbPath))
+                return false;
+
+            // Defaulting access to true.
+            return true;
+        }
+        
+        /*
+         * Verifies non-root user has access to writing file.
+         * The default is "false"
+         */
+        internal static bool UserHasWriteAccessToFile (ApplicationContext context, string path)
+        {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
+            // Checking if this is user's file.
+            if (path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
+                return true;
+
+            // Checking if this is a common folder.
+            if (path.StartsWithEx ("/common/"))
+                return true;
+
+            // Defaulting to false.
+            return false;
+        }
+
+        /*
+         * Verifies non-root user has access to modify folder.
+         */
+        internal static bool UserHasWriteAccessToFolder (ApplicationContext context, string path)
+        {
+            // Checking access rights first.
+            bool explicitAccess;
+            var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
+            if (explicitAccess) {
+
+                // Explicitly denied or allowed.
+                return accessDeclaration;
+            }
+
+            /*
+             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
+             */
+
+            // Checking if this is user's file.
+            if (path.StartsWithEx ("/users/") && path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
+                return true;
+
+            // Checking if this is a common folder.
+            if (path.StartsWithEx ("/common/"))
+                return true;
+
+            // Defaulting to false.
+            return false;
+        }
 
         /*
          * Private helper methods below here.
@@ -189,162 +345,6 @@ namespace p5.io.authorization.helpers
             var access = context.RaiseEvent ("p5.auth.has-access", args).Get<bool> (context);
             explicitAccess = args.GetChildValue ("explicit", context, false);
             return access;
-        }
-        
-        /*
-         * Verifies non-root user has access to reading file.
-         * The default is "true".
-         */
-        private static bool UserHasReadAccessToFile (ApplicationContext context, string path)
-        {
-            // Checking access rights first.
-            bool explicitAccess;
-            var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
-            if (explicitAccess) {
-
-                // Explicitly denied or allowed.
-                return accessDeclaration;
-            }
-            
-            /*
-             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
-             */
-
-            // Checking if this is an attempt at accessing a user's private/public files.
-            if (path.StartsWithEx ("/users/") && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
-
-                // Checking if user tries to read from a publicly available file from another user.
-                var entities = path.Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
-                if (entities.Length >= 4 && entities [2] == "documents" && entities [3] == "public") {
-
-                    // Publicly shared file from another user.
-                    return true;
-                }
-
-                // Private file.
-                return false;
-            }
-
-            // Verify all database files are safe.
-            var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
-            if (path.StartsWithEx (dbPath))
-                return false;
-            
-            // Verify web.config and app.config is safe.
-            if (path == "/web.config")
-                return false;
-            if (path == "/app.config")
-                return false;
-            
-            // Verifying "auth" file is safe.
-            if (path == GetAuthFile (context).ToLower ())
-                return false;
-
-            // Defaulting access to true.
-            return true;
-        }
-        
-        /*
-         * Verifies non-root user has access to reading folder.
-         */
-        private static bool UserHasReadAccessToFolder (ApplicationContext context, string path)
-        {
-            // Checking access rights first.
-            bool explicitAccess;
-            var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
-            if (explicitAccess) {
-
-                // Explicitly denied or allowed.
-                return accessDeclaration;
-            }
-            
-            /*
-             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
-             */
-
-            // Shielding other user's folders here.
-            if (path.StartsWithEx ("/users/") && path != "/users/" && !path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username))) {
-                
-                // Checking if user tries to read from a publicly available file from another user.
-                var entities = path.Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
-                if (entities.Length == 2 || (entities.Length == 3 && entities [2] == "documents") || (entities.Length >= 4 && entities [2] == "documents" && entities [3] == "public")) {
-
-                    // Publicly shared folder from another user.
-                    return true;
-                }
-
-                // Private file.
-                return false;
-            }
-
-            // Verify all database folders are safe.
-            var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
-            if (path.StartsWithEx (dbPath))
-                return false;
-
-            // Defaulting access to true.
-            return true;
-        }
-        
-        /*
-         * Verifies non-root user has access to writing file.
-         * The default is "false"
-         */
-        private static bool UserHasWriteAccessToFile (ApplicationContext context, string path)
-        {
-            // Checking access rights first.
-            bool explicitAccess;
-            var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
-            if (explicitAccess) {
-
-                // Explicitly denied or allowed.
-                return accessDeclaration;
-            }
-            
-            /*
-             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
-             */
-
-            // Checking if this is user's file.
-            if (path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
-                return true;
-
-            // Checking if this is a common folder.
-            if (path.StartsWithEx ("/common/"))
-                return true;
-            
-            // Defaulting to false.
-            return false;
-        }
-
-        /*
-         * Verifies non-root user has access to modify folder.
-         */
-        private static bool UserHasWriteAccessToFolder (ApplicationContext context, string path)
-        {
-            // Checking access rights first.
-            bool explicitAccess;
-            var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
-            if (explicitAccess) {
-
-                // Explicitly denied or allowed.
-                return accessDeclaration;
-            }
-            
-            /*
-             * We found no explicitly created access objects for the path, hence we resort to the default access rights in our system.
-             */
-
-            // Checking if this is user's file.
-            if (path.StartsWithEx ("/users/") && path.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
-                return true;
-            
-            // Checking if this is a common folder.
-            if (path.StartsWithEx ("/common/"))
-                return true;
-
-            // Defaulting to false.
-            return false;
         }
 
         /*

@@ -38,6 +38,13 @@ Removed the automatically generated Guid IDs of access objects in Peeples, since
 they simply add to the cognitive noise of the module, and provide no important
 contextual value for the end user.
 
+### Convenience authorization events
+
+Added 4 convenience Active Events to check if a user is allowed to read or
+write to a file or folder, which is useful if you need to check this, before
+some IO operation is attempted. See the documentation for p5.io.authorization
+for details.
+
 ## Version 8.3 - Released the 6th of June 2018
 
 ### Security

@@ -67,9 +67,9 @@ namespace p5.auth.helpers
         public static void CreateUser (ApplicationContext context, Node args)
         {
             // Retrieving arguments.
-            string username = args.GetExValue<string> (context);
-            string password = args.GetExChildValue<string> ("password", context);
-            string role = args.GetExChildValue<string> ("role", context);
+            var username = args.GetExValue<string> (context);
+            var password = args.GetExChildValue<string> ("password", context);
+            var role = args.GetExChildValue<string> ("role", context);
             
             // Sanity checking role name towards guest account name.
             if (role == context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context))
@@ -86,7 +86,7 @@ namespace p5.auth.helpers
             if (!Passwords.IsGoodPassword (context, password)) {
 
                 // New password was not accepted, throwing an exception.
-                var pwdRule = Passwords.PasswordRule (context);
+                var pwdRule = Passwords.PasswordRuleDescription (context);
                 throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
             }
 
@@ -100,11 +100,8 @@ namespace p5.auth.helpers
             // Verifying username is valid, since we'll need to create a folder for user.
             VerifyUsernameValid (username);
 
-            // Retrieving system salt before we enter write lock.
-            var serverSalt = ServerSalt.GetServerSalt (context);
-
-            // Then salting user's password.
-            var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+            // Salting and hashing password before entering lock for "auth" file.
+            password = Passwords.SaltAndHashPassword (context, password);
 
             // Locking access to password file as we create new user object.
             AuthFile.ModifyAuthFile (
@@ -122,7 +119,7 @@ namespace p5.auth.helpers
                     authFile ["users"].Add (username);
 
                     // Creates a salt and password for user.
-                    authFile ["users"].LastChild.Add ("password", userPasswordFingerprint);
+                    authFile ["users"].LastChild.Add ("password", password);
 
                     // Adding user to specified role.
                     authFile ["users"].LastChild.Add ("role", role);
@@ -141,7 +138,7 @@ namespace p5.auth.helpers
         }
 
         /*
-         * Retrieves a specific user from the system.
+         * Retrieves one or more specific users from the system.
          */
         public static void GetUser (ApplicationContext context, Node args)
         {
@@ -151,7 +148,7 @@ namespace p5.auth.helpers
             // Iterating all users requested by caller.
             foreach (var idxUsername in XUtil.Iterate<string> (context, args)) {
 
-                // Checking if user exist
+                // Checking if user exist.
                 if (authFile ["users"] [idxUsername] == null)
                     throw new LambdaException (
                         string.Format ("User '{0}' does not exist", idxUsername),
@@ -165,7 +162,7 @@ namespace p5.auth.helpers
         }
 
         /*
-         * Retrieves a specific user from system
+         * Retrieves a specific user from system.
          */
         public static void DeleteUser (ApplicationContext context, Node args)
         {
@@ -204,29 +201,28 @@ namespace p5.auth.helpers
                 throw new LambdaSecurityException ("Cannot change username for user", args, context);
 
             // Retrieving new password and role, defaulting to null, which will not update existing values.
-            var newPassword = args.GetExChildValue<string> ("password", context, null);
-            var newRole = args.GetExChildValue<string> ("role", context, null);
+            var password = args.GetExChildValue<string> ("password", context, null);
+            var role = args.GetExChildValue<string> ("role", context, null);
 
             // Sanity checking role name towards guest account name.
-            if (newRole == context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context))
+            if (role == context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context))
                 throw new LambdaException ("Sorry, but that's the name of your system's guest account role.", args, context);
 
-            // Retrieving password rules from web.config, if any.
-            // But only if a new password was given.
-            if (!string.IsNullOrEmpty (newPassword)) {
+            // Changing user's password, but only if a [password] argument was explicitly supplied by caller.
+            if (!string.IsNullOrEmpty (password)) {
                 
                 // Verifying password conforms to password rules.
-                if (!Passwords.IsGoodPassword (context, newPassword)) {
+                if (!Passwords.IsGoodPassword (context, password)) {
 
                     // New password was not accepted, throwing an exception.
                     args.FindOrInsert ("password").Value = "xxx";
-                    var pwdRule = Passwords.PasswordRule (context);
+                    var pwdRule = Passwords.PasswordRuleDescription (context);
                     throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
                 }
             }
 
-            // Retrieving system salt before we enter write lock. (important, since otherwise we'd have a deadlock condition here).
-            var serverSalt = newPassword == null ? null : ServerSalt.GetServerSalt (context);
+            // Salting and hashing password before we enter locked access to "auth" file, since this locks access to the "auth" file.
+            password = password == null ? null : Passwords.SaltAndHashPassword (context, password);
 
             // Locking access to password file as we edit user object.
             AuthFile.ModifyAuthFile (
@@ -241,17 +237,12 @@ namespace p5.auth.helpers
                             context);
 
                     // Updating user's password, but only if a new password was supplied by caller.
-                    if (!string.IsNullOrEmpty (newPassword)) {
-
-                        // Making sure we salt password with system salt, before we create our SHA256 value, which is what we actually store in our "auth" file.
-                        var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + newPassword)).Get<string> (context);
-                        authFile ["users"] [username] ["password"].Value = userPasswordFingerprint;
-                    }
+                    if (!string.IsNullOrEmpty (password))
+                        authFile ["users"] [username] ["password"].Value = password;
 
                     // Updating user's role, if a new role was supplied by caller.
-                    if (newRole != null) {
-                        authFile ["users"] [username] ["role"].Value = newRole;
-                    }
+                    if (role != null)
+                        authFile ["users"] [username] ["role"].Value = role;
 
                     // Checking if caller wants to edit settings.
                     if (args.Name == "p5.auth.users.edit") {

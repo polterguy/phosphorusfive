@@ -35,12 +35,12 @@ namespace p5.auth.helpers
     {
 
         /*
-         * Returns true if root account's password is null, which means that server is not setup yet
+         * Returns true if root account's password is null, which means that server is not setup yet.
          */
         public static bool NoExistingRootAccount (ApplicationContext context)
         {
             // Retrieving password file, and making sure we lock access to file as we do
-            Node rootPwdNode = AuthFile.GetAuthFile (context) ["users"] ["root"];
+            var rootPwdNode = AuthFile.GetAuthFile (context) ["users"] ["root"];
 
             // Returning true if root account does not exist
             return rootPwdNode == null;
@@ -53,21 +53,15 @@ namespace p5.auth.helpers
         public static void SetRootPassword (ApplicationContext context, Node args)
         {
             // Retrieving password given.
-            string password = args.GetExChildValue<string> ("password", context);
+            var password = args.GetExChildValue<string> ("password", context);
 
-            // Retrieving password rules from web.config, if any.
-            var pwdRulesNode = new Node (".p5.config.get", "p5.auth.password-rules");
-            var pwdRule = context.RaiseEvent (".p5.config.get", pwdRulesNode) [0]?.Get (context, "");
-            if (!string.IsNullOrEmpty (pwdRule)) {
+            // Verifying password is accepted.
+            if (!Passwords.IsGoodPassword (context, password)) {
 
-                // Verifying that specified password obeys by rules from web.config.
-                Regex regex = new Regex (pwdRule);
-                if (!regex.IsMatch (password)) {
-
-                    // New password was not accepted, throwing an exception.
-                    args.FindOrInsert ("password").Value = "xxx";
-                    throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + pwdRule, args, context);
-                }
+                // Password was not accepted, throwing an exception.
+                args.FindOrInsert ("password").Value = "xxx";
+                var description = Passwords.PasswordRuleDescription (context);
+                throw new LambdaSecurityException ("Password didn't obey by your configuration settings, which are as follows; " + description, args, context);
             }
 
             // Creating root account.
@@ -77,12 +71,11 @@ namespace p5.auth.helpers
             Users.CreateUser (context, rootAccountNode);
 
             // Creating "guest account" section, which is needed for settings among other things.
-            var guestAccountName = context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context);
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
-                    authFile ["users"].Add (guestAccountName);
-                    authFile ["users"] ["guest"].Add ("role", context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context));
+                    authFile ["users"].Add (context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context)).LastChild
+                                      .Add ("role", context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context));
                 });
         }
     }

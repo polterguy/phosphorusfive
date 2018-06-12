@@ -226,7 +226,7 @@ namespace p5.auth.helpers
         /*
          * Returns true if currently logged in user has access to some "path".
          */
-        public static void HasAccessToPath (ApplicationContext context, Node args)
+        public static void HasAccess (ApplicationContext context, Node args)
         {
             // Checking is user is root, at which point he has access to everything.
             if (context.Ticket.Role == "root") {
@@ -292,7 +292,7 @@ namespace p5.auth.helpers
          * This implies removing all access objects that can't be found in the start of the given path and
          * removing those that doesn't match the filter.
          */
-        private static List<Node> ExtractRelevantAccessObjects (ApplicationContext context, string filter, string path, Node accessNode)
+        static List<Node> ExtractRelevantAccessObjects (ApplicationContext context, string filter, string path, Node accessNode)
         {
             // Getting children as list, such that we can more easily modify it.
             var access = accessNode.Children.ToList ();
@@ -325,7 +325,7 @@ namespace p5.auth.helpers
          * to put ".allow" objects first. This implies the most restrictive and especific access objects
          * ends up last, and hence will be applied last.
          */
-        private static void SortAccessObjects (ApplicationContext context, List<Node> accessList)
+        static void SortAccessObjects (ApplicationContext context, List<Node> accessList)
         {
             /*
              * Sorting remaining access rights on their path value.
@@ -368,7 +368,7 @@ namespace p5.auth.helpers
          * parametrized with [folder] having a value of true, at which it'll only match the path if the path
          * ends with a "/".
          */
-        private static bool DetermineAccess (ApplicationContext context, string filter, string path, bool previousAccess, Node accessNode)
+        static bool DetermineAccess (ApplicationContext context, string filter, string path, bool previousAccess, Node accessNode)
         {
             // Checking if this is a "simple" access object, without file/folder parameters.
             if (accessNode [0].Count == 0) {

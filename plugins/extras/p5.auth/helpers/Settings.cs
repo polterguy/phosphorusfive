@@ -77,7 +77,7 @@ namespace p5.auth.helpers
         public static void ChangeSettings (ApplicationContext context, Node args)
         {
             // Getting username for current context.
-            string username = context.Ticket.Username;
+            var username = context.Ticket.Username;
 
             // Making sure default user cannot change his settings.
             if (context.Ticket.IsDefault)

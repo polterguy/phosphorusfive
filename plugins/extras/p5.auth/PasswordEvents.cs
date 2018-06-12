@@ -63,7 +63,7 @@ namespace p5.auth
         public static void p5_auth_misc_change_my_password (ApplicationContext context, ActiveEventArgs e)
         {
             using (new ArgsRemover (e.Args, true)) {
-                Passwords.ChangePassword (context, e.Args);
+                Passwords.ChangeMyPassword (context, e.Args);
             }
         }
     }

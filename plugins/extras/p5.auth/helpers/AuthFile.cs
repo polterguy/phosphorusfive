@@ -94,16 +94,16 @@ namespace p5.auth.helpers
                 return _authFileContent;
 
             // Getting path.
-            string pwdFilePath = GetAuthFilePath (context);
+            var authFilePath = GetAuthFilePath (context);
 
             // Checking if file exist.
-            if (!File.Exists (pwdFilePath)) {
+            if (!File.Exists (authFilePath)) {
                 _authFileContent = new Node ("").Add ("users"); // First time retrieval of "auth" file.
                 return _authFileContent;
             }
 
             // Reads auth file and decrypts it.
-            using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
+            using (TextReader reader = new StreamReader (File.OpenRead (authFilePath))) {
 
                 // Retrieving fingerprint for PGP key to use to decrypt file.
                 var fingerprintLine = reader.ReadLine ();
@@ -137,10 +137,10 @@ namespace p5.auth.helpers
         static void SaveAuthFileInternal (ApplicationContext context)
         {
             // Getting path.
-            string pwdFilePath = GetAuthFilePath (context);
+            var authFilePath = GetAuthFilePath (context);
 
             // Saving file, making sure we encrypt it in the process.
-            using (TextWriter writer = new StreamWriter (File.Create (pwdFilePath))) {
+            using (TextWriter writer = new StreamWriter (File.Create (authFilePath))) {
 
                 // Retrieving fingerprint from auth file, and removing the fingerprint node, since
                 // it's not supposed to be save inside of the ecnrypted MIME part of our auth file's content.
@@ -178,13 +178,13 @@ namespace p5.auth.helpers
         static string GetAuthFilePath (ApplicationContext context)
         {
             // Getting filepath to pwd file.
-            string rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
             // The logic below makes it possible to store auth file OUTSIDE of main web application folder!
-            string pwdFilePath = rootFolder + context.RaiseEvent (".p5.auth.get-auth-file").Get<string> (context);
+            var authFilePath = rootFolder + context.RaiseEvent (".p5.auth.get-auth-file").Get<string> (context);
 
             // Returning path to caller
-            return pwdFilePath;
+            return authFilePath;
         }
 
         #endregion

@@ -21,18 +21,63 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using p5.io.authorization.helpers;
 
 namespace p5.io.authorization
 {
     /// <summary>
-    ///     Class wrapping authorization for files in Phosphorus Five
+    ///     Class wrapping authorization for files in Phosphorus Five.
     /// </summary>
     static class Authorization
     {
         /// <summary>
-        ///     Throws an exception if user is not authorized to read the given file
+        ///     Convenience event to check if user has read access to specified file.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.io.authorize.read-file")]
+        static void p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AuthorizationHelper.UserHasReadAccessToFile (context, e.Args.GetExValue<string> (context));
+        }
+
+        /// <summary>
+        ///     Convenience event to check if user has read access to specified folder.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.io.authorize.read-folder")]
+        static void authorize_read_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AuthorizationHelper.UserHasReadAccessToFolder (context, e.Args.GetExValue<string> (context));
+        }
+
+        /// <summary>
+        ///     Convenience event to check if user has read access to specified file.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.io.authorize.modify-file")]
+        static void p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AuthorizationHelper.UserHasWriteAccessToFile (context, e.Args.GetExValue<string> (context));
+        }
+
+        /// <summary>
+        ///     Convenience event to check if user has read access to specified folder.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.io.authorize.modify-folder")]
+        static void authorize_modify_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AuthorizationHelper.UserHasWriteAccessToFolder (context, e.Args.GetExValue<string> (context));
+        }
+
+        /// <summary>
+        ///     Throws an exception if user is not authorized to read the given file.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -46,7 +91,7 @@ namespace p5.io.authorization
         }
 
         /// <summary>
-        ///     Throws an exception if user is not authorized to modify/create the given file
+        ///     Throws an exception if user is not authorized to modify/create the given file.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -60,7 +105,7 @@ namespace p5.io.authorization
         }
 
         /// <summary>
-        ///     Throws an exception if user is not authorized to read from the given folder
+        ///     Throws an exception if user is not authorized to read from the given folder.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -74,7 +119,7 @@ namespace p5.io.authorization
         }
 
         /// <summary>
-        ///     Throws an exception if user is not authorized to modify the given folder
+        ///     Throws an exception if user is not authorized to modify the given folder.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>

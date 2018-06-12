@@ -110,7 +110,7 @@ namespace p5.auth
         {
             // House cleaning.
             using (new ArgsRemover (e.Args, false)) {
-                Access.HasAccessToPath (context, e.Args);
+                Access.HasAccess (context, e.Args);
             }
         }
     }
