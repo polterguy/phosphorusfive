@@ -3,7 +3,19 @@ Changes
 
 ## Version 8.4 - Not yet released
 
-### Password entropy
+### Cleaning up some event names in p5.auth - *BREAKING CHANGE*
+
+Changing some of the p5.auth related Active Event names. Notice, this unfortunately
+does provide some backward compatibility problems in case you happen to be using
+these events. Make sure you test your existing code for backward compatibility
+problems, and refer to the documentation for p5.auth for these events new names.
+
+Hoperfully I'll get to keep these types of changes to a minimum in the future,
+though I figured the existing user base wasn't too large for this to pose a
+problem at the time being, while also feeling it's justified to create more intuitive
+event names.
+
+### Password entropy changes
 
 Changed the default password regime to require at least 25 characters, ancouraging
 the users to create entire sentences instead of using simply characters.
@@ -20,17 +32,11 @@ and cleaner. Removed several issues in the process, that might create problems.
 There were some flaws in how p5.auth determined precedence of access object,
 which is now fixed.
 
-### Cleaning up some event names in p5.auth - *BREAKING CHANGE*
+### Removing Guids in Peeples
 
-Changing some of the p5.auth related Active Event names. Notice, this unfortunately
-does provide some backward compatibility problems in case you happen to be using
-these events. Make sure you test your existing code for backward compatibility
-problems, and refer to the documentation for p5.auth for these events new names.
-
-Hoperfully I'll get to keep these types of changes to a minimum in the future,
-though I figured the existing user base wasn't too large for this to pose a
-problem at the time being, while also feeling it's justified to create more intuitive
-event names.
+Removed the automatically generated Guid IDs of access objects in Peeples, since
+they simply add to the cognitive noise of the module, and provide no important
+contextual value for the end user.
 
 ## Version 8.3 - Released the 6th of June 2018
 
