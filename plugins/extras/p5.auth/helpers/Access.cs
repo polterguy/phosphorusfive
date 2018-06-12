@@ -24,6 +24,7 @@
 using System;
 using System.Linq;
 using System.Globalization;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -177,150 +178,9 @@ namespace p5.auth.helpers
                     }
                 });
         }
-
+        
         /*
-         * Returns true if currently logged in user has access to some "path".
-         */
-        public static void HasAccessToPath (ApplicationContext context, Node args)
-        {
-            // Checking is user is root, at which he has access to everything.
-            if (context.Ticket.Role == "root") {
-                args.Add ("explicit", true);
-                args.Value = true;
-                return;
-            }
-
-            // Retrieving [filter] argument.
-            var filter = args.GetExChildValue<string> ("filter", context);
-            if (string.IsNullOrEmpty (filter))
-                throw new LambdaException ("No [filter] supplied", args, context);
-
-            // Retrieving [path] argument.
-            var path = args.GetExChildValue<string> ("path", context);
-            if (string.IsNullOrEmpty (path))
-                throw new LambdaException ("No [path] supplied", args, context);
-
-            // Making sure we unroll path.
-            path = context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
-
-            // Retrieving all access objects.
-            var node = new Node ();
-            Access.ListAccess (context, node);
-
-            // Defaulting access to invoker node's existing value.
-            var has_access = args.Get (context, false);
-
-            // Checking if we have any access objects at all.
-            if (node.Count > 0) {
-
-                // Getting children as list, such that we can more easily modify it.
-                var access = node.Children.ToList ();
-
-                // Removing all access right objects not relevant to current user, and current operation type.
-                access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
-                access.RemoveAll (ix => ix [filter + ".allow"] == null && ix [filter + ".deny"] == null);
-
-                /*
-                 * Making sure we remove all access objects that are not relevant for the specified [path] supplied by caller.
-                 * This implies that we only keep access objects that can be found in the start of the [path] supplied by caller.
-                 * 
-                 * This allows access objects to "cascade", implying checking for access to "/foo/bar/" will yield false if user
-                 * does not have access to "/foo/", etc.
-                 * 
-                 * Notice, to support pats such as "~/xxx" and "@FOO/" in our access objects, we explicitly unroll our access object(s), 
-                 * before doing a comparison for a match.
-                 */
-                access.RemoveAll (ix => !path.StartsWithEx (
-                    context.RaiseEvent (
-                        ".p5.io.unroll-path", 
-                        new Node ("", ix [0].Get<string> (context))).Get<string> (context)));
-
-                // Checking if we still have some access right object(s).
-                if (access.Count > 0) {
-
-                    // Making sure we return to caller that access was 'explicitly' granted or denied.
-                    args.Add ("explicit", true);
-
-                    /*
-                     * Sorting remaining access rights on their path value.
-                     * 
-                     * This makes sure an access object with a path of "/foo/bar/" will 'override' and access object with the path of "/foo/".
-                     */
-                    access.Sort (delegate (Node lhs, Node rhs) {
-
-                        // First doing a path comparison.
-                        var retVal = string.Compare (lhs [0].Get<string> (context), rhs [0].Get<string> (context), true, CultureInfo.InvariantCulture);
-
-                        /*
-                         * If the paths were equal, we make sure all asterix (*) roles are sorted before any explicitly named role overrides,
-                         * for then to make sure any "deny" access objects overrides "allow" objects.
-                         * 
-                         * We do this such that an explicitly mentioned role can override the value for an asterix (*) role declaration,
-                         * while still allowing any "deny" roles to override any "allow" roles.
-                         */
-                        if (retVal == 0) {
-                            if (lhs.Name == "*" && rhs.Name != "*")
-                                retVal = -1;
-                            else if (lhs.Name != "*" && rhs.Name == "*")
-                                retVal = 1;
-                            else if (lhs.FirstChild.Name.EndsWithEx (".deny") && rhs.FirstChild.Name.EndsWithEx (".allow"))
-                                retVal = 1;
-                            else if (lhs.FirstChild.Name.EndsWithEx (".allow") && rhs.FirstChild.Name.EndsWithEx (".deny"))
-                                retVal = -1;
-                        }
-                        return retVal;
-                    });
-
-                    /*
-                     * Looping through any remaining access rights, to see if that modifies our return value.
-                     */
-                    foreach (var idxAccess in access) {
-                        
-                        // Checking if this is a "simple" access object, without file/folder parameters.
-                        if (idxAccess [0].Count == 0) {
-
-                            /*
-                             * Simple access object without parameters.
-                             * 
-                             * Access granted or denied, depending upon access object's name.
-                             */
-                            has_access = idxAccess [0].Name == filter + ".allow";
-
-                        } else {
-
-                            /*
-                             * This might be a [file] or [folder] type of access object.
-                             */
-                            if (idxAccess [0].FirstChild.Name == "folder") {
-
-                                // Folder access object.
-                                if (path.EndsWithEx ("/") && idxAccess [0].GetChildValue ("folder", context, false)) {
-
-                                    // Access granted or denied, depending upon access object's name.
-                                    has_access = idxAccess [0].Name == filter + ".allow";
-                                }
-                            } else if (idxAccess [0].FirstChild.Name == "file-type") {
-
-                                // File type of access object.
-                                var file_types = idxAccess [0].GetChildValue ("file-type", context, "")
-                                                              .Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                                if (file_types.Any (ix => path.EndsWithEx ("." + ix))) {
-
-                                    // Access granted or denied, depending upon access object's name.
-                                    has_access = idxAccess [0].Name == filter + ".allow";
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Returns access to caller.
-            args.Value = has_access;
-        }
-            
-        /*
-         * Returns all access objects for system.
+         * Deletes all specified access objects.
          */
         public static void DeleteAccess (ApplicationContext context, Node args)
         {
@@ -338,10 +198,196 @@ namespace p5.auth.helpers
                     var delAccess = XUtil.Iterate<Node> (context, args).ToList ();
                     foreach (var idxAccess in delAccess) {
 
-                        // Removing all matches.
+                        // Removing all matches by simply "untying" the access object matching currently iterated access object.
                         access.Children.First (ix => ix.Name == idxAccess.Name && ix.Get (context, "") == idxAccess.GetExValue (context, "")).UnTie ();
                     }
                 });
+        }
+
+        /*
+         * Returns true if currently logged in user has access to some "path".
+         */
+        public static void HasAccessToPath (ApplicationContext context, Node args)
+        {
+            // Checking is user is root, at which point he has access to everything.
+            if (context.Ticket.Role == "root") {
+
+                // Making sure we notify caller that explicit access was granted, and returning early,
+                // Defaulting access to true, since root has access to everything anyway.
+                args.Add ("explicit", true);
+                args.Value = true;
+                return;
+            }
+
+            // Retrieving [filter] argument.
+            var filter = args.GetExChildValue<string> ("filter", context);
+            if (string.IsNullOrEmpty (filter))
+                throw new LambdaException ("No [filter] supplied", args, context);
+
+            // Retrieving [path] argument.
+            var path = args.GetExChildValue<string> ("path", context);
+            if (string.IsNullOrEmpty (path))
+                throw new LambdaException ("No [path] supplied", args, context);
+
+            // Making sure we unroll path.
+            path = context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
+            
+            // Defaulting access to invoker node's existing value, or "false" if no default is supplied by caller.
+            var has_access = args.Get (context, false);
+
+            // Retrieving all access objects.
+            var accessNode = new Node ();
+            Access.ListAccess (context, accessNode);
+
+            // Checking if we have any access objects at all.
+            if (accessNode.Count > 0) {
+
+                // Removing all non-relevant access objects, and creating a list with remaining (relevant) objects.
+                var accessList = ExtractRelevantAccessObjects (context, filter, path, accessNode);
+
+                // Checking if we still have some access right object(s).
+                if (accessList.Count > 0) {
+
+                    // Making sure we return to caller that access was 'explicitly' granted or denied.
+                    args.Add ("explicit", true);
+
+                    // Sorting access objects according to precedense.
+                    SortAccessObjects (context, accessList);
+
+                    // Looping through any remaining access rights, to see if that modifies our return value.
+                    foreach (var idxAccess in accessList) {
+
+                        // Updates return value in accordance to currently iterated access object.
+                        has_access = DetermineAccess (context, filter, path, has_access, idxAccess);
+                    }
+                }
+            }
+
+            // Returns access to caller.
+            args.Value = has_access;
+        }
+
+        /*
+         * Extracts only relevant access objects and returns to caller.
+         * 
+         * This implies removing all access objects that can't be found in the start of the given path and
+         * removing those that doesn't match the filter.
+         */
+        private static List<Node> ExtractRelevantAccessObjects (ApplicationContext context, string filter, string path, Node accessNode)
+        {
+            // Getting children as list, such that we can more easily modify it.
+            var access = accessNode.Children.ToList ();
+
+            // Removing all access right objects not relevant to current user, and current operation type.
+            access.RemoveAll (ix => ix.Name != "*" && ix.Name != context.Ticket.Role);
+            access.RemoveAll (ix => ix [filter + ".allow"] == null && ix [filter + ".deny"] == null);
+
+            /*
+             * Making sure we remove all access objects that are not relevant for the specified [path] supplied by caller.
+             * This implies that we only keep access objects that can be found in the start of the [path] supplied by caller.
+             * 
+             * This allows access objects to "cascade", implying checking for access to "/foo/bar/" will yield false if user
+             * does not have access to "/foo/", etc.
+             * 
+             * Notice, to support pats such as "~/xxx" and "@FOO/" in our access objects, we explicitly unroll our access object(s), 
+             * before doing a comparison for a match.
+             */
+            access.RemoveAll (ix => !path.StartsWithEx (
+                context.RaiseEvent (
+                    ".p5.io.unroll-path",
+                    new Node ("", ix [0].Get<string> (context))).Get<string> (context)));
+            return access;
+        }
+        
+        /*
+         * Sorts specified access object list according to precedence.
+         * 
+         * This implies sorting objects first by their paths, then putting * objects first, for then
+         * to put ".allow" objects first. This implies the most restrictive and especific access objects
+         * ends up last, and hence will be applied last.
+         */
+        private static void SortAccessObjects (ApplicationContext context, List<Node> accessList)
+        {
+            /*
+             * Sorting remaining access rights on their path value.
+             * 
+             * This makes sure an access object with a path of "/foo/bar/" will 'override' and access object with the path of "/foo/".
+             */
+            accessList.Sort (delegate (Node lhs, Node rhs) {
+
+                // First doing a path comparison.
+                var retVal = string.Compare (lhs [0].Get<string> (context), rhs [0].Get<string> (context), true, CultureInfo.InvariantCulture);
+
+                /*
+                 * If the paths were equal, we make sure all asterix (*) roles are sorted before any explicitly named role overrides,
+                 * for then to make sure any "deny" access objects overrides "allow" objects.
+                 * 
+                 * We do this such that an explicitly mentioned role can override the value for an asterix (*) role declaration,
+                 * while still allowing any "deny" roles to override any "allow" roles.
+                 */
+                if (retVal == 0) {
+                    if (lhs.Name == "*" && rhs.Name != "*")
+                        retVal = -1;
+                    else if (lhs.Name != "*" && rhs.Name == "*")
+                        retVal = 1;
+                    else if (lhs.FirstChild.Name.EndsWithEx (".deny") && rhs.FirstChild.Name.EndsWithEx (".allow"))
+                        retVal = 1;
+                    else if (lhs.FirstChild.Name.EndsWithEx (".allow") && rhs.FirstChild.Name.EndsWithEx (".deny"))
+                        retVal = -1;
+                }
+                return retVal;
+            });
+        }
+        
+        /*
+         * Determines access according to specified access object.
+         * 
+         * Whether or not access object grants user access is determined according to its lats parts,
+         * which can be ".allow" or ".deny". Whether or not the access object matches the given path, depends
+         * upon the access object's parameters. An access object can be paratemtrized with [file-type], which
+         * is a string of file extensions, separated by "|", e.g. "hl|md|js". The access object can also be
+         * parametrized with [folder] having a value of true, at which it'll only match the path if the path
+         * ends with a "/".
+         */
+        private static bool DetermineAccess (ApplicationContext context, string filter, string path, bool previousAccess, Node accessNode)
+        {
+            // Checking if this is a "simple" access object, without file/folder parameters.
+            if (accessNode [0].Count == 0) {
+
+                /*
+                 * Simple access object without parameters.
+                 * 
+                 * Access granted or denied, depending upon access object's name.
+                 */
+                previousAccess = accessNode [0].Name == filter + ".allow";
+
+            } else {
+
+                /*
+                 * This might be a [file] or [folder] type of access object.
+                 */
+                if (accessNode [0].FirstChild.Name == "folder") {
+
+                    // Folder access object.
+                    if (path.EndsWithEx ("/") && accessNode [0].GetChildValue ("folder", context, false)) {
+
+                        // Access granted or denied, depending upon access object's name.
+                        previousAccess = accessNode [0].Name == filter + ".allow";
+                    }
+                } else if (accessNode [0].FirstChild.Name == "file-type") {
+
+                    // File type of access object.
+                    var file_types = accessNode [0].GetChildValue ("file-type", context, "")
+                                                  .Split (new char [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (file_types.Any (ix => path.EndsWithEx ("." + ix))) {
+
+                        // Access granted or denied, depending upon access object's name.
+                        previousAccess = accessNode [0].Name == filter + ".allow";
+                    }
+                }
+            }
+
+            return previousAccess;
         }
     }
 }
