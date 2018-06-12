@@ -44,6 +44,9 @@ namespace p5.auth.helpers
             // Getting password file in Node format.
             Node pwdFile = AuthFile.GetAuthFile (context);
 
+            // Checking if caller wants to remove GUID IDs of access objects in the system.
+            var keepGuids = args.GetExChildValue ("guids", context, false);
+
             // Checking if we have any access rights in system.
             if (pwdFile ["access"] == null)
                 return;
@@ -66,21 +69,37 @@ namespace p5.auth.helpers
             }
 
             // Looping through each user object in password file, retrieving all roles.
-            foreach (var idxUserNode in pwdFile ["access"].Children) {
+            foreach (var idxAccessNode in pwdFile ["access"].Children) {
 
                 // Checking what types of access object(s) are relevant to caller.
                 if (roles == null) {
+                    
+                    // Cloning access object node.
+                    var cur = idxAccessNode.Clone ();
+
+                    // Removing GUID IDs if caller specified we should do so.
+                    Guid guid;
+                    if (!keepGuids && Guid.TryParse (idxAccessNode.Get<string> (context), out guid))
+                        cur.Value = null;
 
                     // Caller wants everything.
-                    args.Add (idxUserNode.Clone ());
+                    args.Add (cur);
 
                 } else {
 
                     // Checking if currently iterated access object is relevant to caller.
-                    if (idxUserNode.Name == "*" || idxUserNode.Name == roles) {
+                    if (idxAccessNode.Name == "*" || idxAccessNode.Name == roles) {
+                        
+                        // Cloning access object node.
+                        var cur = idxAccessNode.Clone ();
+
+                        // Removing GUID IDs if caller specified we should do so.
+                        Guid guid;
+                        if (!keepGuids && Guid.TryParse (idxAccessNode.Get<string> (context), out guid))
+                            cur.Value = null;
 
                         // Adding currently iterated access object.
-                        args.Add (idxUserNode.Clone ());
+                        args.Add (cur);
                     }
                 }
             }
