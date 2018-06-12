@@ -384,6 +384,12 @@ namespace p5.auth.helpers
                         // Access granted or denied, depending upon access object's name.
                         previousAccess = accessNode [0].Name == filter + ".allow";
                     }
+                } else if (accessNode [0].FirstChild.Name == "exact" && accessNode [0].FirstChild.Get<bool> (context)) {
+
+                    // Currently iterated object requires an "exact" match.
+                    if (path == accessNode [0].Get<string> (context)) {
+                        previousAccess = accessNode [0].Name == filter + ".allow";
+                    }
                 }
             }
 
