@@ -22,6 +22,7 @@
  */
 
 using System.IO;
+using System.Globalization;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -38,23 +39,12 @@ namespace p5.io.authorization.helpers
          */
         internal static void AuthorizeReadFile (ApplicationContext context, string filename, Node stack)
         {
-            // Verifies filename is valid.
-            if (!VerifySaneFileName (filename))
+            // Making sure we do a lowers comparison.
+            if (!UserHasReadAccessToFile (context, filename.ToLowerInvariant ()))
                 throw new LambdaException (
-                    string.Format ("Path '{0}' was not a valid file path", filename),
+                    string.Format ("Access denied to '{0}'", filename),
                     stack,
                     context);
-            
-            // Checking role of user, and invoking relevant check.
-            if (context.Ticket.Role != "root") {
-                
-                // Making sure we do a lowers comparison.
-                if (!UserHasReadAccessToFile (context, filename.ToLowerInvariant ()))
-                    throw new LambdaException (
-                        string.Format ("Access denied to '{0}'", filename),
-                        stack,
-                        context);
-            }
         }
 
         /*
@@ -62,23 +52,12 @@ namespace p5.io.authorization.helpers
          */
         internal static void AuthorizeModifyFile (ApplicationContext context, string filename, Node stack)
         {
-            // Verifies filename is valid.
-            if (!VerifySaneFileName (filename))
+            // Making sure we do a lowers comparison.
+            if (!UserHasWriteAccessToFile (context, filename.ToLowerInvariant ()))
                 throw new LambdaException (
-                    string.Format ("Path '{0}' was not a valid file path", filename),
+                    string.Format ("Access denied to '{0}'", filename),
                     stack,
                     context);
-
-            // Checking role of user, and invoking relevant check.
-            if (context.Ticket.Role != "root") {
-
-                // Making sure we do a lowers comparison.
-                if (!UserHasWriteAccessToFile (context, filename.ToLowerInvariant ()))
-                    throw new LambdaException (
-                        string.Format ("Access denied to '{0}'", filename),
-                        stack,
-                        context);
-            }
         }
         
         /*
@@ -86,24 +65,12 @@ namespace p5.io.authorization.helpers
          */
         internal static void AuthorizeReadFolder (ApplicationContext context, string foldername, Node stack)
         {
-            // Verifies foldername is a valid foldername.
-            if (!VerifySaneFolderName (foldername))
+            // Making sure we do a lowers comparison.
+            if (!UserHasReadAccessToFolder (context, foldername.ToLowerInvariant ()))
                 throw new LambdaException (
-                    string.Format ("Path '{0}' was not a valid folder path", foldername),
+                    string.Format ("Access denied to '{0}'", foldername),
                     stack,
                     context);
-
-            // Checking role of user, and invoking relevant check.
-            if (context.Ticket.Role != "root") {
-
-                // Making sure we do a lowers comparison.
-                if (!UserHasReadAccessToFolder (context, foldername.ToLowerInvariant ()))
-                    throw new LambdaException (
-                        string.Format ("Access denied to '{0}'", foldername),
-                        stack,
-                        context);
-            }
-
         }
 
         /*
@@ -111,23 +78,12 @@ namespace p5.io.authorization.helpers
          */
         internal static void AuthorizeModifyFolder (ApplicationContext context, string foldername, Node stack)
         {
-            // Verifies foldername is valid.
-            if (!VerifySaneFolderName (foldername))
+            // Making sure we do a lowers comparison.
+            if (!UserHasWriteAccessToFolder (context, foldername.ToLowerInvariant ()))
                 throw new LambdaException (
-                    string.Format ("Folder '{0}' was not a valid folder path", foldername),
+                    string.Format ("Access denied to '{0}'", foldername),
                     stack,
                     context);
-
-            // Checking role of user, and invoking relevant check.
-            if (context.Ticket.Role != "root") {
-
-                // Making sure we do a lowers comparison.
-                if (!UserHasWriteAccessToFolder (context, foldername.ToLowerInvariant ()))
-                    throw new LambdaException (
-                        string.Format ("Access denied to '{0}'", foldername),
-                        stack,
-                        context);
-            }
         }
         
         /*
@@ -136,6 +92,14 @@ namespace p5.io.authorization.helpers
          */
         internal static bool UserHasReadAccessToFile (ApplicationContext context, string path)
         {
+            // Verifies filename is sane.
+            if (!VerifySaneFileName (path))
+                return false;
+
+            // Checking if user is "root" at which point he always have access.
+            if (context.Ticket.Role == "root")
+                return true;
+
             // Checking access rights first.
             bool explicitAccess;
             var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
@@ -188,6 +152,14 @@ namespace p5.io.authorization.helpers
          */
         internal static bool UserHasReadAccessToFolder (ApplicationContext context, string path)
         {
+            // Verifies filename is sane.
+            if (!VerifySaneFolderName (path))
+                return false;
+
+            // Checking if user is "root" at which point he always have access.
+            if (context.Ticket.Role == "root")
+                return true;
+
             // Checking access rights first.
             bool explicitAccess;
             var accessDeclaration = CheckAccessRights (context, path, "read", true, out explicitAccess);
@@ -231,6 +203,14 @@ namespace p5.io.authorization.helpers
          */
         internal static bool UserHasWriteAccessToFile (ApplicationContext context, string path)
         {
+            // Verifies filename is sane.
+            if (!VerifySaneFileName (path))
+                return false;
+
+            // Checking if user is "root" at which point he always have access.
+            if (context.Ticket.Role == "root")
+                return true;
+
             // Checking access rights first.
             bool explicitAccess;
             var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
@@ -261,6 +241,14 @@ namespace p5.io.authorization.helpers
          */
         internal static bool UserHasWriteAccessToFolder (ApplicationContext context, string path)
         {
+            // Verifies filename is sane.
+            if (!VerifySaneFolderName (path))
+                return false;
+
+            // Checking if user is "root" at which point he always have access.
+            if (context.Ticket.Role == "root")
+                return true;
+
             // Checking access rights first.
             bool explicitAccess;
             var accessDeclaration = CheckAccessRights (context, path, "write", true, out explicitAccess);
@@ -300,6 +288,12 @@ namespace p5.io.authorization.helpers
                 return false;
             if (filename [0] != '/')
                 return false;
+
+            // Verifying filename only contains latin alphabet characters, and integer numbers, -, _ and / characters.
+            foreach (char idxChar in filename) {
+                if ("abcdefghijklmnopqrstuvwxyz0123456789_.-/".IndexOf (char.ToLower (idxChar, CultureInfo.InvariantCulture)) == -1)
+                    return false;
+            }
             if (filename.Contains ("//"))
                 return false;
             if (filename.Contains ("\\"))

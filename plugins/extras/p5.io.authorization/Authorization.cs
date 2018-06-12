@@ -55,7 +55,7 @@ namespace p5.io.authorization
         }
 
         /// <summary>
-        ///     Convenience event to check if user has read access to specified file.
+        ///     Convenience event to check if user has write access to specified file.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -66,7 +66,7 @@ namespace p5.io.authorization
         }
 
         /// <summary>
-        ///     Convenience event to check if user has read access to specified folder.
+        ///     Convenience event to check if user has write access to specified folder.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>

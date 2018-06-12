@@ -15,6 +15,15 @@ though I figured the existing user base wasn't too large for this to pose a
 problem at the time being, while also feeling it's justified to create more intuitive
 event names.
 
+### Not allowing "funny" filenames or folder names - *BREAKING CHANGE*
+
+Disallowing file and folder names with non Latin characters. Alowing a-z, 0-1, -,
+\_ and / (obviously) in file names and folder names. This is to avoid adversaries
+attempting to add funny paths to be able to access file objects outside of the
+normal file system accessible for a Phosphorus Five application, such as files
+with the name of _"/../"_ and similar constructs. Unfortunately this implies you
+can no longer use UNICODE characters, or non-Latin letters in filenames.
+
 ### Password entropy changes
 
 Changed the default password regime to require at least 25 characters, ancouraging
