@@ -128,7 +128,7 @@ rm -f binaries.zip
 rm -f -r p5
 
 # Making GnuPG folder for Apache process.
-sudo mkdir /var/www/.gnupg    
+sudo mkdir /var/www/.gnupg
 
 # Giving ownership (recursively) to Apache user for entire folder.
 # Necessary since P5 will create and modify its own file structure.

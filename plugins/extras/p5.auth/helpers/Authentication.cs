@@ -183,7 +183,9 @@ namespace p5.auth.helpers
                  * Notice, we double hash the password we store in our cookie, to make
                  * sure we never expose the parts of our password we store in our "auth" file.
                  */
-                cookie.Value = username + " " + Passwords.SaltAndHashPassword (context, hashedPassword);
+                cookie.Value = username + " " + Passwords.SaltAndHashPassword (
+                    context, 
+                    hashedPassword + GetClientFingerprint ());
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
 
@@ -286,7 +288,9 @@ namespace p5.auth.helpers
              * Notice, we need to double hash the password from "auth", since the
              * reference stored in cookie is double hashed.
              */
-            if (hashedPassword == Passwords.SaltAndHashPassword (context, userNode ["password"].Get<string> (context))) {
+            if (hashedPassword == Passwords.SaltAndHashPassword (
+                context,
+                userNode ["password"].Get<string> (context) + GetClientFingerprint ())) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket.
                 SetTicket (context, new ContextTicket (userNode.Name, userNode ["role"].Get<string> (context), false));
@@ -366,6 +370,22 @@ namespace p5.auth.helpers
                 context.RaiseEvent (_guestAccountActiveEventName).Get<string> (context),
                 context.RaiseEvent (_guestAccountActiveEventRole).Get<string> (context),
                 true);
+        }
+
+        /*
+         * Returns a fingerprint for current client, reducing the possibility of credential
+         * cookie theft.
+         * 
+         * Notice, this means the credential cookie becomes invalidated when the browser is updated,
+         * or the language preferences of the user is changed, etc.
+         */
+        static string GetClientFingerprint ()
+        {
+            var retVal = HttpContext.Current.Request.UserAgent ?? "";
+            foreach (var idxLang in HttpContext.Current.Request.UserLanguages ?? new string [] { }) {
+                retVal += idxLang;
+            }
+            return retVal;
         }
 
         #endregion
