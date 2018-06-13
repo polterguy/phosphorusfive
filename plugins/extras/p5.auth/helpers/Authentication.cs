@@ -179,8 +179,11 @@ namespace p5.auth.helpers
                  * be effectively prevented, by having a single static server salt,
                  * which again is cryptographically secured and persisted to disc
                  * in the "auth" file, and hence normally inaccessible for an adversary.
+                 * 
+                 * Notice, we double hash the password we store in our cookie, to make
+                 * sure we never expose the parts of our password we store in our "auth" file.
                  */
-                cookie.Value = username + " " + hashedPassword;
+                cookie.Value = username + " " + Passwords.SaltAndHashPassword (context, hashedPassword);
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
 
@@ -216,6 +219,11 @@ namespace p5.auth.helpers
 
                     // We have a cookie, try to use it as credentials.
                     LoginFromCookie (cookie, context);
+
+                } else {
+                    
+                    // Making sure we use default ticket.
+                    SetTicket (context, CreateDefaultTicket (context));
                 }
 
             } catch {
@@ -272,8 +280,13 @@ namespace p5.auth.helpers
             if (userNode == null)
                 throw new SecurityException ("Cookie not accepted");
 
-            // Checking if user's password is a match.
-            if (hashedPassword == userNode ["password"].Get<string> (context)) {
+            /*
+             * Checking if user's password is a match.
+             * 
+             * Notice, we need to double hash the password from "auth", since the
+             * reference stored in cookie is double hashed.
+             */
+            if (hashedPassword == Passwords.SaltAndHashPassword (context, userNode ["password"].Get<string> (context))) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket.
                 SetTicket (context, new ContextTicket (userNode.Name, userNode ["role"].Get<string> (context), false));
