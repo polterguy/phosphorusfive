@@ -21,13 +21,10 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.IO;
-using System.Web;
 using System.Linq;
 using System.Security;
-using System.Globalization;
-using System.Text.RegularExpressions;
+using DevOne.Security.Cryptography.BCrypt;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -104,7 +101,7 @@ namespace p5.auth.helpers
             // Verifying username is valid, since we'll need to create a folder for user.
             VerifyUsernameValid (username);
 
-            // Salting and hashing password before entering lock for "auth" file.
+            // To reduce lock time of "auth" file, we execute Blow Fish hashing before we enter lock.
             password = Passwords.SaltAndHashPassword (context, password);
 
             // Locking access to password file as we create new user object.
@@ -121,10 +118,10 @@ namespace p5.auth.helpers
 
                     // Adding user.
                     var userNode = authFile ["users"].Add (username).LastChild;
-
-                    // Creates a salt and password for user.
+                    
+                    // Salting and hashing password, before storing it in "auth" file.
                     userNode.Add ("password", password);
-
+                    
                     // Adding user to specified role.
                     userNode.Add ("role", role);
 
@@ -220,7 +217,7 @@ namespace p5.auth.helpers
                 }
             }
 
-            // Salting and hashing password before we enter locked access to "auth" file, since this locks access to the "auth" file.
+            // To reduce lock time of "auth" file we execute Blow Fish hashing before we enter lock.
             password = password == null ? null : Passwords.SaltAndHashPassword (context, password);
 
             // Locking access to password file as we edit user object.
@@ -234,7 +231,7 @@ namespace p5.auth.helpers
                             "Sorry, that user does not exist",
                             args,
                             context);
-
+                    
                     // Updating user's password, but only if a new password was supplied by caller.
                     if (!string.IsNullOrEmpty (password))
                         authFile ["users"] [username] ["password"].Value = password;
@@ -247,10 +244,10 @@ namespace p5.auth.helpers
                     if (args.Name == "p5.auth.users.edit") {
 
                         // Removing old settings.
-                        authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+                        authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role" && ix.Name != "salt");
 
                         // Adding all other specified objects to user.
-                        foreach (var idxNode in args.Children.Where (ix => ix.Name != "password" && ix.Name != "role")) {
+                        foreach (var idxNode in args.Children.Where (ix => ix.Name != "password" && ix.Name != "role" && ix.Name != "salt")) {
 
                             authFile ["users"] [username].Add (idxNode.Clone ());
                         }

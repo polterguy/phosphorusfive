@@ -83,14 +83,11 @@ namespace p5.auth.helpers
             // Defaulting result of Active Event to unsuccessful.
             args.Value = false;
 
-            // Retrieving supplied credentials
+            // Retrieving supplied credentials.
             var username = args.GetExChildValue<string> ("username", context);
             var password = args.GetExChildValue<string> ("password", context);
             args.FindOrInsert ("password").Value = "xxx"; // In case an exception occurs.
             var persist = args.GetExChildValue ("persist", context, false);
-
-            // Then creating system fingerprint from given password.
-            var hashedPassword = Passwords.SaltAndHashPassword (context, password);
 
             // Retrieving password file as a Node.
             var pwdFile = AuthFile.GetAuthFile (context);
@@ -138,7 +135,7 @@ namespace p5.auth.helpers
             }
 
             // Checking for match on password.
-            if (userNode ["password"].Get<string> (context) != hashedPassword) {
+            if (!Passwords.VerifyPasswordIsCorrect (password, userNode ["password"].Get<string> (context))) {
 
                 /*
                  * Making sure we guard against brute force password attacks, before we throw security exception.
@@ -183,9 +180,9 @@ namespace p5.auth.helpers
                  * Notice, we double hash the password we store in our cookie, to make
                  * sure we never expose the parts of our password we store in our "auth" file.
                  */
-                cookie.Value = username + " " + Passwords.SaltAndHashPassword (
-                    context, 
-                    hashedPassword + GetClientFingerprint ());
+                cookie.Value = username + " " + Passwords.HashPasswordForCookieStorage (
+                    context,
+                    userNode ["password"].Get<string> (context));
                 HttpContext.Current.Response.Cookies.Add (cookie);
             }
 
@@ -272,7 +269,7 @@ namespace p5.auth.helpers
 
             // Retrieving username and (hashed/salted) password from cookie.
             var cookieUsername = cookieSplits [0];
-            var hashedPassword = cookieSplits [1];
+            var cookiePassword = cookieSplits [1];
 
             // Retrieving password file in Node format.
             var pwdFile = AuthFile.GetAuthFile (context);
@@ -286,11 +283,20 @@ namespace p5.auth.helpers
              * Checking if user's password is a match.
              * 
              * Notice, we need to double hash the password from "auth", since the
-             * reference stored in cookie is double hashed.
+             * reference stored in cookie is double hashed, and has the client's fingerprint
+             * added to it, to reduce probability of cookie theft.
+             * 
+             * Notice also that since the credential cookie has roughly 1.0e+77 amount of
+             * entropy, slow hashing or using blow fish at this point is pointless, and
+             * would simply add additional overhead for the initial loading of our page
+             * when the persistent credential cookie needs to be verified. Hence we
+             * can safely get away with "fast hashing" at this point, but adding parts
+             * of the clients fingerprint into the mix, to avoid at least to some extent
+             * credential cookie theft.
              */
-            if (hashedPassword == Passwords.SaltAndHashPassword (
-                context,
-                userNode ["password"].Get<string> (context) + GetClientFingerprint ())) {
+            if (cookiePassword == Passwords.HashPasswordForCookieStorage (
+                    context,
+                    userNode ["password"].Get<string> (context))) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket.
                 SetTicket (context, new ContextTicket (userNode.Name, userNode ["role"].Get<string> (context), false));
@@ -370,22 +376,6 @@ namespace p5.auth.helpers
                 context.RaiseEvent (_guestAccountActiveEventName).Get<string> (context),
                 context.RaiseEvent (_guestAccountActiveEventRole).Get<string> (context),
                 true);
-        }
-
-        /*
-         * Returns a fingerprint for current client, reducing the possibility of credential
-         * cookie theft.
-         * 
-         * Notice, this means the credential cookie becomes invalidated when the browser is updated,
-         * or the language preferences of the user is changed, etc.
-         */
-        static string GetClientFingerprint ()
-        {
-            var retVal = HttpContext.Current.Request.UserAgent ?? "";
-            foreach (var idxLang in HttpContext.Current.Request.UserLanguages ?? new string [] { }) {
-                retVal += idxLang;
-            }
-            return retVal;
         }
 
         #endregion

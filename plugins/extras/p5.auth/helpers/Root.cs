@@ -33,7 +33,6 @@ namespace p5.auth.helpers
     /// </summary>
     static class Root
     {
-
         /*
          * Returns true if root account exists, which implies that server has been setup.
          */

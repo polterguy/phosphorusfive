@@ -122,6 +122,22 @@ create-event:desktop.authentication.login
                 onclick
 
                   /*
+                   * Since we are using slow hashing, we create a cover widget that hides the page while we
+                   * attempt tologin the user.
+                   */
+                  create-widgets
+                    micro.widgets.cover:desktop-cover-login-widget
+                      message:Please wait while we try to log you into the system ...
+                  p5.web.send-javascript:"p5.$('desktop-login-button').raise('.onclick');"
+
+                .onclick
+
+                  /*
+                   * Deleting cover widget.
+                   */
+                  delete-widget:desktop-cover-login-widget
+
+                  /*
                    * Retrieving username and password, and attempting to log user into system.
                    */
                   micro.form.serialize:desktop-wizared-form
