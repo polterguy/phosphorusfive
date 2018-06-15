@@ -35,7 +35,7 @@ namespace phosphorus.crypto
     public static class Hash
     {
         /// <summary>
-        ///     Creates a Sha1 hash of input given
+        ///     Creates a SHA1 hash of input given.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -55,7 +55,7 @@ namespace phosphorus.crypto
         }
 
         /// <summary>
-        ///     Creates a Sha1 hash of given filename
+        ///     Creates a SHA1 hash of given filename.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -75,7 +75,7 @@ namespace phosphorus.crypto
         }
 
         /// <summary>
-        ///     Creates a Sha256 hash of input given
+        ///     Creates a Sha256 hash of input given.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -86,16 +86,16 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating SHA256 hasher.
-                using (var sha1 = SHA256.Create ()) {
+                using (var sha256 = SHA256.Create ()) {
 
                     // Invoking worker method.
-                    CreateHash (context, sha1, e.Args);
+                    CreateHash (context, sha256, e.Args);
                 }
             }
         }
 
         /// <summary>
-        ///     Creates a Sha256 hash of given filename
+        ///     Creates a Sha256 hash of given filename.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -106,16 +106,16 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating SHA256 hasher.
-                using (var sha1 = SHA256.Create ()) {
+                using (var sha256 = SHA256.Create ()) {
 
                     // Invoking worker method.
-                    CreateHashFromFile (context, sha1, e.Args);
+                    CreateHashFromFile (context, sha256, e.Args);
                 }
             }
         }
 
         /// <summary>
-        ///     Creates a SHA512 hash of input given
+        ///     Creates a SHA512 hash of input given.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -126,16 +126,16 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating SHA512 hasher.
-                using (var sha1 = SHA512.Create ()) {
+                using (var sha512 = SHA512.Create ()) {
 
                     // Invoking worker method.
-                    CreateHash (context, sha1, e.Args);
+                    CreateHash (context, sha512, e.Args);
                 }
             }
         }
 
         /// <summary>
-        ///     Creates a Sha256 hash of given filename
+        ///     Creates a SHA512 hash of given filename.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -146,16 +146,16 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating SHA512 hasher.
-                using (var sha1 = SHA512.Create ()) {
+                using (var sha512 = SHA512.Create ()) {
 
                     // Invoking worker method.
-                    CreateHashFromFile (context, sha1, e.Args);
+                    CreateHashFromFile (context, sha512, e.Args);
                 }
             }
         }
 
         /*
-         * Helper methods for above.
+         * Helper method for above.
          */
         static void CreateHash (ApplicationContext context, HashAlgorithm hasher, Node args)
         {
@@ -165,22 +165,8 @@ namespace phosphorus.crypto
                 // Retrieving value to hash as a blob.
                 var whatToHash = XUtil.Single<byte []> (context, args);
 
-                // Checking if caller wants "raw bytes".
-                if (args.GetExChildValue ("raw", context, false)) {
-
-                    // Returning hash as raw bytes.
-                    args.Value = hasher.ComputeHash (whatToHash);
-
-                } else if (args.GetExChildValue ("hex", context, false)) {
-
-                    // Returning value as hexadecimal string.
-                    args.Value = BitConverter.ToString (hasher.ComputeHash (whatToHash)).Replace ("-", string.Empty);
-
-                } else {
-
-                    // Returning hash as base64 encoded string.
-                    args.Value = Convert.ToBase64String (hasher.ComputeHash (whatToHash));
-                }
+                // Returning value to caller.
+                ReturnHash (context, args, hasher.ComputeHash (whatToHash));
             }
         }
 
@@ -203,23 +189,32 @@ namespace phosphorus.crypto
                 // Opening file for read access, making sure we dispose it afterwards.
                 using (var stream = File.OpenRead (rootFolder + filename)) {
 
-                    // Checking if caller wants "raw bytes".
-                    if (args.GetExChildValue ("raw", context, false)) {
-
-                        // Returning hash as raw bytes.
-                        args.Value = hasher.ComputeHash (stream);
-
-                    } else if (args.GetExChildValue ("hex", context, false)) {
-
-                        // Returning value as hexadecimal string.
-                        args.Value = BitConverter.ToString (hasher.ComputeHash (stream)).Replace ("-", string.Empty);
-
-                    } else {
-
-                        // Returning hash as base64 encoded string.
-                        args.Value = Convert.ToBase64String (hasher.ComputeHash (stream));
-                    }
+                    // Returning value to caller.
+                    ReturnHash (context, args, hasher.ComputeHash (stream));
                 }
+            }
+        }
+
+        /*
+         * Helper for above.
+         */
+        static void ReturnHash (ApplicationContext context, Node args, byte[] hashValue)
+        {
+            // Checking if caller wants "raw bytes".
+            if (args.GetExChildValue ("raw", context, false)) {
+
+                // Returning hash as raw bytes.
+                args.Value = hashValue;
+
+            } else if (args.GetExChildValue ("hex", context, false)) {
+
+                // Returning value as hexadecimal string.
+                args.Value = BitConverter.ToString (hashValue).Replace ("-", string.Empty);
+
+            } else {
+
+                // Returning hash as base64 encoded string.
+                args.Value = Convert.ToBase64String (hashValue);
             }
         }
     }
