@@ -94,7 +94,6 @@ namespace p5.mime
                 }
 
                 // In case no [seed] was given, we remove the automatically generated seed ...
-                e.Args ["seed"].UnTie ();
                 e.Args.Add ("fingerprint", BitConverter.ToString (publicRing.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
                 e.Args.Add ("key-id", ((int)publicRing.GetPublicKey ().KeyId).ToString ("X"));
             }
@@ -114,7 +113,7 @@ namespace p5.mime
             int certainty)
         {
             // Creating a secure random generator to use when creating keypairs, seeding with all sorts of different unique values
-            var sr = CreateNewSecureRandom (context, args);
+            var sr = CreateNewSecureRandom (context);
 
             // Creating our generator
             IAsymmetricCipherKeyPairGenerator generator = GeneratorUtilities.GetKeyPairGenerator ("RSA");
@@ -148,9 +147,6 @@ namespace p5.mime
                     HashAlgorithmTag.Sha224
                 }.Select (ix => (int)ix).ToArray ());
             masterSubPacketGenerator.SetKeyExpirationTime (false, (long)(expires - DateTime.Now).TotalSeconds);
-
-            // Creating a new secure random generator to use when creating keypairs, seeding with all sorts of different unique values
-            sr = CreateNewSecureRandom (context, args);
 
             // Create signing and encryption key, for daily use
             PgpKeyPair encryptionKeyPair = new PgpKeyPair (
@@ -187,30 +183,9 @@ namespace p5.mime
         /*
          * Creates and seeds a new SecureRandom to be used for keypair creation
          */
-        static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
+        static SecureRandom CreateNewSecureRandom (ApplicationContext context)
         {
-            // Used to to hold seed for random number generator.
-            List<byte> seed = new List<byte> ();
-
-            // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided.
-            seed.AddRange (Encoding.UTF8.GetBytes (args.GetExChildValue<string> ("seed", context, "foobar") ?? "foobar"));
-
-            // Then retrieving "seed generator" from BouncyCastle.
-            seed.AddRange (new ThreadedSeedGenerator ().GenerateSeed (128, false));
-
-            // Then we retrieve the server password salt.
-            seed.AddRange (Encoding.UTF8.GetBytes (context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context, "in-case-server-hasn't-been-salted!!")));
-
-            // Then we retrieve the ticks of server.
-            seed.AddRange (Encoding.UTF8.GetBytes (DateTime.Now.Ticks.ToString ()));
-
-            // At this point, we are fairly certain that we have a pretty random and cryptographically secure seed.
-            // Provided that SecureRandom from BouncyCastle is implemented correctly, we should now have a VERY, VERY, VERY unique,
-            // and cryptographically secure Random Number seed!
-            SecureRandom retVal = new SecureRandom ();
-            retVal.SetSeed (seed.ToArray ());
-
-            return retVal;
+            return context.RaiseEvent (".p5.crypto.get-secure-random").Get<SecureRandom> (context);
         }
     }
 }

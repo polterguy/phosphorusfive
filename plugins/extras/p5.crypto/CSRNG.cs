@@ -33,11 +33,16 @@ using p5.core;
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     Helper class to create random bytes.
+    ///     Helper class to create cryptographically secure random numbers.
     /// </summary>
-    public static class CSRandomString
+    public static class CSRNG
     {
-        // To make sure we only seed the RNG once, we store it cached in class, and reuse it upon consecutive invocations.
+        /*
+         * To make sure we only seed the RNG once, which could create false secureity,
+         * we store it cached in class, and reuse it upon consecutive invocations.
+         * 
+         * Notice, according to the source code of BC, SecureRandom *should* be thread safe.
+         */
         static SecureRandom _secureRandom = null;
 
         /// <summary>
@@ -51,10 +56,9 @@ namespace phosphorus.crypto
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
-                // Creating new secure random from BouncyCastle to use for our random bytes.
-                var sr = CreateNewSecureRandom (context, e.Args);
+                // Retrieving a bunch of random bytes according to caller's specifications.
                 var buffer = new byte [e.Args.GetExChildValue ("resolution", context, 24)];
-                sr.NextBytes (buffer, 0, buffer.Length);
+                GetSecureRandom (context, e.Args).NextBytes (buffer, 0, buffer.Length);
 
                 // Checking if caller wants "raw bytes".
                 if (e.Args.GetExChildValue ("raw", context, false)) {
@@ -88,8 +92,7 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating new secure random from BouncyCastle to use for our random bytes.
-                var sr = CreateNewSecureRandom (context, e.Args);
-                e.Args.Value = sr.Next ();
+                e.Args.Value = GetSecureRandom (context, e.Args).Next ();
             }
         }
 
@@ -105,8 +108,7 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating new secure random from BouncyCastle to use for our random bytes.
-                var sr = CreateNewSecureRandom (context, e.Args);
-                e.Args.Value = sr.NextDouble ();
+                e.Args.Value = GetSecureRandom (context, e.Args).NextDouble ();
             }
         }
 
@@ -122,39 +124,89 @@ namespace phosphorus.crypto
             using (new ArgsRemover (e.Args)) {
 
                 // Creating new secure random from BouncyCastle to use for our random bytes.
-                var sr = CreateNewSecureRandom (context, e.Args);
-                e.Args.Value = sr.NextLong ();
+                e.Args.Value = GetSecureRandom (context, e.Args).NextLong ();
             }
+        }
+
+        /// <summary>
+        ///     Returns the SecureRandom instance to caller.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = ".p5.crypto.get-secure-random")]
+        public static void _p5_crypto_get_secure_random (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = GetSecureRandom (context,e.Args);
         }
 
         /*
          * Creates and seeds a new SecureRandom to be used for keypair creation
          */
-        static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
+        static SecureRandom GetSecureRandom (ApplicationContext context, Node args)
         {
             // Checking if we have previously instantiated SecureRandom, and seeded it before.
-            if (_secureRandom != null)
+            if (_secureRandom != null) {
+
+                // Checking if caller supplied a [seed] argument.
+                if (args ["seed"] != null) {
+
+                    /*
+                     * Seeding instance, making sure we hash [seed] to further eliminate predictability in cases
+                     * where parts of the seed is known by an adversary for some reasons.
+                     * 
+                     * Hence, by hashing it, we completely "randomize" the entire sequence of bytes, even if only one
+                     * single byte from the seed changes.
+                     * 
+                     * This is probably overkill, and highly likely also accommodated for internally in BouncyCastle,
+                     * but it's better to stay safe than sorry, and since this has little if any overhead for us,
+                     * we do it to stay sure.
+                     */
+                    using (var sha512 = SHA512.Create ()) {
+
+                        // Creating our RNG and seeding it with the seed's value hashed.
+                        _secureRandom.SetSeed (
+                            sha512.ComputeHash (args.GetExChildValue<byte[]> ("seed", context, Guid.NewGuid ().ToByteArray ())));
+                    }
+                }
                 return _secureRandom;
+            }
 
             // Used to to hold seed for random number generator.
-            List<byte> seed = new List<byte> ();
+            var seed = new List<byte> ();
 
-            // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided.
-            seed.AddRange (Encoding.UTF8.GetBytes (args.GetExChildValue<string> ("seed", context, Guid.NewGuid ().ToString ()) ?? Guid.NewGuid ().ToString ()));
+            // Retrieving the seed provided by caller through the [seed] argument, if any.
+            if (args ["seed"] != null)
+                seed.AddRange (args.GetExChildValue<byte[]> ("seed", context, Guid.NewGuid ().ToByteArray ()));
 
-            // Then retrieving "seed generator" from BouncyCastle.
+            // Then retrieving an additional seed from BouncyCastle's internal seed generator.
             seed.AddRange (new ThreadedSeedGenerator ().GenerateSeed (128, false));
 
-            // Then we retrieve the server password salt.
-            seed.AddRange (Encoding.UTF8.GetBytes (context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context, "in-case-server-hasn't-been-salted!!")));
+            // Then we retrieve the server salt and adds that to our seed.
+            seed.AddRange (
+                context.RaiseEvent (
+                    ".p5.auth.get-server-salt").Get<byte[]> (
+                        context, 
+                        Encoding.UTF8.GetBytes ("in-case-server-hasn't-been-salted!!")));
 
-            // Then we retrieve the ticks of server.
+            // Then we retrieve the ticks of server and adds that to our seed.
             seed.AddRange (Encoding.UTF8.GetBytes (DateTime.Now.Ticks.ToString ()));
 
-            // At this point, we are fairly certain that we have a pretty random and cryptographically securely seeded RNG.
-            _secureRandom = new SecureRandom ();
-            _secureRandom.SetSeed (seed.ToArray ());
+            /*
+             * Then to guard against cases where parts of the seed has somehow been compromised, we
+             * hash the entire seed, to make consecutive RNG values more unpredictable, and knowledge to
+             * parts of the seed less dangerous.
+             *
+             * This is probably overkill, and probably accommodated for internally in BouncyCastle,
+             * but has little if any cost to us, hence we do it to stay safe.
+             */
+            using (var sha512 = SHA512.Create ()) {
 
+                // Creating our RNG and seeding it with the seed's value hashed.
+                _secureRandom = new SecureRandom ();
+                _secureRandom.SetSeed (sha512.ComputeHash (seed.ToArray ()));
+            }
+
+            // Returning RNG to caller.
             return _secureRandom;
         }
     }

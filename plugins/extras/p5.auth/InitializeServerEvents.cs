@@ -64,7 +64,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth._set-server-salt")]
         static void p5_auth__set_server_salt (ApplicationContext context, ActiveEventArgs e)
         {
-            ServerSalt.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
+            ServerSalt.SetServerSalt (context, e.Args, e.Args.GetExValue<byte[]> (context));
         }
         
         /// <summary>

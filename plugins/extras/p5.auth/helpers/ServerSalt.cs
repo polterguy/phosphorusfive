@@ -24,9 +24,11 @@
 using System;
 using System.IO;
 using System.Web;
+using System.Text;
 using System.Linq;
 using System.Security;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;
@@ -51,8 +53,11 @@ namespace p5.auth.helpers
         /*
          * Sets the server salt for server.
          */
-        public static void SetServerSalt (ApplicationContext context, Node args, string salt)
+        public static void SetServerSalt (ApplicationContext context, Node args, byte[] salt)
         {
+            using (var sha512 = SHA512.Create ()) {
+                salt = sha512.ComputeHash (salt);
+            }
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
                 if (node.Children.Any (ix => ix.Name == "server-salt"))
                     throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
