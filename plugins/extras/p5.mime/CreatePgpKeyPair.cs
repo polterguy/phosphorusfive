@@ -195,9 +195,6 @@ namespace p5.mime
             // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided.
             seed.AddRange (Encoding.UTF8.GetBytes (args.GetExChildValue<string> ("seed", context, "foobar") ?? "foobar"));
 
-            // Then we retrieve a cryptographically secure random number of 128 bytes.
-            seed.AddRange (context.RaiseEvent ("p5.crypto.create-random", new Node ("", null, new Node [] { new Node ("resolution", 128), new Node ("raw", true) })).Get<byte []> (context));
-
             // Then retrieving "seed generator" from BouncyCastle.
             seed.AddRange (new ThreadedSeedGenerator ().GenerateSeed (128, false));
 
@@ -206,12 +203,6 @@ namespace p5.mime
 
             // Then we retrieve the ticks of server.
             seed.AddRange (Encoding.UTF8.GetBytes (DateTime.Now.Ticks.ToString ()));
-
-            // Then appending a randomly created Guid.
-            seed.AddRange (Encoding.UTF8.GetBytes (Guid.NewGuid ().ToString ()));
-
-            // Then we change the "user seed" to make sure consecutive invocations does not in any ways use the same original seed.
-            args.FindOrInsert ("seed").Value = context.RaiseEvent ("p5.crypto.hash.create-sha512", new Node ("", seed)).Get<string> (context);
 
             // At this point, we are fairly certain that we have a pretty random and cryptographically secure seed.
             // Provided that SecureRandom from BouncyCastle is implemented correctly, we should now have a VERY, VERY, VERY unique,

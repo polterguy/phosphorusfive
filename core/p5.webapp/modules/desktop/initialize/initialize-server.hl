@@ -74,11 +74,11 @@ it and decrypt the key from GnuPG."
                   /*
                    * Filling it with some default random bytes.
                    */
-                  p5.crypto.create-random
+                  p5.crypto.create-random-bytes
                     resolution:64
                     hex:true
                   set-widget-property:x:/../*/_event?value
-                    value:x:/@p5.crypto.create-random?value
+                    value:x:/@p5.crypto.create-random-bytes?value
 
               /*
                * Select widget in case user has an existing PGP keypair in his GnuPG database.
@@ -274,11 +274,11 @@ it and decrypt the key from GnuPG."
                               /*
                                * Creating a new random salt, since user deleted the existing one.
                                */
-                              p5.crypto.create-random
+                              p5.crypto.create-random-bytes
                                 resolution:64
                                 hex:true
                               set-widget-property:server-salt
-                                value:x:/@p5.crypto.create-random?value
+                                value:x:/@p5.crypto.create-random-bytes?value
 
                   button
                     innerValue:Help

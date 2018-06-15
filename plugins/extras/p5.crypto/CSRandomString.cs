@@ -22,56 +22,140 @@
  */
 
 using System;
+using System.Text;
+using System.Collections.Generic;
 using System.Security.Cryptography;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Prng;
 using p5.exp;
 using p5.core;
 
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     Helper class to create random pieces of text
+    ///     Helper class to create random bytes.
     /// </summary>
     public static class CSRandomString
     {
+        // To make sure we only seed the RNG once, we store it cached in class, and reuse it upon consecutive invocations.
+        static SecureRandom _secureRandom = null;
+
         /// <summary>
-        ///     Creates a Cryptographically Secure Random array of bytes, and returns as base64 encoded string
+        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-random")]
-        public static void p5_crypto_create_random (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.create-random-bytes")]
+        public static void p5_crypto_create_random_bytes (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
-                // Creating a new random number and returning to caller
-                using (RNGCryptoServiceProvider csRandomGenerator = new RNGCryptoServiceProvider ()) {
+                // Creating new secure random from BouncyCastle to use for our random bytes.
+                var sr = CreateNewSecureRandom (context, e.Args);
+                var buffer = new byte [e.Args.GetExChildValue ("resolution", context, 24)];
+                sr.NextBytes (buffer, 0, buffer.Length);
 
-                    // Creating buffer byte array to hold results, in specified resolution, defaulting to 24 bytes
-                    byte [] buffer = new byte [e.Args.GetExChildValue ("resolution", context, 24)];
+                // Checking if caller wants "raw bytes".
+                if (e.Args.GetExChildValue ("raw", context, false)) {
 
-                    // Filling buffer with random bytes
-                    csRandomGenerator.GetBytes (buffer);
+                    // Returning raw bytes.
+                    e.Args.Value = buffer;
 
-                    // Checking if caller wants "raw bytes"
-                    if (e.Args.GetExChildValue ("raw", context, false)) {
+                } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
-                        // Returning raw bytes
-                        e.Args.Value = buffer;
-
-                    } else if (e.Args.GetExChildValue ("hex", context, false)) {
-
-                        // Returning value as hexadecimal string.
-                        e.Args.Value = BitConverter.ToString (buffer).Replace ("-", string.Empty);
+                    // Returning value as hexadecimal string.
+                    e.Args.Value = BitConverter.ToString (buffer).Replace ("-", string.Empty);
 
 
-                    } else {
+                } else {
 
-                        // Converting buffer bytes to base64 encoded string and returning to caller
-                        e.Args.Value = Convert.ToBase64String (buffer);
-                    }
+                    // Converting buffer bytes to base64 encoded string and returning to caller.
+                    e.Args.Value = Convert.ToBase64String (buffer);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.create-random-integer")]
+        public static void p5_crypto_create_random_integer (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
+
+                // Creating new secure random from BouncyCastle to use for our random bytes.
+                var sr = CreateNewSecureRandom (context, e.Args);
+                e.Args.Value = sr.Next ();
+            }
+        }
+
+        /// <summary>
+        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.create-random-double")]
+        public static void p5_crypto_create_random_double (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
+
+                // Creating new secure random from BouncyCastle to use for our random bytes.
+                var sr = CreateNewSecureRandom (context, e.Args);
+                e.Args.Value = sr.NextDouble ();
+            }
+        }
+
+        /// <summary>
+        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.create-random-long")]
+        public static void p5_crypto_create_random_long (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
+
+                // Creating new secure random from BouncyCastle to use for our random bytes.
+                var sr = CreateNewSecureRandom (context, e.Args);
+                e.Args.Value = sr.NextLong ();
+            }
+        }
+
+        /*
+         * Creates and seeds a new SecureRandom to be used for keypair creation
+         */
+        static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
+        {
+            // Checking if we have previously instantiated SecureRandom, and seeded it before.
+            if (_secureRandom != null)
+                return _secureRandom;
+
+            // Used to to hold seed for random number generator.
+            List<byte> seed = new List<byte> ();
+
+            // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided.
+            seed.AddRange (Encoding.UTF8.GetBytes (args.GetExChildValue<string> ("seed", context, Guid.NewGuid ().ToString ()) ?? Guid.NewGuid ().ToString ()));
+
+            // Then retrieving "seed generator" from BouncyCastle.
+            seed.AddRange (new ThreadedSeedGenerator ().GenerateSeed (128, false));
+
+            // Then we retrieve the server password salt.
+            seed.AddRange (Encoding.UTF8.GetBytes (context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context, "in-case-server-hasn't-been-salted!!")));
+
+            // Then we retrieve the ticks of server.
+            seed.AddRange (Encoding.UTF8.GetBytes (DateTime.Now.Ticks.ToString ()));
+
+            // At this point, we are fairly certain that we have a pretty random and cryptographically securely seeded RNG.
+            _secureRandom = new SecureRandom ();
+            _secureRandom.SetSeed (seed.ToArray ());
+
+            return _secureRandom;
         }
     }
 }
