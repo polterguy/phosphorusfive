@@ -28,7 +28,7 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 namespace p5.crypto.gnupg.helpers
 {
     /// <summary>
-    ///     Gnu Privacy Guard context for accessing PGP keys from GnuPG.
+    ///     Gnu Privacy Guard PGP context for accessing PGP keys from GnuPG.
     /// </summary>
     public class GnuPrivacyContext : GnuPGContext
     {

@@ -33,7 +33,8 @@ namespace p5.crypto.gnupg
     public static class GetGnuPGContext
     {
         /// <summary>
-        ///     Invoked during initial startup of application. Registers cryptography context (GnuPG)
+        ///     Invoked during initial startup of application.
+        ///     Registers cryptography context (GnuPG).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -45,7 +46,7 @@ namespace p5.crypto.gnupg
         }
 
         /// <summary>
-        ///     Returns a GnuPG context.
+        ///     Returns a PGP context.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
