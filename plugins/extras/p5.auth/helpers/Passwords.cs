@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -131,7 +131,7 @@ namespace p5.auth.helpers
         public static string HashPasswordForCookieStorage (ApplicationContext context, string password)
         {
             return context.RaiseEvent (
-                "p5.crypto.hash.create-sha256",
+                "p5.crypto.sha256.hash",
                 new Node ("", password + GetClientFingerprint ())).Get<string> (context);
         }
 

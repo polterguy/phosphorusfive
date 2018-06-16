@@ -23,9 +23,8 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
+using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 using MimeKit;
 using MimeKit.Cryptography;
 
@@ -42,7 +41,7 @@ namespace p5.mime.helpers
         int _noNameAttachments;
         string _attachmentFolder;
         bool _addPrefixToAttachmentPath;
-        List<GnuPrivacyContext.KeyPasswordMapper> _passwords;
+        string _password;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeParser"/> class.
@@ -58,13 +57,6 @@ namespace p5.mime.helpers
             string attachmentFolder,
             bool addPrefixToAttachmentPath = true)
         {
-            // Retrieving passwords from args.
-            if (args ["decrypt"] != null) {
-
-                // Caller supplied explicit decryption keys, making sure we add them up as keys to use for decrypting MIME entities.
-                AddExplicitDecryptionKeys (context, args);
-            }
-
             // Retrieving other arguments.
             _context = context;
             _args = args;
@@ -72,6 +64,8 @@ namespace p5.mime.helpers
             if (!string.IsNullOrEmpty (attachmentFolder))
                 _attachmentFolder = context.RaiseEvent (".p5.io.unroll-path", new Node ("", attachmentFolder)).Get<string> (context, null);
             _addPrefixToAttachmentPath = addPrefixToAttachmentPath;
+            if (args ["decrypt"] != null)
+                _password = args ["decrypt"].GetExChildValue<string> ("password", context, null);
         }
 
         /// <summary>
@@ -80,36 +74,6 @@ namespace p5.mime.helpers
         public void Process ()
         {
             ProcessEntity (_rootEntity, _args);
-        }
-
-        /*
-         * Adds up explicitly given decryption keys and passwords to retrieve key from GnuPG.
-         */
-        void AddExplicitDecryptionKeys (ApplicationContext context, Node args)
-        {
-            // Caller supplied decryption keys, enumerating them, and storing to list of key, making sure we DETACH them
-            // from args, such that they don't leave method in case of exception - (they probably contain passwords in plain form).
-            _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
-            var keys = args ["decrypt"].UnTie ();
-
-            // Looping through each decryption key specified by caller.
-            foreach (var idxKey in keys.Children) {
-                if (idxKey.Name == "email") {
-
-                    // Email lookup.
-                    _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (new MailboxAddress ("", idxKey.Get<string> (context)), idxKey.GetChildValue<string> ("password", context)));
-
-                } else if (idxKey.Name == "fingerprint") {
-
-                    // Fingerprint lookup.
-                    _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (new SecureMailboxAddress ("", "foo@bar.com", idxKey.Get<string> (context)), idxKey.GetChildValue<string> ("password", context)));
-
-                } else {
-
-                    // Oops ...
-                    throw new LambdaException (string.Format ("I don't know how to use a '{0}' to lookup a decryption key from GnuPG", idxKey.Name), args, context);
-                }
-            }
         }
 
         /*
@@ -173,6 +137,7 @@ namespace p5.mime.helpers
                     return false; // No need to save these parts to disc.
 
                 return true;
+
             } else if (!string.IsNullOrEmpty (part.FileName) && part.ContentDisposition != null && part.ContentDisposition.Disposition == "form-data") {
 
                 // Form data file attachment.
@@ -314,17 +279,13 @@ namespace p5.mime.helpers
         {
             try {
                 // Creating cryptographic context.
-                using (var ctx = new GnuPrivacyContext (false)) {
-
-                    // Associating our KeyPasswordMapper collection with GnuPG CryptographyContext.
-                    ctx.Passwords = _passwords;
+                using (var ctx = _context.RaiseEvent (
+                    ".p5.crypto.pgp-keys.context.create",
+                    new Node ("", false, new Node [] { new Node ("password", _password) })).Get<OpenPgpContext> (_context)) {
 
                     // Decrypting entity, making sure we retrieve signatures at the same time, if there are any.
                     DigitalSignatureCollection signatures;
                     var decryptedMultipart = encryptedMultipart.Decrypt (ctx, out signatures);
-
-                    // Making sure caller gets notified of which private key was used for decrypting encrypted multipart.
-                    entityNode.Add ("decryption-key", ctx.LastUsedUserId);
 
                     // Adding signatures.
                     ProcessSignatures (entityNode, signatures);
@@ -348,7 +309,9 @@ namespace p5.mime.helpers
         void ProcessSignedMultipart (MultipartSigned signedMultipart, Node entityNode)
         {
             // Creating cryptographic context.
-            using (var ctx = new GnuPrivacyContext (false)) {
+            using (var ctx = _context.RaiseEvent (
+                ".p5.crypto.pgp-keys.context.create",
+                new Node ("", false)).Get<OpenPgpContext> (_context)) {
 
                 // Adding signatures.
                 ProcessSignatures (entityNode, signedMultipart.Verify (ctx));

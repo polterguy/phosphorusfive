@@ -212,10 +212,9 @@ namespace p5.mime.helpers
             var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context.
-            using (var ctx = new GnuPrivacyContext (false)) {
-
-                // Setting password to retrieve signing certificate from GnuPG context.
-                ctx.Password = signatureAddress.Item1;
+            using (var ctx = _context.RaiseEvent (
+                ".p5.crypto.pgp-keys.context.create", 
+                new Node ("", false, new Node [] { new Node ("password", signatureAddress.Item1) })).Get<OpenPgpContext> (_context)) {
 
                 // Signing content of email and returning to caller.
                 return MultipartSigned.Create (
@@ -239,7 +238,9 @@ namespace p5.mime.helpers
 
             // Creating our Gnu Privacy Guard context.
             // Notice, no password necessary when doing encryption, since we're only using public certificates.
-            using (var ctx = new GnuPrivacyContext (false)) {
+            using (var ctx = _context.RaiseEvent (
+                ".p5.crypto.pgp-keys.context.create",
+                new Node ("", false)).Get<OpenPgpContext> (_context)) {
 
                 // Encrypting content of email and returning to caller.
                 var retVal = MultipartEncrypted.Encrypt (
@@ -277,10 +278,9 @@ namespace p5.mime.helpers
             var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context.
-            using (var ctx = new GnuPrivacyContext (false)) {
-
-                // Setting password to retrieve signing certificate from GnuPG context.
-                ctx.Password = signatureAddress.Item1;
+            using (var ctx = _context.RaiseEvent (
+                ".p5.crypto.pgp-keys.context.create",
+                new Node ("", false, new Node [] { new Node ("password", signatureAddress.Item1) })).Get<OpenPgpContext> (_context)) {
 
                 // Signing and Encrypting content of email.
                 var retVal = MultipartEncrypted.SignAndEncrypt (

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -28,6 +28,7 @@ using System.Security.Cryptography;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Prng;
 using p5.exp;
+using p5.exp.exceptions;
 using p5.core;
 
 namespace phosphorus.crypto
@@ -50,8 +51,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-random-bytes")]
-        public static void p5_crypto_create_random_bytes (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.rng.create-bytes")]
+        public static void p5_crypto_rng_create_bytes (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -81,28 +82,30 @@ namespace phosphorus.crypto
         }
 
         /// <summary>
-        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
+        ///     Creates a Cryptographically Secure Random integer, and returns result to caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-random-integer")]
-        public static void p5_crypto_create_random_integer (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.rng.create-integer")]
+        public static void p5_crypto_rng_create_integer (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
                 // Creating new secure random from BouncyCastle to use for our random bytes.
-                e.Args.Value = GetSecureRandom (context, e.Args).Next ();
+                e.Args.Value = GetSecureRandom (context, e.Args).Next (
+                    e.Args.GetExChildValue ("min", context, int.MinValue),
+                    e.Args.GetExChildValue ("max", context, int.MaxValue));
             }
         }
 
         /// <summary>
-        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
+        ///     Creates a Cryptographically Secure Random double, and returns result to caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-random-double")]
-        public static void p5_crypto_create_random_double (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.rng.create-double")]
+        public static void p5_crypto_rng_create_double (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -113,12 +116,12 @@ namespace phosphorus.crypto
         }
 
         /// <summary>
-        ///     Creates a Cryptographically Secure Random array of bytes, and returns result to caller.
+        ///     Creates a Cryptographically Secure Random long, and returns result to caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-random-long")]
-        public static void p5_crypto_create_random_long (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.rng.create-long")]
+        public static void p5_crypto_rng_create_long (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -129,14 +132,38 @@ namespace phosphorus.crypto
         }
 
         /// <summary>
+        ///     Seeds the Cryptographically Secure RNG generator.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.rng.seed")]
+        public static void p5_crypto_rng_seed (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args, true)) {
+
+                // Making sure caller supplied a [seed] argument.
+                if (string.IsNullOrEmpty (e.Args.GetExChildValue<string> ("seed", context, null)))
+                    throw new LambdaException ("No [seed] argument supplied to [p5.crypto.rng.seed]", e.Args, context);
+
+                /* 
+                 * Since this method will correctly instantiate our SecureRandom, and accommodate for any [seed] arguments,
+                 * we use it as a convenience implementation directly.
+                 */
+                GetSecureRandom (context, e.Args);
+            }
+        }
+
+        /// <summary>
         ///     Returns the SecureRandom instance to caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = ".p5.crypto.get-secure-random")]
-        public static void _p5_crypto_get_secure_random (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.crypto.rng.secure-random.get")]
+        public static void _p5_crypto_rng_secure_random_get (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = GetSecureRandom (context,e.Args);
+            // Returning the SecureRandom instance to caller.
+            e.Args.Value = GetSecureRandom (context, e.Args);
         }
 
         /*
@@ -175,6 +202,7 @@ namespace phosphorus.crypto
             var seed = new List<byte> ();
 
             // Retrieving the seed provided by caller through the [seed] argument, if any.
+            // Notice, the seed as a whole will be hashed before used, so there's no need to hash the [seed] argument here.
             if (args ["seed"] != null)
                 seed.AddRange (args.GetExChildValue<byte[]> ("seed", context, Guid.NewGuid ().ToByteArray ()));
 

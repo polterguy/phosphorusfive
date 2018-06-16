@@ -239,6 +239,10 @@
       <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
       <Name>p5.xml</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.crypto.gnupg\p5.crypto.gnupg.csproj">
+      <Project>{107FAF9A-8635-4010-BB6B-BC1242E7DF67}</Project>
+      <Name>p5.crypto.gnupg</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
@@ -336,6 +340,7 @@
     <None Include="modules\desktop\startup\core\p5.error.Exception.hl" />
     <None Include="modules\desktop\help-files\03 - License terms.md" />
     <None Include="modules\desktop\help-files\04 - Credits and copyright information.md" />
+    <None Include="modules\desktop\help-files\05 - Articles about Phosphorus Five.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>

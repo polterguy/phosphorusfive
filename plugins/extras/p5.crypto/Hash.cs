@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -39,8 +39,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.hash.create-sha1")]
-        public static void p5_crypto_hash_create_sha1 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.sha1.hash")]
+        public static void p5_crypto_sha1_hash (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -59,8 +59,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.hash.create-sha1-file")]
-        public static void p5_crypto_hash_create_sha1_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.sha1.hash-file")]
+        public static void p5_crypto_sha1_hash_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -79,8 +79,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.hash.create-sha256")]
-        public static void p5_crypto_hash_create_sha256 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.sha256.hash")]
+        public static void p5_crypto_sha256_hash (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -99,8 +99,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.hash.create-sha256-file")]
-        public static void p5_crypto_hash_create_sha256_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.sha256.hash-file")]
+        public static void p5_crypto_sha256_hash_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -119,8 +119,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.hash.create-sha512")]
-        public static void p5_crypto_hash_create_sha512 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.sha512.hash")]
+        public static void p5_crypto_sha512_hash (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -139,8 +139,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.hash.create-sha512-file")]
-        public static void p5_crypto_hash_create_sha512_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.sha512.hash-file")]
+        public static void p5_crypto_sha512_hash_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {

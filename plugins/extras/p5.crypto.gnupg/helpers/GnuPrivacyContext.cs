@@ -25,7 +25,7 @@ using System.Threading;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
-namespace p5.crypto.helpers
+namespace p5.crypto.gnupg.helpers
 {
     /// <summary>
     ///     Gnu Privacy Guard context for accessing PGP keys from GnuPG.
@@ -36,17 +36,24 @@ namespace p5.crypto.helpers
         readonly bool _write;
         bool _disposed = false;
 
+        /*
+         * Necessary to be able to register as a cryptography context for MimeKit.
+         */
+        public GnuPrivacyContext ()
+        { }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:p5.crypto.helpers.GnuPrivacyContext"/> class.
         /// </summary>
         /// <param name="write">If set to <c>true</c> write.</param>
-        public GnuPrivacyContext (bool write = false)
+        public GnuPrivacyContext (bool write, string password)
         {
             _write = write;
             if (write)
                 _lock.EnterWriteLock ();
             else
                 _lock.EnterReadLock ();
+            Password = password;
         }
 
         /// <summary>
@@ -56,24 +63,6 @@ namespace p5.crypto.helpers
         internal string Password {
             get;
             set;
-        }
-
-        /// <summary>
-        ///     Saves the secret key ring bundle.
-        /// </summary>
-        internal void SaveSecretKeyRingBundle (PgpSecretKeyRingBundle bundle)
-        {
-            this.SecretKeyRingBundle = bundle;
-            this.SaveSecretKeyRingBundle ();
-        }
-
-        /// <summary>
-        ///     Saves the public key ring bundle.
-        /// </summary>
-        internal void SavePublicKeyRingBundle (PgpPublicKeyRingBundle bundle)
-        {
-            this.PublicKeyRingBundle = bundle;
-            this.SavePublicKeyRingBundle ();
         }
 
         /// <summary>

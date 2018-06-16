@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -46,8 +46,8 @@ namespace p5.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.create-pgp-keypair")]
-        public static void p5_crypto_create_pgp_keypair (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.create")]
+        public static void p5_crypto_pgp_keys_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves.
             using (new ArgsRemover (e.Args, true)) {
@@ -87,7 +87,7 @@ namespace p5.crypto
                  * Retrieving GnuPG context to let MimeKit import keys into GnuPG database.
                  * Making sure we retrieve it in "write mode".
                  */
-                using (var ctx = context.RaiseEvent (".p5.crypt.get-pgp-context", new Node ("", true)).Get<OpenPgpContext> (context)) {
+                using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", true)).Get<OpenPgpContext> (context)) {
 
                     // Saves public keyring.
                     ctx.Import (publicRing);
@@ -190,7 +190,7 @@ namespace p5.crypto
          */
         static SecureRandom CreateNewSecureRandom (ApplicationContext context)
         {
-            return context.RaiseEvent (".p5.crypto.get-secure-random").Get<SecureRandom> (context);
+            return context.RaiseEvent (".p5.crypto.rng.secure-random.get").Get<SecureRandom> (context);
         }
     }
 }

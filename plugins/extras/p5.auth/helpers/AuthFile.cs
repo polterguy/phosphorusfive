@@ -120,7 +120,6 @@ namespace p5.auth.helpers
                 // Decrypting file's content with PGP key referenced at the top of the file.
                 var node = new Node ("", fileContent);
                 node.Add ("decrypt").LastChild
-                    .Add ("fingerprint", fingerprint).LastChild
                     .Add ("password", gnuPgPassword);
                 context.RaiseEvent ("p5.mime.parse", node);
 

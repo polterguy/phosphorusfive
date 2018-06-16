@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -21,16 +21,16 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using p5.core;
-using p5.mime.helpers;
 using MimeKit.Cryptography;
+using p5.core;
+using p5.crypto.gnupg.helpers;
 
-namespace p5.mime
+namespace p5.crypto.gnupg
 {
     /// <summary>
-    ///     Class wrapping the common MIME features of Phosphorus Five
+    ///     Class wrapping retrieval of GnuPG context.
     /// </summary>
-    public static class MimeInit
+    public static class GetGnuPGContext
     {
         /// <summary>
         ///     Invoked during initial startup of application. Registers cryptography context (GnuPG)
@@ -42,6 +42,19 @@ namespace p5.mime
         {
             // Registering our Cryptography context, which is wrapping the local installation of Gnu Privacy Guard
             CryptographyContext.Register (typeof (GnuPrivacyContext));
+        }
+
+        /// <summary>
+        ///     Returns a GnuPG context.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = ".p5.crypto.pgp-keys.context.create")]
+        public static void _p5_crypto_pgp_keys_context_create (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = new GnuPrivacyContext (
+                e.Args.Get<bool> (context), 
+                e.Args.GetChildValue<string> ("password", context, null));
         }
     }
 }

@@ -15,6 +15,11 @@ though I figured the existing user base wasn't too large for this to pose a
 problem at the time being, while also feeling it's justified to create more intuitive
 event names.
 
+### Cleaning up some event names in p5.crypto - *BREAKING CHANGE*
+
+Changing some of the p5.crypto Active Event names to make them obey by the general
+naming convention in Phosphorus Five. Sorry about this ...
+
 ### Not allowing "funny" filenames or folder names - *BREAKING CHANGE*
 
 Disallowing file and folder names with non Latin characters. Alowing a-z, 0-1, -,

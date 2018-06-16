@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Initialises the Phosphorus Five installation, by allowing the user to
  * set his root root password, and optionally supply a manual server salt.
  *
@@ -74,11 +74,11 @@ it and decrypt the key from GnuPG."
                   /*
                    * Filling it with some default random bytes.
                    */
-                  p5.crypto.create-random-bytes
+                  p5.crypto.rng.create-bytes
                     resolution:64
                     hex:true
                   set-widget-property:x:/../*/_event?value
-                    value:x:/@p5.crypto.create-random-bytes?value
+                    value:x:/@p5.crypto.rng.create-bytes?value
 
               /*
                * Select widget in case user has an existing PGP keypair in his GnuPG database.
@@ -102,7 +102,7 @@ it and decrypt the key from GnuPG."
                       disabled
                     delete-widget-property:email-address
                       disabled
-                    p5.crypto.get-key-details:x:/@get-widget-property/*/*?value
+                    p5.crypto.pgp-keys.get-details:x:/@get-widget-property/*/*?value
                     split:x:/-/*/*/user-ids/0?value
                       =:<
                       =:>
@@ -130,8 +130,8 @@ it and decrypt the key from GnuPG."
                   /*
                    * Listing allprivate keys and creating one option element foreach.
                    */
-                  p5.crypto.list-private-keys
-                  p5.crypto.get-key-details:x:/-/*?name
+                  p5.crypto.pgp-keys.private.list
+                  p5.crypto.pgp-keys.get-details:x:/-/*?name
                   for-each:x:/-/*
                     p5.html.html-encode:x:/@_dp/#/*/user-ids/0?value
                     create-widget
@@ -274,11 +274,11 @@ it and decrypt the key from GnuPG."
                               /*
                                * Creating a new random salt, since user deleted the existing one.
                                */
-                              p5.crypto.create-random-bytes
+                              p5.crypto.rng.create-bytes
                                 resolution:64
                                 hex:true
                               set-widget-property:server-salt
-                                value:x:/@p5.crypto.create-random-bytes?value
+                                value:x:/@p5.crypto.rng.create-bytes?value
 
                   button
                     innerValue:Help
@@ -456,13 +456,13 @@ This further eliminates an adversary's ability to break into your system by perf
                          * Creating our PGP key, using AES password from web.config.
                          */
                         p5.config.get:gpg-server-keypair-password
-                        p5.crypto.create-pgp-keypair
+                        p5.crypto.pgp-keys.create
                           password:x:/@p5.config.get/*?value
                           identity:{0} <{1}>
                             :x:/..if/*/get-widget-property/[0,1]/*/*?value
                             :x:/..if/*/get-widget-property/[1,2]/*/*?value
                         set:x:/@if/@if/@get-widget-property/*/*?value
-                          src:x:/@p5.crypto.create-pgp-keypair/*/fingerprint?value
+                          src:x:/@p5.crypto.pgp-keys.create/*/fingerprint?value
 
                       /*
                        * Setting server's GnuPG key's fingerprint.

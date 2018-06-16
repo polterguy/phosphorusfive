@@ -45,11 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="CSRNG.cs" />
-    <Compile Include="helpers\GnuPrivacyContext.cs" />
     <Compile Include="CreatePgpKeyPair.cs" />
-    <Compile Include="GetGnuPGContext.cs" />
     <Compile Include="helpers\PGPKeyIterator.cs" />
     <Compile Include="GnuPGKeys.cs" />
+    <Compile Include="ImportPGPKey.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

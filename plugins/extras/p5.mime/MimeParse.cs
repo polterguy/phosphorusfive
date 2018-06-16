@@ -49,7 +49,8 @@ namespace p5.mime
                 context,
                 e.Args,
                 entity,
-                e.Args.GetExChildValue<string> ("attachment-folder", context));
+                e.Args.GetExChildValue<string> ("attachment-folder", context),
+                e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
 
             // Parses the MimeEntity and stuffs results into e.Args node
             parser.Process ();
@@ -69,7 +70,7 @@ namespace p5.mime
                 var stream = e.Args.Value as Stream;
                 if (e.Args.Value == null)
                     throw new LambdaException (
-                        "No stream provided to [.p5.mime.parse-from-stream]",
+                        "No stream provided to [.p5.mime.load-from-stream]",
                         e.Args,
                         context);
 

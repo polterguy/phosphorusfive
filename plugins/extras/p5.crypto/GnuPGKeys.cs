@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -23,11 +23,11 @@
 
 using System;
 using System.IO;
-using p5.exp;
-using p5.core;
-using p5.crypto.helpers;
+using MimeKit.Cryptography;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using p5.core;
+using p5.crypto.helpers;
 
 namespace p5.crypto
 {
@@ -41,14 +41,14 @@ namespace p5.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.list-public-keys")]
-        static void p5_crypto_list_public_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.public.list")]
+        static void p5_crypto_pgp_keys_public_list (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using common helper to iterate all secret keys.
-            PGPKeyIterator.Find (context, e.Args, delegate (PgpPublicKey key) {
-
+            // Using common helper to iterate all public keys.
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
+                
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
-                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = BitConverter.ToString (keyring.GetPublicKey ().GetFingerprint ()).Replace ("-", "").ToLower ();
                 e.Args.Add (fingerprint);
 
             }, false);
@@ -59,14 +59,14 @@ namespace p5.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.list-private-keys")]
-        static void p5_crypto_list_private_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.private.list")]
+        static void p5_crypto_pgp_keys_private_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
-            PGPKeyIterator.Find (context, e.Args, delegate (PgpSecretKey key) {
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing keyring) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
-                var fingerprint = BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = BitConverter.ToString (keyring.GetPublicKey ().GetFingerprint ()).Replace ("-", "").ToLower ();
                 e.Args.Add (fingerprint);
 
             }, false);
@@ -77,13 +77,18 @@ namespace p5.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.get-key-details")]
-        static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.get-details")]
+        static void p5_crypto_pgp_keys_get_details (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using common helper to iterate all secret keys.
-            PGPKeyIterator.Find (context, e.Args, delegate (PgpPublicKey key) {
+            /*
+             * Using common helper to iterate all public keys, assuming if caller
+             * has supplied a fingerprint or key-id to a private key, the public key
+             * will also exist.
+             */
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
 
                 // This key is matching specified filter criteria.
+                var key = keyring.GetPublicKey ();
                 var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
                 var node = e.Args.Add (fingerprint).LastChild;
                 node.Add ("id", ((int)key.KeyId).ToString ("X"));
@@ -116,13 +121,14 @@ namespace p5.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.get-public-key")]
-        static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.public.get")]
+        static void p5_crypto_pgp_keys_public_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
-            PGPKeyIterator.Find (context, e.Args, delegate (PgpPublicKey key) {
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
+                var key = keyring.GetPublicKey ();
                 var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
                 var node = e.Args.Add (fingerprint).LastChild;
 
@@ -141,107 +147,31 @@ namespace p5.crypto
         }
 
         /// <summary>
-        ///     Removes a private key from GnuPG database
+        ///     Deletes a public key from your private PGP keychain.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.delete-private-key")]
-        static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.private.delete")]
+        static void p5_crypto_pgp_keys_private_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning.
-            using (new ArgsRemover (e.Args, true)) {
-
-                // Creating new GnuPG context.
-                using (var ctx = new GnuPrivacyContext (true)) {
-
-                    // Signaler boolean.
-                    bool somethingWasRemoved = false;
-                    var bundle = ctx.SecretKeyRingBundle;
-
-                    // Looping through each ID given by caller.
-                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args)) {
-
-                        // Looping through each public key ring in GnuPG database until we find given ID.
-                        foreach (PgpSecretKeyRing idxSecretKeyRing in bundle.GetKeyRings ()) {
-
-                            // Looping through each key in keyring.
-                            foreach (PgpSecretKey idxSecretKey in idxSecretKeyRing.GetSecretKeys ()) {
-
-                                // Checking for a match, making sure we do not match UserIDs.
-                                if (PGPKeyIterator.IsMatch (idxSecretKey.PublicKey, idxId, false)) {
-
-                                    // Removing entire keyring, and signaling to save keyring bundle.
-                                    somethingWasRemoved = true;
-                                    bundle = PgpSecretKeyRingBundle.RemoveSecretKeyRing (bundle, idxSecretKeyRing);
-
-                                    // Breaking inner most foreach.
-                                    break;
-                                }
-                            }
-
-                            // Checking if currently iterated filter was found in currently iterated secret keyring.
-                            if (somethingWasRemoved)
-                                break;
-                        }
-                    }
-
-                    // Checking to see if something was removed, and if so, saving GnuPG context
-                    if (somethingWasRemoved)
-                        ctx.SaveSecretKeyRingBundle (bundle);
-                }
-            }
+            // Using common helper to iterate all secret keys.
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing key) {
+                ctx.Delete (key);
+            }, true);
         }
 
         /// <summary>
-        ///     Removes a public key from GnuPG database
+        ///     Deletes a public key from your public PGP keychain.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.delete-public-key")]
-        static void p5_crypto_delete_public_key (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.public.delete")]
+        static void p5_crypto_pgp_keys_public_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new ArgsRemover (e.Args, true)) {
-
-                // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext (true)) {
-
-                    // Signaler boolean
-                    bool somethingWasRemoved = false;
-                    var bundle = ctx.PublicKeyRingBundle;
-
-                    // Looping through each ID given by caller
-                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args)) {
-
-                        // Looping through each public key ring in GnuPG database until we find given ID
-                        foreach (PgpPublicKeyRing idxPublicKeyRing in bundle.GetKeyRings ()) {
-
-                            // Looping through each key in keyring
-                            foreach (PgpPublicKey idxPublicKey in idxPublicKeyRing.GetPublicKeys ()) {
-
-                                // Checking for a match, making sure we do not match UserIDs.
-                                if (PGPKeyIterator.IsMatch (idxPublicKey, idxId, false)) {
-
-                                    // Removing entire keyring, and signaling to save keyring bundle
-                                    somethingWasRemoved = true;
-                                    bundle = PgpPublicKeyRingBundle.RemovePublicKeyRing (bundle, idxPublicKeyRing);
-
-                                    // Breaking inner most foreach
-                                    break;
-                                }
-                            }
-
-                            // Checking if currently iterated filter was found in currently iterated secret keyring.
-                            if (somethingWasRemoved)
-                                break;
-                        }
-                    }
-
-                    // Checking to see if something was removed, and if so, saving GnuPG context
-                    if (somethingWasRemoved)
-                        ctx.SavePublicKeyRingBundle (bundle);
-                }
-            }
+            // Using common helper to iterate all secret keys.
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing key) {
+                ctx.Delete (key);
+            }, true);
         }
     }
 }
