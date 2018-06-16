@@ -30,7 +30,7 @@ using p5.exp;
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     Helper class to create Sha256 hash of whatever input given
+    ///     Helper class to create Sha256 hash of whatever input given.
     /// </summary>
     public static class Hash
     {

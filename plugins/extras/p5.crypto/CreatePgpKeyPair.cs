@@ -84,7 +84,7 @@ namespace p5.crypto
                 PgpSecretKeyRing secretRing = generator.GenerateSecretKeyRing ();
 
                 /* 
-                 * Retrieving GnuPG context to let MimeKit import keys into GnuPG database.
+                 * Retrieving PGP context to let MimeKit import keys into PGP storage.
                  * Making sure we retrieve it in "write mode".
                  */
                 using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", true)).Get<OpenPgpContext> (context)) {

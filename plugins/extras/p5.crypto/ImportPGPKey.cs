@@ -84,7 +84,7 @@ namespace p5.crypto
                 // Creating new PGP context.
                 using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", true)).Get<OpenPgpContext> (context)) {
 
-                    // Looping through each public key (in ascii armored format) and importing into GnuPG context.
+                    // Looping through each private key (in ascii armored format) and importing into context.
                     foreach (var idxKey in XUtil.Iterate<string> (context, e.Args)) {
 
                         // Creating armored input stream to wrap key.

@@ -25,6 +25,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using MimeKit;
@@ -375,10 +376,20 @@ namespace p5.mime.helpers
 
                 // Anything BUT byte[].
                 // Here we rely on conversion Active Events, making "everything else" serialise as strings.
+                // But first retrieving content, which might be in Hyperlambda format, or an expression.
+                var content = contentNode.GetExValue<string> (_context, null);
+                if (content == null) {
+                    if (contentNode.Count == 0)
+                        throw new LambdaException ("No [content] in your MIME envelope", _entityNode, _context);
+                    var lambda = new Node ();
+                    lambda.AddRange (contentNode.Clone ().Children);
+                    _context.RaiseEvent ("lambda2hyper", lambda);
+                    content = lambda.Get<string> (_context);
+                }
                 StreamWriter streamWriter = new StreamWriter (stream);
 
                 // Writing content to streamWriter.
-                streamWriter.Write (contentNode.Get<string> (_context));
+                streamWriter.Write (content);
                 streamWriter.Flush ();
                 stream.Position = 0;
             }

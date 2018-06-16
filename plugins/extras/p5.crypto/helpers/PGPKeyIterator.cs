@@ -23,6 +23,7 @@
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using MimeKit.Cryptography;
@@ -39,73 +40,66 @@ namespace p5.crypto.helpers
         internal delegate void MatchingSecretKeyRingDelegate (OpenPgpContext ctx, PgpSecretKeyRing keyRing);
         internal delegate void MatchingPublicKeyRingDelegate (OpenPgpContext ctx, PgpPublicKeyRing keyRing);
 
+        // Helper delegate to extract commonalities between methods.
+        private delegate void CommonContextDelegate (OpenPgpContext ctx, List<string> filters);
+
         /*
-         * Iterates all secret keys in all keyrings in PGP context, and invokes given delegate for every key matching filter condition.
+         * Iterates all secret keys in all keyrings in PGP context,
+         * and invokes given delegate for every key matching filter condition.
          */
         internal static void Find (ApplicationContext context, Node args, MatchingSecretKeyRingDelegate functor, bool write, bool matchUserIds = true)
         {
-            // House cleaning.
-            using (new ArgsRemover (args, true)) {
+            // Invoking common helper.
+            Find (context, args, delegate (OpenPgpContext ctx, List<string> filters) {
 
-                // Storing all filter given by caller in list, to avoid destroying enumeration iterator, due to modifying collection in caller's callback.
-                var filters = XUtil.Iterate<string> (context, args).Where (ix => ix != null).Select (ix => ix.ToLower ()).ToList ();
+                // Iterating all secret keyrings.
+                foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings ()) {
 
-                /* 
-                 * Retrieving GnuPG context to let MimeKit import keys into GnuPG database.
-                 * Making sure we retrieve it in mode specified by caller.
-                 */
-                using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", write)).Get<OpenPgpContext> (context)) {
-
-                    // Iterating all secret keyrings.
-                    foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings ()) {
-
-                        // Checking if caller provided filters, and if not, yielding "everything".
-                        if (filters.Count == 0) {
-
-                            // No filters provided, matching everything.
-                            functor (ctx, idxRing);
-
-                        } else {
-
-                            // Checking if key exists in filter.
-                            if (filters.Any (ix => IsMatch (idxRing.GetPublicKey (), ix, matchUserIds)))
-                                functor (ctx, idxRing);
-                        }
-                    }
+                    // Checking if key exists in filter.
+                    if (IsMatch (idxRing.GetPublicKey (), filters, matchUserIds))
+                        functor (ctx, idxRing);
                 }
-            }
+            }, write);
         }
 
         /*
-         * Iterates all public keys in all keyrings in GnuPrivacyContext, and invokes given delegate for every key matching filter condition.
+         * Iterates all public keys in all keyrings in GnuPrivacyContext,
+         * and invokes given delegate for every key matching filter condition.
          */
         internal static void Find (ApplicationContext context, Node args, MatchingPublicKeyRingDelegate functor, bool write, bool matchUserIds = true)
+        {
+            // Invoking common helper.
+            Find (context, args, delegate (OpenPgpContext ctx, List<string> filters) {
+
+                // Iterating all public keyrings.
+                foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
+
+                    // Checking if key exists in filter.
+                    if (IsMatch (idxRing.GetPublicKey (), filters, matchUserIds))
+                        functor (ctx, idxRing);
+                }
+            }, write);
+        }
+
+        /*
+         * Helper method for above.
+         */
+        private static void Find (ApplicationContext context, Node args, CommonContextDelegate functor, bool write)
         {
             // House cleaning.
             using (new ArgsRemover (args, true)) {
 
-                // Storing all filter given by caller in list, to avoid destroying enumeration iterator, due to modifying collection in caller's callback.
+                /*
+                 * Storing all filters given by caller in list, to avoid destroying enumeration iterator,
+                 * due to modifying collection in caller's callback.
+                 */
                 var filters = XUtil.Iterate<string> (context, args).Where (ix => ix != null).Select (ix => ix.ToLower ()).ToList ();
 
-                // Creating new GnuPG context.
+                // Creating PGP context.
                 using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", write)).Get<OpenPgpContext> (context)) {
 
-                    // Iterating all secret keyrings.
-                    foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
-
-                        // Checking if caller provided filters, and if not, yielding "everything".
-                        if (filters.Count == 0) {
-
-                            // No filters provided, matching everything.
-                            functor (ctx, idxRing);
-
-                        } else {
-
-                            // Checking if key exists in filter.
-                            if (filters.Any (ix => IsMatch (idxRing.GetPublicKey (), ix, matchUserIds)))
-                                functor (ctx, idxRing);
-                        }
-                    }
+                    // Invoking worker functor.
+                    functor (ctx, filters);
                 }
             }
         }
@@ -113,29 +107,39 @@ namespace p5.crypto.helpers
         /*
          * Checks to see if public key matches filter and returns true if so.
          */
-        internal static bool IsMatch (PgpPublicKey key, string filter, bool matchUserIds)
+        internal static bool IsMatch (PgpPublicKey key, List<string> filters, bool matchUserIds)
         {
-            // Checking fingerprint.
-            var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
-            if (fingerprint == filter)
+            // Checking if there are no filters, at which point we return everything.
+            if (filters.Count == 0)
                 return true;
 
-            // Checking key ID.
-            var keyID = ((int)key.KeyId).ToString ("X").ToLower ();
-            if (keyID == filter)
-                return true;
+            // Looping through each filter.
+            foreach (var filter in filters) {
 
-            // Enumerating user IDs looking for a "contains" match, but only if caller explicitly told us to.
-            if (matchUserIds) {
-                foreach (var idxUserID in key.GetUserIds ()) {
+                // Checking fingerprint.
+                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                if (fingerprint == filter)
+                    return true;
 
-                    // Checking if user ID is a string, and if so, checking for a match.
-                    var userID = idxUserID as string;
-                    if (userID != null) {
+                // Checking key ID.
+                var keyID = ((int)key.KeyId).ToString ("X").ToLower ();
+                if (keyID == filter)
+                    return true;
 
-                        // Checking if currently iterated userID contains specified filter.
-                        if (userID.ToLower ().Contains (filter))
-                            return true;
+                // Checking if caller wants to match user IDs.
+                if (matchUserIds) {
+
+                    // Iterating all user IDs.
+                    foreach (var idxUserID in key.GetUserIds ()) {
+
+                        // Checking if user ID is a string, and if so, checking for a match.
+                        var userID = idxUserID as string;
+                        if (userID != null) {
+
+                            // Checking if currently iterated userID contains specified filter.
+                            if (userID.ToLower ().Contains (filter))
+                                return true;
+                        }
                     }
                 }
             }

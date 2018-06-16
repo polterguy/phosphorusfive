@@ -210,6 +210,28 @@ namespace p5.mime.helpers
                 // Part is text part.
                 entityNode.Add ("content", txtPart.Text);
 
+            } else if (part.ContentType.MediaType == "application" && part.ContentType.MediaSubtype == "x-hyperlambda") {
+                
+                // Creating a stream to decode our entity to.
+                using (MemoryStream stream = new MemoryStream ()) {
+
+                    // Decoding content to memory.
+                    part.ContentObject.DecodeTo (stream);
+
+                    // Resetting position and setting up a buffer object to hold content.
+                    stream.Position = 0;
+
+                    // Getting content as text.
+                    using (var reader = new StreamReader (stream)) {
+
+                        // Reading content is string.
+                        var content = reader.ReadToEnd ();
+                        
+                        // Putting content into return node for MimeEntity.
+                        entityNode.Add ("content").LastChild.AddRange (_context.RaiseEvent ("hyper2lambda", new Node ("", content)).Children);
+                    }
+                }
+
             } else {
 
                 // Creating a stream to decode our entity to.
