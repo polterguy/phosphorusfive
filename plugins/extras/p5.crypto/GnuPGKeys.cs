@@ -44,7 +44,7 @@ namespace p5.crypto
         [ActiveEvent (Name = "p5.crypto.pgp-keys.public.list")]
         static void p5_crypto_pgp_keys_public_list (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using common helper to iterate all public keys.
+            // Using common helper to iterate all public keyrings matching filter.
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
                 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
@@ -62,7 +62,7 @@ namespace p5.crypto
         [ActiveEvent (Name = "p5.crypto.pgp-keys.private.list")]
         static void p5_crypto_pgp_keys_private_list (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using common helper to iterate all secret keys.
+            // Using common helper to iterate all secret keyrings matching filter.
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing keyring) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
@@ -81,9 +81,9 @@ namespace p5.crypto
         static void p5_crypto_pgp_keys_get_details (ApplicationContext context, ActiveEventArgs e)
         {
             /*
-             * Using common helper to iterate all public keys, assuming if caller
+             * Using common helper to iterate all public keys, assuming that if caller
              * has supplied a fingerprint or key-id to a private key, the public key
-             * will also exist.
+             * will also exist in PGP context.
              */
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
 
@@ -102,7 +102,7 @@ namespace p5.crypto
                 DateTime expires = key.CreationTime.AddSeconds (key.GetValidSeconds ());
                 node.Add ("expires", expires);
 
-                // Adding all user IDs that are strings.
+                // Returning all user IDs that are strings to caller.
                 foreach (var idxUserId in key.GetUserIds ()) {
                     if (idxUserId is string)
                         node.FindOrInsert ("user-ids").Add ("", idxUserId);
@@ -132,7 +132,7 @@ namespace p5.crypto
                 var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
                 var node = e.Args.Add (fingerprint).LastChild;
 
-                // This is the key we're looking for
+                // Returning public key as armored ASCII.
                 using (var memStream = new MemoryStream ()) {
                     using (var armored = new ArmoredOutputStream (memStream)) {
                         key.Encode (armored);
@@ -156,8 +156,11 @@ namespace p5.crypto
         {
             // Using common helper to iterate all secret keys.
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing key) {
+
+                // Deleting key.
                 ctx.Delete (key);
-            }, true);
+
+            }, true, false);
         }
 
         /// <summary>
@@ -170,8 +173,11 @@ namespace p5.crypto
         {
             // Using common helper to iterate all secret keys.
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing key) {
+
+                // Deleting key.
                 ctx.Delete (key);
-            }, true);
+
+            }, true, false);
         }
     }
 }

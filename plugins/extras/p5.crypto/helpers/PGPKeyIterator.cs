@@ -42,7 +42,7 @@ namespace p5.crypto.helpers
         /*
          * Iterates all secret keys in all keyrings in PGP context, and invokes given delegate for every key matching filter condition.
          */
-        internal static void Find (ApplicationContext context, Node args, MatchingSecretKeyRingDelegate functor, bool write)
+        internal static void Find (ApplicationContext context, Node args, MatchingSecretKeyRingDelegate functor, bool write, bool matchUserIds = true)
         {
             // House cleaning.
             using (new ArgsRemover (args, true)) {
@@ -68,7 +68,7 @@ namespace p5.crypto.helpers
                         } else {
 
                             // Checking if key exists in filter.
-                            if (filters.Any (ix => IsMatch (idxRing.GetPublicKey (), ix)))
+                            if (filters.Any (ix => IsMatch (idxRing.GetPublicKey (), ix, matchUserIds)))
                                 functor (ctx, idxRing);
                         }
                     }
@@ -79,7 +79,7 @@ namespace p5.crypto.helpers
         /*
          * Iterates all public keys in all keyrings in GnuPrivacyContext, and invokes given delegate for every key matching filter condition.
          */
-        internal static void Find (ApplicationContext context, Node args, MatchingPublicKeyRingDelegate functor, bool write)
+        internal static void Find (ApplicationContext context, Node args, MatchingPublicKeyRingDelegate functor, bool write, bool matchUserIds = true)
         {
             // House cleaning.
             using (new ArgsRemover (args, true)) {
@@ -102,7 +102,7 @@ namespace p5.crypto.helpers
                         } else {
 
                             // Checking if key exists in filter.
-                            if (filters.Any (ix => IsMatch (idxRing.GetPublicKey (), ix)))
+                            if (filters.Any (ix => IsMatch (idxRing.GetPublicKey (), ix, matchUserIds)))
                                 functor (ctx, idxRing);
                         }
                     }
@@ -113,7 +113,7 @@ namespace p5.crypto.helpers
         /*
          * Checks to see if public key matches filter and returns true if so.
          */
-        internal static bool IsMatch (PgpPublicKey key, string filter)
+        internal static bool IsMatch (PgpPublicKey key, string filter, bool matchUserIds)
         {
             // Checking fingerprint.
             var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
@@ -125,16 +125,18 @@ namespace p5.crypto.helpers
             if (keyID == filter)
                 return true;
 
-            // Enumerating user IDs looking for a "contains" match.
-            foreach (var idxUserID in key.GetUserIds ()) {
+            // Enumerating user IDs looking for a "contains" match, but only if caller explicitly told us to.
+            if (matchUserIds) {
+                foreach (var idxUserID in key.GetUserIds ()) {
 
-                // Checking if user ID is a string, and if so, checking for a match.
-                var userID = idxUserID as string;
-                if (userID != null) {
+                    // Checking if user ID is a string, and if so, checking for a match.
+                    var userID = idxUserID as string;
+                    if (userID != null) {
 
-                    // Checking if currently iterated userID contains specified filter.
-                    if (userID.ToLower ().Contains (filter))
-                        return true;
+                        // Checking if currently iterated userID contains specified filter.
+                        if (userID.ToLower ().Contains (filter))
+                            return true;
+                    }
                 }
             }
 

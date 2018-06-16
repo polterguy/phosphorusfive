@@ -49,7 +49,7 @@ namespace p5.crypto
             // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Creating new GnuPG context.
+                // Creating new PGP context.
                 using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", true)).Get<OpenPgpContext> (context)) {
 
                     // Looping through each public key (in ascii armored format) and importing into context.
@@ -60,6 +60,8 @@ namespace p5.crypto
                             using (var armored = new ArmoredInputStream (memStream)) {
                                 var key = new PgpPublicKeyRing (armored);
                                 ctx.Import (key);
+
+                                // Returning fingerprint of key that was successfully imported to caller.
                                 e.Args.Add (BitConverter.ToString (key.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
                             }
                         }
@@ -79,7 +81,7 @@ namespace p5.crypto
             // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Creating new GnuPG context.
+                // Creating new PGP context.
                 using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", true)).Get<OpenPgpContext> (context)) {
 
                     // Looping through each public key (in ascii armored format) and importing into GnuPG context.
@@ -90,6 +92,8 @@ namespace p5.crypto
                             using (var armored = new ArmoredInputStream (memStream)) {
                                 var key = new PgpSecretKeyRing (armored);
                                 ctx.Import (key);
+
+                                // Returning fingerprint of key that was successfully imported to caller.
                                 e.Args.Add (BitConverter.ToString (key.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
                             }
                         }

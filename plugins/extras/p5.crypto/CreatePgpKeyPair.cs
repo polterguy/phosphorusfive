@@ -118,7 +118,7 @@ namespace p5.crypto
              * Retrieving our SecureRandom instance to be able to create cryptographically secure random bytes
              * necessary during creation of PGP keypair.
              */
-            var sr = CreateNewSecureRandom (context);
+            var sr = GetSecureRandom (context);
 
             // Creating our generator.
             IAsymmetricCipherKeyPairGenerator generator = GeneratorUtilities.GetKeyPairGenerator ("RSA");
@@ -188,7 +188,7 @@ namespace p5.crypto
         /*
          * Retrieves the SecureRandom instance to be used for keypair creation.
          */
-        static SecureRandom CreateNewSecureRandom (ApplicationContext context)
+        static SecureRandom GetSecureRandom (ApplicationContext context)
         {
             return context.RaiseEvent (".p5.crypto.rng.secure-random.get").Get<SecureRandom> (context);
         }
