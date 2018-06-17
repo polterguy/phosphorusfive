@@ -147,23 +147,6 @@ namespace p5.crypto
         }
 
         /// <summary>
-        ///     Deletes a public key from your private PGP keychain.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.pgp-keys.private.delete")]
-        static void p5_crypto_pgp_keys_private_delete (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Using common helper to iterate all secret keys.
-            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing key) {
-
-                // Deleting key.
-                ctx.Delete (key);
-
-            }, true, false);
-        }
-
-        /// <summary>
         ///     Deletes a public key from your public PGP keychain.
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -171,11 +154,50 @@ namespace p5.crypto
         [ActiveEvent (Name = "p5.crypto.pgp-keys.public.delete")]
         static void p5_crypto_pgp_keys_public_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using common helper to iterate all secret keys.
-            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing key) {
+            // Retrieving server's main PGP key to make sure caller doesn't accidentally delete that key.
+            var serverKey = context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (context);
 
-                // Deleting key.
-                ctx.Delete (key);
+            // Using common helper to iterate all secret keys.
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyRing) {
+
+                /*
+                 * Notice, since server would effectively become useless if we allowed the caller to
+                 * accidentally delete the main server PGP key, we check that the currently iterated key
+                 * is not the server's main key.
+                 */
+                if (Fingerprint.FingerprintString (keyRing.GetPublicKey ().GetFingerprint ()) != serverKey) {
+
+                    // Deleting key.
+                    ctx.Delete (keyRing);
+                }
+
+            }, true, false);
+        }
+
+        /// <summary>
+        ///     Deletes a public key from your private PGP keychain.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.private.delete")]
+        static void p5_crypto_pgp_keys_private_delete (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving server's main PGP key to make sure caller doesn't accidentally delete that key.
+            var serverKey = context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (context);
+
+            // Using common helper to iterate all secret keys.
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing keyRing) {
+
+                /*
+                 * Notice, since server would effectively become useless if we allowed the caller to
+                 * accidentally delete the main server PGP key, we check that the currently iterated key
+                 * is not the server's main key.
+                 */
+                if (Fingerprint.FingerprintString (keyRing.GetPublicKey ().GetFingerprint ()) != serverKey) {
+
+                    // Deleting key.
+                    ctx.Delete (keyRing);
+                }
 
             }, true, false);
         }
