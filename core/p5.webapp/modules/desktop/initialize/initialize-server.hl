@@ -195,7 +195,14 @@ it and decrypt the key from GnuPG."
                   label
                     widgets
                       span
-                        innerValue:Show password
+                        innerValue:Submit key
+                      input:desktop-install-submit-key
+                        type:checkbox
+                        title:Will submit your public PGP key to your configured PGP server. Notice, only use this in production for actual production keys to avoid cluttering your key server with garbage keys.
+                  label
+                    widgets
+                      span
+                        innerValue:Show pwd
                       input
                         type:checkbox
                         onchange
@@ -463,6 +470,53 @@ This further eliminates an adversary's ability to break into your system by perf
                             :x:/..if/*/get-widget-property/[1,2]/*/*?value
                         set:x:/@if/@if/@get-widget-property/*/*?value
                           src:x:/@p5.crypto.pgp-keys.create/*/fingerprint?value
+
+                        /*
+                         * Submits the public PGP key just created now to your server's configured PGP key server,
+                         * if user wanted to do such a thing.
+                         */
+                        get-widget-property:desktop-install-submit-key
+                          checked
+                        if:x:/-/*/*
+
+                          /*
+                           * User wants to submit his key.
+                           *
+                           * Notice, in case key server is down, or some other error occurs, we wrap our attempt
+                           * in a try/catch block.
+                           */
+                          try
+                            eval-x:x:/+/*
+                            micro.pgp.submit-public-key
+                              fingerprint:x:/@p5.crypto.pgp-keys.create/*/fingerprint?value
+                          catch
+
+                            /*
+                             * Making sure we display a modal widget warning use that we couldn't submit key to key server.
+                             * Also making sure it becomes the TOP MOST modal widget.
+                             */
+                            desktop.evaluate.on-next-pageload
+                              lambda
+                                create-widgets
+                                  micro.widgets.modal:submit-pgp-key-modal-warning
+                                    widgets
+                                      h3
+                                        innerValue:Couldn't submit your PGP key to key server
+                                      p
+                                        innerValue:@"For some reasons, when we tried to submit your public PGP key to the specified
+key server, this operation was not successful. You might want to manually try later, since the server might be temporarily down or something.
+If you want to try, you can use the <strong>[micro.pgp.submit-public-key]</strong> Active Event. See the documentation for this event for details."
+                                      div
+                                        class:right
+                                        widgets
+                                          button
+                                            innerValue:OK
+                                            onclick
+
+                                              /*
+                                               * Deleting modal window.
+                                               */
+                                              delete-widget:submit-pgp-key-modal-warning
 
                       /*
                        * Setting server's GnuPG key's fingerprint.

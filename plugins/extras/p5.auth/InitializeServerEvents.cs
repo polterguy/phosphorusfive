@@ -101,6 +101,19 @@ namespace p5.auth
         }
         
         /// <summary>
+        ///     Changes the PGP key that the auth file is persisted with.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.auth.pgp.change-server-key")]
+        static void p5_auth_pgp_change_server_key (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Only a root account can change the server's PGP keypair", e.Args, context);
+            PGPKey.ChangeServerPGPKey (context, e.Args.Get<string> (context), e.Args);
+        }
+        
+        /// <summary>
         ///     Returns true if root password is not previously set.
         /// </summary>
         /// <param name="context"></param>

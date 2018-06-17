@@ -54,5 +54,24 @@ namespace p5.auth.helpers
                 node.Add (GnuPgpFingerprintNodeName, fingerprint);
             });
         }
+        
+        /*
+         * Changes the GnuPG keypair for server.
+         */
+        public static void ChangeServerPGPKey (ApplicationContext context, string fingerprint, Node args)
+        {
+            // Verifying key exists, both its public key, and its private key.
+            var result = context.RaiseEvent ("p5.crypto.pgp-keys.public.list", new Node ("p5.crypto.pgp-keys.public.list", fingerprint));
+            if (result.FirstChild.Name != fingerprint)
+                throw new LambdaSecurityException ("The specified new public key does not exist", args, context);
+            result = context.RaiseEvent ("p5.crypto.pgp-keys.private.list", new Node ("p5.crypto.pgp-keys.private.list", fingerprint));
+            if (result.FirstChild.Name != fingerprint)
+                throw new LambdaSecurityException ("The specified new public key does not exist", args, context);
+
+            // Changing key.
+            AuthFile.ModifyAuthFile (context, delegate (Node node) {
+                node [GnuPgpFingerprintNodeName].Value = fingerprint;
+            });
+        }
     }
 }

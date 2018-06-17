@@ -47,7 +47,7 @@ namespace p5.crypto.helpers
          * Iterates all secret keys in all keyrings in PGP context,
          * and invokes given delegate for every key matching filter condition.
          */
-        internal static void Find (ApplicationContext context, Node args, MatchingSecretKeyRingDelegate functor, bool write, bool matchUserIds = true)
+        internal static void Find (ApplicationContext context, Node args, MatchingSecretKeyRingDelegate functor, bool write, bool matchUserIds = true, string password = null)
         {
             // Invoking common helper.
             Find (context, args, delegate (OpenPgpContext ctx, List<string> filters) {
@@ -59,14 +59,14 @@ namespace p5.crypto.helpers
                     if (IsMatch (idxRing.GetPublicKey (), filters, matchUserIds))
                         functor (ctx, idxRing);
                 }
-            }, write);
+            }, write, password);
         }
 
         /*
          * Iterates all public keys in all keyrings in GnuPrivacyContext,
          * and invokes given delegate for every key matching filter condition.
          */
-        internal static void Find (ApplicationContext context, Node args, MatchingPublicKeyRingDelegate functor, bool write, bool matchUserIds = true)
+        internal static void Find (ApplicationContext context, Node args, MatchingPublicKeyRingDelegate functor, bool write, bool matchUserIds = true, string password = null)
         {
             // Invoking common helper.
             Find (context, args, delegate (OpenPgpContext ctx, List<string> filters) {
@@ -78,13 +78,13 @@ namespace p5.crypto.helpers
                     if (IsMatch (idxRing.GetPublicKey (), filters, matchUserIds))
                         functor (ctx, idxRing);
                 }
-            }, write);
+            }, write, password);
         }
 
         /*
          * Helper method for above.
          */
-        private static void Find (ApplicationContext context, Node args, CommonContextDelegate functor, bool write)
+        private static void Find (ApplicationContext context, Node args, CommonContextDelegate functor, bool write, string password)
         {
             // House cleaning.
             using (new ArgsRemover (args, true)) {
@@ -96,7 +96,9 @@ namespace p5.crypto.helpers
                 var filters = XUtil.Iterate<string> (context, args).Where (ix => ix != null).Select (ix => ix.ToLower ()).ToList ();
 
                 // Creating PGP context.
-                using (var ctx = context.RaiseEvent (".p5.crypto.pgp-keys.context.create", new Node ("", write)).Get<OpenPgpContext> (context)) {
+                using (var ctx = context.RaiseEvent (
+                    ".p5.crypto.pgp-keys.context.create",
+                    new Node ("", write, new Node [] { new Node ("password", password) })).Get<OpenPgpContext> (context)) {
 
                     // Invoking worker functor.
                     functor (ctx, filters);

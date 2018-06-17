@@ -26,7 +26,9 @@ using System.IO;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 using p5.crypto.helpers;
 
 namespace p5.crypto
@@ -124,7 +126,7 @@ namespace p5.crypto
         [ActiveEvent (Name = "p5.crypto.pgp-keys.public.get")]
         static void p5_crypto_pgp_keys_public_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using common helper to iterate all secret keys.
+            // Using common helper to iterate all public keyrings matching filter.
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
@@ -144,6 +146,57 @@ namespace p5.crypto
                     node.Value = sr.ReadToEnd ();
                 }
             }, false);
+        }
+
+        /// <summary>
+        ///     Sign the given public PGP keys, with the specified [fingerprint] key.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.crypto.pgp-keys.sign")]
+        static void p5_crypto_pgp_keys_sign (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Used as buffer to hold secret signing key.
+            PgpSecretKey secretKey = null;
+
+            // Retrieving fingerprint of key to use for signing.
+            var fingerprint = e.Args.GetExChildValue<string> ("fingerprint", context, null);
+            if (string.IsNullOrEmpty (fingerprint))
+                throw new LambdaException ("No [fingerprint] supplied to [p5.crypto.pgp-keys.sign]", e.Args, context);
+
+            // Retrieving password for signing key.
+            var password = e.Args ["fingerprint"].GetExChildValue<string> ("password", context, null);
+            if (string.IsNullOrEmpty (password))
+                throw new LambdaException ("No [fingerprint]/[password] supplied to [p5.crypto.pgp-keys.sign]", e.Args, context);
+
+            // Using common helper to iterate all secret keys.
+            PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
+
+                /*
+                 * Checking if we have previously found the private signing key.
+                 * This little trick allows us to sign multiple public keys while still postpone the lookup of the private
+                 * signing key, until we know we actually have a match.
+                 */
+                if (secretKey == null) {
+
+                    // Finding secret key to use for signing the currently iterated public key.
+                    foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings ()) {
+
+                        // Checking that this is our key.
+                        var cur = idxRing.GetSecretKey ();
+                        if (Fingerprint.FingerprintString (cur.PublicKey.GetFingerprint ()) == fingerprint) {
+
+                            // This is the signing key.
+                            secretKey = cur;
+                            break;
+                        }
+                    }
+                }
+
+                // Signing key.
+                ctx.SignKey (secretKey, keyring.GetPublicKey ());
+
+            }, false, false, password);
         }
 
         /// <summary>
