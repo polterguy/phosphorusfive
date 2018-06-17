@@ -22,6 +22,8 @@
  */
 
 using System.IO;
+using System.Linq;
+using System.Security;
 using System.Threading;
 using p5.core;
 
@@ -123,9 +125,27 @@ namespace p5.auth.helpers
                     .Add ("password", gnuPgPassword);
                 context.RaiseEvent ("p5.mime.parse", node);
 
+                // Sanity checking result.
+                if (node.FirstChild.Name != "multipart" && node.FirstChild.Get<string> (context) != "encrypted")
+                    throw new SecurityException ("Your 'auth.hl' file has been corrupted somehow!");
+                if (node.FirstChild ["signature"] == null)
+                    throw new SecurityException ("Your 'auth.hl' file has been corrupted somehow!");
+                if (node.FirstChild ["signature"].FirstChild.Get (context, false) != true)
+                    throw new SecurityException ("Your 'auth.hl' file was not properly cryptographically signed!");
+                if (node.FirstChild ["signature"].FirstChild ["fingerprint"].Get (context, "") != fingerprint)
+                    throw new SecurityException ("Your 'auth.hl' file was not properly cryptographically signed!");
+
+                /*
+                 * Since (obviously) file must have been cryptographically signed by a PGP key the server
+                 * must have access to somehow, we verify this, before we finally accept the signature.
+                 */
+                var privateKeys = context.RaiseEvent ("p5.crypto.pgp-keys.private.list", new Node ("p5.crypto.pgp-keys.private.list", fingerprint));
+                if (privateKeys.FirstChild.Name != fingerprint)
+                    throw new SecurityException ("Your 'auth.hl' file has been corrupted somehow!");
+
                 // Converting Hyperlambda content of file to a node, caching it, and returning it to caller.
                 // Making sure we explicitly add the [gnupg-keypair] to the "auth" node first.
-                _authFileContent = Utilities.Convert<Node> (context, node.FirstChild ["text"] ["content"].Value);
+                _authFileContent = node.FirstChild ["application"] ["content"].Clone ();
                 _authFileContent.Add (PGPKey.GnuPgpFingerprintNodeName, fingerprint);
                 return _authFileContent;
             }
@@ -138,37 +158,36 @@ namespace p5.auth.helpers
         {
             // Getting path.
             var authFilePath = GetAuthFilePath (context);
+            
+            // Retrieving GnuPG key's password from web.config.
+            var gnuPgPassword = context.RaiseEvent (
+                "p5.config.get",
+                new Node ("", "gpg-server-keypair-password")).FirstChild.Get<string> (context);
 
             // Saving file, making sure we encrypt it in the process.
             using (TextWriter writer = new StreamWriter (File.Create (authFilePath))) {
 
-                // Retrieving fingerprint from auth file, and removing the fingerprint node, since
-                // it's not supposed to be save inside of the ecnrypted MIME part of our auth file's content.
-                var fingerprint = _authFileContent [PGPKey.GnuPgpFingerprintNodeName]?.UnTie ().Get<string> (context) ?? "";
+                // Retrieving fingerprint from auth file.
+                var fingerprint = _authFileContent [PGPKey.GnuPgpFingerprintNodeName]?.Get<string> (context) ?? "";
                 if (string.IsNullOrEmpty (fingerprint))
                     return; // Fingerprint has not (yet) been set, hence we don't save file.
 
-                try {
+                // Writing fingerprint of PGP key used to encrypt auth file at the top of the file.
+                writer.WriteLine (string.Format ("gnupg-keypair:{0}", fingerprint));
 
-                    // Writing fingerprint of PGP key used to encrypt auth file at the top of the file.
-                    writer.WriteLine (string.Format ("gnupg-keypair:{0}", fingerprint));
+                // Encrypting auth file's content.
+                var node = new Node ();
+                node.Add ("application", "x-hyperlambda").LastChild
+                    .Add ("content", null, _authFileContent.Children.Where (ix => ix.Name != PGPKey.GnuPgpFingerprintNodeName).Select (ix => ix.Clone ()))
+                    .Add ("encrypt").LastChild
+                        .Add ("fingerprint", fingerprint).Parent
+                    .Add ("sign").LastChild
+                        .Add ("fingerprint", fingerprint).LastChild
+                            .Add ("password", gnuPgPassword);
+                context.RaiseEvent ("p5.mime.create", node);
 
-                    // Encrypting auth file's content.
-                    var node = new Node ();
-                    node.Add ("text", "plain").LastChild
-                        .Add ("content", Utilities.Convert<string> (context, _authFileContent.Children))
-                        .Add ("encrypt").LastChild
-                        .Add ("fingerprint", fingerprint);
-                    context.RaiseEvent ("p5.mime.create", node);
-
-                    // Writing encrypted content to stream.
-                    writer.Write (node ["result"].Get<string> (context));
-
-                } finally {
-
-                    // Adding back fingerprint to cached auth file.
-                    _authFileContent.Insert (0, new Node (PGPKey.GnuPgpFingerprintNodeName, fingerprint));
-                }
+                // Writing encrypted content to stream.
+                writer.Write (node ["result"].Get<string> (context));
             }
         }
 

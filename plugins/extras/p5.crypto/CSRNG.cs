@@ -71,7 +71,7 @@ namespace phosphorus.crypto
                 } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
                     // Returning value as hexadecimal string.
-                    e.Args.Value = BitConverter.ToString (buffer).Replace ("-", string.Empty);
+                    e.Args.Value = BitConverter.ToString (buffer).Replace ("-", string.Empty).ToLower ();
 
 
                 } else {

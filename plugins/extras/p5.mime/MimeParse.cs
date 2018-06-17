@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -50,7 +50,7 @@ namespace p5.mime
                 e.Args,
                 entity,
                 e.Args.GetExChildValue<string> ("attachment-folder", context),
-                e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
+                e.Args.GetExChildValue<bool> ("attachments-use-prefix", context, true));
 
             // Parses the MimeEntity and stuffs results into e.Args node
             parser.Process ();
@@ -85,7 +85,7 @@ namespace p5.mime
                     e.Args,
                     entity,
                     e.Args.GetExChildValue<string> ("attachment-folder", context),
-                    e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
+                    e.Args.GetExChildValue<bool> ("attachments-use-prefix", context, true));
 
                 // Parses the MimeEntity and stuffs results into e.Args node
                 parser.Process ();
@@ -132,7 +132,7 @@ namespace p5.mime
                             e.Args,
                             entity,
                             e.Args.GetExChildValue<string> ("attachment-folder", context),
-                            e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
+                            e.Args.GetExChildValue<bool> ("attachments-use-prefix", context, true));
 
                         // Parses the MimeEntity and stuffs results into e.Args node
                         parser.Process ();
@@ -181,7 +181,7 @@ namespace p5.mime
                             e.Args,
                             entity,
                             e.Args.GetExChildValue<string> ("attachment-folder", context),
-                            e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
+                            e.Args.GetExChildValue<bool> ("attachments-use-prefix", context, true));
 
                         // Parses the MimeEntity and stuffs results into e.Args node
                         parser.Process ();

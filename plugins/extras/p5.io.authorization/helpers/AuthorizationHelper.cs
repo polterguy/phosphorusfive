@@ -291,7 +291,7 @@ namespace p5.io.authorization.helpers
 
             // Verifying filename only contains latin alphabet characters, and integer numbers, -, _ and / characters.
             foreach (char idxChar in filename) {
-                if ("abcdefghijklmnopqrstuvwxyz0123456789_.-/".IndexOf (char.ToLower (idxChar, CultureInfo.InvariantCulture)) == -1)
+                if ("abcdefghijklmnopqrstuvwxyz0123456789_.-/ ".IndexOf (char.ToLower (idxChar, CultureInfo.InvariantCulture)) == -1)
                     return false;
             }
             if (filename.Contains ("//"))

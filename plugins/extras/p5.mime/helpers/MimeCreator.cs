@@ -306,18 +306,28 @@ namespace p5.mime.helpers
         List<MailboxAddress> GetReceiversMailboxAddress (Node encryptionNode)
         {
             var retVal = new List<MailboxAddress> ();
-            foreach (var idx in encryptionNode.Children) {
+            if (encryptionNode.Count == 0) {
 
-                // Checking if email address was given, or if fingerprint was given.
-                if (idx.Name == "email")
-                    retVal.Add (new MailboxAddress ("", idx.Get<string> (_context)));
-                else if (idx.Name == "fingerprint")
-                    retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", idx.Get<string> (_context)));
-                else
-                    throw new LambdaException (
-                        string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node, I only understand [email] or [fingerprint]", idx.Name),
-                        idx,
-                        _context);
+                // Assuming caller wants to use server's PGP fingerprint.
+                var fingerprint = _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (_context);
+                retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", fingerprint));
+
+            } else {
+
+                // Explicitly declared [fingerprint] or [email] arguments.
+                foreach (var idx in encryptionNode.Children) {
+
+                    // Checking if email address was given, or if fingerprint was given.
+                    if (idx.Name == "email")
+                        retVal.Add (new MailboxAddress ("", idx.GetExValue<string> (_context)));
+                    else if (idx.Name == "fingerprint")
+                        retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", idx.GetExValue<string> (_context)));
+                    else
+                        throw new LambdaException (
+                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node, I only understand [email] or [fingerprint]", idx.Name),
+                            idx,
+                            _context);
+                }
             }
 
             // Returning list of mailboxes to encrypt for.
@@ -329,14 +339,27 @@ namespace p5.mime.helpers
          */
         Tuple<string, MailboxAddress> GetSignatureMailboxAddress (Node signatureNode)
         {
-            // Figuring out which private key to use for signing entity.
-            string email = "foo@bar.com", fingerprint = "", password = "";
-            password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", _context, "");
-            email = signatureNode.GetChildValue ("email", _context, "foo@bar.com");
-            fingerprint = signatureNode.GetChildValue ("fingerprint", _context, "");
+            var retVal = new List<MailboxAddress> ();
+            if (signatureNode.Count == 0) {
 
-            // Returning MailboxAddress to sign entity on behalf of.
-            return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", email, fingerprint));
+                // Assuming caller wants to use server's PGP fingerprint.
+                var fingerprint = _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (_context);
+                var password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+                
+                // Returning MailboxAddress to sign entity on behalf of.
+                return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", "foo@bar.com", fingerprint));
+
+            } else {
+
+                // Figuring out which private key to use for signing entity.
+                string email = "foo@bar.com", fingerprint = "", password = "";
+                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetExChildValue ("password", _context, "");
+                email = signatureNode.GetChildValue ("email", _context, "foo@bar.com");
+                fingerprint = signatureNode.GetExChildValue ("fingerprint", _context, "");
+                
+                // Returning MailboxAddress to sign entity on behalf of.
+                return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", email, fingerprint));
+            }
         }
 
         /*

@@ -49,6 +49,7 @@
     <Compile Include="helpers\PGPKeyIterator.cs" />
     <Compile Include="GnuPGKeys.cs" />
     <Compile Include="ImportPGPKey.cs" />
+    <Compile Include="helpers\Fingerprint.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

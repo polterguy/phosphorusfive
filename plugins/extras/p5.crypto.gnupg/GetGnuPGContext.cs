@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using MimeKit.Cryptography;
 using p5.core;
 using p5.crypto.gnupg.helpers;
@@ -53,9 +54,22 @@ namespace p5.crypto.gnupg
         [ActiveEvent (Name = ".p5.crypto.pgp-keys.context.create")]
         public static void _p5_crypto_pgp_keys_context_create (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = new GnuPrivacyContext (
+            // Creating GnuPG Context.
+            var ctx = new GnuPrivacyContext (
                 e.Args.Get<bool> (context), 
                 e.Args.GetChildValue<string> ("password", context, null));
+
+            // Making sure we set the key server for the context, if one is given.
+            var keyServer = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "p5.crypto.key-server")) [0]?.Get<string> (context) ?? null;
+            if (!string.IsNullOrEmpty (keyServer)) {
+
+                // Some key server was declared in web.config.
+                ctx.KeyServer = new Uri (keyServer);
+                ctx.AutoKeyRetrieve = true;
+            }
+
+            // Returning context to caller.
+            e.Args.Value = ctx;
         }
     }
 }

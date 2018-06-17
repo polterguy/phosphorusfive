@@ -33,29 +33,29 @@ using p5.exp.exceptions;
 namespace p5.mime
 {
     /// <summary>
-    ///     Class wrapping the MIME creation features of Phosphorus Five
+    ///     Class wrapping the MIME creation features of Phosphorus Five.
     /// </summary>
     public static class MimeCreate
     {
         /// <summary>
-        ///     Creates a MIME message according to given arguments and returns as string
+        ///     Creates a MIME message according to given arguments and returns it as a string.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mime.create")]
         public static void p5_mime_create (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up after ourselves
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Iterating through each node given, either as child of main node, or through expression
+                // Iterating through each node given, either as child of main node, or through expression.
                 foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
 
-                    // Making sure we keep track of, closes, and disposes all streams created during process
+                    // Making sure we keep track of and close all streams created during process.
                     List<Stream> streams = new List<Stream> ();
                     try {
 
-                        // Creating and returning MIME message to caller as string
+                        // Creating and returning MIME message to caller as string.
                         var creator = new MimeCreator (
                             context,
                             idxMimeNode,
@@ -64,10 +64,10 @@ namespace p5.mime
 
                     } finally {
 
-                        // Disposing all streams created during process
+                        // Disposing all streams created during process.
                         foreach (var idxStream in streams) {
 
-                            // Closing and disposing currently iterated stream
+                            // Closing and disposing currently iterated stream.
                             idxStream.Close ();
                             idxStream.Dispose ();
                         }

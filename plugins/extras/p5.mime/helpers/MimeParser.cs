@@ -64,8 +64,24 @@ namespace p5.mime.helpers
             if (!string.IsNullOrEmpty (attachmentFolder))
                 _attachmentFolder = context.RaiseEvent (".p5.io.unroll-path", new Node ("", attachmentFolder)).Get<string> (context, null);
             _addPrefixToAttachmentPath = addPrefixToAttachmentPath;
-            if (args ["decrypt"] != null)
-                _password = args ["decrypt"].GetExChildValue<string> ("password", context, null);
+            if (args ["decrypt"] != null) {
+
+                // Checking to see if an explicit [password] was supplied.
+                if (args ["decrypt"] ["password"] != null) {
+
+                    // [password] argument was supplied.
+                    _password = args ["decrypt"].GetExChildValue<string> ("password", context, null);
+
+                } else {
+
+                    // No password was supplied, assuming caller wants to use password from web.config.
+                    _password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+                }
+            } else {
+
+                // We still store the server's PGP password, and use it, in case envelope was encrypted for current server.
+                _password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+            }
         }
 
         /// <summary>
@@ -364,7 +380,7 @@ namespace p5.mime.helpers
                     var signatureNode = entityNode.FindOrInsert ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
 
                     // Adding fingerprint of PGP key used to sign entity.
-                    signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint);
+                    signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint.ToLower ());
 
                 } catch {
 

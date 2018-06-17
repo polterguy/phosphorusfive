@@ -26,6 +26,7 @@ using System.Linq;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using p5.crypto.helpers;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Bcpg;
@@ -97,7 +98,7 @@ namespace p5.crypto
                 }
 
                 // Returning fingerprint and key-id to caller.
-                e.Args.Add ("fingerprint", BitConverter.ToString (publicRing.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
+                e.Args.Add ("fingerprint", Fingerprint.FingerprintString (publicRing.GetPublicKey ().GetFingerprint ()));
                 e.Args.Add ("key-id", ((int)publicRing.GetPublicKey ().KeyId).ToString ("X"));
             }
         }

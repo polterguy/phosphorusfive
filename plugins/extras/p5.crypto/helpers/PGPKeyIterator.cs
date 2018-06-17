@@ -117,7 +117,7 @@ namespace p5.crypto.helpers
             foreach (var filter in filters) {
 
                 // Checking fingerprint.
-                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = Fingerprint.FingerprintString (key.GetFingerprint ());
                 if (fingerprint == filter)
                     return true;
 

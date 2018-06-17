@@ -77,7 +77,7 @@ namespace p5.auth
         {
             e.Args.Value = !string.IsNullOrEmpty (PGPKey.GetFingerprint (context));
         }
-
+        
         /// <summary>
         ///     Sets the server PGP key's fingerprint.
         /// </summary>
@@ -87,6 +87,17 @@ namespace p5.auth
         static void p5_auth__set_server_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
             PGPKey.SetFingerprint (context, e.Args, e.Args.GetExValue<string> (context));
+        }
+        
+        /// <summary>
+        ///     Returns the server's PGP key's fingerprint.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.auth.pgp.get-fingerprint")]
+        static void p5_auth_pgp_get_fingerprint (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = PGPKey.GetFingerprint (context);
         }
         
         /// <summary>

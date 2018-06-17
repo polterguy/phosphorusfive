@@ -62,7 +62,7 @@ namespace p5.crypto
                                 ctx.Import (key);
 
                                 // Returning fingerprint of key that was successfully imported to caller.
-                                e.Args.Add (BitConverter.ToString (key.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
+                                e.Args.Add (Fingerprint.FingerprintString (key.GetPublicKey ().GetFingerprint ()));
                             }
                         }
                     }
@@ -94,7 +94,7 @@ namespace p5.crypto
                                 ctx.Import (key);
 
                                 // Returning fingerprint of key that was successfully imported to caller.
-                                e.Args.Add (BitConverter.ToString (key.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
+                                e.Args.Add (Fingerprint.FingerprintString (key.GetPublicKey ().GetFingerprint ()));
                             }
                         }
                     }

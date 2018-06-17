@@ -48,7 +48,7 @@ namespace p5.crypto
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpPublicKeyRing keyring) {
                 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
-                var fingerprint = BitConverter.ToString (keyring.GetPublicKey ().GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = Fingerprint.FingerprintString (keyring.GetPublicKey ().GetFingerprint ());
                 e.Args.Add (fingerprint);
 
             }, false);
@@ -66,7 +66,7 @@ namespace p5.crypto
             PGPKeyIterator.Find (context, e.Args, delegate (OpenPgpContext ctx, PgpSecretKeyRing keyring) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
-                var fingerprint = BitConverter.ToString (keyring.GetPublicKey ().GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = Fingerprint.FingerprintString (keyring.GetPublicKey ().GetFingerprint ());
                 e.Args.Add (fingerprint);
 
             }, false);
@@ -89,7 +89,7 @@ namespace p5.crypto
 
                 // This key is matching specified filter criteria.
                 var key = keyring.GetPublicKey ();
-                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = Fingerprint.FingerprintString (key.GetFingerprint ());
                 var node = e.Args.Add (fingerprint).LastChild;
                 node.Add ("id", ((int)key.KeyId).ToString ("X"));
                 node.Add ("algorithm", key.Algorithm.ToString ());
@@ -129,7 +129,7 @@ namespace p5.crypto
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
                 var key = keyring.GetPublicKey ();
-                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var fingerprint = Fingerprint.FingerprintString (key.GetFingerprint ());
                 var node = e.Args.Add (fingerprint).LastChild;
 
                 // Returning public key as armored ASCII.
