@@ -26,6 +26,7 @@ using System.IO;
 using p5.exp;
 using p5.core;
 using MimeKit;
+using MimeKit.IO;
 using MimeKit.Cryptography;
 
 namespace p5.mime.helpers
@@ -50,20 +51,21 @@ namespace p5.mime.helpers
         /// <param name="args">Arguments</param>
         /// <param name="entity">MimeEntity to process</param>
         /// <param name="attachmentFolder">path to attachment folder, where to save any attachments.</param>
-        public MimeParser (
-            ApplicationContext context,
-            Node args,
-            MimeEntity entity,
-            string attachmentFolder,
-            bool addPrefixToAttachmentPath = true)
+        public MimeParser (ApplicationContext context, Node args, MimeEntity entity, string attachmentFolder, bool addPrefixToAttachmentPath = true)
         {
-            // Retrieving other arguments.
+            // Decorating instance with arguments.
             _context = context;
             _args = args;
             _rootEntity = entity;
+
+            // Checking if caller supplied an attachment folder, at which point we unroll it.
             if (!string.IsNullOrEmpty (attachmentFolder))
                 _attachmentFolder = context.RaiseEvent (".p5.io.unroll-path", new Node ("", attachmentFolder)).Get<string> (context, null);
+
+            // Sotring whether or not we should add prefix to attachments to randomise file names.
             _addPrefixToAttachmentPath = addPrefixToAttachmentPath;
+
+            // Checking if caller wants to decrypt any encrypted content.
             if (args ["decrypt"] != null) {
 
                 // Checking to see if an explicit [password] was supplied.
@@ -79,7 +81,10 @@ namespace p5.mime.helpers
                 }
             } else {
 
-                // We still store the server's PGP password, and use it, in case envelope was encrypted for current server.
+                /*
+                 * We still store the server's PGP password, and use it, in case envelope was encrypted for current server.
+                 * This allows for simpler syntax when used.
+                 */
                 _password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
             }
         }
@@ -93,7 +98,7 @@ namespace p5.mime.helpers
         }
 
         /*
-         * Processes one MimeEntity.
+         * Processing one single MimeEntity, which might involve recursively processing multiparts.
          */
         void ProcessEntity (MimeEntity entity, Node args)
         {
@@ -119,10 +124,13 @@ namespace p5.mime.helpers
         void ProcessLeafPart (MimePart part, Node args)
         {
             // Verifying part actually has content, before trying to de-serialize it.
-            if (part.ContentObject == null)
+            if (part.Content == null)
                 return;
 
+            // Creating entity's root node.
             Node entityNode = args.Add (part.ContentType.MediaType, part.ContentType.MediaSubtype).LastChild;
+
+            // Processing MIME headers.
             ProcessHeaders (part, entityNode);
 
             // Figuring out if this is an inline element or an attachment.
@@ -143,20 +151,29 @@ namespace p5.mime.helpers
          */
         bool TreatAsAttachment (MimePart part)
         {
+            // Checking if caller supplied an attachment folder.
             if (string.IsNullOrEmpty (_attachmentFolder))
                 return false; // We cannot store attachments, unless caller supplies an [attachment-folder] argument.
 
+            // Checking if MIME entity actually is an attachment.
             if (part.IsAttachment) {
 
-                // Still we are not 100% certain, since we do not want to store ALL actual attachments as attachments.
+                /*
+                 * Still we are not 100% certain, since we do not want to store all actual attachments as attachments.
+                 * Among other things, we don't store "application:pgp-encrypted" 'attachments' to disc.
+                 */
                 if (part.ContentType.MediaType == "application" && part.ContentType.MediaSubtype == "pgp-encrypted")
                     return false; // No need to save these parts to disc.
 
+                // This is an actual attachment, and should be treated as such.
                 return true;
 
             } else if (!string.IsNullOrEmpty (part.FileName) && part.ContentDisposition != null && part.ContentDisposition.Disposition == "form-data") {
 
-                // Form data file attachment.
+                /*
+                 * Form data file attachment should also be treated as an attachment, even though
+                 * it has no Content-Disposition filename.
+                 */
                 return true;
             }
             return false;
@@ -168,11 +185,16 @@ namespace p5.mime.helpers
         void SaveMimePartToDisc (MimePart part, Node entityNode)
         {
             // Creating an intelligent filename.
-            string rootFolder = Common.GetRootFolder (_context).TrimEnd ('/');
+            string rootFolder = Common.GetRootFolder (_context);
             string fileName = "";
             if (part.ContentDisposition == null || string.IsNullOrEmpty (part.ContentDisposition.FileName)) {
 
-                // No explicit filename given, defaulting to "noname".
+                /*
+                 * No explicit filename given, defaulting to "noname".
+                 * Notice, since there might be multiple "noname" attachments, we
+                 * make sure we give each a unique filename, by adding an integer to its
+                 * filename.
+                 */
                 fileName = "noname";
                 if (_noNameAttachments != 0)
                     fileName += "-" + _noNameAttachments;
@@ -184,11 +206,15 @@ namespace p5.mime.helpers
                 fileName = part.ContentDisposition.FileName;
             }
 
-            // Checking if we should add a prefix to attachment path.
+            /*
+             * Checking if we should add a prefix to attachment path.
+             * This is done to make sure file doesn't overwrite each other, and that
+             * each attachment has a unique filename.
+             */
             var physical_full_filename = "";
             if (_addPrefixToAttachmentPath) {
 
-                // Making sure we create a unique file "prefix", such that files with similar names, doesn't overwrite each other.
+                // Making sure we create a unique file "prefix", such that files with similar names don't overwrite each other.
                 var unique = Guid.NewGuid ().ToString ().Replace ("-", "") + "-";
                 physical_full_filename = _attachmentFolder + unique + fileName;
 
@@ -211,7 +237,7 @@ namespace p5.mime.helpers
 
             // Saving attachment to disc.
             using (FileStream stream = File.Create (rootFolder + physical_full_filename)) {
-                part.ContentObject.DecodeTo (stream);
+                part.Content.DecodeTo (stream);
             }
         }
 
@@ -220,6 +246,7 @@ namespace p5.mime.helpers
          */
         void ProcessMimePartInline (MimePart part, Node entityNode)
         {
+            // Checking if MIME entity is a simple "text" part.
             var txtPart = part as TextPart;
             if (txtPart != null) {
 
@@ -228,11 +255,15 @@ namespace p5.mime.helpers
 
             } else if (part.ContentType.MediaType == "application" && part.ContentType.MediaSubtype == "x-hyperlambda") {
                 
-                // Creating a stream to decode our entity to.
-                using (MemoryStream stream = new MemoryStream ()) {
+                /*
+                 * Current part is inline Hyperlambda content.
+                 * 
+                 * Creating a stream to decode our entity to.
+                 */
+                using (var stream = new MemoryBlockStream ()) {
 
                     // Decoding content to memory.
-                    part.ContentObject.DecodeTo (stream);
+                    part.Content.DecodeTo (stream);
 
                     // Resetting position and setting up a buffer object to hold content.
                     stream.Position = 0;
@@ -250,11 +281,16 @@ namespace p5.mime.helpers
 
             } else {
 
-                // Creating a stream to decode our entity to.
-                using (MemoryStream stream = new MemoryStream ()) {
+                /*
+                 * Part is not text part, and is not Hyperlambda content, hence we
+                 * make sure we add it to returned [content] node as binary data.
+                 * 
+                 * First creating a stream to decode our entity to.
+                 */
+                using (var stream = new MemoryBlockStream ()) {
 
                     // Decoding content to memory.
-                    part.ContentObject.DecodeTo (stream);
+                    part.Content.DecodeTo (stream);
 
                     // Resetting position and setting up a buffer object to hold content.
                     stream.Position = 0;
@@ -266,27 +302,20 @@ namespace p5.mime.helpers
         }
 
         /*
-         * Returns true if MimePart should be handled as text.
-         */
-        bool HandlePartAsText (MimePart part)
-        {
-            if (part is TextPart)
-                return true;
-            return false;
-        }
-
-        /*
          * Processes a Multipart, which can be either signed, encrypted, or any other types of Multipart MimeEntity.
          */
         void ProcessMultipart (Multipart multipart, Node args)
         {
+            // Creating our MIME entity root node.
             Node entityNode = args.Add (multipart.ContentType.MediaType, multipart.ContentType.MediaSubtype).LastChild;
+
+            // Processing MIME headers.
             ProcessHeaders (multipart, entityNode);
 
-            // Handling preamble.
-            if (!string.IsNullOrEmpty ((multipart.Preamble ?? "").Trim ()))
-                entityNode.Add ("preamble", multipart.Preamble.Trim ());
-
+            /*
+             * Checking type of multipart, making sure we correctly handle signed
+             * and encrypted parts.
+             */
             if (multipart is MultipartEncrypted) {
 
                 // Encrypted Multipart, might also be signed.
@@ -294,7 +323,7 @@ namespace p5.mime.helpers
 
             } else if (multipart is MultipartSigned) {
 
-                // Only signed Multipart, is NOT encrypted.
+                // Only signed Multipart and not encrypted.
                 ProcessSignedMultipart (multipart as MultipartSigned, entityNode);
 
             } else {
@@ -304,45 +333,32 @@ namespace p5.mime.helpers
                     ProcessEntity (idxEntity, entityNode);
                 }
             }
-
-            // Handling preamble.
-            if (!string.IsNullOrEmpty ((multipart.Epilogue ?? "").Trim ()))
-                entityNode.Add ("epilogue", multipart.Epilogue.Trim ());
         }
 
         /*
-         * Processes an encrypted Multipart.
+         * Processes an encrypted multipart.
          */
         void ProcessEncryptedMultipart (MultipartEncrypted encryptedMultipart, Node entityNode)
         {
-            try {
-                // Creating cryptographic context.
-                using (var ctx = _context.RaiseEvent (
-                    ".p5.crypto.pgp-keys.context.create",
-                    new Node ("", false, new Node [] { new Node ("password", _password) })).Get<OpenPgpContext> (_context)) {
+            // Creating cryptography context.
+            using (var ctx = _context.RaiseEvent (
+                ".p5.crypto.pgp-keys.context.create",
+                new Node ("", false, new Node [] { new Node ("password", _password) })).Get<OpenPgpContext> (_context)) {
 
-                    // Decrypting entity, making sure we retrieve signatures at the same time, if there are any.
-                    DigitalSignatureCollection signatures;
-                    var decryptedMultipart = encryptedMultipart.Decrypt (ctx, out signatures);
+                // Decrypting entity, making sure we retrieve signatures at the same time, if there are any.
+                DigitalSignatureCollection signatures;
+                var decryptedMultipart = encryptedMultipart.Decrypt (ctx, out signatures);
 
-                    // Adding signatures.
-                    ProcessSignatures (entityNode, signatures);
+                // Adding signatures.
+                ProcessSignatures (entityNode, signatures);
 
-                    // Parsing decrypted result.
-                    ProcessEntity (decryptedMultipart, entityNode);
-                }
-            } catch (Exception err) {
-
-                // Couldn't decrypt Multipart, returning raw encrypted content.
-                entityNode.Add ("processing-message", err.Message);
-                foreach (var idxEntity in encryptedMultipart) {
-                    ProcessEntity (idxEntity, entityNode);
-                }
+                // Parsing decrypted result.
+                ProcessEntity (decryptedMultipart, entityNode);
             }
         }
 
         /*
-         * Processes a signed Multipart.
+         * Processes a signed multipart.
          */
         void ProcessSignedMultipart (MultipartSigned signedMultipart, Node entityNode)
         {
@@ -356,6 +372,8 @@ namespace p5.mime.helpers
 
                 // Looping through all entities in Multipart, processing recursively.
                 foreach (var idxEntity in signedMultipart) {
+
+                    // Processing currently iterated MIME part.
                     ProcessEntity (idxEntity, entityNode);
                 }
             }
@@ -368,26 +386,16 @@ namespace p5.mime.helpers
         {
             // Making sure there are any signatures.
             if (signatures == null)
-                return;
+                return; // Nothing to do here ...
 
             // Looping through each signature.
             foreach (var idxSignature in signatures) {
 
-                // We cannot verify signatures unless we have the public PGP key in GnuPG database, hence the try thingie ...
-                try {
+                // Making sure we return email of PGP key used to sign, and true as value of node if signature is valid.
+                var signatureNode = entityNode.FindOrInsert ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
 
-                    // Making sure we return email of PGP key used to sign, and true as value of node if signature is valid.
-                    var signatureNode = entityNode.FindOrInsert ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
-
-                    // Adding fingerprint of PGP key used to sign entity.
-                    signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint.ToLower ());
-
-                } catch {
-
-                    // Inserting unknown fingerprint and signature email.
-                    var signatureNode = entityNode.FindOrInsert ("signature").Add ("unknown", false).LastChild;
-                    signatureNode.Add ("fingerprint", "unknown");
-                }
+                // Adding fingerprint of PGP key used to sign entity.
+                signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint.ToLower ());
             }
         }
 

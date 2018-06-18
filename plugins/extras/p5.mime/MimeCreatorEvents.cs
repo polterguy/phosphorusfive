@@ -35,10 +35,10 @@ namespace p5.mime
     /// <summary>
     ///     Class wrapping the MIME creation features of Phosphorus Five.
     /// </summary>
-    public static class MimeCreate
+    public static class MimeCreatorEvents
     {
         /// <summary>
-        ///     Creates a MIME message according to given arguments and returns it as a string.
+        ///     Creates a MIME message according to given arguments and returns it as a string to caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -77,7 +77,7 @@ namespace p5.mime
         }
 
         /// <summary>
-        ///     Creates a MIME message according to given arguments and saves to the given file.
+        ///     Creates a MIME message according to given arguments and saves it to the given file.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -92,17 +92,17 @@ namespace p5.mime
             // We have to remove value of node, to make sure our iteration process below doesn't prioritize the value of the node.
             e.Args.Value = null;
 
-            // Making sure we clean up after ourselves
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
 
                 // Notice, we open up our output stream, before we start iterating, in case multiple MIME envelopes are to be created,
                 // and inserted into the same output file.
                 using (var output = File.Create (Common.GetRootFolder (context) + filePath)) {
 
-                    // Iterating through each node given, either as child of main node, or through expression
+                    // Iterating through each node given, either as children of main node, or through expression.
                     foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
 
-                        // Making sure we keep track of, closes, and disposes all streams created during process
+                        // Making sure we keep track of and close all streams created during process.
                         List<Stream> streams = new List<Stream> ();
                         try {
 
@@ -115,10 +115,10 @@ namespace p5.mime
 
                         } finally {
 
-                            // Disposing all streams created during process
+                            // Disposing all streams created during process.
                             foreach (var idxStream in streams) {
 
-                                // Closing and disposing currently iterated stream
+                                // Closing and disposing currently iterated stream.
                                 idxStream.Close ();
                                 idxStream.Dispose ();
                             }
@@ -129,7 +129,7 @@ namespace p5.mime
         }
 
         /// <summary>
-        ///     Creates a MIME message according to given arguments and saves to the given file.
+        ///     Creates a MIME message according to given arguments and saves it to the given stream.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -146,10 +146,10 @@ namespace p5.mime
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 
-                // Iterating through each node given, either as child of main node, or through expression
+                // Iterating through each node given, either as children of main node, or through expression.
                 var mimeNode = XUtil.Iterate<Node> (context, e.Args).First ();
 
-                // Making sure we keep track of, closes, and disposes all streams created during process
+                // Making sure we keep track of and close all streams created during process.
                 List<Stream> streams = new List<Stream> ();
                 try {
 
@@ -162,10 +162,10 @@ namespace p5.mime
 
                 } finally {
 
-                    // Disposing all streams created during process
+                    // Disposing all streams created during process.
                     foreach (var idxStream in streams) {
 
-                        // Closing and disposing currently iterated stream
+                        // Closing and disposing currently iterated stream.
                         idxStream.Close ();
                         idxStream.Dispose ();
                     }
@@ -174,21 +174,21 @@ namespace p5.mime
         }
 
         /// <summary>
-        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
+        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.mime.create-native")]
         static void _p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
+            // Basic syntax checking.
             if (e.Args.Count != 1)
                 throw new LambdaException (
                     "You must have exactly one root node of your MIME message",
                     e.Args,
                     context);
 
-            // Creating and returning MIME message to caller as MimeEntity
+            // Creating and returning MIME message to caller as MimeEntity.
             MimeCreator creator = new MimeCreator (
                 context,
                 e.Args.FirstChild,

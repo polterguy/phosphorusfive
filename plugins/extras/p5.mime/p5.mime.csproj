@@ -46,8 +46,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="helpers\Common.cs" />
     <Compile Include="helpers\MimeParser.cs" />
-    <Compile Include="MimeCreate.cs" />
-    <Compile Include="MimeParse.cs" />
+    <Compile Include="MimeCreatorEvents.cs" />
+    <Compile Include="MimeParserEvents.cs" />
     <Compile Include="helpers\MimeCreator.cs" />
   </ItemGroup>
   <ItemGroup>
