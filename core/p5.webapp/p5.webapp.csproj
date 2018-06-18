@@ -312,7 +312,6 @@
     <None Include="modules\desktop\help-files\Plugins\11 - p5.web.md" />
     <None Include="modules\desktop\help-files\Plugins\12 - p5.auth.md" />
     <None Include="modules\desktop\help-files\Plugins\13 - p5.crypto.md" />
-    <None Include="modules\desktop\help-files\Plugins\14 - p5.csv.md" />
     <None Include="modules\desktop\help-files\Plugins\16 - p5.html.md" />
     <None Include="modules\desktop\help-files\Plugins\17 - p5.http.md" />
     <None Include="modules\desktop\help-files\Plugins\18 - p5.imaging.md" />

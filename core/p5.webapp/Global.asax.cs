@@ -22,10 +22,13 @@
  */
 
 using System;
+using System.Net;
 using System.Web;
 using System.Threading;
 using System.Reflection;
+using System.Net.Security;
 using System.Configuration;
+using System.Security.Cryptography.X509Certificates;
 using p5.exp;
 using p5.core;
 using p5.webapp.code.configuration;
@@ -131,7 +134,7 @@ namespace p5
                 }
             }
 
-            #region [ -- Common helper Active Event sinks to retrieve system's configuration settings -- ]
+#region [ -- Common helper Active Event sinks to retrieve system's configuration settings -- ]
 
             /// <summary>
             ///     Returns the Application base folder
@@ -180,9 +183,9 @@ namespace p5
                 e.Args.Value = configuration.DefaultContextUsername;
             }
 
-            #endregion
+#endregion
 
-            #region [ -- Private helper methods -- ]
+#region [ -- Private helper methods -- ]
 
             /*
              * Executes any startup Hyperlambda files, if any, according to web.config settings.
@@ -242,7 +245,7 @@ namespace p5
                 context.RaiseEvent ("eval", context.RaiseEvent ("p5.io.file.load", new Node ("", filePath)) [0]);
             }
 
-            #endregion
+#endregion
         }
     }
 }

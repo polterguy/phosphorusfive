@@ -22,11 +22,8 @@
  */
 
 using System;
-using System.Net;
 using System.Web;
 using System.Web.UI;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using p5.exp;
 using p5.core;
 using p5.webapp.code;
@@ -38,21 +35,6 @@ namespace p5.webapp
     /// </summary>
     public class Default : PhosphorusPage
     {
-        /*
-         * This one is necessary to make sure any HTTP requests is accepted if they're
-         * using SSL, such as for instance when a POP3 server does an TLS handshake, etc.
-         */
-        static Default ()
-        {
-            ServicePointManager.ServerCertificateValidationCallback = delegate (
-                object s,
-                X509Certificate certificate,
-                X509Chain chain,
-                SslPolicyErrors sslPolicyErrors) {
-                    return true;
-                };
-        }
-
         protected override void OnInit (EventArgs e)
         {
             // Making sure our form gets the correct action attribute.
