@@ -116,12 +116,13 @@ namespace p5.http
 
                         /*
                          * An explicit [cert-hash] was supplied.
-                         * Verifying certificate's hash value, its expiration date, and that no SSL policy errors occurred.
+                         * Verifying certificate's thumbprint value and no SSL errors.
                          */
                         var cert2 = new X509Certificate2 (certificate);
-                        var certificateHash = BitConverter.ToString (certificate.GetCertHash ()).Replace ("-", string.Empty).ToLower ();
-                        return certificateHash == certHash && errors == SslPolicyErrors.None && cert2.NotAfter >= DateTime.Now;
+                        var certificateHash = cert2.Thumbprint.ToLower ();
+                        return certificateHash == certHash && errors == SslPolicyErrors.None;
                     };
+
             } else {
 
                 // Validating expiration date and that no SSL policy errors occurred during handshake.
@@ -133,22 +134,31 @@ namespace p5.http
 
                         /*
                          * No explicit [cert-hash] was supplied.
-                         * Verifying certificate's expiration date, and that no SSL policy errors occurred.
                          */
                         var cert2 = new X509Certificate2 (certificate);
-                        var certificateHash = BitConverter.ToString (certificate.GetCertHash ()).Replace ("-", string.Empty).ToLower ();
+
+                        // Simple verification first, making sure no SSL errors occured.
+                        if (errors != SslPolicyErrors.None)
+                            return false;
 
                         /*
-                         * Since caller did not explicitly supply a [cert-hash], we try to invoke any plugin Active Events, passing in
-                         * the URL and the certificate's hash, to see if there exists callback validations in system.
+                         * Since caller did not explicitly supply a [cert-hash], we try to invoke any plugin Active Events,
+                         * passing in the URL and the certificate's hash, to see if there exists callback validations in system.
+                         * We also pass in the entire chain's Thumbprint to caller as children of [cert-hash], allowing
+                         * caller to implement his own "trust chain".
                          */
                         var node = new Node ("p5.http.ssl.validate-certificate");
-                        node.Add ("url", url);
-                        node.Add ("cert-hash", certificateHash);
+                        var uri = new Uri (url);
+                        node.Add ("url", uri.Authority);
+                        node.Add ("cert-hash", cert2.Thumbprint.ToLower ());
+                        foreach (var idxChain in chain.ChainPolicy.ExtraStore) {
+                            node ["cert-hash"].Add (idxChain.IssuerName.Name, idxChain.Thumbprint.ToLower ());
+                        }
+                        node.Add ("expires", cert2.NotAfter);
                         var result = context.RaiseEvent ("p5.http.ssl.validate-certificate", node).Get (context, true);
 
                         // Returning results of validation to caller.
-                        return result && errors == SslPolicyErrors.None && cert2.NotAfter >= DateTime.Now;
+                        return result;
                     };
             }
 
