@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.IO;
 using System.Web;
 using p5.exp;
@@ -95,6 +96,36 @@ namespace p5.web.ui.response
             using (Stream fileStream = File.OpenRead (rootFolder + fileName)) {
                 fileStream.CopyTo (HttpContext.Current.Response.OutputStream);
             }
+
+            // Flushing response, and making sure default content is never rendered
+            HttpContext.Current.Response.OutputStream.Flush ();
+            HttpContext.Current.Response.Flush ();
+            HttpContext.Current.Response.SuppressContent = true;
+        }
+
+        /// <summary>
+        ///     Echo a MIME envelope back to client
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.echo-mime")]
+        public static void p5_web_echo_mime (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
+            HttpContext.Current.Response.Filter = null;
+            HttpContext.Current.Response.ClearContent ();
+
+            // Invoking event that serializes MIME enveloped directly to response stream.
+            var oldValue = e.Args.Value;
+            e.Args.Value = new Tuple<object, Stream> (e.Args.Value, HttpContext.Current.Response.OutputStream);
+            try {
+                context.RaiseEvent (".p5.mime.serialize-to-stream", e.Args);
+            } finally {
+                e.Args.Value = oldValue;
+            }
+
+            // Making sure we remove ViewState entry from session.
+            context.RaiseEvent (".p5.web.page.remove-viewstate-key");
 
             // Flushing response, and making sure default content is never rendered
             HttpContext.Current.Response.OutputStream.Flush ();

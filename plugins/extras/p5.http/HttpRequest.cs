@@ -52,7 +52,7 @@ namespace p5.http
             using (new ArgsRemover (e.Args, true)) {
 
                 // Figuring out which HTTP method to use.
-                string method = e.Args.Name.Split ('.').Last ().ToUpper ();
+                var method = e.Args.Name.Split ('.').Last ().ToUpper ();
 
                 // Wrapping HTTP request(s) in a try/catch block, to be able to return intelligent errors.
                 try {
@@ -61,7 +61,7 @@ namespace p5.http
                     foreach (var idxUrl in XUtil.Iterate<string> (context, e.Args)) {
 
                         // Creating and decorating request.
-                        HttpWebRequest request = CreateHttpRequest (context, e.Args, method, idxUrl);
+                        var request = CreateHttpRequest (context, e.Args, method, idxUrl);
 
                         // Writing content to request, if any.
                         RenderRequest (context, request, e.Args, method);
@@ -249,9 +249,7 @@ namespace p5.http
         /*
          * Returns content back to caller.
          */
-        static object GetRequestContent (
-            ApplicationContext context,
-            Node content)
+        static object GetRequestContent (ApplicationContext context, Node content)
         {
             // Checking for Hyperlambda.
             if (content.Value == null && content.Count > 0) {
@@ -322,25 +320,31 @@ namespace p5.http
         {
             // Retrieving response and creating our [result] node.
             var response = request.GetResponseNoException ();
-            Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
+            var result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
             // Getting response HTTP headers.
-            GetResponseHeaders (context, response, result, request);
+            GetResponseHeaders (response, result, request);
 
             // Retrieving response stream, and parsing content.
-            using (Stream stream = response.GetResponseStream ()) {
+            using (var stream = response.GetResponseStream ()) {
 
                 // Checking if caller supplied his own [.onresponse] callback, and if not, checking the type of response.
                 var responseCallback = args [".onresponse"];
                 if (responseCallback != null) {
 
                     // Using plugin Active Events to serialize content of HTTP request directly into request stream.
-                    responseCallback.FirstChild.Value = new Tuple<object, Stream> (responseCallback.FirstChild.Value, stream);
+                    responseCallback.FirstChild.Value = stream;
 
-                    // Wrapping our "plugin" response stream in a try/finally block, to avoid having stream stay in Node structure after invocation.
+                    /*
+                     * Wrapping our "plugin" response stream in a try/finally block, to avoid having stream stay
+                     * in Node structure after invocation.
+                     */
                     try {
 
                         context.RaiseEvent (responseCallback.FirstChild.Name, responseCallback.FirstChild);
+                        result.Add ("content").LastChild.AddRange (responseCallback.FirstChild.Children);
+                        if (!(responseCallback.FirstChild.Value is Stream))
+                            result ["content"].Value = responseCallback.FirstChild.Value;
 
                     } finally {
 
@@ -360,6 +364,17 @@ namespace p5.http
                         // Simply adding as text.
                         result.Add ("content", reader.ReadToEnd ());
                     }
+
+                } else if (response.ContentType == "application/x-hyperlambda") {
+
+                    // Hyperlambda response.
+                    using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
+
+                        // Transforming to lambda, and returning as such.
+                        var hyperNode = new Node ("", reader.ReadToEnd ());
+                        context.RaiseEvent ("hyper2lambda", hyperNode);
+                        result.Add ("content", null, hyperNode.Children);
+                    }
                 } else {
 
                     // Defaulting to binary.
@@ -376,11 +391,7 @@ namespace p5.http
         /*
          * Returns the HTTP response headers into node given.
          */
-        static void GetResponseHeaders (
-            ApplicationContext context,
-            HttpWebResponse response,
-            Node args,
-            HttpWebRequest request)
+        static void GetResponseHeaders (HttpWebResponse response, Node args, HttpWebRequest request)
         {
             // Adding status code.
             args.Add ("status", response.StatusCode.ToString ());

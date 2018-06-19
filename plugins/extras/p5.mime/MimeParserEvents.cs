@@ -177,7 +177,7 @@ namespace p5.mime
 
                 // Sanity check.
                 var stream = e.Args.Value as Stream;
-                if (e.Args.Value == null)
+                if (stream == null)
                     throw new LambdaException (
                         "No stream provided to [.p5.mime.load-from-stream]",
                         e.Args,

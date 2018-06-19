@@ -83,6 +83,26 @@ namespace p5
                     // Allowing requests to be handled.
                     _lock.ExitWriteLock ();
                 }
+
+                // Validating that at least no SSL policy errors occurred during handshake.
+                ServicePointManager.ServerCertificateValidationCallback += delegate (
+                    object s,
+                    X509Certificate certificate,
+                    X509Chain chain,
+                    SslPolicyErrors errors) {
+
+                        /*
+                         * Since we have no ways of logically handling this, besides checking for SSL errors,
+                         * we just that, to make sure we at least have some rudimentary support.
+                         * 
+                         * Notice, our HTTP REST module (p5.http) overrides this with its own per request
+                         * based validations. So this is only relevant in fact for MimeKit while fetching
+                         * public PGP keys during verification of cryptographic signatures. Which anyways
+                         * should use the web of trust features afterwards.
+                         */
+                        return errors == SslPolicyErrors.None;
+                    };
+
             }
 
             /*

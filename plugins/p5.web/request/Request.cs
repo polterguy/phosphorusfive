@@ -88,10 +88,23 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "p5.web.request.parse-mime")]
         public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving content type, which is not a part of the body, but the "Content-Type" of the request
-            // passed in as an HTTP header.
-            var contentType = HttpContext.Current.Request.ContentType;
-            e.Args.Add ("Content-Type", contentType);
+            /*
+             * Checking if we should avoid retrieving "Content-Type" from HTTP request's headers, and rather
+             * expect it to be found at top of body.
+             */
+            if (e.Args.GetExChildValue ("content-type-in-body", context, false)) {
+
+                /* Deleting "content-type-in-body" argument, and not adding explicit "Content-Type" from HTTP
+                 * header collection.
+                 */
+                e.Args ["content-type-in-body"].UnTie ();
+
+            } else {
+
+                // Finding "Content-Type" from HTTP request's HTTP headers collection.
+                var contentType = HttpContext.Current.Request.ContentType;
+                e.Args.Add ("Content-Type", contentType);
+            }
             e.Args.Value = HttpContext.Current.Request.InputStream;
             context.RaiseEvent (".p5.mime.load-from-stream", e.Args);
             e.Args ["Content-Type"]?.UnTie ();
