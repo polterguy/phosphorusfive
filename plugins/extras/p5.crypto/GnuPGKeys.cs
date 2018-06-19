@@ -196,7 +196,7 @@ namespace p5.crypto
                 // Signing key.
                 ctx.SignKey (secretKey, keyring.GetPublicKey ());
 
-            }, false, false, password);
+            }, false, false, password, fingerprint);
         }
 
         /// <summary>

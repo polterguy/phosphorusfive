@@ -217,7 +217,12 @@ namespace p5.mime.helpers
              */
             using (var ctx = _context.RaiseEvent (
                 ".p5.crypto.pgp-keys.context.create", 
-                new Node ("", false, new Node [] { new Node ("password", signatureAddress.Item1) })).Get<OpenPgpContext> (_context)) {
+                new Node ("", false, 
+                          new Node [] {
+                    new Node ("password", signatureAddress.Item1), 
+                    new Node ("fingerprint", signatureNode ["fingerprint"]?.GetExChildValue<string> ("fingerprint", _context, null) ??
+                              _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (_context)) }))
+                   .Get<OpenPgpContext> (_context)) {
 
                 // Signing content of email and returning to caller.
                 return MultipartSigned.Create (
@@ -285,7 +290,12 @@ namespace p5.mime.helpers
              */
             using (var ctx = _context.RaiseEvent (
                 ".p5.crypto.pgp-keys.context.create",
-                new Node ("", false, new Node [] { new Node ("password", signatureAddress.Item1) })).Get<OpenPgpContext> (_context)) {
+                new Node ("", false,
+                          new Node [] {
+                    new Node ("password", signatureAddress.Item1),
+                    new Node ("fingerprint", signatureNode ["fingerprint"]?.GetExChildValue<string> ("fingerprint", _context, null) ??
+                              _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (_context)) }))
+                    .Get<OpenPgpContext> (_context)) {
 
                 // Signing and Encrypting content of email.
                 var retVal = MultipartEncrypted.SignAndEncrypt (

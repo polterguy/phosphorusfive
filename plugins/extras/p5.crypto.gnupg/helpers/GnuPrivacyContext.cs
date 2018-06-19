@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Threading;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Bcpg.OpenPgp;
@@ -46,21 +47,33 @@ namespace p5.crypto.gnupg.helpers
         ///     Initializes a new instance of the <see cref="T:p5.crypto.helpers.GnuPrivacyContext"/> class.
         /// </summary>
         /// <param name="write">If set to <c>true</c> write.</param>
-        public GnuPrivacyContext (bool write, string password)
+        public GnuPrivacyContext (bool write, string fingerprint, string password)
         {
+            if ((password != null && fingerprint == null) || (password == null && fingerprint != null))
+                throw new ArgumentException ("If you supply a [password] or [fingerprint] to [.p5.crypto.pgp-keys.context.create] you must supply both");
             _write = write;
             if (write)
                 _lock.EnterWriteLock ();
             else
                 _lock.EnterReadLock ();
             Password = password;
+            Fingerprint = fingerprint;
         }
 
         /// <summary>
         ///     Gets or sets the password to retrieve a private key from GnuPG.
         /// </summary>
         /// <value>The password necessary to retrieve key</value>
-        internal string Password {
+        private string Password {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        ///     Gets or sets the fingerprint to retrieve a private key from GnuPG.
+        /// </summary>
+        /// <value>The fingerprint necessary to retrieve key</value>
+        private string Fingerprint {
             get;
             set;
         }
@@ -72,6 +85,9 @@ namespace p5.crypto.gnupg.helpers
         /// <param name="key">The key to retrieve the password for</param>
         protected override string GetPasswordForKey (PgpSecretKey key)
         {
+            if (BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower () != Fingerprint)
+                throw new ArgumentException ("Wrong PGP key");
+
             // Returning password.
             return Password;
         }

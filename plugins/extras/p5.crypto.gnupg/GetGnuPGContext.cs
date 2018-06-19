@@ -57,6 +57,7 @@ namespace p5.crypto.gnupg
             // Creating GnuPG Context.
             var ctx = new GnuPrivacyContext (
                 e.Args.Get<bool> (context), 
+                e.Args.GetChildValue<string> ("fingerprint", context, null),
                 e.Args.GetChildValue<string> ("password", context, null));
 
             // Making sure we set the key server for the context, if one is given.

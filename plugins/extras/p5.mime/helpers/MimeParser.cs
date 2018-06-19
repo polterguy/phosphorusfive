@@ -43,6 +43,7 @@ namespace p5.mime.helpers
         string _attachmentFolder;
         bool _addPrefixToAttachmentPath;
         string _password;
+        string _fingerprint;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeParser"/> class.
@@ -73,11 +74,13 @@ namespace p5.mime.helpers
 
                     // [password] argument was supplied.
                     _password = args ["decrypt"].GetExChildValue<string> ("password", context, null);
+                    _fingerprint = args ["decrypt"].GetExChildValue<string> ("fingerprint", context, null);
 
                 } else {
 
                     // No password was supplied, assuming caller wants to use password from web.config.
                     _password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+                    _fingerprint = _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (context);
                 }
             } else {
 
@@ -86,6 +89,7 @@ namespace p5.mime.helpers
                  * This allows for simpler syntax when used.
                  */
                 _password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+                _fingerprint = _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (context);
             }
         }
 
@@ -343,7 +347,10 @@ namespace p5.mime.helpers
             // Creating cryptography context.
             using (var ctx = _context.RaiseEvent (
                 ".p5.crypto.pgp-keys.context.create",
-                new Node ("", false, new Node [] { new Node ("password", _password) })).Get<OpenPgpContext> (_context)) {
+                new Node ("", false, new Node [] {
+                    new Node ("password", _password),
+                    new Node ("fingerprint", _fingerprint)}))
+                   .Get<OpenPgpContext> (_context)) {
 
                 // Decrypting entity, making sure we retrieve signatures at the same time, if there are any.
                 DigitalSignatureCollection signatures;
