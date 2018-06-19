@@ -215,24 +215,14 @@ namespace p5.http
 
                     } else {
 
-                        // Using plugin Active Events to serialize content of HTTP request directly into request stream.
+                        // Making sure we're able to pass in request's stream into plugin event.
                         contentNode.FirstChild.Value = new Tuple<object, Stream> (contentNode.FirstChild.Value, stream);
 
-                        // Wrapping invocation into a try/finally block, to make sure we can remove stream from Node structure.
-                        try {
-
-                            // Invoking "plugin" event to serialize to request stream.
-                            context.RaiseEvent (contentNode.FirstChild.Name, contentNode.FirstChild);
-
-                        } finally {
-
-                            /*
-                             * Notice, we must remove the value of our invocation node here, 
-                             * otherwise we'll end up having a Stream object in our node structure
-                             * as we leave the event.
-                             */
-                            contentNode.FirstChild.Value = null;
-                        }
+                        /*
+                         * Raising [.onresponse] Active Event to handle response.
+                         * No need to clean up afterwards, since [.onresponse] event should have already done this.
+                         */
+                        context.RaiseEvent (contentNode.FirstChild.Name, contentNode.FirstChild);
                     }
                 }
             } else {
@@ -333,28 +323,19 @@ namespace p5.http
                 if (responseCallback != null) {
 
                     // Using plugin Active Events to serialize content of HTTP request directly into request stream.
-                    responseCallback.FirstChild.Value = stream;
+                    responseCallback.FirstChild.Value = new Tuple<object, Stream> (responseCallback.FirstChild.Value, stream);
 
                     /*
-                     * Wrapping our "plugin" response stream in a try/finally block, to avoid having stream stay
-                     * in Node structure after invocation.
+                     * Raising [.onresponse] Active Event to handle response.
+                     * No need to clean up afterwards, since [.onresponse] event should have already done this.
                      */
-                    try {
+                    context.RaiseEvent (responseCallback.FirstChild.Name, responseCallback.FirstChild);
 
-                        context.RaiseEvent (responseCallback.FirstChild.Name, responseCallback.FirstChild);
-                        result.Add ("content").LastChild.AddRange (responseCallback.FirstChild.Children);
-                        if (!(responseCallback.FirstChild.Value is Stream))
-                            result ["content"].Value = responseCallback.FirstChild.Value;
-
-                    } finally {
-
-                        /*
-                         * Notice, we must remove the value of our invocation node here, 
-                         * otherwise we'll end up having a Stream object in our node structure
-                         * as we leave the event.
-                         */
-                        responseCallback.FirstChild.Value = null;
-                    }
+                    /*
+                     * Adding results of [.onresponse] event to [result] node for HTTP request.
+                     * No need to clone, since [.onresponse] node's active event node shouldn't keep its content around anyway.
+                     */
+                    result.Add ("content").LastChild.AddRange (responseCallback.FirstChild.Children);
 
                 } else if (response.ContentType.StartsWithEx ("text")) {
 

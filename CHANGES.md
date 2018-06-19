@@ -36,6 +36,16 @@ the users to create entire sentences instead of using simply characters.
 This can be overridden though by easily changing the password rules in the web.config,
 if you're determined to use a weaker type of password entropy regime.
 
+### Using Blowfish slow hashing for passwords
+
+Implemented slow hashing with bcrypt for passwords in auth file.
+
+### Echoing MIME directly to the response stream
+
+Allowing for using **[p5.web.echo-mime]** to echo a MIME envelope directly unto
+the HTTP response stream. Also beefed up the Hypereval lambda web service example
+to illustrate this idea.
+
 ### Refactoring and cleaning up p5.auth
 
 Cleaned up p5.auth, and refactored it, making its code more easily understood,

@@ -52,7 +52,7 @@ namespace p5.mime
                 foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
 
                     // Making sure we keep track of and close all streams created during process.
-                    List<Stream> streams = new List<Stream> ();
+                    var streams = new List<Stream> ();
                     try {
 
                         // Creating and returning MIME message to caller as string.
@@ -103,7 +103,7 @@ namespace p5.mime
                     foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
 
                         // Making sure we keep track of and close all streams created during process.
-                        List<Stream> streams = new List<Stream> ();
+                        var streams = new List<Stream> ();
                         try {
 
                             // Creating MIME message and serializing to file.
@@ -143,31 +143,32 @@ namespace p5.mime
             // Have to remove value of node, before iteration starts.
             e.Args.Value = null;
 
-            // Making sure we clean up after ourselves
-            using (new ArgsRemover (e.Args, true)) {
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args)) {
 
                 // Iterating through each node given, either as children of main node, or through expression.
-                var mimeNode = XUtil.Iterate<Node> (context, e.Args).First ();
+                foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
 
-                // Making sure we keep track of and close all streams created during process.
-                List<Stream> streams = new List<Stream> ();
-                try {
+                    // Making sure we keep track of and close all streams created during process.
+                    var streams = new List<Stream> ();
+                    try {
 
-                    // Creating MIME message and serializing to file.
-                    var creator = new MimeCreator (
-                        context,
-                        mimeNode,
-                        streams);
-                    creator.Create ().WriteTo (output);
+                        // Creating MIME message and serializing to file.
+                        var creator = new MimeCreator (
+                            context,
+                            idxMimeNode,
+                            streams);
+                        creator.Create ().WriteTo (output);
 
-                } finally {
+                    } finally {
 
-                    // Disposing all streams created during process.
-                    foreach (var idxStream in streams) {
+                        // Disposing all streams created during process.
+                        foreach (var idxStream in streams) {
 
-                        // Closing and disposing currently iterated stream.
-                        idxStream.Close ();
-                        idxStream.Dispose ();
+                            // Closing and disposing currently iterated stream.
+                            idxStream.Close ();
+                            idxStream.Dispose ();
+                        }
                     }
                 }
             }

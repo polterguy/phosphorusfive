@@ -86,8 +86,11 @@ namespace p5.io.file
         {
             // Retrieving stream argument.
             var tuple = e.Args.Value as Tuple<object, Stream>;
-            e.Args.Value = tuple.Item1;
-            var output = tuple.Item2;
+
+            // Retrieving stream and doing some basic sanity check.
+            var outStream = tuple.Item2;
+            if (outStream == null)
+                throw new LambdaException ("No stream supplied to [.p5.io.file.serialize-to-stream]", e.Args, context);
 
             // Iterating through files specified.
             ObjectIterator.Iterate (
@@ -101,7 +104,7 @@ namespace p5.io.file
 
                         // Serializing file into stream.
                         using (FileStream stream = File.OpenRead (fullpath)) {
-                            stream.CopyTo (output);
+                            stream.CopyTo (outStream);
                         }
 
                     } else {

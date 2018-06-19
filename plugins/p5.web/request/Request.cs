@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.IO;
 using System.Web;
 using p5.exp;
@@ -105,8 +106,10 @@ namespace p5.web.ui.request
                 var contentType = HttpContext.Current.Request.ContentType;
                 e.Args.Add ("Content-Type", contentType);
             }
-            e.Args.Value = HttpContext.Current.Request.InputStream;
+            e.Args.Value = new Tuple<object, Stream> (e.Args.Value, HttpContext.Current.Request.InputStream);
             context.RaiseEvent (".p5.mime.load-from-stream", e.Args);
+
+            // House cleaning.
             e.Args ["Content-Type"]?.UnTie ();
         }
 

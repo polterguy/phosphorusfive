@@ -116,13 +116,8 @@ namespace p5.web.ui.response
             HttpContext.Current.Response.ClearContent ();
 
             // Invoking event that serializes MIME enveloped directly to response stream.
-            var oldValue = e.Args.Value;
             e.Args.Value = new Tuple<object, Stream> (e.Args.Value, HttpContext.Current.Response.OutputStream);
-            try {
-                context.RaiseEvent (".p5.mime.serialize-to-stream", e.Args);
-            } finally {
-                e.Args.Value = oldValue;
-            }
+            context.RaiseEvent (".p5.mime.serialize-to-stream", e.Args);
 
             // Making sure we remove ViewState entry from session.
             context.RaiseEvent (".p5.web.page.remove-viewstate-key");

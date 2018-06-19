@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.IO;
 using p5.exp;
 using p5.core;
@@ -176,7 +177,13 @@ namespace p5.mime
             using (new ArgsRemover (e.Args, true)) {
 
                 // Sanity check.
-                var stream = e.Args.Value as Stream;
+                var tuple = e.Args.Value as Tuple<object, Stream>;
+                if (tuple == null)
+                    throw new LambdaException (
+                        "No Tuple<object, Stream> provided to [.p5.mime.load-from-stream]",
+                        e.Args,
+                        context);
+                var stream = tuple.Item2;
                 if (stream == null)
                     throw new LambdaException (
                         "No stream provided to [.p5.mime.load-from-stream]",
