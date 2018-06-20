@@ -293,7 +293,7 @@ namespace p5.mime.helpers
                 new Node ("", false,
                           new Node [] {
                     new Node ("password", signatureAddress.Item1),
-                    new Node ("fingerprint", signatureNode ["fingerprint"]?.GetExChildValue<string> ("fingerprint", _context, null) ??
+                    new Node ("fingerprint", signatureNode.GetExChildValue<string> ("fingerprint", _context, null) ??
                               _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (_context)) }))
                     .Get<OpenPgpContext> (_context)) {
 
