@@ -334,9 +334,7 @@ namespace p5.mime.helpers
                 foreach (var idx in encryptionNode.Children) {
 
                     // Checking if email address was given, or if fingerprint was given.
-                    if (idx.Name == "email")
-                        retVal.Add (new MailboxAddress ("", idx.GetExValue<string> (_context)));
-                    else if (idx.Name == "fingerprint")
+                    if (idx.Name == "fingerprint")
                         retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", idx.GetExValue<string> (_context)));
                     else
                         throw new LambdaException (
@@ -361,23 +359,41 @@ namespace p5.mime.helpers
              */
             if (signatureNode.Count == 0) {
 
-                // Assuming caller wants to use server's PGP fingerprint.
+                /*
+                 * Assuming caller wants to use server's PGP fingerprint.
+                 */
                 var fingerprint = _context.RaiseEvent ("p5.auth.pgp.get-fingerprint").Get<string> (_context);
                 var password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+                return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", "foo@bar.com", fingerprint));
+
+            } else if (signatureNode.Count == 1) {
+
+                /*
+                 * Sanity checking node.
+                 */
+                if (signatureNode.FirstChild.Name != "fingerprint")
+                    throw new LambdaException ("We can only handle [fingerprint] arguments to sign your MIME envelopes.", signatureNode, _context);
+
+                /*
+                 * Figuring out which private key and password to use for signing entity.
+                 */
+                var fingerprint = signatureNode.GetExChildValue ("fingerprint", _context, "");
+                var password = signatureNode ["fingerprint"].GetExChildValue ("password", _context, "");
+
+                // Sanity checking password.
+                if (string.IsNullOrEmpty (password)) {
+
+                    // Assuming we're using server password.
+                    password = _context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", "gpg-server-keypair-password")) [0]?.Get<string> (_context) ?? null;
+                }
                 
                 // Returning password and MailboxAddress to sign entity on behalf of.
                 return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", "foo@bar.com", fingerprint));
 
             } else {
 
-                // Figuring out which private key to use for signing entity.
-                string email = "foo@bar.com", fingerprint = "", password = "";
-                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetExChildValue ("password", _context, "");
-                email = signatureNode.GetExChildValue ("email", _context, "foo@bar.com");
-                fingerprint = signatureNode.GetExChildValue ("fingerprint", _context, "");
-                
-                // Returning password and MailboxAddress to sign entity on behalf of.
-                return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", email, fingerprint));
+                // Oops, multiple signature [fingerprint] values probably.
+                throw new LambdaException ("Only supply one [fingerprint] to sign your MIME envelopes.", signatureNode, _context);
             }
         }
 

@@ -131,6 +131,16 @@ namespace p5.mime.helpers
             if (part.Content == null)
                 return;
 
+            /*
+             * Notice, is MIME entity is of type "application/pgp-signature", we simply discard
+             * it in its entirety, since signature has already been handled at this point, and
+             * (hopefully) verified, and there are no reasons to keep the actual signature node
+             * around anymore. If we kept the part around, it would simply add to the confusion, since
+             * it's actually processed as an attachment.
+             */
+            if (part.ContentType != null && part.ContentType.MediaType == "application" && part.ContentType.MediaSubtype == "pgp-signature")
+                return;
+
             // Creating entity's root node.
             Node entityNode = args.Add (part.ContentType.MediaType, part.ContentType.MediaSubtype).LastChild;
 
@@ -161,13 +171,6 @@ namespace p5.mime.helpers
 
             // Checking if MIME entity actually is an attachment.
             if (part.IsAttachment) {
-
-                /*
-                 * Still we are not 100% certain, since we do not want to store all actual attachments as attachments.
-                 * Among other things, we don't store "application:pgp-encrypted" 'attachments' to disc.
-                 */
-                if (part.ContentType.MediaType == "application" && part.ContentType.MediaSubtype == "pgp-encrypted")
-                    return false; // No need to save these parts to disc.
 
                 // This is an actual attachment, and should be treated as such.
                 return true;
