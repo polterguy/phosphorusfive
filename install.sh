@@ -86,7 +86,7 @@ sudo apt-get upgrade
 sudo apt-get dist-upgrade
 
 # Downloading the latest release.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v8.3/binaries.zip
+wget https://github.com/polterguy/phosphorusfive/releases/download/v8.4/binaries.zip
 
 # Installing MySQL server.
 # Notice, by default MySQL is setup without networking, hence unless user explicitly opens it.
