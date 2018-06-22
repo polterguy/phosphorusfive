@@ -1,7 +1,13 @@
 Changes
 ===============
 
-## Version 8.4 - Not yet released
+## Version 8.4 - Released the 22th of June 2018
+
+### General information
+
+The main focal points of this release have been security and PGP/MIME. This is
+a major release, with more than 52 commits since the previous release. Lots of
+interesting PGP features, in addition to lambda web services, and better security.
 
 ### Cleaning up some event names in p5.auth - *BREAKING CHANGE*
 
@@ -68,6 +74,27 @@ Added 4 convenience Active Events to check if a user is allowed to read or
 write to a file or folder, which is useful if you need to check this, before
 some IO operation is attempted. See the documentation for p5.io.authorization
 for details.
+
+### PGP lambda web services
+
+This is the by far most important change in this release, since it allows you
+to easily create and consume PGP _"lambda web services"_, where the client
+supplies the code to be executed on the web service endpoint securely, by
+enforcing the invocation to be a cryptographically PGP signed MIME envelope.
+
+Both client side wrappers and server side wrapper (Hypereval) have been created
+for this.
+
+### Better management of PGP keys
+
+There are several new helper methods, among other things URL resolvers in Micro,
+to allow clients to more easily retrieve PGP keys from the a P5 server. In addition,
+the internal PGP fetures of Phosphorus Five will now automatically contact a
+key server, if it receives a MIME envelope that has been cryptographically signed,
+to download the public PGP key to verify the signature. Which key server you want
+to use can be configured in web.config - But the default value uses Ubuntu's key
+server. During installation of the server, you can also choose to explicitly submit
+your server's public PGP key to the same key server.
 
 ## Version 8.3 - Released the 6th of June 2018
 
