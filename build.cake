@@ -18,7 +18,7 @@ CreateDirectory("./phosphorusfive-8-1/samples");
 var files = GetFiles ("./*.cake$|*.md$|install.sh$|LICENSE$|*.sln$|README.md$");
 CopyFiles (files, "./phosphorusfive-8-1/", true);
 
-files = GetFiles ("./core/**/*.cs$|*.hl$|*.md$|*.aspx$|*.sh$|*.sln$|*.csproj$|*.asax$|*.ico$|*.css$|*.js$|*.png$|*.jpg$|*.jpeg$|*.gif$|*.svg$|*.config$|*.webmanifest$|*.xml$|*.ttf$|*.woff$|*.eot$");
+files = GetFiles ("./core/**/*.cs$|*.hl$|*.md$|*.aspx$|*.sh$|*.sln$|*.csproj$|*.asax$|*.ico$|*.css$|*.js$|*.html$|*.htm$|*.png$|*.jpg$|*.jpeg$|*.gif$|*.svg$|*.config$|*.webmanifest$|*.xml$|*.ttf$|*.woff$|*.eot$");
 CopyFiles (files, "./phosphorusfive-8-1/core/", true);
 
 files = GetFiles ("./packages/**/*.nupkg$|/*.dll$|/*.config$");

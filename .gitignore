@@ -223,3 +223,5 @@ core/p5.webapp/common/temp/*
 
 # Excluding auto generated Visual Studio files
 .vs/
+
+core/p5.webapp/modules/programming-contest/
