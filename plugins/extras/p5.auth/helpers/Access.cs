@@ -252,7 +252,7 @@ namespace p5.auth.helpers
             path = context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
             
             // Defaulting access to invoker node's existing value, or "false" if no default is supplied by caller.
-            var has_access = args.Get (context, false);
+            var has_access = args.GetExValue (context, false);
 
             // Retrieving all access objects.
             var accessNode = new Node ();
