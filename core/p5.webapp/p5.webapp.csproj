@@ -280,7 +280,6 @@
     <None Include="modules\desktop\help-files\index.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
     <None Include="modules\desktop\startup\core\p5.web.load-ui.hl" />
-    <None Include="modules\desktop\startup\misc\.DS_Store" />
     <None Include="modules\desktop\startup\misc\desktop.evaluate.on-next-pageload.hl" />
     <None Include="modules\desktop\startup\misc\desktop.help.display.hl" />
     <None Include="modules\desktop\startup\modules\desktop.modules.install.hl" />
@@ -290,9 +289,7 @@
     <None Include="modules\desktop\startup\plugins\desktop.plugins.post.create-logout-button.hl" />
     <None Include="modules\desktop\startup\plugins\desktop.plugins.post.evaluate-session-lambda.hl" />
     <None Include="modules\desktop\startup\widgets\desktop.help.widgets.help-index.hl" />
-    <None Include="modules\desktop\startup\.DS_Store" />
     <None Include="modules\desktop\startup\version.hl" />
-    <None Include="modules\desktop\.DS_Store" />
     <None Include="modules\desktop\launch.hl" />
     <None Include="modules\desktop\README.md" />
     <None Include="modules\desktop\startup.hl" />
@@ -340,6 +337,11 @@
     <None Include="modules\desktop\help-files\03 - License terms.md" />
     <None Include="modules\desktop\help-files\04 - Credits and copyright information.md" />
     <None Include="modules\desktop\help-files\05 - Articles about Phosphorus Five.md" />
+    <None Include="modules\desktop\help-files\GaiaSoul Gold Partner Program\01 - Become a GaiaSoul Gold Partner.md" />
+    <None Include="modules\desktop\help-files\GaiaSoul Gold Partner Program\02 - GLx Mobile Technologies.md" />
+    <None Include="modules\desktop\help-files\GaiaSoul Gold Partner Program\index.hl" />
+    <None Include="modules\desktop\help-files\Plugins\14 - p5.crypto.gnupg.md" />
+    <None Include="modules\desktop\help-files\Plugins\15 - p5.csv.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>
