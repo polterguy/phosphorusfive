@@ -49,22 +49,12 @@ namespace p5.mail.helpers
         /// <param name="client">MailService type</param>
         /// <param name="args">Active Event Arguments</param>
         /// <param name="serverType">pop3 or smtp</param>
-        public static void ConnectServer (
-            ApplicationContext context,
-            MailService client,
-            Node args,
-            string serverType)
+        public static void ConnectServer (ApplicationContext context, MailService client, Node args, string serverType)
         {
             // Retrieving server settings, defaulting to those found in web.config, if not explicitly overridden.
-            string server =
-                args.GetExChildValue<string> ("server", context) ??
-                "localhost";
-            int port = args ["port"] != null ?
-                args.GetExChildValue<int> ("port", context) :
-                25;
-            bool useSsl = args ["ssl"] != null ?
-                args.GetExChildValue<bool> ("ssl", context) :
-                false;
+            var server = args.GetExChildValue ("server", context, "localhost");
+            var port = args.GetExChildValue ("port", context, 25);
+            bool useSsl = args.GetExChildValue ("ssl", context, false);
 
             // Connecting client to server
             client.Connect (
@@ -75,20 +65,10 @@ namespace p5.mail.helpers
             // Fuck OATH2!! [quote; its creator!]
             client.AuthenticationMechanisms.Remove ("XOAUTH2");
 
-            // Finding username and password to use to authenticate
-            string username = null, password = null;
-
-            // Checking if caller supplied username and password, and if so, using those credentials
-            if (args ["username"] != null) {
-
-                // Notice, this logic allows caller to supply null or empty password, in case specified server does 
-                // not require authorisation to send emails, in which case, client.Authenticate below will never be invoked!
-                username = args.GetExChildValue ("username", context, "");
-                password = args.GetExChildValue ("password", context, "");
-
-                // Authenticating, unless username is empty or null
-                if (!string.IsNullOrEmpty (username))
-                    client.Authenticate (username, password);
+            // Authenticating user, if credentials were supplied.
+            var username = args.GetExChildValue ("username", context, "");
+            if (!string.IsNullOrEmpty (username)) {
+                client.Authenticate (username, args.GetExChildValue ("password", context, ""));
             }
         }
     }

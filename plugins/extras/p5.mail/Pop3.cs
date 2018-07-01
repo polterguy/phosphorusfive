@@ -72,12 +72,12 @@ namespace p5.mail
                     // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code.
                     try {
 
-                        // Figuring out how many messages to retrieve, defaulting to "5" if not explicitly told something else by caller,
+                        // Figuring out how many messages to retrieve, defaulting to "5", if not explicitly told something else by caller,
                         // making sure we never try to retrieve more messages than server actually has.
-                        int noMessages = Math.Min (client.Count, e.Args.GetExChildValue ("count", context, 5));
+                        var noMessages = Math.Min (client.Count, e.Args.GetExChildValue ("count", context, 5));
 
                         // Fetching messages from server, but not any more messages than caller requested, or number of available messages.
-                        for (int idxMsg = 0; idxMsg < noMessages; idxMsg++) {
+                        for (var idxMsg = 0; idxMsg < noMessages; idxMsg++) {
 
                             // Process message returned from POP3 server by building Node structure wrapping message.
                             var msgNode = ProcessMessage (
@@ -103,6 +103,9 @@ namespace p5.mail
                             // Invoking lambda callback, letting caller do his thing.
                             context.RaiseEvent ("eval-mutable", lambda);
                         }
+                        
+                        // Disconnecting from server, making sure we send the QUIT signal.
+                        client.Disconnect (true);
 
                     } catch {
 
@@ -111,10 +114,6 @@ namespace p5.mail
                         client.Disconnect (false);
                         throw;
 
-                    } finally {
-
-                        // Disconnecting from server, making sure we send the QUIT signal.
-                        client.Disconnect (true);
                     }
                 }
             }

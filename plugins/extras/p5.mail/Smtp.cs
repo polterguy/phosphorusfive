@@ -79,10 +79,7 @@ namespace p5.mail
         /*
          * Sends all [envelopes] found.
          */
-        static void SendMessages (
-            ApplicationContext context,
-            Node args,
-            SmtpClient client)
+        static void SendMessages (ApplicationContext context, Node args, SmtpClient client)
         {
             // Looping through each message caller wants to send.
             foreach (var idxEnvelopeNode in args.Children.Where (ix => ix.Name == "envelope")) {
@@ -113,10 +110,7 @@ namespace p5.mail
         /*
          * Creates and decorates MimeMessage according to given args.
          */
-        static MimeMessage CreateMessage (
-            ApplicationContext context,
-            Node envelopeNode,
-            List<Stream> streams)
+        static MimeMessage CreateMessage (ApplicationContext context, Node envelopeNode, List<Stream> streams)
         {
             // Creating message to return.
             var message = new MimeMessage ();
@@ -128,7 +122,7 @@ namespace p5.mail
             DecorateMessageEnvelope (context, envelopeNode, message);
 
             // Retrieving [body] node of envelope, and doing basic syntax checking.
-            Node body = envelopeNode ["body"];
+            var body = envelopeNode ["body"];
             if (body == null)
                 throw new LambdaException (
                     "No [body] found inside of [envelope]",
@@ -148,10 +142,7 @@ namespace p5.mail
         /*
          * Decorates headers of MimeMessage.
          */
-        static void DecorateMessageEnvelope (
-            ApplicationContext context,
-            Node args,
-            MimeMessage message)
+        static void DecorateMessageEnvelope (ApplicationContext context, Node args, MimeMessage message)
         {
             message.Subject = args.GetExChildValue ("Subject", context, "");
 
@@ -196,10 +187,7 @@ namespace p5.mail
         /*
          * Retrieves all emails beneath the args node's child with the given name.
          */
-        static IEnumerable<MailboxAddress> GetAddresses (
-            ApplicationContext context,
-            Node args,
-            string name)
+        static IEnumerable<MailboxAddress> GetAddresses (ApplicationContext context, Node args, string name)
         {
             // Checking there exist a node with supplied name on args.
             if (args [name] != null) {
