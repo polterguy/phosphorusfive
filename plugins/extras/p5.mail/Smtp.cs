@@ -25,6 +25,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using p5.mail.helpers;
@@ -152,7 +153,7 @@ namespace p5.mail
             Node args,
             MimeMessage message)
         {
-            message.Subject = args.GetChildValue ("Subject", context, "");
+            message.Subject = args.GetExChildValue ("Subject", context, "");
 
             message.From.AddRange (GetAddresses (context, args, "From"));
             message.ResentFrom.AddRange (GetAddresses (context, args, "Resent-From"));
@@ -166,28 +167,28 @@ namespace p5.mail
             message.ResentReplyTo.AddRange (GetAddresses (context, args, "Resent-Reply-To"));
 
             if (args ["Sender"] != null)
-                message.Sender = new MailboxAddress (args ["Sender"] [0].Name, args ["Sender"] [0].Get<string> (context));
+                message.Sender = new MailboxAddress (args ["Sender"] [0].Name, args ["Sender"] [0].GetExValue<string> (context));
 
             if (args ["In-Reply-To"] != null)
-                message.InReplyTo = args.GetChildValue ("In-Reply-To", context, "");
+                message.InReplyTo = args.GetExChildValue ("In-Reply-To", context, "");
 
             if (args ["Resent-Message-ID"] != null)
-                message.ResentMessageId = args.GetChildValue ("Resent-Message-Id", context, "");
+                message.ResentMessageId = args.GetExChildValue ("Resent-Message-Id", context, "");
 
             if (args ["Resent-Sender"] != null)
-                message.ResentSender = new MailboxAddress (args ["Resent-Sender"] [0].Name, args ["Resent-Sender"] [0].Get<string> (context));
+                message.ResentSender = new MailboxAddress (args ["Resent-Sender"] [0].Name, args ["Resent-Sender"] [0].GetExValue<string> (context));
 
             if (args ["Importance"] != null)
-                message.Importance = (MessageImportance)Enum.Parse (typeof (MessageImportance), args.GetChildValue ("Importance", context, ""));
+                message.Importance = (MessageImportance)Enum.Parse (typeof (MessageImportance), args.GetExChildValue ("Importance", context, ""));
 
             if (args ["Priority"] != null)
-                message.Priority = (MessagePriority)Enum.Parse (typeof (MessagePriority), args.GetChildValue ("Priority", context, ""));
+                message.Priority = (MessagePriority)Enum.Parse (typeof (MessagePriority), args.GetExChildValue ("Priority", context, ""));
 
             if (args ["headers"] != null) {
 
                 // Looping through all custom headers in message, adding them to message.
                 foreach (var idxHeader in args ["headers"].Children) {
-                    message.Headers.Add (new Header (idxHeader.Name, idxHeader.Get<string> (context)));
+                    message.Headers.Add (new Header (idxHeader.Name, idxHeader.GetExValue<string> (context)));
                 }
             }
         }
@@ -204,7 +205,7 @@ namespace p5.mail
             if (args [name] != null) {
 
                 // Returning all emails.
-                return args [name].Children.Select (ix => new MailboxAddress (ix.Name, ix.Get<string> (context)));
+                return args [name].Children.Select (ix => new MailboxAddress (ix.Name, ix.GetExValue<string> (context)));
             }
 
             // No addresses for this request.
