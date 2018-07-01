@@ -1,0 +1,31 @@
+h2
+  innerValue:Additional modules
+
+p
+  innerValue:@"These are additional modules you can install to see some example
+reference implementations of apps built with Phosphorus Five. You can install these directly
+from within the system automatically, by clicking the install buttons below."
+
+h3
+  innerValue:InGen Dinosaur Theme Park System
+
+p
+  innerValue:@"This is an example use case for a 'real' system implemented using Phosphorus Five.
+It features strong modularity, allowing you to easily extend it, and is a Theme Park system,
+and a 'Micro CMS', probably easily modified such that it can serve the needs of any Theme Park.
+Below is a screenshot of it."
+
+img
+  src:"https://phosphorusfive.files.wordpress.com/2018/06/ingen-theme-park-dinosaurs-screenshot.png"
+  alt:InGen Screenshot
+  class:desktop-help-image
+
+h4
+  innerValue:Installation
+
+p
+  innerValue:@"<a target=""_blank"" href=""https://github.com/polterguy/ingen/releases"">Download InGen's Source Code ZIP file</a>,
+and install it through your 'Desktop' module while logged in as root, by clicking the '+' button.
+Afterwards you can test the system and take a look at its code and help files to understand its 
+architecture with for instance Hyper IDE. You can find its source code files in the '/modules/ingen/'
+folder of your installation."
