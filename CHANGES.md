@@ -1,6 +1,21 @@
 Changes
 ===============
 
+## Version 8.5 - Released the 1st of July 2018
+
+### General information
+
+This is a much smaller release than the previous releases, with less changes,
+and for the most parts either just smaller bugfixes, or minor issues have been
+adressed in this release.
+
+* Updated build scripttoinclude HTML files
+* Supporting x-pressions in p5.auth and p5.mail
+* Created [InGen Dinosaur System](https://github.com/polterguy/ingen) to serve as an example use case
+* Added documentation for undocumented events in p5.mysql
+
+In addition to minor features with all the most common submodules
+
 ## Version 8.4 - Released the 22th of June 2018
 
 ### General information
