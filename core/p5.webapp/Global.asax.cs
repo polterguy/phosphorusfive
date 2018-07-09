@@ -1,6 +1,6 @@
 /*
  * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
- * 
+ *
  * This file is part of Phosphorus Five.
  *
  * Phosphorus Five is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * If you cannot for some reasons use the GPL license, Phosphorus
  * Five is also commercially available under Quid Pro Quo terms. Check 
  * out our website at http://gaiasoul.com for more details.
