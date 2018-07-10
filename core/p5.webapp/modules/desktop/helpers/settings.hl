@@ -24,8 +24,10 @@ create-widgets
               /*
                * Retrieving currently selected theme, defaulting to "hyperlambda".
                */
+              p5.config.get:p5.desktop.guest-skin
+              eval-x:x:/+/*
               .defaults
-                skin:air
+                skin:x:/@p5.config.get/*?value
               p5.auth.my-settings.get
 
               /*

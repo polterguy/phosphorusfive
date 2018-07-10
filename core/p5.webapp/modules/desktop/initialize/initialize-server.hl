@@ -44,8 +44,8 @@ if
       div
         class:row air-top
         widgets
-          div:init-form
-            class:col-50 offset-25
+          div
+            class:col-100
             widgets
 
               /*
@@ -57,28 +57,13 @@ if
                 innerValue:@"Before you start using Phosphorus Five, you'll need to provide a root password, and
 PGP encryption details, such that we can encrypt your password file. Make sure you remember your password, since it's impossible to retrieve it later.
 This process will setup your <em>'root'</em> account, which you can use to administrate your system. Its username is <code>root</code>.
-If you have an existing GnuPG PGP keypair, you can use this instead of creating a new key. If you want to use an existing PGP key, you must
-make sure the <code>gpg-server-keypair-password</code> setting in your web.config contains its GnuPG password, such that we're able to release
-it and decrypt the key from GnuPG."
+If you have an existing PGP keypair, you can use this instead of creating a new key. If you want to use an existing PGP key, you must
+make sure the <code>gpg-server-keypair-password</code> setting in your web.config contains its AES password, such that we're able to release
+it and decrypt the key."
 
-              /*
-               * Then our textarea, which actually allows the user to type in a salt.
-               */
-              literal:server-salt
-                element:textarea
-                placeholder:Provide a random server salt ...
-                rows:5
-                class:fill hide
-                oninit
-
-                  /*
-                   * Filling it with some default random bytes.
-                   */
-                  p5.crypto.rng.create-bytes
-                    resolution:64
-                    hex:true
-                  set-widget-property:x:/../*/_event?value
-                    value:x:/@p5.crypto.rng.create-bytes?value
+          div
+            class:col-50
+            widgets
 
               /*
                * Select widget in case user has an existing PGP keypair in his GnuPG database.
@@ -186,23 +171,26 @@ it and decrypt the key from GnuPG."
                 class:fill
                 onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
 
+          div
+            class:col-50
+            widgets
+
               /*
-               * Then the "save root password" button wrapper.
+               * Then select panel for allowing user to change settings for how he sets up his server.
                */
               div
-                class:strip right
+                class:select-panel
                 widgets
                   label
+                    title:Will submit your public PGP key to your configured PGP server. Notice, only use this in production for actual production keys, to avoid cluttering your key server with garbage keys.
                     widgets
-                      span
-                        innerValue:Submit key
                       input:desktop-install-submit-key
                         type:checkbox
-                        title:Will submit your public PGP key to your configured PGP server. Notice, only use this in production for actual production keys to avoid cluttering your key server with garbage keys.
-                  label
-                    widgets
                       span
-                        innerValue:Show pwd
+                        innerValue:Submit key
+                  label
+                    title:Check this checkbox if you want to see the password as you are typing it.
+                    widgets
                       input
                         type:checkbox
                         onchange
@@ -236,11 +224,12 @@ it and decrypt the key from GnuPG."
                            * Setting focus to name textbox.
                            */
                           micro.page.set-focus:full-name
+                      span
+                        innerValue:Show pwd
 
                   label
+                    title:Check this checkbox if you want to provide a manual salt, to increase the entropy of your server's cryptography functions.
                     widgets
-                      span
-                        innerValue:Manual salt
                       input
                         type:checkbox
                         onchange
@@ -286,7 +275,38 @@ it and decrypt the key from GnuPG."
                                 hex:true
                               set-widget-property:server-salt
                                 value:x:/@p5.crypto.rng.create-bytes?value
+                      span
+                        innerValue:Manual salt
 
+              /*
+               * Then our textarea, which actually allows the user to type in a salt.
+               */
+              literal:server-salt
+                element:textarea
+                placeholder:Provide a random server salt ...
+                class:fill hide
+                oninit
+
+                  /*
+                   * Filling it with some default random bytes.
+                   */
+                  p5.crypto.rng.create-bytes
+                    resolution:64
+                    hex:true
+                  set-widget-property:x:/../*/_event?value
+                    value:x:/@p5.crypto.rng.create-bytes?value
+
+
+          div
+            class:col-100
+            widgets
+
+              /*
+               * Submit strip at the bottom.
+               */
+              div
+                class:strip right
+                widgets
                   button
                     innerValue:Help
                     title:Displays a help window
@@ -317,7 +337,7 @@ places in your life!</strong> Examples of good passwords can be found below, how
                             p
                               innerValue:@"The point is to create a sentence that has never been constructed before, preferably with some dialect
 words, that are unique for you - Yet still making it easy for you to remember! For then to use this as your password. This results in a much
-stronger password than 8 random characters, while still making your password extremely easily remembered. Try to add some words in your dialect and/or
+stronger password than 8 random characters, while still making your password easily remembered. Try to add some words in your dialect and/or
 native tongue, preferably the entire sentence if you can. However, the idea is that you create something so easily remember by you, that you don't
 need to write it down, yet still are able to remember it. If you are interested in the theory behind this, you can 
 <a target=""_blank"" href=""https://gaiasoul.com/2018/06/10/password-entropy/"">read more about it here</a>."
