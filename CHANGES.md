@@ -1,6 +1,33 @@
 Changes
 ===============
 
+## Version 8.6 - Released the 12th of July 2018
+
+### Two new widgets to Micro
+
+* __[micro.widgets.checkbox]__ - For easily creating a _"standard checkbox"_.
+* __[micro.widgets.radiobuttons]__ - For easily creating a (collection) of radiobuttons.
+
+### Better UI for Camphora Five
+
+This version considerably improves the rendering of Camphora Five apps, especially
+on devives, such as phones and tablets.
+
+### New Micro skin
+
+A new Micro skin called _"NUX"_, which is much less noisy in its color scheme,
+and (I think) more readable in general. This is now the default skin as you
+install Phosphorus Five.
+
+### New checkbox/radiobuttons CSS class
+
+_"select-panel"_ allows you to render a collection of radiobuttons/checkboxes,
+that are somehow related, as a _"group"_.
+
+### +++
+
+Tiny smaller bugfixes,espcially related to rendering.
+
 ## Version 8.5 - Released the 1st of July 2018
 
 ### General information
