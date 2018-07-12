@@ -42,7 +42,9 @@ DeleteFile ("./phosphorusfive-8-1/core/p5.webapp/auth.hl");
  * Deleting "/db/" folder.
  */
 var directoriesToDelete = new DirectoryPath [] { Directory("./phosphorusfive-8-1/core/p5.webapp/db/")};
-DeleteDirectories (directoriesToDelete, new DeleteDirectorySettings {Recursive = true, Force = true});
+if (DirectoryExists (directoriesToDelete [0])) {
+    DeleteDirectories (directoriesToDelete, new DeleteDirectorySettings {Recursive = true, Force = true});
+}
 
 /*
  * Deleting "common" folder.
