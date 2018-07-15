@@ -1,6 +1,26 @@
 Changes
 ===============
 
+## Version 8.7 - Not yet released
+
+### Documenting undocumented parts
+
+In this release, some of the widgets created in the previous release, that was
+still not documented, are now documented.
+
+### Further improving rendering of Camphora Five apps
+
+Rendering of Camphora Five apps have now been further improved, focusing on
+better rendering on devices, with low resolution.
+
+### New field types in Camphora Five
+
+In this release, I have created the following additional field types which you
+can use in your Camphora Five apps.
+
+* Date - Allows the user to pick a date
+* Datetime - Allows the usert to pick a date _and_ time
+
 ## Version 8.6 - Released the 12th of July 2018
 
 ### Two new widgets to Micro
