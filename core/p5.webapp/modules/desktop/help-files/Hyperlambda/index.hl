@@ -45,8 +45,8 @@ container
       split:x:/@_dp/#?name
         =:/
         =:.
-      replace:x:/@split/0/-2?name
-        src:regex:/[0-9]+ - /
+      replace-x:x:/@split/0/-2?name
+        src:/[0-9]+ - /
 
       /*
        * Creating a list item, containing a hyperlink button, which once clicked,
@@ -58,7 +58,7 @@ container
         widgets
           a
             href:#
-            innerValue:x:/@replace?value
+            innerValue:x:/@replace-x?value
             .file:x:/@_dp/#?name
             onclick
 

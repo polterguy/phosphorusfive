@@ -61,7 +61,7 @@ namespace p5.strings.keywords
                 if (what == null)
                     throw new LambdaException ("[replace] requires something to search for", e.Args, context);
                 if (e.Name.EndsWith ("-x", System.StringComparison.CurrentCulture)) {
-                    var regexWhat = new Regex (what);
+                    var regexWhat = new Regex (what as string);
                     e.Args.Value = regexWhat.Replace (source, with);
                 } else {
                     e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);

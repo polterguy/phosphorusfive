@@ -40,9 +40,9 @@ create-event:desktop.help.widgets.help-index
      */
     split:x:/@_dp/#?name
       =:/
-    replace:x:/@split/0/-?name
-      src:regex:/^[0-9]+ - /
-    split:x:/@replace?value
+    replace-x:x:/@split/0/-?name
+      src:/^[0-9]+ - /
+    split:x:/@replace-x?value
       =:.
     set:x:/@split/0/-
     join:x:/@split/*?name
