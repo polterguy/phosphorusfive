@@ -54,7 +54,7 @@ namespace p5.strings.keywords
                 var src = XUtil.Source (context, e.Args);
                 if (src == null)
                     return;
-                var srcRegex = new Regex (src as string);
+                var srcRegex = Utilities.Convert<Regex> (context, src);
 
                 // Evaluating regular expression, and returning results.
                 foreach (System.Text.RegularExpressions.Match idxMatch in srcRegex.Matches (source)) {

@@ -59,7 +59,7 @@ create-widgets
                * Removing all non-wanted characters from filename, such as versioning information, etc.
                */
               match:x:/../*/files/*/*?value
-                src:/[-a-z]+/
+                src:/[-a-z0-9]+/
               trim:x:/@match/0?name
                 chars:-
 
