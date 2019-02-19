@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;
@@ -40,6 +41,8 @@ namespace p5.strings.keywords
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "replace")]
         [ActiveEvent (Name = "p5.string.replace")]
+        [ActiveEvent (Name = "replace-x")]
+        [ActiveEvent (Name = "p5.string.replace-x")]
         public static void p5_string__replace (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
@@ -57,10 +60,12 @@ namespace p5.strings.keywords
                 var what = XUtil.Source (context, e.Args, "dest");
                 if (what == null)
                     throw new LambdaException ("[replace] requires something to search for", e.Args, context);
-                if (what is Regex)
-                    e.Args.Value = (what as Regex).Replace (source, with);
-                else
+                if (e.Name.EndsWith ("-x", System.StringComparison.CurrentCulture)) {
+                    var regexWhat = new Regex (what);
+                    e.Args.Value = regexWhat.Replace (source, with);
+                } else {
                     e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);
+                }
             }
         }
     }

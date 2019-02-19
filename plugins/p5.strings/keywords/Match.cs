@@ -54,13 +54,10 @@ namespace p5.strings.keywords
                 var src = XUtil.Source (context, e.Args);
                 if (src == null)
                     return;
-
-                // Sanity check.
-                if (!(src is Regex))
-                    throw new LambdaException ("[match] requires a regular expression source", e.Args, context);
+                var srcRegex = new Regex (src as string);
 
                 // Evaluating regular expression, and returning results.
-                foreach (System.Text.RegularExpressions.Match idxMatch in (src as Regex).Matches (source)) {
+                foreach (System.Text.RegularExpressions.Match idxMatch in srcRegex.Matches (source)) {
 
                     // Returning all groups matches.
                     foreach (Group idxGroup in idxMatch.Groups) {
