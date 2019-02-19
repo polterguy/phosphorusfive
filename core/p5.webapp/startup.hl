@@ -32,8 +32,8 @@ list-files:x:/@list-folders/*?name
  * This is done to make sure other modules can use features from Micro and the Desktop
  * in their startup files.
  */
-load-file:x:@"/@list-files/*(/""~/micro/""|/""~/desktop/"")?name"
+load-file:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")?name"
 eval:x:/-/*
-set:x:@"/@list-files/*(/""~/micro/""|/""~/desktop/"")"
+set:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")"
 load-file:x:/@list-files/*?name
 eval:x:/-/*
